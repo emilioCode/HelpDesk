@@ -16,6 +16,8 @@ import { SettingComponent } from './components/shared/setting/setting.component'
 import { MenuComponent } from './components/shared/menu/menu.component';
 import { LoginComponent } from './components/shared/login/login.component';
 
+import { ApiService } from './services/api.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,7 +42,7 @@ import { LoginComponent } from './components/shared/login/login.component';
       { path: 'fetch-data', component: FetchDataComponent },
     ])
   ],
-  providers: [],
+  providers: [ApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
