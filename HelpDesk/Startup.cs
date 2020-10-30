@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using HelpDesk.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HelpDesk
 {
@@ -20,7 +22,14 @@ namespace HelpDesk
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //conection through appsettings.json
+            services.AddDbContext<HelpDeskDBContext>(option =>
+                option.UseSqlServer(Configuration.GetConnectionString("HelpDeskDBContext")));
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            //now, i creating a scope with the dbLibraryContext
+            services.AddScoped<HelpDeskDBContext, HelpDeskDBContext>();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
