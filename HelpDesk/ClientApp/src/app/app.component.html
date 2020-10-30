@@ -1,4 +1,4 @@
-<div class='container-fluid'>
+<!-- <div class='container-fluid'>
   <div class='row'>
     <div class='col-sm-3'>
       <app-nav-menu></app-nav-menu>
@@ -7,4 +7,16 @@
       <router-outlet></router-outlet>
     </div>
   </div>
-</div>
+</div> -->
+
+
+<span *ngIf="!true">
+    <app-header></app-header>
+    <app-menu></app-menu>
+    <app-content></app-content>
+    <app-footer></app-footer>
+    <app-setting></app-setting>
+</span>
+<span *ngIf="true">
+    <app-login></app-login>
+</span>
