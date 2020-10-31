@@ -13,6 +13,7 @@ export class ApiService {
   headers = new HttpHeaders().set("content-type", "application/json");
   http;
   swal = Swal;
+  isLoading:boolean;
   constructor(
     private sessionSt: SessionStorageService,
     private _route: Router,
@@ -59,7 +60,7 @@ export class ApiService {
 
   getUser(){
   //  return this.user;
-  console.log( this.sessionSt.retrieve('user') );
+  // console.log( this.sessionSt.retrieve('user') );
     return this.sessionSt.retrieve('user');
   }
 

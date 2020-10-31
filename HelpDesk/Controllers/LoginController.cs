@@ -55,11 +55,25 @@ namespace HelpDesk.Controllers
                            logo = empresa.Image
                        };
 
-            var userFinal = user.FirstOrDefault();
-            if (userFinal != null)
+            //var userFinal = user.FirstOrDefault();
+            //if (userFinal != null)
+            //{
+            //    if (!(userFinal.userName.Equals(loginUser.CuentaUsuario))) userFinal = null;
+            //}
+
+            //return new JsonResult(userFinal);
+
+            object userFinal = null;
+            var users = user.ToList();
+            users.ForEach(e =>
             {
-                if (!(userFinal.userName.Equals(loginUser.CuentaUsuario))) userFinal = null;
-            }
+                if ((e.userName.Equals(loginUser.CuentaUsuario))) userFinal = e;
+            });
+
+            //if (userFinal != null)
+            //{
+            //    if (!(userFinal.userName.Equals(loginUser.CuentaUsuario))) userFinal = null;
+            //}
 
             return new JsonResult(userFinal);
         }
