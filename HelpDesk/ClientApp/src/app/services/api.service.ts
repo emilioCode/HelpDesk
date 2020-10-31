@@ -1,10 +1,74 @@
-import { Injectable } from '@angular/core';
+import { Injectable,Inject } from '@angular/core';
+import { SessionStorageService } from 'ngx-webstorage';
+
+import { Router } from '@angular/router';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+import Swal from 'sweetalert2';
 
 @Injectable()
 export class ApiService {
-
-  constructor() { 
+  route;
+  baseUrl;
+  headers = new HttpHeaders().set("content-type", "application/json");
+  http;
+  swal = Swal;
+  constructor(
+    private sessionSt: SessionStorageService,
+    private _route: Router,
+    @Inject('BASE_URL') _baseUrl: string,
+    private _http:HttpClient
+    ) {
+      this.route =_route;
+      this.baseUrl = _baseUrl; 
+      this.http =_http;      
     console.log('ApiService is running')
   }
 
+  //AplicationName
+  aplicationName = 'HelpDesk';
+  aplicationNameMini1 = 'H';
+  aplicationNameMini2 = 'D';
+  version = '1.0.0';
+  year:any = new Date().getFullYear();;
+  company = {
+    name:'Company',
+    value:'#'
+  };
+  copyright ='Copyright';
+  legacy = 'Todo los derechos reservados.';
+  info = '';
+
+  user:any='';
+  defaultPhoto = '../../../../assets/dist/img/photo_default.png';
+
+  setUser(user:any):void{
+    // if(user==null || user==''){
+    //   this.user = null;
+    // }else{
+    //   this.user = user;
+    // }
+
+    this.sessionSt.store('user',user);
+    
+  }
+
+  closeSession(){
+    this.sessionSt.clear('user');
+  }
+
+  getUser(){
+  //  return this.user;
+  console.log( this.sessionSt.retrieve('user') );
+    return this.sessionSt.retrieve('user');
+  }
+
+  //the Distinct from a List
+  private  distinct  = (value,index,self)=>{
+    return self.indexOf(value)===index;
+  }
+
+  getDistinct(array){
+    return array.filter(this.distinct)
+  }
 }

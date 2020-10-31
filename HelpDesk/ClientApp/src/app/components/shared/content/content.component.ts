@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../../../services/api.service';
 
 @Component({
   selector: 'app-content',
@@ -6,9 +7,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ContentComponent implements OnInit {
 
-  constructor() { }
+  constructor(private service: ApiService) { }
 
   ngOnInit() {
   }
+
+
 
 }

@@ -17,6 +17,9 @@ import { MenuComponent } from './components/shared/menu/menu.component';
 import { LoginComponent } from './components/shared/login/login.component';
 
 import { ApiService } from './services/api.service';
+import { Ng2Webstorage } from 'ngx-webstorage';
+import { EmpresaComponent } from './components/shared/content/empresa/empresa.component';
+import { UserComponent } from './components/shared/content/user/user.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,9 @@ import { ApiService } from './services/api.service';
     FooterComponent,
     SettingComponent,
     MenuComponent,
-    LoginComponent
+    LoginComponent,
+    EmpresaComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -40,7 +45,11 @@ import { ApiService } from './services/api.service';
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
-    ])
+      { path: 'business', component: EmpresaComponent },
+      { path: 'user', component: UserComponent }
+
+    ]),
+    Ng2Webstorage
   ],
   providers: [ApiService],
   bootstrap: [AppComponent]

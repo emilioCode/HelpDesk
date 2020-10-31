@@ -7,10 +7,11 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel">
           <div class="pull-left image">
-            <img src="assets/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+            <img *ngIf="service.getUser() ==null || service.getUser().image ==null" src="../../../../assets/dist/img/photo_default.png" width="160px" height="160px" class="img-circle" alt="User Image">
+            <img *ngIf="service.getUser() !=null && service.getUser().image !=null" [src]="'data:image/jpeg;base64,'+ service.getUser().image" width="160px" height="160px" class="img-circle" alt="User Image">
           </div>
           <div class="pull-left info">
-            <p>Alexander Pierce</p>
+            <p *ngIf="service.getUser() !=null">{{ service.getUser().nombre.substr(0,15) }} <span *ngIf="service.getUser().nombre.length > 16 && service.getUser() !=null">...</span></p>
             <!-- Status -->
             <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
           </div>
@@ -32,17 +33,17 @@
         <ul class="sidebar-menu" data-widget="tree">
           <li class="header">HEADER</li>
           <!-- Optionally, you can add icons to the links -->
-          <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>
-          <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
-          <li class="treeview">
-            <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
+          <li class="active"><a [routerLink]='["/"]'><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+          <!-- <li><a  [routerLink]='["/counter"]'><i class="fa fa-link"></i> <span>Another Link</span></a></li> -->
+          <li class="treeview" *ngFor="let item of adminLteConf">
+            <a href="#"><i class="{{ item.iconClasses }}"></i> <span>{{ item.label }}</span>
               <span class="pull-right-container">
                   <i class="fa fa-angle-left pull-right"></i>
                 </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="#">Link in level 2</a></li>
-              <li><a href="#">Link in level 2</a></li>
+              <li><a [routerLink]='child.route' *ngFor="let child of item.children"><i class="{{ child.iconClasses }}"></i>{{ child.label }}</a></li>
+              <!-- <li><a href="#">Link in level 2</a></li> -->
             </ul>
           </li>
         </ul>
