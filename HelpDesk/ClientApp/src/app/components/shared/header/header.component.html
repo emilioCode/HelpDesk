@@ -134,6 +134,7 @@
                   <p>
                     {{ service.getUser().nombre }}
                     <small>{{ service.getUser().empresa }}</small>
+                    <small>-{{ service.getUser().acceso }}-</small>
                   </p>
                 </li>
                 <!-- Menu Body -->
@@ -157,7 +158,7 @@
                     <a href="#" class="btn btn-default btn-flat">Profile</a>
                   </div>
                   <div class="pull-right">
-                    <a href="#" class="btn btn-default btn-flat" (click)="signOut()">Sign out</a>
+                    <button class="btn btn-default btn-flat" (click)="signOut()">Sign out</button>
                   </div>
                 </li>
               </ul>

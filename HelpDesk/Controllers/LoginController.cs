@@ -27,11 +27,11 @@ namespace HelpDesk.Controllers
         }
 
         // GET: api/Login/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //[HttpGet("{id}", Name = "Get")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
         // POST: api/Login
         [HttpPost]
@@ -42,7 +42,7 @@ namespace HelpDesk.Controllers
                        where usuario.CuentaUsuario == loginUser.CuentaUsuario
                        //&& (checkHash(loginUser.pwd, usuario.Contrasena, hashType.MD5) == true)
                        && usuario.Contrasena == loginUser.Contrasena
-                       && empresa.Id == usuario.IdEmpresa && usuario.Habilitado == true && empresa.Habilitado == true
+                       && empresa.Id == usuario.IdEmpresa && usuario.Habilitado == true && ( empresa.Habilitado == true || usuario.Acceso=="ROOT")
                        select new
                        {
                            id = usuario.Id,
@@ -55,25 +55,12 @@ namespace HelpDesk.Controllers
                            logo = empresa.Image
                        };
 
-            //var userFinal = user.FirstOrDefault();
-            //if (userFinal != null)
-            //{
-            //    if (!(userFinal.userName.Equals(loginUser.CuentaUsuario))) userFinal = null;
-            //}
-
-            //return new JsonResult(userFinal);
-
             object userFinal = null;
             var users = user.ToList();
             users.ForEach(e =>
             {
                 if ((e.userName.Equals(loginUser.CuentaUsuario))) userFinal = e;
             });
-
-            //if (userFinal != null)
-            //{
-            //    if (!(userFinal.userName.Equals(loginUser.CuentaUsuario))) userFinal = null;
-            //}
 
             return new JsonResult(userFinal);
         }

@@ -42,8 +42,11 @@
                 </span>
             </a>
             <ul class="treeview-menu">
-              <li><a [routerLink]='child.route' *ngFor="let child of item.children"><i class="{{ child.iconClasses }}"></i>{{ child.label }}</a></li>
+                
+              <ng-container *ngFor="let child of item.children">
+              <li *ngIf="child.see" ><a [routerLink]='child.route' ><i class="{{ child.iconClasses }}"></i>{{ child.label }}</a></li>
               <!-- <li><a href="#">Link in level 2</a></li> -->
+              </ng-container>
             </ul>
           </li>
         </ul>

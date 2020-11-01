@@ -7,29 +7,29 @@
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">Tabla de Entidades</h3>
+          <a class="btn-link" *ngIf="service.getLevel(service.getUser().acceso) == 4" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default"> agregar entidad</a>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-          <table id="example2" class="table table-bordered table-striped">
+          <table id="example2" class="table table-bordered table-striped table-hover">
             <thead>
             <tr>
-              <th>Logo</th>
               <th>Razón Social</th>
               <th>RNC</th>
               <th>Correo</th>
               <th>Telefono</th>
-              <th></th>
+              <th class="text-center"><i class="fa fa-fw fa-list-alt"></i></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let item of empresas">
-              <td>Trident</td>
               <td>{{ item.razonSocial }}</td>
               <td>{{ item.rnc }}</td>
               <td>{{ item.correo }}</td>
               <td>{{ item.telefono }}</td>
               <th>
-
+                <a class="btn-link" (click)="fillModal('edit',item)" *ngIf="service.getLevel(service.getUser().acceso) > 2" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-list-alt"></i></a>
+                <a class="btn-link" (click)="fillModal('delete',item);delete()" *ngIf="service.getLevel(service.getUser().acceso) == 4"><i class="fa fa-fw fa-toggle-on" [hidden]="!item.habilitado"></i><i class="fa fa-fw fa-toggle-off" [hidden]="item.habilitado"></i></a>
               </th>
             </tr>
             <!-- <tfoot>
@@ -57,3 +57,111 @@
   <!-- /.row -->
 <!-- </section> -->
 <!-- /.content -->
+
+
+<!-- Modals -->
+<div class="modal fade" id="modal-default">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <!-- <h4 class="modal-title">Default Modal</h4> -->
+        <h4 class="modal-title" *ngIf="option=='add'"><b>Nuevo Entidad</b></h4>
+        <h4 class="modal-title" *ngIf="option=='edit'"><b>Entidad</b></h4>
+        <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea eliminar este Entidad?</b></h4>
+      </div>
+      <div class="modal-body">
+        
+        <!---->
+        <div class="row">
+        <div class="col-xs-8 col-sm-8">
+          <div class="form-group col-xs-8 col-sm-8">
+            <label for="razonSocial">Razón Social:</label>
+            <input type="text" class="form-control" placeholder="Razón Social" [(ngModel)]="empresa.razonSocial" [disabled]="option=='delete'">
+          </div>
+          <div class="form-group col-xs-4 col-sm-4">
+            <label for="sectorComercial">Sector Comercial:</label>
+            <input type="text" class="form-control" placeholder="Sector Comercial" [(ngModel)]="empresa.sectorComercial" [disabled]="option=='delete'">
+          </div>
+
+          <div class="form-group col-xs-12 col-sm-12">
+              <label for="rnc">RNC/Cédula:</label>
+              <input type="text" class="form-control" placeholder="RNC/Cédula" [(ngModel)]="empresa.rnc" [disabled]="option=='delete'">
+            </div>
+            <div class="form-group col-xs-6 col-sm-6">
+              <label for="telefono">Teléfono:</label>
+              <input type="text" class="form-control" placeholder="Teléfono" [(ngModel)]="empresa.telefono" [disabled]="option=='delete'">
+            </div>
+            <div class="form-group col-xs-6 col-sm-6">
+                <label for="noAutorizacion">No. Autorización:</label>
+                <input type="text" class="form-control" placeholder="No. Autorización" [(ngModel)]="empresa.noAutorizacion" [disabled]="option=='delete'">
+            </div>
+            <div class="form-group col-xs-6 col-sm-6">
+                <label for="correo">Correo Electrónico</label>
+                <input type="text" class="form-control" placeholder="Correo Electrónico" [(ngModel)]="empresa.correo" [disabled]="option=='delete'">
+            </div>
+            <div class="form-group col-xs-6 col-sm-6">
+              <label for="contrasena">Contraseña:</label>
+              <input type="password" class="form-control" placeholder="Contraseña" [(ngModel)]="empresa.contrasena" [disabled]="option=='delete'">
+            </div>
+            
+        </div>
+        <div class="col-xs-4 col-sm-4">
+          <div class="form-group col-xs-12 col-ms-12"  >
+            <img [hidden]="empresa.image!=null" src="../../../../assets/dist/img/photo_default.png" style="width:250px;height:250px;" >
+            <img *ngIf="empresa.image!=null" [src]="'data:image/jpeg;base64,'+ empresa.image" style="width:250px;height:250px;" >
+            <!-- <img src="{{imageUrl}}" style="width:250px;height:250px;" *ngIf="imageUrl!==''"> -->
+          </div>
+          <div class=" col-xs-12 col-sm-12">
+            <input type="file" class="form-control"  (change)="handleFileInput($event.target.files)" accept="image/*" [disabled]="option=='delete'"/>
+            <button class="btn btn-danger btn-block" (click)="imageUrl='';empresa.image=null;" *ngIf="empresa.image!=null;">Eliminar</button>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-12">
+          <div class="form-group col-xs-3 col-sm-3">
+            <label for="url">Secuencia Ticket:</label>
+            <input type="text" class="form-control" placeholder="No. Ticket" [(ngModel)]="empresa.secuenciaticket" [disabled]="option=='delete'">
+          </div>
+          <div class="form-group col-xs-3 col-sm-3">
+            <label for="url">Url:</label>
+            <input type="text" class="form-control" placeholder="Url" [(ngModel)]="empresa.url" [disabled]="option=='delete'">
+          </div>
+          <div class="form-group col-xs-3 col-sm-3">
+            <label for="host">Host:</label>
+            <input type="text" class="form-control" placeholder="Host" [(ngModel)]="empresa.host" [disabled]="option=='delete'">
+          </div>
+          <div class="form-group col-xs-3 col-sm-3">
+            <label for="port">Puerto:</label>
+            <input type="number" class="form-control" placeholder="Puerto" [(ngModel)]="empresa.port" [disabled]="option=='delete'">
+          </div>
+          <div class="form-group col-xs-12 col-sm-12">
+            <label for="direccion">Dirección:</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="empresa.direccion" [disabled]="option=='delete'"></textarea>
+          </div>
+        </div>
+
+
+
+      </div>
+      <!---->
+
+      </div>
+      <div class="modal-footer">
+          <div class="overlay" [hidden]="!service.isLoading">
+              <i class="fa fa-refresh fa-spin"></i>
+          </div>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" *ngIf="option=='add'" (click)="add()"><i class="fa fa-fw fa-file-o"></i> Crear</button>
+          <button type="button" class="btn btn-success" data-dismiss="modal" *ngIf="option=='edit'" (click)="edit()"><i class="fa fa-fw fa-save"></i> Guardar</button>
+          <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

@@ -37,7 +37,6 @@ export class LoginComponent implements OnInit {
         //this.user='';
         this.pwd='';
        }else{
-         debugger;
         this.service.setUser(res);
         window.location.reload();
         // this.sessionSt.store('user',res);

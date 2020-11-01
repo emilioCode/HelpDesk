@@ -55,7 +55,10 @@ export class ApiService {
   }
 
   closeSession(){
-    this.sessionSt.clear('user');
+    // console.log( this.sessionSt.retrieve('user') )
+    while (this.sessionSt.retrieve('user')!=null) {
+      this.sessionSt.clear('user');
+    }
   }
 
   getUser(){
@@ -71,5 +74,21 @@ export class ApiService {
 
   getDistinct(array){
     return array.filter(this.distinct)
+  }
+
+
+  levels = [
+    { name: 'ROOT', value:4},
+    { name: 'ADMINISTRADOR', value:3},
+    { name: 'MODERADOR', value:2},
+    { name: 'TECNICO', value:1}
+  ];
+
+  level;
+  
+  getLevel(acceso):number{
+    this.level= this.levels.filter(x=>x.name==acceso)[0].value;
+    // console.log( this.level )
+    return this.level;
   }
 }
