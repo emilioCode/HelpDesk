@@ -44,14 +44,12 @@ export class ApiService {
   defaultPhoto = '../../../../assets/dist/img/photo_default.png';
 
   setUser(user:any):void{
-    // if(user==null || user==''){
-    //   this.user = null;
-    // }else{
-    //   this.user = user;
-    // }
-
     this.sessionSt.store('user',user);
-    
+    // sessionStorage.setItem('key', user);
+    // let data = sessionStorage.getItem('key');
+    // console.table(+data)
+    this.route.navigateByUrl('/');
+    window.location.reload();
   }
 
   closeSession(){
@@ -59,11 +57,10 @@ export class ApiService {
     while (this.sessionSt.retrieve('user')!=null) {
       this.sessionSt.clear('user');
     }
+    
   }
 
   getUser(){
-  //  return this.user;
-  // console.log( this.sessionSt.retrieve('user') );
     return this.sessionSt.retrieve('user');
   }
 
@@ -91,4 +88,10 @@ export class ApiService {
     // console.log( this.level )
     return this.level;
   }
+
+  updateSession(users:any):void{
+    var session = users.filter(u=>u.id == this.getUser().id)[0];
+    this.sessionSt.store('user',session);
+  }
+
 }

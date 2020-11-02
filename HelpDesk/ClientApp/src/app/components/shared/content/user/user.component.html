@@ -1,3 +1,151 @@
-<p>
-  user works!
-</p>
+<br/>
+
+<!-- Main content -->
+<!-- <section class="content"> -->
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">Tabla de Usuarios</h3>
+          <a class="btn-link" *ngIf="service.getLevel(service.getUser().acceso) > 2" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default"> agregar usuario</a>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <table id="example2" class="table table-bordered table-striped table-hover">
+            <thead>
+            <tr>
+              <th width="25%">Nombre</th>
+              <th width="17%">Cédula</th>
+              <th width="17%">Cuenta</th>
+              <th width="17%">Acceso</th>
+              <th width="17%">Correo</th>
+              <th width="15%" class="text-center"><i class="fa fa-fw fa-list-alt"></i></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of users">
+              <td width="25%">
+                  <img  width="20%" *ngIf="item.image ==null" src="../../../../assets/dist/img/photo_default.png" class="img-circle" alt="User Image">
+                  <img  width="20%" *ngIf="item.image !=null" [src]="'data:image/jpeg;base64,'+ item.image" class="img-circle" alt="User Image">&nbsp;
+                {{ item.nombre }}
+              </td>
+              <td width="17%">{{ item.numDocumento }}</td>
+              <td width="17%"><u>{{ item.cuentaUsuario }}</u></td>
+              <td width="17%">{{ item.acceso }}</td>
+              <td width="17%">{{ item.correo }}</td>
+              <td  width="15%">
+                <a class="btn-link" (click)="fillModal('edit',item)" *ngIf="service.getLevel(service.getUser().acceso) > 2" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-list-alt"></i></a>
+                <a class="btn-link" (click)="fillModal('delete',item);delete()" *ngIf="service.getLevel(service.getUser().acceso) == 4"><i class="fa fa-fw fa-toggle-on" [hidden]="!item.habilitado"></i><i class="fa fa-fw fa-toggle-off" [hidden]="item.habilitado"></i></a>
+              </td>
+            </tr>
+            <!-- <tfoot>
+            <tr>
+              <th>Rendering engine</th>
+              <th>Browser</th>
+              <th>Platform(s)</th>
+              <th>Engine version</th>
+              <th>CSS grade</th>
+            </tr>
+            </tfoot> -->
+          </table>
+          <div class="overlay" [hidden]="!service.isLoading">
+              <i class="fa fa-refresh fa-spin"></i>
+          </div>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+
+
+    </div>
+    <!-- /.col -->
+  </div>
+  <!-- /.row -->
+<!-- </section> -->
+<!-- /.content -->
+
+<!-- Modals -->
+<div class="modal fade" id="modal-default" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)='getUsers(service.getUser().id,"*")'>
+            <span aria-hidden="true">&times;</span></button>
+          <!-- <h4 class="modal-title">Default Modal</h4> -->
+          <h4 class="modal-title" *ngIf="option=='add'"><b>Nuevo Usuario</b></h4>
+          <h4 class="modal-title" *ngIf="option=='edit'"><b>Usuario</b></h4>
+          <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea deshabilitar este Usuario?</b></h4>
+        </div>
+        <div class="modal-body">
+          
+          <!---->
+          <div class="row">
+          <div class="col-xs-8 col-sm-8">
+            <div class="form-group col-xs-8 col-sm-8">
+              <label for="razonSocial">Nombre completo:</label>
+              <input type="text" class="form-control" placeholder="Nombre" [(ngModel)]="user.nombre" [disabled]="option=='delete'">
+            </div>
+            <div class="form-group col-xs-4 col-sm-4">
+              <label for="sectorComercial">Cédula:</label>
+              <input type="text" class="form-control" placeholder="No. documento" [(ngModel)]="user.numDocumento" [disabled]="option=='delete'">
+            </div>
+  
+            <div class="form-group col-xs-6 col-sm-6">
+                <label for="rnc">Cuenta de usuario:</label>
+                <input type="text" class="form-control" placeholder="Cuenta de usuario" [(ngModel)]="user.cuentaUsuario" [disabled]="service.getUser().acceso != 'ROOT' ||option=='delete'">
+            </div>
+            <div class="form-group col-xs-6 col-sm-6">
+              <label for="telefono">Contraseña:</label>
+              <input type="password" class="form-control" placeholder="Contraseña" [(ngModel)]="user.contrasena" [disabled]="option=='delete'">
+            </div>
+            <div class="form-group col-xs-12 col-sm-12">
+                <label for="correo">Correo Electrónico</label>
+                <input type="text" class="form-control" placeholder="Correo Electrónico" [(ngModel)]="user.correo" [disabled]="option=='delete'">
+            </div>
+            <div class="form-group col-xs-6 col-sm-6">
+                <label for="rnc">Empresa:</label>
+                <select class="form-control" [(ngModel)]="user.idEmpresa">
+                  <option value="{{empresa.id}}" *ngFor="let empresa of empresas">{{ empresa.razonSocial }}</option>
+                </select>
+            </div>
+            <div class="form-group col-xs-6 col-sm-6">
+              <label for="telefono">Rol(Acceso):</label>
+              <select class="form-control" [(ngModel)]="user.acceso">
+                <option value="{{level.name}}" *ngFor="let level of levels">{{ level.name }}</option>
+              </select>
+            </div>
+              
+          </div>
+          <div class="col-xs-4 col-sm-4">
+            <div class="form-group col-xs-12 col-ms-12"  >
+              <img [hidden]="user.image!=null" src="../../../../assets/dist/img/photo_default.png" style="width:250px;height:250px;" >
+              <img *ngIf="user.image!=null" [src]="'data:image/jpeg;base64,'+ user.image" style="width:250px;height:250px;" >
+              <!-- <img src="{{imageUrl}}" style="width:250px;height:250px;" *ngIf="imageUrl!==''"> -->
+            </div>
+            <div class=" col-xs-12 col-sm-12">
+              <input type="file" class="form-control"  (change)="handleFileInput($event.target.files)" accept="image/*" [disabled]="option=='delete'"/>
+              <button class="btn btn-danger btn-block" (click)="imageUrl='';user.image=null;" *ngIf="user.image!=null;">Eliminar</button>
+            </div>
+          </div>
+  
+        </div>
+        <!---->
+  
+        </div>
+        <div class="modal-footer">
+            <div class="overlay" [hidden]="!service.isLoading">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" *ngIf="option=='add'" (click)="add()"><i class="fa fa-fw fa-file-o"></i> Crear</button>
+            <button type="button" class="btn btn-success" data-dismiss="modal" *ngIf="option=='edit'" (click)="edit()"><i class="fa fa-fw fa-save"></i> Guardar</button>
+            <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
+            <button type="button" class="btn btn-default" data-dismiss="modal" (click)='getUsers(service.getUser().id,"*")'>Close</button>
+          <!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->
+          <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->

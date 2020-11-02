@@ -27,10 +27,10 @@
               <td>{{ item.rnc }}</td>
               <td>{{ item.correo }}</td>
               <td>{{ item.telefono }}</td>
-              <th>
+              <td>
                 <a class="btn-link" (click)="fillModal('edit',item)" *ngIf="service.getLevel(service.getUser().acceso) > 2" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-list-alt"></i></a>
                 <a class="btn-link" (click)="fillModal('delete',item);delete()" *ngIf="service.getLevel(service.getUser().acceso) == 4"><i class="fa fa-fw fa-toggle-on" [hidden]="!item.habilitado"></i><i class="fa fa-fw fa-toggle-off" [hidden]="item.habilitado"></i></a>
-              </th>
+              </td>
             </tr>
             <!-- <tfoot>
             <tr>
@@ -60,16 +60,16 @@
 
 
 <!-- Modals -->
-<div class="modal fade" id="modal-default">
+<div class="modal fade" id="modal-default" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="getBusiness(service.getUser().id)">
           <span aria-hidden="true">&times;</span></button>
         <!-- <h4 class="modal-title">Default Modal</h4> -->
         <h4 class="modal-title" *ngIf="option=='add'"><b>Nuevo Entidad</b></h4>
         <h4 class="modal-title" *ngIf="option=='edit'"><b>Entidad</b></h4>
-        <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea eliminar este Entidad?</b></h4>
+        <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea deshabilitar este Entidad?</b></h4>
       </div>
       <div class="modal-body">
         
@@ -155,7 +155,7 @@
           <button type="button" class="btn btn-primary" data-dismiss="modal" *ngIf="option=='add'" (click)="add()"><i class="fa fa-fw fa-file-o"></i> Crear</button>
           <button type="button" class="btn btn-success" data-dismiss="modal" *ngIf="option=='edit'" (click)="edit()"><i class="fa fa-fw fa-save"></i> Guardar</button>
           <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" (click)="getBusiness(service.getUser().id)">Close</button>
         <!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->
         <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
       </div>

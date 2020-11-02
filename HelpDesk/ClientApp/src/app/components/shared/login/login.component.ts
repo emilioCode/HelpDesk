@@ -32,13 +32,14 @@ export class LoginComponent implements OnInit {
      }
      this.service.http.post(this.service.baseUrl + 'api/Login',obj,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
+        // debugger;
        if(res===null){
         this.service.swal('Acceso Denegado','Verifique el usuario o la contraseña, o sino comuniquese con soporte.','error');
         //this.user='';
         this.pwd='';
        }else{
         this.service.setUser(res);
-        window.location.reload();
+        // window.location.reload();
         // this.sessionSt.store('user',res);
         //console.log(this.service.getUser());
         // this.service.route.navigateByUrl()('/');

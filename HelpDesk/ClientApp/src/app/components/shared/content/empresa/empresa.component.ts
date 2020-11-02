@@ -9,7 +9,6 @@ import { ApiService } from '../../../../services/api.service';
 export class EmpresaComponent implements OnInit {
 
   constructor(private service: ApiService) { 
-    console.log('EmpresaComponent');
     this.getBusiness(this.service.getUser().id);
   }
 
@@ -18,11 +17,12 @@ export class EmpresaComponent implements OnInit {
   option;
   empresa:any={};
   imageUrl;
+
   ngOnInit() {
   }
 
   getBusiness(id){
-   this.service.isLoading = true;
+    this.service.isLoading = true;
     this.service.http.get(this.service.baseUrl + 'api/Business/'+id,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         this.empresas = res;
@@ -58,7 +58,6 @@ export class EmpresaComponent implements OnInit {
 
   add(){
     this.service.isLoading = true;
-    console.log( this.empresa )
      this.service.http.post(this.service.baseUrl + 'api/Business',this.empresa,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
       console.log( res )
