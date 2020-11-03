@@ -58,8 +58,74 @@ namespace HelpDesk.Controllers
 
         // POST: api/User
         [HttpPost]
-        public void Post([FromBody] string value)
+        public JsonResult Post([FromBody] Usuario req)
         {
+            ObjectResponse res;
+            try
+            {
+                if (req.Nombre == null || req.Nombre == "" ||
+                    req.CuentaUsuario == null || req.CuentaUsuario == "" ||
+                    req.Contrasena == null || req.Contrasena == "" ||
+                    req.IdEmpresa == null || req.IdEmpresa <= 0)
+                {
+                    res = new ObjectResponse
+                    {
+                        code = "2",
+                        title = "Validation errors",
+                        icon = "warning",
+                        message = "missing some field to complete",
+                        data = null
+                    };
+                    return new JsonResult(res);
+                }
+
+                List<Usuario> userAccounts = context.Usuario.Where(uac => uac.IdEmpresa == req.IdEmpresa && uac.Id != req.Id).ToList();
+
+                for (int i = 0; i < userAccounts.Count; i++)
+                {
+                    if (userAccounts[i].CuentaUsuario.Equals(req.CuentaUsuario))
+                    {
+                        res = new ObjectResponse
+                        {
+                            code = "2",
+                            title = "Validation errors",
+                            icon = "warning",
+                            message = $"the userAccount <b>{ req.CuentaUsuario }</b> already exists",
+                            data = req
+                        };
+                        return new JsonResult(res);
+                    }
+                }
+                req.Habilitado = true;
+                context.Entry(req).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+                context.SaveChanges();
+
+                var data = context.Usuario.Where(e => e.Nombre == req.Nombre
+                && e.NumDocumento == req.NumDocumento && e.CuentaUsuario == req.CuentaUsuario && e.Acceso == req.Acceso
+                && e.Correo == req.Correo && e.Contrasena == req.Contrasena).SingleOrDefault();
+                res = new ObjectResponse
+                {
+                    code = "1",
+                    title = "Saved",
+                    icon = "success",
+                    message = "has been saved successfully",
+                    data = data
+                };
+
+            }
+            catch (Exception e)
+            {
+                res = new ObjectResponse
+                {
+                    code = "0",
+                    title = "Error",
+                    icon = "error",
+                    message = e.Message,
+                    data = null
+                };
+            }
+
+            return new JsonResult(res);
         }
 
         // PUT: api/User/5
@@ -67,8 +133,6 @@ namespace HelpDesk.Controllers
         public JsonResult Put(int idUserReq, [FromBody] Usuario req)
         {
             ObjectResponse res;
-
-            bool duplicated = false;
             try
             {
                 if (req.Nombre == null || req.Nombre == "" ||
@@ -121,7 +185,7 @@ namespace HelpDesk.Controllers
                     code = "1",
                     title = "Saved",
                     icon = "success",
-                    message = "has been saved successfully",
+                    message = "has been updated successfully",
                     data = null
                 };
                 context.SaveChangesAsync();

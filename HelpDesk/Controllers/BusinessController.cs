@@ -61,7 +61,7 @@ namespace HelpDesk.Controllers
                 }
                 req.Habilitado = true;
                 context.Entry(req).State = Microsoft.EntityFrameworkCore.EntityState.Added;
-                context.SaveChangesAsync();
+                context.SaveChanges();
 
                 var data = context.Empresa.Where(e => e.RazonSocial == req.RazonSocial
                 && e.SectorComercial == req.SectorComercial && e.Rnc == req.Rnc && e.Telefono == req.Telefono
@@ -132,7 +132,7 @@ namespace HelpDesk.Controllers
                     code = "1",
                     title = "Saved",
                     icon = "success",
-                    message = "has been saved successfully",
+                    message = "has been updated successfully",
                     data =  null     
                 };
                 context.SaveChangesAsync();

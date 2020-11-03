@@ -94,4 +94,8 @@ export class ApiService {
     this.sessionSt.store('user',session);
   }
 
+  isNullorEmpty(value:any):boolean{
+    return (value=='' || value==null)?true:false;
+  }
+
 }

@@ -35,7 +35,7 @@
               <td width="17%">{{ item.correo }}</td>
               <td  width="15%">
                 <a class="btn-link" (click)="fillModal('edit',item)" *ngIf="service.getLevel(service.getUser().acceso) > 2" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-list-alt"></i></a>
-                <a class="btn-link" (click)="fillModal('delete',item);delete()" *ngIf="service.getLevel(service.getUser().acceso) == 4"><i class="fa fa-fw fa-toggle-on" [hidden]="!item.habilitado"></i><i class="fa fa-fw fa-toggle-off" [hidden]="item.habilitado"></i></a>
+                <a class="btn-link" (click)="fillModal('delete',item);delete()" *ngIf="service.getLevel(service.getUser().acceso) >= 3"><i class="fa fa-fw fa-toggle-on" [hidden]="!item.habilitado"></i><i class="fa fa-fw fa-toggle-off" [hidden]="item.habilitado"></i></a>
               </td>
             </tr>
             <!-- <tfoot>
@@ -92,7 +92,7 @@
   
             <div class="form-group col-xs-6 col-sm-6">
                 <label for="rnc">Cuenta de usuario:</label>
-                <input type="text" class="form-control" placeholder="Cuenta de usuario" [(ngModel)]="user.cuentaUsuario" [disabled]="service.getUser().acceso != 'ROOT' ||option=='delete'">
+                <input type="text" class="form-control" placeholder="Cuenta de usuario" [(ngModel)]="user.cuentaUsuario" [disabled]="(service.getUser().acceso != 'ROOT' && option !='add') ||option=='delete'">
             </div>
             <div class="form-group col-xs-6 col-sm-6">
               <label for="telefono">Contraseña:</label>
@@ -136,8 +136,8 @@
             <div class="overlay" [hidden]="!service.isLoading">
                 <i class="fa fa-refresh fa-spin"></i>
             </div>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" *ngIf="option=='add'" (click)="add()"><i class="fa fa-fw fa-file-o"></i> Crear</button>
-            <button type="button" class="btn btn-success" data-dismiss="modal" *ngIf="option=='edit'" (click)="edit()"><i class="fa fa-fw fa-save"></i> Guardar</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" *ngIf="option=='add'" (click)="add()" [disabled]="service.isNullorEmpty(user.nombre) || service.isNullorEmpty(user.cuentaUsuario) || service.isNullorEmpty(user.contrasena) || service.isNullorEmpty(user.acceso)"><i class="fa fa-fw fa-file-o"></i> Crear</button>
+            <button type="button" class="btn btn-success" data-dismiss="modal" *ngIf="option=='edit'" (click)="edit()" [disabled]="service.isNullorEmpty(user.nombre) || service.isNullorEmpty(user.cuentaUsuario) || service.isNullorEmpty(user.contrasena) || service.isNullorEmpty(user.acceso)"><i class="fa fa-fw fa-save"></i> Guardar</button>
             <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
             <button type="button" class="btn btn-default" data-dismiss="modal" (click)='getUsers(service.getUser().id,"*")'>Close</button>
           <!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->
