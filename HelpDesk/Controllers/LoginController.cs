@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HelpDesk.Models;
+using HelpDesk.Models.classes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,11 +20,31 @@ namespace HelpDesk.Controllers
             this.context = _context;
         }
 
-        // GET: api/Login
-        [HttpGet]
-        public IEnumerable<string> Get()
+        // GET: api/Login/1/user01
+        [HttpGet("{idEmpresa}/{userAccount}")]
+        public JsonResult Get(int idEmpresa, string userAccount)
         {
-            return new string[] { "value1", "value2" };
+            List<String> userAccounts = context.Usuario
+                .Where(u => u.IdEmpresa == idEmpresa).Select(u=>u.CuentaUsuario).ToList();
+            ObjectResponse res = userAccounts.Where(uac => uac == userAccount).Count() > 0 ? 
+                new ObjectResponse
+                {
+                    code = "1",
+                    title = "Validations",
+                    icon = "success",
+                    message = "It's ok.",
+                    data = false
+                } : 
+                new ObjectResponse
+                {
+                    code = "1",
+                    title = "Validations",
+                    icon = "warning",
+                    message = "There exists another account with this name",
+                    data = true
+                };
+            
+            return new JsonResult(res);
         }
 
         // GET: api/Login/5
