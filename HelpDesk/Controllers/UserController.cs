@@ -46,7 +46,7 @@ namespace HelpDesk.Controllers
                         break;
                 }
             }    
-            return new JsonResult(usuarios);
+            return new JsonResult(usuarios.OrderByDescending(x => x.Id));
         }
 
         // GET: api/User/5

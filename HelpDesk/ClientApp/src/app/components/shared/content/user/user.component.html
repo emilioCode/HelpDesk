@@ -90,9 +90,11 @@
               <input type="text" class="form-control" placeholder="No. documento" [(ngModel)]="user.numDocumento" [disabled]="option=='delete'">
             </div>
   
-            <div class="form-group col-xs-6 col-sm-6">
+            <div class="form-group col-xs-6 col-sm-6 {{ renderHTML1 }}">
                 <label for="rnc">Cuenta de usuario:</label>
-                <input type="text" class="form-control" placeholder="Cuenta de usuario" [(ngModel)]="user.cuentaUsuario" [disabled]="(service.getUser().acceso != 'ROOT' && option !='add') ||option=='delete'">
+                <input type="text" class="form-control" placeholder="Cuenta de usuario" (change)="validateUserAccount(user.cuentaUsuario)" [(ngModel)]="user.cuentaUsuario" [disabled]="(service.getUser().acceso != 'ROOT' && option !='add') ||option=='delete'">
+                <span class="{{ renderHTML2 }}"></span>
+                <small class="{{ renderHTML3 }}">{{ message }}</small>
             </div>
             <div class="form-group col-xs-6 col-sm-6">
               <label for="telefono">Contraseña:</label>

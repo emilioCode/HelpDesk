@@ -24,25 +24,50 @@ namespace HelpDesk.Controllers
         [HttpGet("{idEmpresa}/{userAccount}")]
         public JsonResult Get(int idEmpresa, string userAccount)
         {
-            List<String> userAccounts = context.Usuario
-                .Where(u => u.IdEmpresa == idEmpresa).Select(u=>u.CuentaUsuario).ToList();
-            ObjectResponse res = userAccounts.Where(uac => uac == userAccount).Count() > 0 ? 
-                new ObjectResponse
+            ObjectResponse res;
+            try
+            {
+                if (userAccount == string.Empty || userAccount == null)
+                    return new JsonResult(new ObjectResponse
+                    {
+                        code = "3",
+                        title = "Validations",
+                        icon = "",
+                        message = "",
+                        data = new { renderHTML1 = "", renderHTML2 = "invisible", renderHTML3 = "" }
+                    });
+
+                List<String> userAccounts = context.Usuario
+                    .Where(u => u.IdEmpresa == idEmpresa).Select(u => u.CuentaUsuario).ToList();
+                 res = userAccounts.Where(uac => uac == userAccount).Count() == 0 ?
+                    new ObjectResponse
+                    {
+                        code = "1",
+                        title = "Validations",
+                        icon = "success",
+                        message = "It's ok.",
+                        data = new { renderHTML1 = "has-success has-feedback", renderHTML2 = "glyphicon glyphicon-ok form-control-feedback", renderHTML3 = "text-success" }
+                    } :
+                    new ObjectResponse
+                    {
+                        code = "1",
+                        title = "Validations",
+                        icon = "warning",
+                        message = "There exists another account with this name",
+                        data = new { renderHTML1 = "has-warning has-feedback", renderHTML2 = "glyphicon glyphicon-warning-sign form-control-feedback", renderHTML3 = "text-warning" }
+                    };
+            }
+            catch (Exception e)
+            {
+               res = new ObjectResponse
                 {
-                    code = "1",
-                    title = "Validations",
-                    icon = "success",
-                    message = "It's ok.",
-                    data = false
-                } : 
-                new ObjectResponse
-                {
-                    code = "1",
-                    title = "Validations",
-                    icon = "warning",
-                    message = "There exists another account with this name",
-                    data = true
+                    code = "0",
+                    title = "Validation error",
+                    icon = "error",
+                    message = e.Message,
+                    data =  new { renderHTML1 = "has-error has-feedback", renderHTML2 = "glyphicon glyphicon-remove form-control-feedback", renderHTML3 = "text-error" } 
                 };
+            }
             
             return new JsonResult(res);
         }

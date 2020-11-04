@@ -30,7 +30,7 @@ namespace HelpDesk.Controllers
                 empresas.Add(context.Empresa.Find(user.IdEmpresa));
             else
                 empresas = context.Empresa.ToList();
-            return new JsonResult(empresas);
+            return new JsonResult(empresas.OrderByDescending(x=>x.Id));
         }
 
         // GET: api/Business/5

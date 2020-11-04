@@ -23,6 +23,11 @@ export class UserComponent implements OnInit {
   ngOnInit() {
   }
 
+  renderHTML1:string='';
+  renderHTML2:string='';
+  renderHTML3:string='';
+  message:string='';
+
   getUsers(id,option){
     this.service.isLoading = true;
     this.service.http.get(this.service.baseUrl + 'api/User/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
@@ -40,9 +45,14 @@ export class UserComponent implements OnInit {
     this.option = option;
     this.user = object;
     if(option=='add')this.user.idEmpresa = this.service.getUser().idEmpresa;
-    console.log(this.user)
+    // console.log(this.user)
     this.getBusiness(this.service.getUser().id);
     this.levels = this.service.levels.filter(l=>l.value <= this.service.getLevel(this.service.getUser().acceso));
+
+    this.renderHTML1='';
+    this.renderHTML2='';
+    this.renderHTML3='';
+    this.message='';
   }
 
   fileUpload:File = null;
@@ -122,4 +132,23 @@ export class UserComponent implements OnInit {
 
   }
   
+
+
+  validateUserAccount(userAccount){
+    this.service.isLoading = true;
+    this.service.http.get(this.service.baseUrl + 'api/Login/'+ this.service.getUser().idEmpresa + '/' + userAccount,{headers:this.service.headers,responseType:'json'})
+      .subscribe(res=>{
+        
+        this.renderHTML1= res.data.renderHTML1;
+        this.renderHTML2= res.data.renderHTML2;
+        this.renderHTML3= res.data.renderHTML3;
+        this.message = res.message;
+        
+
+        this.service.isLoading = false;
+      },error => {
+        console.error(error);
+        this.service.isLoading = false;
+      });
+  }
 }
