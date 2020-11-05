@@ -20,6 +20,7 @@ import { ApiService } from './services/api.service';
 import { Ng2Webstorage } from 'ngx-webstorage';
 import { EmpresaComponent } from './components/shared/content/empresa/empresa.component';
 import { UserComponent } from './components/shared/content/user/user.component';
+import { ProfileComponent } from './components/shared/content/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { UserComponent } from './components/shared/content/user/user.component';
     MenuComponent,
     LoginComponent,
     EmpresaComponent,
-    UserComponent
+    UserComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -46,8 +48,8 @@ import { UserComponent } from './components/shared/content/user/user.component';
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'business', component: EmpresaComponent },
-      { path: 'user', component: UserComponent }
-
+      { path: 'user', component: UserComponent },
+      { path: 'profile', component: ProfileComponent },
     ]),
     Ng2Webstorage
   ],
