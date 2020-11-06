@@ -56,6 +56,7 @@ export class ApiService {
     // console.log( this.sessionSt.retrieve('user') )
     while (this.sessionSt.retrieve('user')!=null) {
       this.sessionSt.clear('user');
+      this.route.navigateByUrl('/');
     }
     
   }
@@ -97,5 +98,17 @@ export class ApiService {
   isNullorEmpty(value:any):boolean{
     return (value=='' || value==null)?true:false;
   }
+
+  tipos = [
+    {
+      name: 'INTERNO',
+      value: 'INTERNO'
+    },
+    {
+      name: 'EXTERNO',
+      value: 'EXTERNO'
+    }
+  ];
+
 
 }

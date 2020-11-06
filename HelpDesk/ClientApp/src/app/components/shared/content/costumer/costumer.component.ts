@@ -1,5 +1,6 @@
 import { Component, OnInit, Pipe } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
+import { serializePath } from '@angular/router/src/url_tree';
 
 @Component({
   selector: 'app-costumer',
@@ -54,6 +55,34 @@ export class CostumerComponent implements OnInit {
         console.error(error);
         this.service.isLoading = false;
       });
+  }
+
+  add(){
+    if(this.service.getLevel(this.service.getUser().acceso) <= 1){
+      this.service.swal('Access denied','','error');
+      return false;
+    }
+    this.service.isLoading = true;
+     this.service.http.post(this.service.baseUrl + 'api/Costumer',this.costumer,{headers:this.service.headers,responseType:'json'})
+      .subscribe(res=>{
+      console.log( res )
+      this.service.swal(res.title,res.message,res.icon);
+      if(res.code=="1") {
+        this.getCostumers(this.service.getUser().idEmpresa,"*")
+      }
+      this.service.isLoading =false;
+      },error => {
+        console.error(error);
+        this.service.isLoading =false;
+      });
+  }
+
+  edit(){
+    if(this.service.getLevel(this.service.getUser().acceso) <= 1){
+      this.service.swal('Access denied','','error');
+      return false;
+    }
+    console.log('pasó')
   }
 
 }

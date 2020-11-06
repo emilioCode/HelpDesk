@@ -41,6 +41,11 @@ namespace HelpDesk.Models
                     .HasMaxLength(80)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Correo)
+                    .HasColumnName("correo")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Departamento)
                     .HasColumnName("departamento")
                     .HasMaxLength(60)

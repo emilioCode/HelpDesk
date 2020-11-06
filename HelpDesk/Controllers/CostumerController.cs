@@ -73,7 +73,7 @@ namespace HelpDesk.Controllers
                         code = "2",
                         title = "Validation errors",
                         icon = "warning",
-                        message = "missing some field to complete",
+                        message = "'Nombre is required'",
                         data = null
                     };
                     return new JsonResult(res);
@@ -84,7 +84,7 @@ namespace HelpDesk.Controllers
 
                 var data = context.Cliente.Where(e => e.Nombre == req.Nombre
                 && e.Contacto == req.Contacto && e.Telefono == req.Telefono && e.Extension == req.Extension
-                && e.TipoCliente == req.TipoCliente && e.Departamento == req.Departamento 
+                && e.TipoCliente == req.TipoCliente && e.Departamento == req.Departamento && e.Correo == req.Correo
                 && e.Direccion == req.Direccion && e.IdEmpresa == req.IdEmpresa).SingleOrDefault();
                 res = new ObjectResponse
                 {
