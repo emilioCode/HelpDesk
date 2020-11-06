@@ -15,6 +15,7 @@ namespace HelpDesk.Models
         {
         }
 
+        public virtual DbSet<Cliente> Cliente { get; set; }
         public virtual DbSet<Empresa> Empresa { get; set; }
         public virtual DbSet<Usuario> Usuario { get; set; }
 
@@ -29,6 +30,52 @@ namespace HelpDesk.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Cliente>(entity =>
+            {
+                entity.ToTable("CLIENTE");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Contacto)
+                    .HasColumnName("contacto")
+                    .HasMaxLength(80)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Departamento)
+                    .HasColumnName("departamento")
+                    .HasMaxLength(60)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Direccion)
+                    .HasColumnName("direccion")
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Extension)
+                    .HasColumnName("extension")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Habilitado).HasColumnName("habilitado");
+
+                entity.Property(e => e.IdEmpresa).HasColumnName("idEmpresa");
+
+                entity.Property(e => e.Nombre)
+                    .IsRequired()
+                    .HasColumnName("nombre")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Telefono)
+                    .HasColumnName("telefono")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TipoCliente)
+                    .HasColumnName("tipoCliente")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<Empresa>(entity =>
             {
                 entity.ToTable("EMPRESA");

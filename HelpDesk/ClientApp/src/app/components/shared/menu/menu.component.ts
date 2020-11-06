@@ -17,9 +17,11 @@ export class MenuComponent implements OnInit {
     {label: 'Configuracion',iconClasses: 'fa fa-cogs', children:[
       {label: 'Entidad', route: 'business',iconClasses:'fa fa-building', see: this.service.getLevel(this.service.getUser().acceso) >2},
       {label:'Usuarios', route:'user', iconClasses: 'fa fa-users', see: this.service.getLevel(this.service.getUser().acceso)>2},
-      // {label: 'Servicios', route: 'service',iconClasses:'fa fa-tag'},
-      // {label: 'Comprobantes', route: 'vouchers',iconClasses:'fa fa-ticket'}
-        
+      // {label: 'Comprobantes', route: 'vouchers',iconClasses:'fa fa-ticket'}  
+    ]},
+    {label: 'Marco de trabajo',iconClasses: 'fa fa-level-down', children:[
+      {label:'Clientes', route:'costumer', iconClasses: 'fa fa-street-view', see: this.service.getLevel(this.service.getUser().acceso)>0},
     ]}
   ]
 }
+

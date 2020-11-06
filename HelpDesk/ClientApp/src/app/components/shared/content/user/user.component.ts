@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Pipe } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
-
+import { FilterPipe } from '../../../../pipes/filter.pipe';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styles: []
 })
+@Pipe({name:'FilterPipe'})
 export class UserComponent implements OnInit {
 
   constructor(private service:ApiService) {

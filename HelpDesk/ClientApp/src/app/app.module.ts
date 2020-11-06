@@ -21,6 +21,9 @@ import { Ng2Webstorage } from 'ngx-webstorage';
 import { EmpresaComponent } from './components/shared/content/empresa/empresa.component';
 import { UserComponent } from './components/shared/content/user/user.component';
 import { ProfileComponent } from './components/shared/content/profile/profile.component';
+import { FilterPipe } from './pipes/filter.pipe';
+import { CostumerComponent } from './components/shared/content/costumer/costumer.component';
+
 
 @NgModule({
   declarations: [
@@ -37,7 +40,9 @@ import { ProfileComponent } from './components/shared/content/profile/profile.co
     LoginComponent,
     EmpresaComponent,
     UserComponent,
-    ProfileComponent
+    ProfileComponent,
+    FilterPipe,
+    CostumerComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -50,6 +55,7 @@ import { ProfileComponent } from './components/shared/content/profile/profile.co
       { path: 'business', component: EmpresaComponent },
       { path: 'user', component: UserComponent },
       { path: 'profile', component: ProfileComponent },
+      { path: 'costumer', component: CostumerComponent },
     ]),
     Ng2Webstorage
   ],
