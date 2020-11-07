@@ -36,10 +36,10 @@ namespace HelpDesk.Controllers
                 switch (usuario.Acceso)
                 {
                     case "ROOT":
-                        clientes.AddRange(context.Cliente.Where(u=>u.IdEmpresa == usuario.IdEmpresa).OrderByDescending(x => x.Id));
-                        break;
-                    case "ADMINISTRADOR":
                         //break;
+                    case "ADMINISTRADOR":
+                        clientes.AddRange(context.Cliente.Where(u => u.IdEmpresa == usuario.IdEmpresa).OrderByDescending(x => x.Id));
+                        break;
                     case "MODERADOR":
                         //break;
                     case "TECNICO":
@@ -113,8 +113,58 @@ namespace HelpDesk.Controllers
 
         // PUT: api/Costumer/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public JsonResult Put(int id, [FromBody] Cliente req)
         {
+            ObjectResponse res;
+            try
+            {
+                if (req.Nombre == null || req.Nombre == "" || req.IdEmpresa == null || req.IdEmpresa <= 0)
+                {
+                    res = new ObjectResponse
+                    {
+                        code = "2",
+                        title = "Validation errors",
+                        icon = "warning",
+                        message = "'Nombre is required'",
+                        data = null
+                    };
+                    return new JsonResult(res);
+                }
+                var cliente = context.Cliente.Find(id);
+                cliente.Nombre = req.Nombre == "" ? null : req.Nombre;
+                cliente.Contacto = req.Contacto == "" ? null : req.Contacto;
+                cliente.Telefono = req.Telefono == "" ? null : req.Telefono;
+                cliente.Extension = req.Extension == "" ? null : req.Extension;
+                cliente.TipoCliente = req.TipoCliente == "" ? null : req.TipoCliente;
+                cliente.Correo = req.Correo == "" ? null : req.Correo;
+                cliente.Departamento = req.Departamento == "" ? null : req.Departamento;
+                cliente.Direccion = req.Direccion == "" ? null : req.Direccion;
+                cliente.IdEmpresa = req.IdEmpresa;
+                cliente.Habilitado = req.Habilitado;
+                context.Entry(cliente).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                res = new ObjectResponse
+                {
+                    code = "1",
+                    title = "Saved",
+                    icon = "success",
+                    message = "has been updated successfully",
+                    data = null
+                };
+                context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                res = new ObjectResponse
+                {
+                    code = "0",
+                    title = "Error",
+                    icon = "error",
+                    message = e.Message,
+                    data = null
+                };
+            }
+
+            return new JsonResult(res);
         }
 
         // DELETE: api/ApiWithActions/5

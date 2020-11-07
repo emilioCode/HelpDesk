@@ -11,7 +11,7 @@ import { serializePath } from '@angular/router/src/url_tree';
 export class CostumerComponent implements OnInit {
 
   constructor(private service: ApiService) { 
-    this.getCostumers(this.service.getUser().idEmpresa,"*")
+    this.getCostumers(this.service.getUser().id,"*")
   }
 
   ngOnInit() {
@@ -68,7 +68,7 @@ export class CostumerComponent implements OnInit {
       console.log( res )
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
-        this.getCostumers(this.service.getUser().idEmpresa,"*")
+        this.getCostumers(this.service.getUser().id,"*")
       }
       this.service.isLoading =false;
       },error => {
@@ -82,7 +82,36 @@ export class CostumerComponent implements OnInit {
       this.service.swal('Access denied','','error');
       return false;
     }
-    console.log('pasó')
+    this.service.isLoading = true;
+    this.costumer.habilitado = true;
+     this.service.http.put(this.service.baseUrl + 'api/Costumer/'+this.costumer.id,this.costumer,{headers:this.service.headers,responseType:'json'})
+      .subscribe(res=>{
+      this.service.swal(res.title,res.message,res.icon);
+      if(res.code=="1") {
+        this.getCostumers(this.service.getUser().id,"*")
+      }
+      this.service.isLoading =false;
+      },error => {
+        console.error(error);
+        this.service.isLoading =false;
+      });
+  }
+
+  delete(){
+    this.service.isLoading = true;
+    this.costumer.habilitado = !this.costumer.habilitado;
+     this.service.http.put(this.service.baseUrl + 'api/Costumer/'+this.costumer.id,this.costumer,{headers:this.service.headers,responseType:'json'})
+      .subscribe(res=>{
+      this.service.swal(res.title,res.message,res.icon);
+      if(res.code=="1") {
+        this.getCostumers(this.service.getUser().id,"*")
+      }
+      this.service.isLoading =false;
+      },error => {
+        console.error(error);
+        this.service.isLoading =false;
+      });
+
   }
 
 }
