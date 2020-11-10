@@ -299,26 +299,27 @@
 
         <div class="active tab-pane" id="settings">
           <div class="form-horizontal">
-            <div class="box-body box-profile">
+            <div class="box-body box-profile" *ngIf="service.getLevel(service.getUser().acceso) ==4">
                 <img class="profile-user-img img-responsive img-circle" *ngIf="imageBusiness ==null" src="../../../../assets/dist/img/photo_default.png" alt="User profile picture">
                 <img class="profile-user-img img-responsive img-circle" *ngIf="imageBusiness !=null" [src]="'data:image/jpeg;base64,'+ imageBusiness" alt="User profile picture">
         
             </div>
-            <div class="form-group">
+            <div class="form-group" *ngIf="service.getLevel(service.getUser().acceso) ==4">
               <label for="inputName3" class="col-sm-2 control-label">Empresa</label>
 
-              <div class="col-sm-10" *ngIf="service.getLevel(service.getUser().acceso) ==4">
+              <div class="col-sm-10">
                 <select class="form-control" [(ngModel)]="userT.idEmpresa" id="inputName3" >
                   <option value="{{empresa.id}}" *ngFor="let empresa of empresas">{{ empresa.razonSocial }}</option>
                 </select>
               </div>
-              <div class="col-sm-10" *ngIf="service.getLevel(service.getUser().acceso) !=4">
+              <!--The costumer didn't want to see this part even the logo of the business-->
+              <!-- <div class="col-sm-10" *ngIf="service.getLevel(service.getUser().acceso) !=4">
                   <select class="form-control" [(ngModel)]="userT.idEmpresa" id="inputName3" readonly>
                     <ng-container *ngFor="let empresa of empresas">
                       <option *ngIf="userT.idEmpresa == empresa.id" value="{{empresa.id}}" >{{ empresa.razonSocial }}</option>
                     </ng-container>
                   </select>
-                </div>
+                </div> -->
               </div>
             <div class="form-group">
               <label for="inputName" class="col-sm-2 control-label">Usuario</label>

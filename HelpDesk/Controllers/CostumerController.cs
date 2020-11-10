@@ -84,7 +84,7 @@ namespace HelpDesk.Controllers
 
                 var data = context.Cliente.Where(e => e.Nombre == req.Nombre
                 && e.Contacto == req.Contacto && e.Telefono == req.Telefono && e.Extension == req.Extension
-                && e.TipoCliente == req.TipoCliente && e.Departamento == req.Departamento && e.Correo == req.Correo
+                && e.Rnc == req.Rnc && e.Departamento == req.Departamento && e.Correo == req.Correo
                 && e.Direccion == req.Direccion && e.IdEmpresa == req.IdEmpresa).SingleOrDefault();
                 res = new ObjectResponse
                 {
@@ -135,7 +135,7 @@ namespace HelpDesk.Controllers
                 cliente.Contacto = req.Contacto == "" ? null : req.Contacto;
                 cliente.Telefono = req.Telefono == "" ? null : req.Telefono;
                 cliente.Extension = req.Extension == "" ? null : req.Extension;
-                cliente.TipoCliente = req.TipoCliente == "" ? null : req.TipoCliente;
+                cliente.Rnc = req.Rnc == "" ? null : req.Rnc;
                 cliente.Correo = req.Correo == "" ? null : req.Correo;
                 cliente.Departamento = req.Departamento == "" ? null : req.Departamento;
                 cliente.Direccion = req.Direccion == "" ? null : req.Direccion;

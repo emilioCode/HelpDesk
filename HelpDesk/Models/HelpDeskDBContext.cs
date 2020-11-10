@@ -70,13 +70,13 @@ namespace HelpDesk.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Telefono)
-                    .HasColumnName("telefono")
-                    .HasMaxLength(20)
+                entity.Property(e => e.Rnc)
+                    .HasColumnName("rnc")
+                    .HasMaxLength(30)
                     .IsUnicode(false);
 
-                entity.Property(e => e.TipoCliente)
-                    .HasColumnName("tipoCliente")
+                entity.Property(e => e.Telefono)
+                    .HasColumnName("telefono")
                     .HasMaxLength(20)
                     .IsUnicode(false);
             });
@@ -127,7 +127,7 @@ namespace HelpDesk.Models
 
                 entity.Property(e => e.Rnc)
                     .HasColumnName("rnc")
-                    .HasMaxLength(20)
+                    .HasMaxLength(30)
                     .IsUnicode(false);
 
                 entity.Property(e => e.SectorComercial)

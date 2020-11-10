@@ -99,16 +99,7 @@ export class ApiService {
     return (value=='' || value==null)?true:false;
   }
 
-  tipos = [
-    {
-      name: 'INTERNO',
-      value: 'INTERNO'
-    },
-    {
-      name: 'EXTERNO',
-      value: 'EXTERNO'
-    }
-  ];
+
 
 
 }

@@ -25,9 +25,9 @@
             <thead>
             <tr>
               <th>Nombre</th>
+              <th>Rnc</th>
               <th>Telefono</th>
               <th>Extension</th>
-              <th>Tipo</th>
               <th>Departamento</th>
               <th class="text-center"><i class="fa fa-fw fa-list-alt"></i></th>
             </tr>
@@ -35,9 +35,9 @@
             <tbody>
             <tr *ngFor="let item of costumers | filter: search">
               <td>{{ item.nombre }}</td>
+              <td>{{ item.rnc }}</td>
               <td>{{ item.telefono }}</td>
               <td>{{ item.extension }}</td>
-              <td>{{ item.tipoCliente }}</td>
               <td>{{ item.departamento }}</td>
               <td >
                 <a class="btn-link" (click)="fillModal('edit',item)" *ngIf="service.getLevel(service.getUser().acceso) > 0" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-edit"></i></a>
@@ -92,10 +92,8 @@
           <input type="text" class="form-control" placeholder="Nombre" [(ngModel)]="costumer.nombre" [disabled]="option=='delete' || !(service.getLevel(service.getUser().acceso) > 1)">
         </div>
         <div class="form-group col-xs-4 col-sm-4">
-          <label for="razonSocial">Tipo:</label>
-          <select class="form-control" [(ngModel)]="costumer.tipoCliente" [disabled]="option=='delete' || !(service.getLevel(service.getUser().acceso) > 1)">
-            <option value="{{tipo.name}}" *ngFor="let tipo of service.tipos">{{ tipo.name }}</option>
-          </select>
+          <label for="razonSocial">Rnc:</label>
+          <input type="text" class="form-control" placeholder="Rnc" [(ngModel)]="costumer.rnc" [disabled]="option=='delete' || !(service.getLevel(service.getUser().acceso) > 1)">
         </div>
         <div class="form-group col-xs-5 col-sm-5">
           <label for="correo">Contacto</label>
@@ -110,25 +108,24 @@
           <input type="text" class="form-control" placeholder="Extension" [(ngModel)]="costumer.extension" [disabled]="option=='delete' || !(service.getLevel(service.getUser().acceso) > 1)">
         </div>
         <div class="form-group col-xs-6 col-sm-6">
+          <label for="correo">Correo Electronico</label>
+          <input type="text" class="form-control" placeholder="Correo Electrónico" [(ngModel)]="costumer.correo" [disabled]="option=='delete' || !(service.getLevel(service.getUser().acceso) > 1)">
+        </div>
+        <div class="form-group col-xs-6 col-sm-6">
+          <label for="dpt">Departamento:</label>
+          <input type="text" class="form-control" placeholder="Departamento" [(ngModel)]="costumer.departamento" [disabled]="option=='delete' || !(service.getLevel(service.getUser().acceso) > 1)">
+        </div>
+        <div class="form-group col-xs-12 col-sm-12" *ngIf="service.getLevel(service.getUser().acceso) == 4">
           <label for="rnc">Empresa:</label>
           <select class="form-control" [(ngModel)]="costumer.idEmpresa" [disabled]="option=='delete' || !(service.getLevel(service.getUser().acceso) == 4)">
             <option value="{{empresa.id}}" *ngFor="let empresa of empresas">{{ empresa.razonSocial }}</option>
           </select>
         </div>
-        <div class="form-group col-xs-6 col-sm-6" [hidden]="costumer.tipoCliente !='INTERNO'">
-          <label for="dpt">Departamento:</label>
-          <input type="text" class="form-control" placeholder="Departamento" [(ngModel)]="costumer.departamento" [disabled]="option=='delete' || !(service.getLevel(service.getUser().acceso) > 1)">
-        </div>
         <div class="form-group col-xs-12 col-sm-12">
-          <label for="correo">Correo Electronico</label>
-          <input type="text" class="form-control" placeholder="Correo Electrónico" [(ngModel)]="costumer.correo" [disabled]="option=='delete' || !(service.getLevel(service.getUser().acceso) > 1)">
+          <label for="Direccion">Dirección</label>
+          <!-- <input type="text" class="form-control" placeholder="Dirección" [(ngModel)]="costumer.direccion" [disabled]="option=='delete' || !(service.getLevel(service.getUser().acceso) > 1)"> -->
+          <textarea id="Direccion" placeholder="Dirección" [(ngModel)]="costumer.direccion" class="form-control" rows="5"></textarea>
         </div>
-        <div class="form-group col-xs-12 col-sm-12">
-          <label for="correo">Dirección</label>
-          <input type="text" class="form-control" placeholder="Dirección" [(ngModel)]="costumer.direccion" [disabled]="option=='delete' || !(service.getLevel(service.getUser().acceso) > 1)">
-        </div>
-
-
       </div>
       <!---->
 
@@ -137,8 +134,8 @@
           <div class="overlay" [hidden]="!service.isLoading">
               <i class="fa fa-refresh fa-spin"></i>
           </div>
-          <button type="button" class="btn btn-primary" data-dismiss="modal" *ngIf="option=='add'" (click)="add()" [disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.tipoCliente) || !(service.getLevel(service.getUser().acceso) > 1)"><i class="fa fa-fw fa-file-o"></i> Crear</button><!--[disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.tipo) || !(service.getLevel(service.getUser().acceso) >= 1)"-->
-          <button type="button" class="btn btn-success" data-dismiss="modal" *ngIf="option=='edit'" (click)="edit()" [disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.tipoCliente) || !(service.getLevel(service.getUser().acceso) > 1)"><i class="fa fa-fw fa-save"></i> Guardar</button><!--[disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.tipo) || !(service.getLevel(service.getUser().acceso) >= 1)"-->
+          <button type="button" class="btn btn-primary" data-dismiss="modal" *ngIf="option=='add'" (click)="add()" [disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.rnc) || !(service.getLevel(service.getUser().acceso) > 1)"><i class="fa fa-fw fa-file-o"></i> Crear</button><!--[disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.tipo) || !(service.getLevel(service.getUser().acceso) >= 1)"-->
+          <button type="button" class="btn btn-success" data-dismiss="modal" *ngIf="option=='edit'" (click)="edit()" [disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.rnc) || !(service.getLevel(service.getUser().acceso) > 1)"><i class="fa fa-fw fa-save"></i> Guardar</button><!--[disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.tipo) || !(service.getLevel(service.getUser().acceso) >= 1)"-->
           <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
           <button type="button" class="btn btn-default" data-dismiss="modal" (click)='getCostumers(service.getUser().idEmpresa,"*")'>Close</button>
         <!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->
