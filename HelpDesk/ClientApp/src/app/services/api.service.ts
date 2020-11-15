@@ -86,7 +86,7 @@ export class ApiService {
   
   getLevel(acceso):number{
     this.level= this.levels.filter(x=>x.name==acceso)[0].value;
-    // console.log( this.level )
+    // console.log( this.level ) 
     return this.level;
   }
 
@@ -99,7 +99,11 @@ export class ApiService {
     return (value=='' || value==null)?true:false;
   }
 
-
+  ticketStatus = [
+    { name: 'Abierto', value:'Abierto' },
+    { name: 'en Proceso', value:'en Proceso' },
+    { name: 'Completado', value:'Completado' }
+  ];
 
 
 }

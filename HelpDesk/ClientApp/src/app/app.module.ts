@@ -23,6 +23,7 @@ import { UserComponent } from './components/shared/content/user/user.component';
 import { ProfileComponent } from './components/shared/content/profile/profile.component';
 import { FilterPipe } from './pipes/filter.pipe';
 import { CostumerComponent } from './components/shared/content/costumer/costumer.component';
+import { TicketComponent } from './components/shared/content/ticket/ticket.component';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { CostumerComponent } from './components/shared/content/costumer/costumer
     UserComponent,
     ProfileComponent,
     FilterPipe,
-    CostumerComponent
+    CostumerComponent,
+    TicketComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -56,6 +58,7 @@ import { CostumerComponent } from './components/shared/content/costumer/costumer
       { path: 'user', component: UserComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'costumer', component: CostumerComponent },
+      { path: 'ticket', component: TicketComponent },
     ]),
     Ng2Webstorage
   ],

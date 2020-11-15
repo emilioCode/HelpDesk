@@ -21,6 +21,7 @@ export class MenuComponent implements OnInit {
     ]},
     {label: 'Marco de trabajo',iconClasses: 'fa fa-level-down', children:[
       {label:'Clientes', route:'costumer', iconClasses: 'fa fa-users', see: this.service.getLevel(this.service.getUser().acceso)>0},
+      {label:'Tickets', route:'ticket', iconClasses: 'fa fa-ticket', see: this.service.getLevel(this.service.getUser().acceso)>0},
     ]}
   ]
 }

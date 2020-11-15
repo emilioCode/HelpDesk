@@ -7,7 +7,7 @@
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">Tabla de Usuarios</h3>
-          <a class="btn-link" style="position:absolute;z-index: 1" *ngIf="service.getLevel(service.getUser().acceso) > 2" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default"> &nbsp;agregar usuario</a>
+          &nbsp;<a class="btn-link" style="position:absolute;z-index: 1" *ngIf="service.getLevel(service.getUser().acceso) > 2" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default"> agregar usuario</a>
           <br/>
           <div class="box-tools">
             <div class="input-group input-group-sm" style="width: 25%; float:right; z-index: 2">
@@ -48,6 +48,7 @@
                 <a class="btn-link" (click)="fillModal('delete',item);delete()" *ngIf="service.getLevel(service.getUser().acceso) >= 3"><i class="fa fa-fw fa-toggle-on" [hidden]="!item.habilitado"></i><i class="fa fa-fw fa-toggle-off" [hidden]="item.habilitado"></i></a>
               </td>
             </tr>
+          </tbody>
             <!-- <tfoot>
             <tr>
               <th>Rendering engine</th>
@@ -58,11 +59,11 @@
             </tr>
             </tfoot> -->
           </table>
-          <div class="overlay" [hidden]="!service.isLoading">
-              <i class="fa fa-refresh fa-spin"></i>
-          </div>
         </div>
         <!-- /.box-body -->
+        <div class="overlay" [hidden]="!service.isLoading">
+            <i class="fa fa-refresh fa-spin"></i>
+        </div>
       </div>
       <!-- /.box -->
 
