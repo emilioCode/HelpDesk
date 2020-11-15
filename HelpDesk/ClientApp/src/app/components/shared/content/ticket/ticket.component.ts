@@ -19,22 +19,24 @@ export class TicketComponent implements OnInit {
   ticket:any={};
   option;
   
+  options= ['One','Two','Three'];
 
   fillModal(option='add',object){
     this.option = option;
     this.ticket = object;
     if(option=='add'){
       this.ticket.idEmpresa = this.service.getUser().idEmpresa;
-      this.ticket.tipoSolicitud = this.service.ticketStatus[0].value;
-
+      this.ticket.tipoSolicitud = this.service.getStatuses()[0].value;
+      this.ticket.tipoSolicitud= '';
+      this.ticket.estado = this.service.getStatuses()[0].value;
       // debugger;
-      var element  = document.getElementById('timeline')
-      element.classList.remove("active")
-      document.getElementById("li_timeline").classList.remove('active')
+      // var element  = document.getElementById('timeline')
+      // element.classList.remove("active")
+      // document.getElementById("li_timeline").classList.remove('active')
 
-      var element  = document.getElementById('settings')
-      element.classList.remove("active")
-      document.getElementById("li_settings").classList.remove('active')
+      // var element  = document.getElementById('settings')
+      // element.classList.remove("active")
+      // document.getElementById("li_settings").classList.remove('active')
 
       
       var element  = document.getElementById('activity')

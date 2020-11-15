@@ -95,16 +95,40 @@
               </ul>
               <div class="tab-content">
                 <div class="active tab-pane" id="activity">
-                    activity
+                  <!-- activity -->
+                  <div class="row">
+                    <div class="form-group col-xs-8 col-sm-8">
+                      <input type="text" class="form-control" placeholder="Titulo" [(ngModel)]="ticket.titulo"/>
+                    </div>
+                    <div class="form-group col-xs-4 col-sm-4">
+                      <select class="form-control" [(ngModel)]="ticket.tipoSolicitud">
+                        <option value="" selected [hidden]="ticket.tipoSolicitud!=''">Tipo Solicitud</option>
+                        <option value="{{type.value}}" *ngFor="let type of service.getTypeOfServices()">{{ type.value }}</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-12">
+                      <textarea placeholder="Descripción" class="form-control" rows="5" [(ngModel)]="ticket.descripcion"></textarea>
+                    </div>
+                    <div class="form-group col-xs-4 col-sm-4">
+                      <label>Estado: </label>
+                      <span>{{ticket.estado}}</span>
+                    </div>
+                    <div class="form-group col-xs-4 col-sm-4">
+                      Cliente
+                    </div>
+                    <div class="form-group col-xs-4 col-sm-4">
+                      Usuario
+                    </div>
+                  </div>
                 </div>
                 <!-- /.tab-pane -->
                 <div class="tab-pane" id="timeline">
-                    timeline
+                  timeline
                 </div>
                 <!-- /.tab-pane -->
   
                 <div class="tab-pane" id="settings">
-                    settings
+                  settings
                 </div>
                 <!-- /.tab-pane -->
               </div>

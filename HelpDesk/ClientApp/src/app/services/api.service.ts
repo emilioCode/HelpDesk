@@ -99,11 +99,22 @@ export class ApiService {
     return (value=='' || value==null)?true:false;
   }
 
-  ticketStatus = [
+  private ticketStatus = [
     { name: 'Abierto', value:'Abierto' },
     { name: 'en Proceso', value:'en Proceso' },
     { name: 'Completado', value:'Completado' }
   ];
 
+  getStatuses(){
+    return this.ticketStatus;
+  }
 
+  private typeOfServices =[
+    { name: 'Servicio Taller', value:'Servicio Taller' },
+    { name: 'Servicio a Domicilio', value:'Servicio a Domicilio' }
+  ];
+
+  getTypeOfServices(){
+    return this.typeOfServices;
+  }
 }
