@@ -172,6 +172,10 @@ namespace HelpDesk.Models
                     .IsUnicode(false)
                     .HasDefaultValueSql("('Abierto')");
 
+                entity.Property(e => e.FechaCreacion)
+                    .HasColumnName("fechaCreacion")
+                    .HasColumnType("date");
+
                 entity.Property(e => e.FechaInicio)
                     .HasColumnName("fechaInicio")
                     .HasColumnType("date");
@@ -200,6 +204,12 @@ namespace HelpDesk.Models
                     .IsRequired()
                     .HasColumnName("noSecuencia")
                     .HasMaxLength(12)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TipoServicio)
+                    .IsRequired()
+                    .HasColumnName("tipoServicio")
+                    .HasMaxLength(20)
                     .IsUnicode(false);
 
                 entity.Property(e => e.TipoSolicitud)

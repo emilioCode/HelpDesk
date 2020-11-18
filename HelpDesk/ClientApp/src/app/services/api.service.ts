@@ -109,12 +109,25 @@ export class ApiService {
     return this.ticketStatus;
   }
 
-  private typeOfServices =[
+  private  typeOfRequests=[
+    { name: 'Garantía', value:'Garantía' },
+    { name: 'Contrato', value:'Contrato' },
+    { name: 'Facturable', value:'Facturable' },
+    { name: 'Renta', value:'Renta' },
+    { name: 'Préstamo', value:'Préstamo' },
+    { name: 'Interno', value:'Interno' }
+  ];
+
+  private typeOfServices  =[
     { name: 'Servicio Taller', value:'Servicio Taller' },
     { name: 'Servicio a Domicilio', value:'Servicio a Domicilio' }
   ];
 
   getTypeOfServices(){
+    return this.typeOfRequests;
+  }
+
+  getTypeOfRequests(){
     return this.typeOfServices;
   }
 }

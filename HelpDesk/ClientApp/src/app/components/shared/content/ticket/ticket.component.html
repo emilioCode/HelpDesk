@@ -73,7 +73,7 @@
 
 <!-- Modals -->
 <div class="modal fade" id="modal-default" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
@@ -97,27 +97,116 @@
                 <div class="active tab-pane" id="activity">
                   <!-- activity -->
                   <div class="row">
-                    <div class="form-group col-xs-8 col-sm-8">
+                    <div class="form-group col-xs-6 col-sm-6">
                       <input type="text" class="form-control" placeholder="Titulo" [(ngModel)]="ticket.titulo"/>
                     </div>
-                    <div class="form-group col-xs-4 col-sm-4">
+                    <div class="form-group col-xs-3 col-sm-3">
                       <select class="form-control" [(ngModel)]="ticket.tipoSolicitud">
                         <option value="" selected [hidden]="ticket.tipoSolicitud!=''">Tipo Solicitud</option>
+                        <option value="{{type.value}}" *ngFor="let type of service.getTypeOfRequests()">{{ type.value }}</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-xs-3 col-sm-3">
+                      <select class="form-control" [(ngModel)]="ticket.tipoServicio">
+                        <option value="" selected [hidden]="ticket.tipoServicio!=''">Tipo Servicio</option>
                         <option value="{{type.value}}" *ngFor="let type of service.getTypeOfServices()">{{ type.value }}</option>
                       </select>
                     </div>
                     <div class="form-group col-xs-12 col-sm-12">
+                      <div class="form-group col-xs-2 col-sm-2">
+                        <label>Creado:</label>
+                        <div class="input-group">
+                          dd/mm/aaaaa
+                        </div>
+                      </div>
+                      <div class="form-group col-xs-3 col-sm-3">
+                        <label>Fecha inicio:</label>
+                        <div class="input-group">
+                          <input type="date" class="form-control">
+                        </div>
+                      </div>
+                      <div class="form-group col-xs-2 col-sm-2">
+                        <label>Hora inicio:</label>
+                        <div class="input-group">
+                          <input type="time" class="form-control timepicker">
+                        </div>
+                      </div>
+                      <div class="form-group col-xs-3 col-sm-3">
+                        <label>Fecha fin:</label>
+                        <div class="input-group">
+                          <input type="date" class="form-control">
+                        </div>
+                      </div>
+                      <div class="form-group col-xs-2 col-sm-2">
+                        <label>Hora fin:</label>
+                        <div class="input-group">
+                          <input type="time" class="form-control timepicker">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-12">
+                      <h6 class="text-center">EQUIPOS</h6>
+                      <div class="row">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th scope="col" class="text-center" style="width: 50%">Descripci&oacute;n</th>
+                              <th scope="col" class="text-center">Marca</th>
+                              <th scope="col" class="text-center">Modelo</th>
+                              <th scope="col" class="text-center">Serial No.</th>
+                              <th scope="col" class="text-center"><a class="btn-link" (click)="addDevice=true;device={}" [hidden]="addDevice || devices.length >= 4"><i class="fa fa-plus"></i></a></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr [hidden]="!addDevice">
+                              <td><input type="text" [(ngModel)]="device.descripcion"/></td>
+                              <td><input type="text" [(ngModel)]="device.marca"/></td>
+                              <td><input type="text" [(ngModel)]="device.modelo"/></td>
+                              <td><input type="text" [(ngModel)]="device.serial"/></td>
+                              <td>
+                                <a class="btn-link" (click)="addDeviceList(device)"><i class="fa fa-check"></i></a>
+                                <a class="btn-link" (click)="addDevice=false;device={}"><i class="fa fa-remove"></i></a>
+                              </td>
+                            </tr>
+                            <tr *ngFor="let e of devices">
+                              <td>{{e.descripcion}}</td>
+                              <td>{{e.marca}}</td>
+                              <td>{{e.modelo}}</td>
+                              <td>{{e.serial}}</td>
+                              <td>
+                                <a class="btn-link" (click)="removeDeviceList(e)"><i class="fa fa-minus"></i></a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-12">
                       <textarea placeholder="Descripción" class="form-control" rows="5" [(ngModel)]="ticket.descripcion"></textarea>
                     </div>
-                    <div class="form-group col-xs-4 col-sm-4">
+                    <div class="form-group col-xs-3 col-sm-3">
                       <label>Estado: </label>
+                      <br/>
                       <span>{{ticket.estado}}</span>
                     </div>
-                    <div class="form-group col-xs-4 col-sm-4">
-                      Cliente
+                    <div class="form-group col-xs-3 col-sm-3">
+                      <label>Solicitante:</label>
+                      <select class="form-control" [(ngModel)]="ticket.idCliente">
+                        <option value="" selected [hidden]="ticket.idCliente!=''">Seleccione</option>
+                        <option value="{{costumer.id}}" *ngFor="let costumer of costumers">{{ costumer.nombre }} | "{{ costumer.rnc }}"</option>
+                      </select>
                     </div>
-                    <div class="form-group col-xs-4 col-sm-4">
-                      Usuario
+                    <div class="form-group col-xs-3 col-sm-3">
+                      <label>Técnico asignado:</label>
+                      <select class="form-control" [(ngModel)]="ticket.idUsuario">
+                        <option value="" selected [hidden]="ticket.idUsuario!=''">Seleccione</option>
+                        <option value="{{user.id}}" *ngFor="let user of users">{{ user.nombre }} | "{{ user.cuentaUsuario }}"</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-xs-3 col-sm-3">
+                      <label>Aprobador por:</label>
+                      <br/>
+                      <span>{{ticket.aprobadoPor}}</span>
                     </div>
                   </div>
                 </div>
