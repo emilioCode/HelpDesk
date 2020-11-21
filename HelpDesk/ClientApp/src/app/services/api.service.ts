@@ -23,7 +23,6 @@ export class ApiService {
       this.route =_route;
       this.baseUrl = _baseUrl; 
       this.http =_http;      
-    console.log('ApiService is running')
   }
 
   //AplicationName
@@ -129,5 +128,10 @@ export class ApiService {
 
   getTypeOfRequests(){
     return this.typeOfServices;
+  }
+
+  validate(value): Boolean{
+    
+    return value == "" || value == null || value === undefined;
   }
 }

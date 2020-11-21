@@ -35,7 +35,7 @@
           <!-- Optionally, you can add icons to the links -->
           <li class="active"><a [routerLink]='["/"]'><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
           <!-- <li><a  [routerLink]='["/counter"]'><i class="fa fa-link"></i> <span>Another Link</span></a></li> -->
-          <li class="treeview" *ngFor="let item of adminLteConf">
+          <li  class="treeview" *ngFor="let item of adminLteConf">
             <a href="#"><i class="{{ item.iconClasses }}"></i> <span>{{ item.label }}</span>
               <span class="pull-right-container">
                   <i class="fa fa-angle-left pull-right"></i>

@@ -30,7 +30,7 @@ namespace HelpDesk.Controllers
                 solicitudes.AddRange(array);
             }
             else if (option == "*" || option.ToLower() == "all")
-            {
+            {                                            
                 Usuario usuario = context.Usuario.Find(idUser);
                 switch (usuario.Acceso)
                 {
@@ -83,14 +83,10 @@ namespace HelpDesk.Controllers
                 req.Habilitado = true;
                 req.NoSecuencia = empresa.Secuenciaticket == string.Empty ? "1" : empresa.Secuenciaticket;
                 empresa.Secuenciaticket = (Convert.ToInt32(req.NoSecuencia)+1).ToString();
-                context.Entry(empresa).State = Microsoft.EntityFrameworkCore.EntityState.Added;
                 context.Entry(req).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+                context.Entry(empresa).State = Microsoft.EntityFrameworkCore.EntityState.Modified;  
                 context.SaveChanges();
 
-                //var data = context.Solicitud.Where(e => e.Titulo == req.Titulo && e.Descripcion == req.Descripcion
-                //&& e.Contacto == req.Contacto && e.Telefono == req.Telefono && e.Extension == req.Extension
-                //&& e.Rnc == req.Rnc && e.Departamento == req.Departamento && e.Correo == req.Correo
-                //&& e.Direccion == req.Direccion && e.IdEmpresa == req.IdEmpresa).SingleOrDefault();
                 var data = context.Solicitud.Where(e => e.NoSecuencia == req.NoSecuencia).LastOrDefault();
                 res = new ObjectResponse
                 {

@@ -17,6 +17,7 @@ namespace HelpDesk.Models
 
         public virtual DbSet<Cliente> Cliente { get; set; }
         public virtual DbSet<Empresa> Empresa { get; set; }
+        public virtual DbSet<Equipo> Equipo { get; set; }
         public virtual DbSet<Solicitud> Solicitud { get; set; }
         public virtual DbSet<Usuario> Usuario { get; set; }
 
@@ -150,6 +151,40 @@ namespace HelpDesk.Models
                 entity.Property(e => e.Url)
                     .HasColumnName("url")
                     .HasMaxLength(80)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Equipo>(entity =>
+            {
+                entity.ToTable("EQUIPO");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Descripcion)
+                    .HasColumnName("descripcion")
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Habilitado).HasColumnName("habilitado");
+
+                entity.Property(e => e.IdEmpresa).HasColumnName("idEmpresa");
+
+                entity.Property(e => e.IdSolicitud).HasColumnName("idSolicitud");
+
+                entity.Property(e => e.Marca)
+                    .IsRequired()
+                    .HasColumnName("marca")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Modelo)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NoSerial)
+                    .IsRequired()
+                    .HasColumnName("noSerial")
+                    .HasMaxLength(50)
                     .IsUnicode(false);
             });
 

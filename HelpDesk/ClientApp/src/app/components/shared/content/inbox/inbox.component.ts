@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 
-
 @Component({
-  selector: 'app-ticket',
-  templateUrl: './ticket.component.html',
+  selector: 'app-inbox',
+  templateUrl: './inbox.component.html',
   styles: []
 })
-export class TicketComponent implements OnInit {
+export class InboxComponent implements OnInit {
 
   constructor(private service: ApiService) { 
-    this.getTickets(this.service.getUser().id,"*")
+    this.getTickets(this.service.getUser().id,"unique")
   }
 
   ngOnInit() {
@@ -58,7 +57,7 @@ export class TicketComponent implements OnInit {
     console.log(this.ticket);
     console.log(this.option);
     this.getCostumers(this.service.getUser().id,'*')
-    this.getUsers(this.service.getUser().id,'*')
+    this.getUsers(this.service.getUser().id,'unique')
   }
 
   getCostumers(id,option){
@@ -117,83 +116,6 @@ export class TicketComponent implements OnInit {
       });
   }
 
-  add(){
-    if(this.service.validate(this.ticket.titulo) || this.service.validate(this.ticket.tipoSolicitud)
-    || this.service.validate(this.ticket.tipoServicio) || this.service.validate(this.ticket.estado)
-    || this.service.validate(this.ticket.idCliente) || this.service.validate(this.ticket.idUsuario) ){
-      this.service.swal('Campos requeridos','Asegurese de completar los datos minimos necesarios para crear la orden','warning');
-    }
-
-    if(this.service.getLevel(this.service.getUser().acceso) <= 1){
-      this.service.swal('Access denied','','error');
-      return false;
-    }
-
-    if(this.devices.lentgh == 0 && this.ticket.tipoSolicitud =='Servicio Taller'){
-      this.service.swal('Must have a device as well','','warning');
-      return false;
-    }
-    this.ticket.idUsuario = parseInt(this.ticket.idUsuario);
-    console.log('--TICKET REQUEST--')
-    console.log(this.ticket)
-    this.service.isLoading = true;
-     this.service.http.post(this.service.baseUrl + 'api/Ticket',this.ticket,{headers:this.service.headers,responseType:'json'})
-      .subscribe(res=>{
-      console.log( res )
-      this.service.swal(res.title,res.message,res.icon);
-      if(res.code=="1") {
-        this.option = 'edit';
-        var idSolicitud = res.data.id;
-        if(this.devices.length > 0)this.addDevices(idSolicitud);
-        this.ticket.noSecuencia = res.data.noSecuencia;
-        this.ticket.fechaCreacion = res.data.fechaCreacion;
-        this.ticket.fechaInicio = res.data.fechaInicio;
-        this.ticket.fechaTermino = res.data.fechaTermino;
-        this.ticket.horaTermino = res.data.horaTermino;
-        this.service.swal('No:'+ this.ticket.noSecuencia,'','success')
-      }
-      this.service.isLoading =false;
-      },error => {
-        console.error(error);
-        this.service.isLoading =false;
-      });
-  }
-
-  addDevices(idSolicitud){
-    if(this.devices.lentgh == 0){
-      this.service.swal('Must have a device as well','','warning');
-      return false;
-    }
-    this.service.isLoading = true;
-    var temp = this.devices;
-    this.devices.forEach(element => {
-      element.idSolicitud = idSolicitud;
-    });
-    console.log('devices')
-    console.log(this.devices)
-     this.service.http.post(this.service.baseUrl + 'api/Device/PostArray',this.devices,{headers:this.service.headers,responseType:'json'})
-      .subscribe(res=>{
-      console.log( res )
-      
-      if(res.code=="1") {
-        console.log('devices saved')
-        
-
-        this.getDevices(idSolicitud,this.service.getUser().idEmpresa);
-        // var object = this.devices.filter(x=>x.idSolicitud==idSolicitud)[0];
-        // console.log(""+this.option+" "+object)
-        // this.fillModal(this.option,object);
-      }else{
-        this.devices = temp;
-        this.service.swal(res.title,res.message,res.icon);
-      }
-      this.service.isLoading =false;
-      },error => {
-        console.error(error);
-        this.service.isLoading =false;
-      });
-  }
-
   getDevices(id,option){
     this.service.isLoading = true;
     this.service.http.get(this.service.baseUrl + 'api/Device/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
@@ -207,7 +129,13 @@ export class TicketComponent implements OnInit {
       });
   }
 
-  clearDevicesIf(){
-    if(this.ticket.tipoSolicitud =='Servicio a Domicilio')this.devices = [];
+  addDeviceOne(item){
+    item.id =  this.i++;
+    item.idEmpresa = this.service.getUser().idEmpresa;
+    item.idSolicitud = 0;
+    this.devices.push(item)
+    this.addDevice =false;
+
+    console.log( this.devices )
   }
 }
