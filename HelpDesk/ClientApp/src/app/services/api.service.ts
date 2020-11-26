@@ -134,4 +134,18 @@ export class ApiService {
     
     return value == "" || value == null || value === undefined;
   }
+
+  validateTrim(value):Boolean{
+    return value == "" || value == null || value === undefined || value.trim() == "";
+  }
+
+  setTime(value):String{
+    var dateStr = value.split(':');
+    var hora = Number(dateStr[0]) >12? Number(dateStr[0])-12 : Number(dateStr[0]);
+    var tanda = Number(dateStr[0]) >12? " PM" : " AM";
+    return ""+ hora +":"+ dateStr[1]+ tanda;
+
+  }
+
+  
 }

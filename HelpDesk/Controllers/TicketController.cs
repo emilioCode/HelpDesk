@@ -63,7 +63,7 @@ namespace HelpDesk.Controllers
         {
             ObjectResponse res;
             try
-            {            //Falta fecha creacion y Tipo de Servicio
+            {          
                 if (req.Titulo == null || req.Titulo == "" || req.IdEmpresa == null || req.IdEmpresa <= 0
                     || req.IdUsuario == null || req.IdUsuario <= 0 || req.IdCliente == null || req.IdCliente <= 0
                     || req.TipoSolicitud == null || req.TipoSolicitud == "" || req.TipoServicio == null || req.TipoServicio == "")
@@ -114,9 +114,92 @@ namespace HelpDesk.Controllers
         }
 
         // PUT: api/Ticket/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("{toDo}")]
+        public JsonResult Put(string toDo, [FromBody] Solicitud req)
         {
+            ObjectResponse res;
+            try
+            {
+                if (req.Titulo == null || req.Titulo == "" || req.IdEmpresa == null || req.IdEmpresa <= 0
+                    || req.IdUsuario == null || req.IdUsuario <= 0 || req.IdCliente == null || req.IdCliente <= 0
+                    || req.TipoSolicitud == null || req.TipoSolicitud == "" || req.TipoServicio == null || req.TipoServicio == "")
+                {
+                    res = new ObjectResponse
+                    {
+                        code = "2",
+                        title = "Validation errors",
+                        icon = "warning",
+                        message = "missing some field to complete",
+                        data = null
+                    };
+                    return new JsonResult(res);
+                }
+                Solicitud ticket = context.Solicitud.Find(req.Id);
+                if (toDo is "ESTADO")
+                {
+                    DateTime today = DateTime.Now.Date;
+                    TimeSpan time = DateTime.Now.TimeOfDay;
+                    ticket.Estado = req.Estado;
+                    switch (req.Estado.ToUpper())
+                    {
+                        case "ABIERTO":
+                            ticket.FechaTermino = null;
+                            ticket.HoraTermino = null;
+                            break;
+                        case "EN PROCESO":
+                            ticket.FechaInicio = req.FechaInicio ==null?today: req.FechaInicio;
+                            ticket.HoraInicio = req.FechaInicio==null? time: req.HoraInicio;
+                            ticket.FechaTermino = null;
+                            ticket.HoraTermino = null;
+                            break;
+                        case "COMPLETADO":
+                            if(ticket.FechaInicio is null) ticket.FechaInicio = today;
+                            if (ticket.HoraInicio is null) ticket.HoraInicio = time;
+                            ticket.FechaTermino = today;
+                            ticket.HoraTermino = time;
+                            break;
+                        default:
+                            break;
+                    }
+                    
+                }
+                else if(toDo is "USUARIO")
+                {
+                    ticket.IdUsuario = req.IdUsuario;
+                }
+                else
+                {
+                    ticket.FechaInicio = req.FechaInicio;
+                    ticket.HoraInicio = req.HoraInicio;
+                    ticket.FechaTermino = req.FechaTermino;
+                    ticket.HoraTermino = req.HoraTermino;
+                }
+                context.SaveChanges();
+                var ticket_res = context.Solicitud.Find(req.Id);
+
+                context.Entry(ticket).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                res = new ObjectResponse
+                {
+                    code = "1",
+                    title = "Saved",
+                    icon = "success",
+                    message = "has been updated successfully",
+                    data = ticket_res
+                };
+            }
+            catch (Exception e)
+            {
+                res = new ObjectResponse
+                {
+                    code = "0",
+                    title = "Error",
+                    icon = "error",
+                    message = e.Message,
+                    data = null
+                };
+            }
+
+            return new JsonResult(res);
         }
 
         // DELETE: api/ApiWithActions/5

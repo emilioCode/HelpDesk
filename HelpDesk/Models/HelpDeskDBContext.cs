@@ -18,6 +18,7 @@ namespace HelpDesk.Models
         public virtual DbSet<Cliente> Cliente { get; set; }
         public virtual DbSet<Empresa> Empresa { get; set; }
         public virtual DbSet<Equipo> Equipo { get; set; }
+        public virtual DbSet<Seguimiento> Seguimiento { get; set; }
         public virtual DbSet<Solicitud> Solicitud { get; set; }
         public virtual DbSet<Usuario> Usuario { get; set; }
 
@@ -185,6 +186,38 @@ namespace HelpDesk.Models
                     .IsRequired()
                     .HasColumnName("noSerial")
                     .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Seguimiento>(entity =>
+            {
+                entity.ToTable("SEGUIMIENTO");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Etiquetado).HasColumnName("etiquetado");
+
+                entity.Property(e => e.Favorito).HasColumnName("favorito");
+
+                entity.Property(e => e.Fecha)
+                    .HasColumnName("fecha")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.Habilitado).HasColumnName("habilitado");
+
+                entity.Property(e => e.Hora)
+                    .HasColumnName("hora")
+                    .HasColumnType("time(0)");
+
+                entity.Property(e => e.IdEmpresa).HasColumnName("idEmpresa");
+
+                entity.Property(e => e.IdSolicitud).HasColumnName("idSolicitud");
+
+                entity.Property(e => e.IdUsuario).HasColumnName("idUsuario");
+
+                entity.Property(e => e.Texto)
+                    .IsRequired()
+                    .HasColumnName("texto")
                     .IsUnicode(false);
             });
 

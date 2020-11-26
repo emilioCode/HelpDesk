@@ -91,22 +91,25 @@
               <ul class="nav nav-tabs">
                 <li id="li_activity" class="active"><a href="#activity" data-toggle="tab">Activity</a></li>
                 <li id="li_timeline" *ngIf="option !=='add'"><a href="#timeline" data-toggle="tab">Timeline</a></li>
-                <li id="li_settings" *ngIf="option !=='add'"><a href="#settings" data-toggle="tab">Settings</a></li>
+                <!-- <li id="li_settings" *ngIf="option !=='add'"><a href="#settings" data-toggle="tab">Settings</a></li> -->
               </ul>
               <div class="tab-content">
                 <div class="active tab-pane" id="activity">
                   <!-- activity -->
                   <div class="row">
                     <div class="form-group col-xs-6 col-sm-6">
+                      <label>Titulo:</label>
                       <input type="text" class="form-control" placeholder="Titulo" [(ngModel)]="ticket.titulo" [disabled]="option!='add'"/>
                     </div>
                     <div class="form-group col-xs-3 col-sm-3">
+                      <label>Tipo de Solicitud:</label>
                       <select class="form-control" [(ngModel)]="ticket.tipoSolicitud" [disabled]="option!='add'" (change)="clearDevicesIf()">
                         <option value="" selected [hidden]="ticket.tipoSolicitud!=''">Tipo Solicitud</option>
                         <option value="{{type.value}}" *ngFor="let type of service.getTypeOfRequests()">{{ type.value }}</option>
                       </select>
                     </div>
                     <div class="form-group col-xs-3 col-sm-3">
+                      <label>Tipo de Servicio:</label>
                       <select class="form-control" [(ngModel)]="ticket.tipoServicio" [disabled]="option!='add'">
                         <option value="" selected [hidden]="ticket.tipoServicio!=''">Tipo Servicio</option>
                         <option value="{{type.value}}" *ngFor="let type of service.getTypeOfServices()">{{ type.value }}</option>
@@ -220,9 +223,9 @@
                 </div>
                 <!-- /.tab-pane -->
   
-                <div class="tab-pane" id="settings">
+                <!-- <div class="tab-pane" id="settings">
                   settings
-                </div>
+                </div> -->
                 <!-- /.tab-pane -->
               </div>
               <!-- /.tab-content -->
