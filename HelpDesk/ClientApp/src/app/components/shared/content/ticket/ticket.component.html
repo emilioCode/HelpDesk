@@ -38,7 +38,7 @@
               <td>{{ item.tipoSolicitud }}</td>
               <td>{{ item.tipoServicio }}</td>
               <td>{{ item.titulo }}</td>
-              <td>{{ item.estado }}</td>
+              <td>{{ item.estado }} <i class="fa fa-check" *ngIf="item.estado=='Completado' && item.aprobadoPor !=null" style="color:green" title="Aprobado"></i> <i class="fa fa-warning" style="color:gold" *ngIf="item.estado=='Completado' && item.aprobadoPor ==null" title="Pendiente de aprobar"></i></td>
               <td >
                 <a class="btn-link" (click)="fillModal('edit',item)" *ngIf="service.getLevel(service.getUser().acceso) > 0" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-edit"></i></a>
                 <!-- <a class="btn-link" (click)="fillModal('delete',item);delete()" *ngIf="service.getLevel(service.getUser().acceso) > 2"><i class="fa fa-fw fa-toggle-on" [hidden]="!item.habilitado"></i><i class="fa fa-fw fa-toggle-off" [hidden]="item.habilitado"></i></a> -->
@@ -165,10 +165,10 @@
                           </thead>
                           <tbody>
                             <tr [hidden]="!addDevice">
-                              <td><input type="text" [(ngModel)]="device.descripcion"/></td>
-                              <td><input type="text" [(ngModel)]="device.marca"/></td>
-                              <td><input type="text" [(ngModel)]="device.modelo"/></td>
-                              <td><input type="text" [(ngModel)]="device.noSerial"/></td>
+                              <td><input type="text" [(ngModel)]="device.descripcion" placeholder="(Opcional)"/></td>
+                              <td><input type="text" [(ngModel)]="device.marca" placeholder="(Requerido)"/></td>
+                              <td><input type="text" [(ngModel)]="device.modelo" placeholder="(Requerido)"/></td>
+                              <td><input type="text" [(ngModel)]="device.noSerial" placeholder="(Requerido)"/></td>
                               <td [hidden]="ticket.tipoSolicitud =='Servicio a Domicilio'">
                                 <a class="btn-link" (click)="addDeviceList(device)"><i class="fa fa-check"></i></a>
                                 <a class="btn-link" (click)="addDevice=false;device={}"><i class="fa fa-remove"></i></a>
@@ -214,8 +214,11 @@
                     </div>
                     <div class="form-group col-xs-3 col-sm-3">
                       <label>Aprobador por:</label>
-                      <br/>
-                      <span>{{ticket.aprobadoPor}}</span>
+                      <br *ngIf="ticket.aprobadoPor==null"/>
+                      <span *ngIf="ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)>1 && ticket.estado =='Completado'"><a class="btn-link" (click)="aprobar()">Aprobar</a></span>
+                      <select class="form-control" [(ngModel)]="ticket.aprobadoPor" *ngIf="ticket.aprobadoPor!=null" disabled>
+                        <option value="{{costumer.id}}" *ngFor="let costumer of costumerAPs">{{ costumer.nombre }} | "{{ costumer.rnc }}"</option>
+                      </select>
                     </div>
                   </div>
                 </div>

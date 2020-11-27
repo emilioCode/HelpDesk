@@ -26,11 +26,13 @@ export class TicketComponent implements OnInit {
   addDevice=false;
   traces:any=[];
   trace:any={};
-  
+  costumerAPs:any =[];
+
   fillModal(option='add',object){
     this.addDevice=false;
     this.option = option;
     this.ticket = object;
+
     this.trace = {};
     if(option=='add'){
       this.ticket.idEmpresa = this.service.getUser().idEmpresa;
@@ -75,6 +77,7 @@ export class TicketComponent implements OnInit {
     if(this.option == 'edit'){
       this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
       this.getTraces(this.ticket.id,this.ticket.idEmpresa);
+      this.getUsersAP(this.service.getUser().id,"JUST NAME");
     } 
     console.log(this.ticket);
     console.log(this.option);
@@ -108,6 +111,11 @@ export class TicketComponent implements OnInit {
 
   i=0;
   addDeviceList(item){
+    if(this.service.validateTrim(item.marca)
+    ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
+      this.service.swal('Campos requeridos','Es necesario suministrar los datos del disposivo','info');
+      return false;
+    }
     item.id =  this.i++;
     item.idEmpresa = this.service.getUser().idEmpresa;
     item.idSolicitud = 0;
@@ -293,24 +301,31 @@ export class TicketComponent implements OnInit {
   putTicket(value){
     var option =value.toUpperCase();
     var idSolicitud = this.ticket.id;
-
+    
     if(option =='ESTADO'){
       var variable = this.ticket.estado.toUpperCase();
       switch (variable) {
         case "ABIERTO":
+        var temp = this.ticket.estado;
         var response = confirm('Seguro que desea reabrir esta ticket?');
         if(!response){
-          this.getTickets(this.service.getUser().id,"*")
-          this.ticket = this.tickets.filter(x=>x.id == idSolicitud)[0];
-          // this.fillModal('edit',this.ticket)
+    
+          // this.getTickets(this.service.getUser().id,"*")
+          // this.ticket = this.tickets.filter(x=>x.id == idSolicitud)[0];
+          option = "NOCHANGEPLEASE";
+         
         }
           break;
         case "COMPLETADO":
+        debugger;
         var response = confirm('Cerrar ticket?');
         if(!response){
-          this.getTickets(this.service.getUser().id,"*")
-          this.ticket = this.tickets.filter(x=>x.id == idSolicitud)[0];
+        
+          // this.getTickets(this.service.getUser().id,"*")
+          // this.ticket = this.tickets.filter(x=>x.id == idSolicitud)[0];
           // this.fillModal('edit',this.ticket)
+         
+          option = "NOCHANGEPLEASE";
         }
           break;
         default:
@@ -319,18 +334,31 @@ export class TicketComponent implements OnInit {
     }else if(option =='USUARIO'){
       var response = confirm('Seguro que desea asignar este ticket a este usuario?');
       if(!response){
-        this.getTickets(this.service.getUser().id,"*")
-        this.ticket = this.tickets.filter(x=>x.id == idSolicitud)[0];
+  
+        // this.getTickets(this.service.getUser().id,"*")
+        // this.ticket = this.tickets.filter(x=>x.id == idSolicitud)[0];
         // this.fillModal('edit',this.ticket)
+        option = "NOCHANGEPLEASE";
       }
     }else if(option =='EDITAR'){
 
+    }else if(option =='APROBAR'){
+      var response = confirm('Seguro que desea confirmar como completado?');
+      this.ticket.aprobadoPor = this.service.getUser().id;
+      option ='EDITAR';
+      if(!response){
+        
+        // this.getTickets(this.service.getUser().id,"*")
+        // this.ticket = this.tickets.filter(x=>x.id == idSolicitud)[0];
+        // this.fillModal('edit',this.ticket)
+        option = "NOCHANGEPLEASE";
+      }
     }else{
       this.service.swal('an option is required','','error');
-      return false;
+      option = "NOCHANGEPLEASE";
     }
     this.service.isLoading = true;
-    this.service.http.put(this.service.baseUrl + 'api/Ticket/'+value, this.ticket ,{headers:this.service.headers,responseType:'json'})
+    this.service.http.put(this.service.baseUrl + 'api/Ticket/'+option, this.ticket ,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         console.log(res.data)
         this.getTickets(this.service.getUser().id,"*")
@@ -359,5 +387,23 @@ export class TicketComponent implements OnInit {
 
   edit(){
     this.putTicket('EDITAR')
+  }
+
+  aprobar(){
+    this.putTicket('APROBAR')
+  }
+
+  getUsersAP(id,option){
+    this.service.isLoading = true;
+    this.service.http.get(this.service.baseUrl + 'api/User/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+      .subscribe(res=>{
+        this.costumerAPs = res;
+
+        console.log( this.costumerAPs )
+        this.service.isLoading = false;
+      },error => {
+        console.error(error);
+        this.service.isLoading = false;
+      });
   }
 }

@@ -23,8 +23,13 @@ namespace HelpDesk.Controllers
         public JsonResult Get(int idUser,string option = "unique")
         {
             List<Usuario> usuarios = new List<Usuario>();
+            
             Usuario usuario = context.Usuario.Find(idUser);
-            if (option.ToLower() == "unique")
+            if (option == "JUST NAME") {
+                var users = context.Usuario.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Acceso != "ROOT").Select(e=> new { e.Id, e.Nombre}).ToList();
+                return new JsonResult(users.OrderByDescending(x => x.Id));
+            }
+            else if (option.ToLower() == "unique")
             {
                 usuarios.Add(usuario);
             }
@@ -176,6 +181,7 @@ namespace HelpDesk.Controllers
                     usuario.CuentaUsuario = req.CuentaUsuario;
                 usuario.Contrasena = req.Contrasena == "" ? null : req.Contrasena;  
                 usuario.Acceso = req.Acceso == "" ? null : req.Acceso;
+                usuario.Correo = req.Correo == "" ? null : req.Correo;
                 usuario.IdEmpresa = req.IdEmpresa;
                 usuario.Image = req.Image;
                 usuario.Habilitado = req.Habilitado;

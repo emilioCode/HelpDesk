@@ -38,7 +38,7 @@
               <td>{{ item.tipoSolicitud }}</td>
               <td>{{ item.tipoServicio }}</td>
               <td>{{ item.titulo }}</td>
-              <td>{{ item.estado }}</td>
+              <td>{{ item.estado }} <i class="fa fa-check" *ngIf="item.estado=='Completado' && item.aprobadoPor !=null" style="color:green" title="Aprobado"></i> <i class="fa fa-warning" style="color:gold" *ngIf="item.estado=='Completado' && item.aprobadoPor ==null" title="Pendiente de aprobar"></i></td>
               <td >
                 <a class="btn-link" (click)="fillModal('edit',item)" *ngIf="service.getLevel(service.getUser().acceso) > 0" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-edit"></i></a>
                 <!-- <a class="btn-link" (click)="fillModal('delete',item);delete()" *ngIf="service.getLevel(service.getUser().acceso) > 2"><i class="fa fa-fw fa-toggle-on" [hidden]="!item.habilitado"></i><i class="fa fa-fw fa-toggle-off" [hidden]="item.habilitado"></i></a> -->
@@ -126,25 +126,27 @@
                       <div class="form-group col-xs-3 col-sm-3">
                         <label>Fecha inicio:</label>
                         <div class="input-group">
-                          <input type="date" class="form-control" disabled>
+                          <!-- <input type="date" class="form-control" [(ngModel)]="ticket.fechaInicio" disabled> -->
+                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaInicio" (change)="edit()" [disabled]="option=='add'">
+                          
                         </div>
                       </div>
                       <div class="form-group col-xs-2 col-sm-2">
                         <label>Hora inicio:</label>
                         <div class="input-group">
-                          <input type="time" class="form-control timepicker" disabled>
+                          <input type="time" class="form-control timepicker" [(ngModel)]="ticket.horaInicio" (change)="edit()" [disabled]="option=='add'">
                         </div>
                       </div>
                       <div class="form-group col-xs-3 col-sm-3" [hidden]="ticket.tipoSolicitud =='Servicio Taller'">
                         <label>Fecha fin:</label>
                         <div class="input-group">
-                          <input type="date" class="form-control" disabled>
+                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaTermino" (change)="edit()" [disabled]="ticket.estado!='Completado' || option=='add'">
                         </div>
                       </div>
                       <div class="form-group col-xs-2 col-sm-2" [hidden]="ticket.tipoSolicitud =='Servicio Taller'">
                         <label>Hora fin:</label>
                         <div class="input-group">
-                          <input type="time" class="form-control timepicker" disabled>
+                          <input type="time" class="form-control timepicker" [(ngModel)]="ticket.horaTermino" (change)="edit()" [disabled]="ticket.estado!='Completado' || option=='add'">
                         </div>
                       </div>
                     </div>
@@ -163,10 +165,10 @@
                           </thead>
                           <tbody>
                             <tr [hidden]="!addDevice">
-                              <td><input type="text" [(ngModel)]="device.descripcion"/></td>
-                              <td><input type="text" [(ngModel)]="device.marca"/></td>
-                              <td><input type="text" [(ngModel)]="device.modelo"/></td>
-                              <td><input type="text" [(ngModel)]="device.noSerial"/></td>
+                              <td><input type="text" [(ngModel)]="device.descripcion" placeholder="(Opcional)"/></td>
+                              <td><input type="text" [(ngModel)]="device.marca" placeholder="(Requerido)"/></td>
+                              <td><input type="text" [(ngModel)]="device.modelo" placeholder="(Requerido)"/></td>
+                              <td><input type="text" [(ngModel)]="device.noSerial" placeholder="(Requerido)"/></td>
                               <td>
                                 <a class="btn-link" (click)="addDeviceOne(device)"><i class="fa fa-check"></i></a>
                                 <a class="btn-link" (click)="addDevice=false;device={}"><i class="fa fa-remove"></i></a>
@@ -192,7 +194,7 @@
                       <label>Estado: </label>
                       <br *ngIf="option=='add'" />
                       <span *ngIf="option=='add'">{{ ticket.estado }}</span>
-                      <select class="form-control" [(ngModel)]="ticket.estado" *ngIf="option=='edit' && (ticket.idUsuario == service.getUser().id || service.getLevel(service.getUser().acceso)>1)">
+                      <select class="form-control" [(ngModel)]="ticket.estado" *ngIf="option=='edit' && (ticket.idUsuario == service.getUser().id || service.getLevel(service.getUser().acceso)>1)" (change)="putTicket('ESTADO')">
                         <option value="{{status.name}}" *ngFor="let status of service.getStatuses()">{{ status.name }}</option>
                       </select>
                     </div>
@@ -212,14 +214,78 @@
                     </div>
                     <div class="form-group col-xs-3 col-sm-3">
                       <label>Aprobador por:</label>
-                      <br/>
-                      <span>{{ticket.aprobadoPor}}</span>
+                      <br *ngIf="ticket.aprobadoPor==null"/>
+                      <span *ngIf="ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)==0 && ticket.estado =='Completado'">Pendiente de aprobación</span>
+                      <span *ngIf="ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)>1 && ticket.estado =='Completado'"><a class="btn-link" (click)="aprobar()">Aprobar</a></span>
+                      <select class="form-control" [(ngModel)]="ticket.aprobadoPor" *ngIf="ticket.aprobadoPor!=null" disabled>
+                        <option value="{{costumer.id}}" *ngFor="let costumer of costumerAPs">{{ costumer.nombre }} | "{{ costumer.rnc }}"</option>
+                      </select>
                     </div>
                   </div>
                 </div>
                 <!-- /.tab-pane -->
                 <div class="tab-pane" id="timeline">
-                  timeline
+                  <!--START-->
+                  <div>
+                    <div class="col-md-12">
+                      <!-- Box Comment -->
+                      <div class="box box-widget">
+                        <div class="box-header with-border">
+                          <!-- <div class="user-block">
+                            <img class="img-circle" src="../dist/img/user1-128x128.jpg" alt="User Image">
+                            <span class="username"><a href="#">Jonathan Burke Jr.</a></span>
+                            <span class="description">Shared publicly - 7:30 PM Today</span>
+                          </div> -->
+                          <!-- /.user-block -->
+                          <div class="box-tools">
+
+                          </div>
+                          <!-- /.box-tools -->
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                          <!-- <img class="img-responsive pad" src="../dist/img/photo2.png" alt="Photo">
+            
+                          <p>I took this photo this morning. What do you guys think?</p>
+                          <span class="pull-right text-muted">127 likes - 3 comments</span> -->
+                        </div>
+                        <!-- /.box-body -->
+                        <div class="box-footer box-comments" id="divScroll" style="max-height: 300px;overflow:auto;" >
+                          <div class="box-comment" *ngFor="let item of traces">
+                            <!-- User image -->
+                            <img *ngIf="item.userImage ==null" class="img-circle img-sm" src="../../../../../assets/dist/img/photo_default.png" alt="User Image">
+                            <img *ngIf="item.userImage !=null" class="img-circle img-sm" [src]="'data:image/jpeg;base64,'+ item.userImage" alt="User Image">
+                            <div class="comment-text">
+                                  <span class="username">
+                                    {{ item.userName }} <i class="fa fa-star-o" *ngIf="item.favorito != true" title="Marcar como favorito" (click)="putTrace(item,'favorito')"></i><i class="fa fa-star" *ngIf="item.favorito == true" style="color:gold" title="Desmarcar como favorito" (click)="putTrace(item,'favorito')"></i> <i class="fa fa-bookmark-o" *ngIf="item.etiquetado != true" title="Marcar como solución" (click)="putTrace(item,'etiquetado')"></i><i class="fa fa-bookmark" *ngIf="item.etiquetado == true" title="Desmarcar como solución" style="color:tomato" (click)="putTrace(item,'etiquetado')"></i>
+                                    <span class="text-muted pull-right">{{  service.setTime(item.hora)  }} {{ item.fecha | date:"dd/MM/yy" }}</span>
+                                  </span><!-- /.username -->
+                              {{ item.texto }}
+                            </div>
+                            <!-- /.comment-text -->
+                          </div>
+                          <!-- /.box-comment -->
+                        </div>
+                        <!-- /.box-footer -->
+                        <div class="box-footer">
+                          <div>
+                            <img *ngIf="service.getUser().image == null" src="../../../../../assets/dist/img/photo_default.png" class="img-responsive img-circle img-sm" alt="Alt Text">
+                            <img *ngIf="service.getUser() !=null && service.getUser().image !=null" [src]="'data:image/jpeg;base64,'+ service.getUser().image" class="img-responsive img-circle img-sm" alt="Alt Text">
+                            <!-- .img-push is used to add margin to elements next to floating images -->
+                            <div class="img-push input-group">
+                              <input type="text" class="form-control " [(ngModel)]="trace.texto" (keyup.enter)="addTrace()" placeholder="Press enter to post comment">
+                              <span class="input-group-btn">
+                                <button class="btn btn-primary btn-flat" (click)="addTrace()"  [disabled]="service.validateTrim( trace.texto )">Send</button>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- /.box-footer -->
+                      </div>
+                      <!-- /.box -->
+                    </div>
+                  </div>
+                  <!--END-->
                 </div>
                 <!-- /.tab-pane -->
   

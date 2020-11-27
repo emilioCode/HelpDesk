@@ -13,8 +13,10 @@ export class ProfileComponent implements OnInit {
   empresas;
   pwdValidation:string;
   imageBusiness;
+  numbers:any={};
   constructor(private service: ApiService) {4
     this.getUsers(this.service.getUser().id,'UNIQUE');
+    this.numbersOfTickets(this.service.getUser().id);
     
   }
 
@@ -76,6 +78,18 @@ export class ProfileComponent implements OnInit {
         console.error(error);
         this.service.isLoading =false;
       });
+    }
   }
-}
+
+  numbersOfTickets(idUser){
+    this.service.isLoading = true;
+    this.service.http.get(this.service.baseUrl + 'api/Ticket/numbersOfTickets/'+ idUser ,{headers:this.service.headers,responseType:'json'})
+      .subscribe(res=>{
+        this.numbers =  res.data;
+        console.log( this.numbers );
+      },error => {
+        console.error(error);
+        this.service.isLoading = false;
+      });
+  }
 }

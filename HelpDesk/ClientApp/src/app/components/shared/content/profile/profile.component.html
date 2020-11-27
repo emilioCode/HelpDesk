@@ -15,15 +15,15 @@
         <ul class="list-group list-group-unbordered">
           <li class="list-group-item">
             <!-- <b>Followers</b> <a class="pull-right">1,322</a> -->
-            <b>En curso</b> <a class="pull-right">1,322</a>
+            <b>En curso</b> <a class="pull-right">{{ numbers.enproceso | number }}</a>
           </li>
           <li class="list-group-item">
             <!-- <b>Following</b> <a class="pull-right">543</a> -->
-            <b>Pendientes</b> <a class="pull-right">543</a>
+            <b>Pendientes</b> <a class="pull-right">{{ numbers.abiertos | number }}</a>
           </li>
           <li class="list-group-item">
             <!-- <b>Friends</b> <a class="pull-right">13,287</a> -->
-            <b>Cerrados</b> <a class="pull-right">13,287</a>
+            <b>Cerrados</b> <a class="pull-right">{{ numbers.completados | number }}</a>
           </li>
           <div class="overlay" [hidden]="!service.isLoading">
             <i class="fa fa-refresh fa-spin"></i>
