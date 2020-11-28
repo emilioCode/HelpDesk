@@ -78,7 +78,7 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)='getTickets(service.getUser().id,"unique")'>
           <span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Ticket No.<u>{{ ticket.noSecuencia }}</u></h4>
+        <h4 class="modal-title">Ticket No.<u>{{ ticket.noSecuencia }}</u> <a class="btn-link" href="/OrderReport?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a></h4>
         <!-- <h4 class="modal-title" *ngIf="option=='add'"><b>Nuevo Cliente</b></h4>
         <h4 class="modal-title" *ngIf="option=='edit'"><b>Cliente</b></h4>
         <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea deshabilitar este Cliente?</b></h4> -->
@@ -160,7 +160,7 @@
                               <th scope="col" class="text-center">Marca</th>
                               <th scope="col" class="text-center">Modelo</th>
                               <th scope="col" class="text-center">Serial No.</th>
-                              <th scope="col" class="text-center" [hidden]="ticket.tipoSolicitud !='Servicio a Domicilio' || devices.length >= 4"><a class="btn-link" (click)="addDevice=true;device={}" [hidden]="addDevice || devices.length >= 4"><i class="fa fa-plus"></i></a></th>
+                              <th scope="col" class="text-center" [hidden]="ticket.tipoSolicitud !='Servicio a Domicilio' || devices.length >= 4 || ticket.estado =='Completado'"><a class="btn-link" (click)="addDevice=true;device={}" [hidden]="addDevice || devices.length >= 4"><i class="fa fa-plus"></i></a></th>
                             </tr>
                           </thead>
                           <tbody>
@@ -207,7 +207,9 @@
                     </div>
                     <div class="form-group col-xs-3 col-sm-3">
                       <label>Técnico asignado:</label>
-                      <select class="form-control" [(ngModel)]="ticket.idUsuario" [disabled]="service.getLevel(service.getUser().acceso)<2 || (option!='add' && service.getUser().id == ticket.idUsuario && service.getLevel(this.service.getUser().acceso)<3)">
+                      <br *ngIf="!(service.getLevel(service.getUser().acceso)>1)"/>
+                      <span *ngIf="!(service.getLevel(service.getUser().acceso)>1)">{{service.getUser().nombre}}</span>
+                      <select class="form-control" [(ngModel)]="ticket.idUsuario" *ngIf="service.getLevel(service.getUser().acceso)>1" (change)="putTicket('USUARIO')">
                         <option value="" selected [hidden]="ticket.idUsuario!=''">Seleccione</option>
                         <option value="{{user.id}}" *ngFor="let user of users">{{ user.nombre }} | "{{ user.cuentaUsuario }}"</option>
                       </select>

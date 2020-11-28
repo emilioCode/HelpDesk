@@ -317,7 +317,7 @@ export class TicketComponent implements OnInit {
         }
           break;
         case "COMPLETADO":
-        debugger;
+        
         var response = confirm('Cerrar ticket?');
         if(!response){
         
@@ -344,7 +344,6 @@ export class TicketComponent implements OnInit {
 
     }else if(option =='APROBAR'){
       var response = confirm('Seguro que desea confirmar como completado?');
-      this.ticket.aprobadoPor = this.service.getUser().id;
       option ='EDITAR';
       if(!response){
         
@@ -352,6 +351,8 @@ export class TicketComponent implements OnInit {
         // this.ticket = this.tickets.filter(x=>x.id == idSolicitud)[0];
         // this.fillModal('edit',this.ticket)
         option = "NOCHANGEPLEASE";
+      }else{
+        this.ticket.aprobadoPor = this.service.getUser().id;
       }
     }else{
       this.service.swal('an option is required','','error');

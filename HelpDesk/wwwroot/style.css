@@ -1,0 +1,26 @@
+.logo {
+    width: 100%;
+    height: auto;
+    max-width: 60%;
+}
+
+.info {
+    color: black;
+    font-size: 12px;
+    font-style: italic;
+    font-weight: bold;
+    line-height: 0;
+}
+
+.service-order {
+    background-color: #F8F9FA;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.custom-border {
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+    border-radius: 0;
+}

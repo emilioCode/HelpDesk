@@ -55,6 +55,7 @@ namespace HelpDesk
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

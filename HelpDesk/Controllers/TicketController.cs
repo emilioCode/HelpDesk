@@ -200,10 +200,12 @@ namespace HelpDesk.Controllers
                     ticket.HoraTermino = req.HoraTermino;
                     ticket.AprobadoPor = req.AprobadoPor;
                 }
-                if(toDo != "NOCHANGEPLEASE") context.SaveChanges();
+                context.Entry(ticket).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                if (toDo != "NOCHANGEPLEASE") context.SaveChanges();
+
                 var ticket_res = context.Solicitud.Find(req.Id);
 
-                context.Entry(ticket).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                
                 res = new ObjectResponse
                 {
                     code = "1",

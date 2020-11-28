@@ -1,0 +1,298 @@
+﻿@page
+@model HelpDesk.Pages.OrderReportModel
+@*@{
+    ViewData["Title"] = Model.title;
+}*@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.title</title>
+    <link href="~/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/style.css" rel="stylesheet" />
+</head>
+<body>
+    <header>
+        <div class="container border-bottom border-dark">
+            <div class="row">
+                <div class="col">
+                    @if (Model.empresa.Image != null)
+                    {
+                        var imageUrl = "data:image/jpg; base64," + Convert.ToBase64String(@Model.empresa.Image);
+
+                        <img src="@imageUrl" class="logo" alt="@Model.empresa.RazonSocial"/>
+                    }
+
+                </div>
+                <div class="col d-flex justify-content-end align-items-center">
+                    <div class="service-order">
+                        Orden de Servicio No. <form action=""><input id="ticket" name="ticket" type="text" value="@Model.solicitud.NoSecuencia" readonly="readonly"><button id="send" name="send" style="visibility: hidden;"></button></form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col py-2">
+                    @* <p class="info">Av. Nunez de caceres, esquina 31 Oeste, Plaza Castellana Local #205</p>*@
+                    @*<p class="info">La Castellana, Sto. Dgo. D.N., Republica Dominicana</p>*@
+                    @*<p class="info">Tel: (809)-732-3900 Fax: (809)-732-3873</p>*@
+                    @*<p class="info">E-mail: ramvar@claro.net.do</p>*@
+                    @if (@Model.empresa.Direccion != null && @Model.empresa.Direccion.Trim() != "")
+                    {<p class="info">@Model.empresa.Direccion</p>}
+                    @if (Model.empresa.Telefono != "" && Model.empresa.Telefono != null){<p class="info">Tel: @Model.empresa.Telefono</p>}
+                    @if (Model.empresa.Correo != "" && Model.empresa.Correo != null){<p class="info">E-mail: @Model.empresa.Correo</p>}
+                    
+                </div>
+                <div class="col d-flex justify-content-end align-items-top py-2">
+                    @if (Model.empresa.Rnc !="" && Model.empresa.Rnc != null) {<p class="info">RNC: @Model.empresa.Rnc</p>}
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="container text-center py-3 mb-5">
+            <h3 class="font-weight-bold">ORDEN DE @*SERVICIO*@@Model.solicitud.TipoSolicitud.ToUpper()</h3>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col pb-3"><b class="d-inline" style="font-size: 15px;">Cliente  </b><span class="border-bottom d-inline-block" style="width: 75%;">@Model.cliente.Nombre</span></div>
+                <div class="col"><b class="d-inline" style="font-size: 15px;">E-mail  </b><span class="border-bottom d-inline-block" style="width: 70%;">@Model.cliente.Correo</span></div>
+                <div class="col"><b class="d-inline" style="font-size: 15px;">Tel </b><span class="border-bottom d-inline-block" style="width: 85%;">@Model.cliente.Telefono</span></div>
+            </div>
+            <div class="row">
+                <div class="col pb-3"><b class="d-inline" style="font-size: 15px;">Contacto </b><span class="border-bottom d-inline-block" style="width: 70%;">@Model.cliente.Contacto</span></div>
+                <div class="col"><b class="d-inline" style="font-size: 15px;">Departamento </b><span class="border-bottom d-inline-block" style="width: 60%;">@Model.cliente.Departamento</span></div>
+                <div class="col"><b class="d-inline" style="font-size: 15px;">Ext </b><span class="border-bottom d-inline-block" style="width: 85%;">@Model.cliente.Extension</span></div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td style="width: 20%;"><span class="d-inline" style="font-size: 12px;">Hora Reporte:</span> <input name="horaReporte" class="form-control d-inline" type="datetime" style="width: 50%;  font-size: 14px;"></td>
+                            <td style="width: 20%;"><span class="d-inline" style="font-size: 12px;">Fecha:</span> </span> <input name="horaInicio" class="form-control d-inline" type="date" style="width: 75%;  font-size: 14px;"></td>
+                            <td style="width: 20%;"><span class="d-inline" style="font-size: 12px;">H. Inicio:</span> <input name="horaInicio" class="form-control d-inline" type="time" style="width: 60%; font-size: 14px;"></td>
+                            <td style="width: 20%;"><span class="d-inline" style="font-size: 12px;">H. Termino:</span> <input name="horaTermino" class="form-control d-inline" type="time" style="width: 60%;  font-size: 14px;"></td>
+                            <td style="width: 20%;"><span class="d-inline" style="font-size: 12px;">Fecha:</span> <input name="horaInicio" class="form-control d-inline" type="date" style="width: 75%; font-size: 14px;"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- EQUIPOS -->
+        <div class="container text-center pb-4">
+            <h6 class="font-weight-bold">EQUIPOS</h6>
+            <div class="row">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center" style="width: 50%">Descripci&oacute;n</th>
+                            <th scope="col" class="text-center">Marca</th>
+                            <th scope="col" class="text-center">Modelo</th>
+                            <th scope="col" class="text-center">Serial No.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- EQUIPOS -->
+        <!-- PARTES UTILIZADAS -->
+        <div class="container text-center pb-4">
+            <h6 class="font-weight-bold">PARTES UTILIZADAS</h6>
+            <div class="row">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">Cant.</th>
+                            <th scope="col" class="text-center">Serial No.</th>
+                            <th scope="col" class="text-center" style="width: 70%">Descripci&oacute;n</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- PARTES UTILIZADAS -->
+        <!-- TIPO DE SERVICIOS -->
+        <div class="container text-center pb-2">
+            <h6 class="font-weight-bold">TIPO SERVICIO</h6>
+            <div class="row">
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th scope="col">{  } GARANT&Iacute;A</th>
+                            <th scope="col">{  } CONTRATO</th>
+                            <th scope="col">{  } FACTURABLE</th>
+                            <th scope="col">{  } RENTA</th>
+                            <th scope="col">{  } PRESTAMO</th>
+                            <th scope="col">{  } INTERNO</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <!-- TIPO DE SERVICIOS -->
+        <!-- ACTIVIDADES REALIZADAS -->
+        <div class="container py-2">
+            <div class="row">
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 20%;">Actividades Realizadas</th>
+                            <th scope="col" class="border-bottom" style="width: 30%;"></th>
+                            <th scope="col" class="border-bottom" style="width: 25%;"></th>
+                            <th scope="col" class="border-bottom" style="width: 25%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                        </tr>
+                        <tr>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                        </tr>
+                        <tr>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- ACTIVIDADES REALIZADAS -->
+        <!-- SATISFACCION -->
+        <div class="container py-4">
+            <h6 class="font-weight-bold">QUE TAN SATISFECHO ESTA USTED CON....</h6>
+            <div class="row">
+                <table class="table table-borderless" style="font-size: 15px;">
+                    <thead>
+                        <tr>
+                            <td colspan="3" scope="col">1. El tiempo de respuesta?</td>
+                            <td colspan="3" scope="col" style="width: 40%;">2. El tiempo para solucionar el problema?</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="3">3. El profesionalismo y la atenci&oacute;n del Representante de Servicio?</td>
+                            <td colspan="3" style="width: 40%;">4. El conocimiento t&eacute;cnico del Representante de Servicio?</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Leyendas:</strong></td>
+                            <td style="width: 16.66%;"><strong>1.</strong> Insatisfecho</td>
+                            <td style="width: 16.66%;"><strong>2.</strong> Indiferente</td>
+                            <td style="width: 16.66%;"><strong>3.</strong> Satisfecho</td>
+                            <td style="width: 16.66%;"><strong>4.</strong> Bastante Satisfecho</td>
+                            <td style="width: 16.66%;"><strong>5.</strong> Muy Satisfecho</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 10%;"><strong>Comentarios</strong></td>
+                            <td class="border-bottom" style="width: 16.66%;"></td>
+                            <td class="border-bottom" style="width: 16.66%;"></td>
+                            <td class="border-bottom" style="width: 16.66%;"></td>
+                            <td class="border-bottom" style="width: 16.66%;"></td>
+                            <td class="border-bottom" style="width: 16.66%;"></td>
+                        </tr>
+                        <tr>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- SATISFACCION -->
+    </main>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td class="border-top">Nombre Representante de Servicios</td>
+                            <td class="border-top">Nombre (Aclaraci&oacute;n Firma Cliente)</td>
+                            <td class="border-top">Firma Cliente</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <p class="text-justify" style="font-size: 13px;">*Mediante la firma de esta orden reconozco haberme enterado de los t&eacute;rminos mediante las cuales se realizan estos servicios facturables y estoy autorizado a cumplirlos.</p>
+            </div>
+        </div>
+    </footer>
+    <script type="text/javascript">
+
+        window.print();
+
+        setTimeout(function () {
+            window.close();
+        }, 3000);
+     
+    </script>
+</body>
+</html>
+

@@ -49,7 +49,6 @@ namespace HelpDesk.Controllers
             try
             {
                 if (req.Marca == "" || req.Marca == null ||
-                req.Descripcion == "" || req.Descripcion == null ||
                 req.Modelo == "" || req.Modelo == null ||
                 req.NoSerial == "" || req.NoSerial == null)
                 {
@@ -65,7 +64,7 @@ namespace HelpDesk.Controllers
                 }
                 req.Habilitado = true;
 
-                context.Equipo.AddRange(req);
+                context.Equipo.Add(req);
                 context.SaveChanges();
 
                 int idSolicitud = req.IdSolicitud;

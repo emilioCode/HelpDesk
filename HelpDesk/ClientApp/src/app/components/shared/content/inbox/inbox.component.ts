@@ -108,16 +108,16 @@ export class InboxComponent implements OnInit {
       });
   }
 
-  i=0;
-  addDeviceList(item){
-    item.id =  this.i++;
-    item.idEmpresa = this.service.getUser().idEmpresa;
-    item.idSolicitud = 0;
-    this.devices.push(item)
-    this.addDevice =false;
+  // i=0;
+  // addDeviceList(item){
+  //   item.id =  this.i++;
+  //   item.idEmpresa = this.service.getUser().idEmpresa;
+  //   item.idSolicitud = 0;
+  //   this.devices.push(item)
+  //   this.addDevice =false;
 
-    console.log( this.devices )
-  }
+  //   console.log( this.devices )
+  // }
 
   removeDeviceList(item){
     // var index = this.devices.filter(x=>x.id==item.id)[0];
@@ -159,13 +159,12 @@ export class InboxComponent implements OnInit {
       this.service.swal('Campos requeridos','Es necesario suministrar los datos del disposivo','info');
       return false;
     }
-    item.id =  this.i++;
+    item.id = 0;
     item.idEmpresa = this.service.getUser().idEmpresa;
-    item.idSolicitud = 0;
-    this.devices.push(item)
+    item.idSolicitud = Number(this.ticket.id);
+    // this.devices.push(item)
+    this.addDevicePostOne(item);
     this.addDevice =false;
-
-    console.log( this.devices )
   }
 
   getTraces(idSolicitud,idEmpresa){
@@ -245,7 +244,7 @@ export class InboxComponent implements OnInit {
         }
           break;
         case "COMPLETADO":
-        debugger;
+        
         var response = confirm('Cerrar ticket?');
         if(!response){
         
@@ -272,7 +271,7 @@ export class InboxComponent implements OnInit {
 
     }else if(option =='APROBAR'){
       var response = confirm('Seguro que desea confirmar como completado?');
-      this.ticket.aprobadoPor = this.service.getUser().id;
+      
       option ='EDITAR';
       if(!response){
         
@@ -280,6 +279,8 @@ export class InboxComponent implements OnInit {
         // this.ticket = this.tickets.filter(x=>x.id == idSolicitud)[0];
         // this.fillModal('edit',this.ticket)
         option = "NOCHANGEPLEASE";
+      }else{
+        this.ticket.aprobadoPor = this.service.getUser().id;
       }
     }else{
       this.service.swal('an option is required','','error');
@@ -294,7 +295,7 @@ export class InboxComponent implements OnInit {
         var item = res.data;
         if(item.horaInicio !=null)item.horaInicio = item.horaInicio.split('.')[0];
         if(item.horaTermino !=null)item.horaTermino = item.horaTermino.split('.')[0];
-        
+        console.log( item )
         this.fillModal('edit',item)
         // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
         // this.getTraces(this.ticket.id,this.ticket.idEmpresa)
@@ -325,6 +326,28 @@ export class InboxComponent implements OnInit {
       },error => {
         console.error(error);
         this.service.isLoading = false;
+      });
+  }
+
+  addDevicePostOne(device){
+    this.service.isLoading = true;
+    // console.log('devices')
+    // console.log(this.devices)
+     this.service.http.post(this.service.baseUrl + 'api/Device/PostOne',device,{headers:this.service.headers,responseType:'json'})
+      .subscribe(res=>{
+      console.log( res )
+      
+      if(res.code=="1") {
+        console.log('devices saved')
+        this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
+      }else{
+        this.devices = [];
+        this.service.swal(res.title,res.message,res.icon);
+      }
+      this.service.isLoading =false;
+      },error => {
+        console.error(error);
+        this.service.isLoading =false;
       });
   }
 }
