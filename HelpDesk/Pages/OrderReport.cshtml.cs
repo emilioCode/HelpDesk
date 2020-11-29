@@ -32,6 +32,11 @@ namespace HelpDesk.Pages
             solicitud = context.Solicitud.Where(e => e.NoSecuencia == noTicket).First();
             cliente = context.Cliente.Where(e => e.IdEmpresa == idEmpresa && e.Id==solicitud.IdCliente).First();
             equipos = context.Equipo.Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id).ToList();
+            while (equipos.Count < 4)
+            {
+                var equipoTemp = new Equipo();
+                equipos.Add(equipoTemp);
+            }
             title = $"HelpDesk - Service Order No.{noTicket}";
 
         }
