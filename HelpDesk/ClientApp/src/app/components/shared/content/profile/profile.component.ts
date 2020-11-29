@@ -87,6 +87,7 @@ export class ProfileComponent implements OnInit {
       .subscribe(res=>{
         this.numbers =  res.data;
         console.log( this.numbers );
+        this.service.isLoading = false;
       },error => {
         console.error(error);
         this.service.isLoading = false;

@@ -255,12 +255,13 @@ namespace HelpDesk.Controllers
                 var abiertos = tickets.Where(e=>e.Estado.ToUpper() =="ABIERTO").Count();
                 var enproceso = tickets.Where(e => e.Estado.ToUpper() != "ABIERTO" || e.Estado.ToUpper() != "EN PROCESO" || (e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor == null)).Count();
                 var completados = tickets.Where(e => e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor != null).Count();
-                
-                object data =  new
+                var costumers = context.Cliente.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Habilitado == true).ToList().Count();
+                object data = new
                 {
-                    abiertos ,
+                    abiertos,
                     enproceso,
-                    completados
+                    completados,
+                    costumers = (usuario.Acceso == "TECNICO") ? 0 : costumers
                 };
 
                 response = new ObjectResponse

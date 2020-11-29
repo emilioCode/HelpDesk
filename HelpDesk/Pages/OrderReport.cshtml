@@ -76,11 +76,17 @@
                     <table class="table table-borderless">
                         <tbody>
                             <tr>
-                                <td style="width: 20%;"><span class="d-inline" style="font-size: 12px;">Hora Reporte:</span> <input name="horaReporte" class="form-control d-inline" type="datetime" style="width: 50%;  font-size: 14px;"></td>
-                                <td style="width: 20%;"><span class="d-inline" style="font-size: 12px;">Fecha:</span> </span> <input name="horaInicio" class="form-control d-inline" type="date" style="width: 75%;  font-size: 14px;"></td>
-                                <td style="width: 20%;"><span class="d-inline" style="font-size: 12px;">H. Inicio:</span> <input name="horaInicio" class="form-control d-inline" type="time" style="width: 60%; font-size: 14px;"></td>
-                                <td style="width: 20%;"><span class="d-inline" style="font-size: 12px;">H. Termino:</span> <input name="horaTermino" class="form-control d-inline" type="time" style="width: 60%;  font-size: 14px;"></td>
-                                <td style="width: 20%;"><span class="d-inline" style="font-size: 12px;">Fecha:</span> <input name="horaInicio" class="form-control d-inline" type="date" style="width: 75%; font-size: 14px;"></td>
+                                @if (@Model.solicitud.FechaCreacion == null) { <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Creado:</span></b></td> }
+                                @if (@Model.solicitud.FechaCreacion != null) { <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Creado:</span></b> @*<input name="horaReporte" class="form-control d-inline" type="datetime" style="width: 50%;  font-size: 14px;">*@ @Model.solicitud.FechaCreacion.ToString("dd/MM/yyyy")</td> }
+                                @if (@Model.solicitud.FechaInicio == null) { <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="fechaInicio" class="form-control d-inline" type="date" style="width: 75%;  font-size: 14px;"></td>} 
+                                @if (@Model.solicitud.FechaInicio != null) { <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="fechaInicio" class="form-control d-inline" type="date" style="width: 75%;  font-size: 14px;" value="@Model.solicitud.FechaInicio.Value.ToString("yyyy-MM-dd")"></td> }
+                                @if (@Model.solicitud.HoraInicio == null) { <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Inicio:</span></b> <input name="horaInicio" class="form-control d-inline" type="time" style="width: 60%; font-size: 14px;"></td> }
+                                @if (@Model.solicitud.HoraInicio != null) { <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Inicio:</span></b> <input name="horaInicio" class="form-control d-inline" type="time" style="width: 60%; font-size: 14px;" value="@Model.solicitud.HoraInicio.Value"></td> }
+                                @if (@Model.solicitud.FechaTermino == null) { <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="horaInicio" class="form-control d-inline" type="date" style="width: 75%; font-size: 14px;"></td> }
+                                @if (@Model.solicitud.FechaTermino != null) { <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="horaInicio" class="form-control d-inline" type="date" style="width: 75%; font-size: 14px;" value="@Model.solicitud.FechaTermino.Value.ToString("yyyy-MM-dd")"></td> }
+                                @if (@Model.solicitud.HoraTermino == null) { <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Termino:</span></b> <input name="horaTermino" class="form-control d-inline" type="time" style="width: 60%;  font-size: 14px;"></td> }
+                                @if (@Model.solicitud.HoraTermino != null) { <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Termino:</span></b> <input name="horaTermino" class="form-control d-inline" type="time" style="width: 60%;  font-size: 14px;" value="@Model.solicitud.HoraTermino.Value"></td> }
+
                             </tr>
                         </tbody>
                     </table>

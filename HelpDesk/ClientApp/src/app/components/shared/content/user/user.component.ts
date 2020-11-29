@@ -8,7 +8,7 @@ import { FilterPipe } from '../../../../pipes/filter.pipe';
 })
 @Pipe({name:'FilterPipe'})
 export class UserComponent implements OnInit {
-
+  
   constructor(private service:ApiService) {
     this.getUsers(this.service.getUser().id,"*");
   }

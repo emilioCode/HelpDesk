@@ -20,7 +20,7 @@
         <!-- search form (Optional) -->
         <form action="#" method="get" class="sidebar-form">
           <div class="input-group">
-            <input type="text" name="q" class="form-control" placeholder="Search...">
+            <input type="text" name="q" class="form-control" placeholder="Search..." [(ngModel)]="menuSearch">
             <span class="input-group-btn">
                 <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
                 </button>
@@ -43,7 +43,7 @@
             </a>
             <ul class="treeview-menu">
                 
-              <ng-container *ngFor="let child of item.children">
+              <ng-container *ngFor="let child of item.children | filter: menuSearch">
               <li *ngIf="child.see" ><a [routerLink]='child.route' ><i class="{{ child.iconClasses }}"></i>{{ child.label }}</a></li>
               <!-- <li><a href="#">Link in level 2</a></li> -->
               </ng-container>
