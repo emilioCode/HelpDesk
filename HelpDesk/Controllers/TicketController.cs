@@ -283,8 +283,8 @@ namespace HelpDesk.Controllers
             return new JsonResult(response);
         }
 
-        [HttpGet("[action]")]
-        public JsonResult GetJsonTicket(Solicitud solicitud)
+        [HttpPost("[action]")]
+        public JsonResult GetJsonTicket([FromBody] Solicitud solicitud)
         {//parameters: idEmpresa, fechaInicio(from), fechaTermino(to),tipoSolicitud,noSecuencia
             var requests = (from sol in context.Solicitud
                             where sol.IdEmpresa == solicitud.IdEmpresa

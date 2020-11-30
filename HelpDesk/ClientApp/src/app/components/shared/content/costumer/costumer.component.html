@@ -126,7 +126,7 @@
         <div class="form-group col-xs-12 col-sm-12">
           <label for="Direccion">Dirección</label>
           <!-- <input type="text" class="form-control" placeholder="Dirección" [(ngModel)]="costumer.direccion" [disabled]="option=='delete' || !(service.getLevel(service.getUser().acceso) > 1)"> -->
-          <textarea id="Direccion" placeholder="Dirección" [(ngModel)]="costumer.direccion" class="form-control" rows="5"></textarea>
+          <textarea id="Direccion" placeholder="Dirección" [(ngModel)]="costumer.direccion" class="form-control" rows="5" [disabled]="option=='delete' || !(service.getLevel(service.getUser().acceso) > 1)"></textarea>
         </div>
       </div>
       <!---->
