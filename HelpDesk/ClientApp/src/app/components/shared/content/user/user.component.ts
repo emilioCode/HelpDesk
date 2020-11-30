@@ -10,7 +10,13 @@ import { FilterPipe } from '../../../../pipes/filter.pipe';
 export class UserComponent implements OnInit {
   
   constructor(private service:ApiService) {
-    this.getUsers(this.service.getUser().id,"*");
+    if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
+      alert("No tiene permisos para acceder");
+      this.service.route.navigateByUrl('/');
+    }else{
+      this.getUsers(this.service.getUser().id,"*");
+    }
+    
   }
 
   isLoading = false;

@@ -1,0 +1,43 @@
+<br/>
+<!-- Main content -->
+<div class="col-xs-12" >
+    <div class="box box-primary">
+      <div class="box-header">
+        <h3 class="box-title"></h3>
+
+      </div>
+      <!-- /.box-header -->
+      <div class="box-body  no-padding">
+        <div class="col-xs-12 col-md-12">
+          <div class="col-xs-3 col-md-3 form-group">
+            <label>Tipo:</label>
+            
+            <select class="form-control" id="tipoComprobante" >
+              <option value="">Seleccione Servicio</option>
+              <option *ngFor="let item of service.getTypeOfRequests()" value="{{ item.name }}">{{ item.name }}</option>
+            </select>
+          </div>
+          <div class="col-xs-3 col-md-3 form-group">
+            <label>Desde:</label>
+            <input type="date" class="form-control" placeholder="" [(ngModel)]="from"/>
+          </div>
+          <div class="col-xs-3 col-md-3 form-group">
+            <label>Hasta:</label>
+            <input type="date" class="form-control" placeholder="" [(ngModel)]="to"/>
+          </div>
+          <div class="col-xs-3 col-md-3 form-group" style="margin-top:2.5%">
+            <div class="btn-group" role="group">
+                <button class="btn btn-primary" (click)='toSearch();search=""'><i class="fa fa-search" aria-hidden="true"></i> Buscar</button>
+                <button class="btn btn-default"><i class="fa fa-eraser" aria-hidden="true"></i> Limpiar</button>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-xs-12 col-md-12">
+          <a class="btn-link"><i class="fa fa-download" aria-hidden="true"></i> Exportar a Excel</a>
+        </div>
+      </div> 
+      <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+  </div>

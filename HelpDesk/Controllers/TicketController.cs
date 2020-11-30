@@ -261,7 +261,7 @@ namespace HelpDesk.Controllers
                     abiertos,
                     enproceso,
                     completados,
-                    costumers = (usuario.Acceso == "TECNICO") ? 0 : costumers
+                    costumers = costumers
                 };
 
                 response = new ObjectResponse
@@ -281,6 +281,36 @@ namespace HelpDesk.Controllers
                 };
             }
             return new JsonResult(response);
+        }
+
+        [HttpGet("[action]")]
+        public JsonResult GetJsonTicket(Solicitud solicitud)
+        {//parameters: idEmpresa, fechaInicio(from), fechaTermino(to),tipoSolicitud,noSecuencia
+            var requests = (from sol in context.Solicitud
+                            where sol.IdEmpresa == solicitud.IdEmpresa
+                            && (sol.NoSecuencia == solicitud.NoSecuencia || solicitud.NoSecuencia == "" || solicitud.NoSecuencia == null)
+                            && (sol.TipoSolicitud == solicitud.TipoSolicitud || solicitud.TipoSolicitud == null || solicitud.TipoSolicitud == "")
+                            && ((sol.FechaCreacion >= solicitud.FechaInicio && sol.FechaCreacion <= solicitud.FechaTermino) || solicitud.FechaInicio == null || solicitud.FechaTermino == null)
+                            select new
+                           {
+                               sol.Id,
+                               sol.NoSecuencia,
+                               FechaCreacion=sol.FechaCreacion,
+                               FechaInicio=sol.FechaInicio,
+                               HoraInicio=sol.HoraInicio,
+                               FechaTermino=sol.FechaTermino,
+                               HoraTermino = sol.HoraTermino,
+                               atendidoPor = context.Usuario.Where(e=>e.Id == sol.IdUsuario).SingleOrDefault().CuentaUsuario,
+                               cliente = context.Cliente.Where(e => e.Id == sol.IdCliente).SingleOrDefault().Nombre,
+                               sol.TipoSolicitud,
+                               sol.TipoServicio,
+                               sol.Estado,
+                               sol.Titulo,
+                               AprobadoPor = context.Usuario.Where(e => e.Id == sol.AprobadoPor).SingleOrDefault().CuentaUsuario,
+                               sol.IdEmpresa
+                           }).ToList();
+
+            return new JsonResult(requests);
         }
     }
 }

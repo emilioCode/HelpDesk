@@ -9,6 +9,10 @@ import { ApiService } from '../../../../services/api.service';
 export class EmpresaComponent implements OnInit {
 
   constructor(private service: ApiService) { 
+    if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
+      alert("No tiene permisos para acceder");
+      this.service.route.navigateByUrl('/');
+    }
     this.getBusiness(this.service.getUser().id);
   }
 
