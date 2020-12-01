@@ -147,5 +147,20 @@ export class ApiService {
 
   }
 
+  setEspecialPasted(str):string{
+    return '=\"' + str + '\"';
+  }
+
+  isNull(str):string{
+    return str != null? str:"";
+  }
+
+  replaceAll(text,oldValue,newValue):string{
+    var str = "";
+    for (var i = 0; i < text.length; i++) {
+      str += text[i] == oldValue? newValue:text[i];
+    }
+    return str;
+  }
   
 }

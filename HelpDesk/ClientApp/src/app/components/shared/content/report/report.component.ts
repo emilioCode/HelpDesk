@@ -42,7 +42,7 @@ export class ReportComponent implements OnInit {
     this.service.http.post(this.service.baseUrl + 'api/Ticket/GetJsonTicket',this.request,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         this.requests = res;
-        console.log( this.requests )
+        console.table( this.requests )
         this.service.isLoading = false;
       },error => {
         console.error(error);
@@ -57,9 +57,25 @@ export class ReportComponent implements OnInit {
   }
 
   exportCSV(){
-    console.log( 'downloading...' )
-    this.requests.forEach(element => {
-      
+    
+    var comma =",";
+    var enter = "\n";
+    var file = "NO. SECUENCIA, TIPO SOLICITUD, TIPO SERVICIO, TITULO, ESTADO, ATENDIDO POR, CLIENTE, FECHA CREACION, FECHA INICIAL, HORA INICIAL, FECHA TERMINO, HORA TERMINO, APROBADO POR" + enter;
+ 
+    this.requests.forEach(e => {
+      var fechaCreacion = this.service.isNull(e.fechaCreacion) !=""?this.service.isNull(e.fechaCreacion).split('T')[0]:"";
+      var fechaInicial = this.service.isNull(e.fechaInicio) !=""?this.service.isNull(e.fechaInicio).split('T')[0]:"";
+      var fechaFinal = this.service.isNull(e.fechaTermino) !=""?this.service.isNull(e.fechaTermino).split('T')[0]:"";
+      var aprobadorPor = this.service.isNull(e.aprobadoPor) != ""?this.service.isNull(this.service.replaceAll(e.aprobadoPor,',',' ')):"";
+      var horaInicio = this.service.isNull(e.horaInicio) !=""?this.service.setTime(this.service.isNull(e.horaInicio)):"";
+      var horaTermino = this.service.isNull(e.horaTermino) !=""?this.service.setTime(this.service.isNull(e.horaTermino)):"";
+      file += this.service.setEspecialPasted(e.noSecuencia) + comma + this.service.isNull(e.tipoSolicitud) + comma + this.service.isNull(e.tipoServicio) + comma + this.service.isNull(this.service.replaceAll(e.titulo,',',' ')) + comma + this.service.isNull(e.estado) + comma + this.service.isNull(this.service.replaceAll(e.atendidoPor,',',' ')) + comma + this.service.isNull(this.service.replaceAll(e.cliente,',',' ')) + comma + fechaCreacion + comma + fechaInicial + comma + horaInicio + comma + fechaFinal + comma + horaTermino + comma + aprobadorPor + enter;
     });
+   
+    var universalBOM = "\uFEFF";
+    var link = document.createElement('a');
+    link.href = "data:text/csv; charset=utf-8," + encodeURIComponent(universalBOM+file);
+    link.download = "reporte solicitudes " + new Date + ".csv";
+    link.click();
   }
 }
