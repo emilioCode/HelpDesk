@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 
-
 @Component({
-  selector: 'app-ticket',
-  templateUrl: './ticket.component.html',
+  selector: 'app-waiting',
+  templateUrl: './waiting.component.html',
   styles: []
 })
-export class TicketComponent implements OnInit {
+export class WaitingComponent implements OnInit {
 
   constructor(private service: ApiService) { 
     if(this.service.getLevel(this.service.getUser().acceso) < 2 ){
@@ -142,7 +141,7 @@ export class TicketComponent implements OnInit {
     this.service.isLoading = true;
     this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
-        this.tickets = res;
+        this.tickets = res.filter(x=>x.idUsuario ==0);
         console.log(  this.tickets )
         this.service.isLoading = false;
       },error => {
@@ -418,4 +417,5 @@ export class TicketComponent implements OnInit {
         this.service.isLoading = false;
       });
   }
+
 }

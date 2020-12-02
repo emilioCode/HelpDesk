@@ -40,7 +40,22 @@
                     @*<p class="info">Tel: (809)-732-3900 Fax: (809)-732-3873</p>*@
                     @*<p class="info">E-mail: ramvar@claro.net.do</p>*@
                     @if (@Model.empresa.Direccion != null && @Model.empresa.Direccion.Trim() != "")
-                    {<p class="info">@Model.empresa.Direccion</p>}
+                    {
+                        int c = 0;
+                        c = Model.empresa.Direccion.Split('\n').Count();
+                        if (c > 0)
+                        {
+                            //c++;
+                            for (int i = 0; i < c; i++)
+                            {
+                                <p class="info">@Model.empresa.Direccion.Split('\n')[i]</p>
+                            }
+                        }
+                        else
+                        {
+                            <p class="info">@Model.empresa.Direccion</p>
+                        }
+                    }
                     @if (Model.empresa.Telefono != "" && Model.empresa.Telefono != null)
                     {<p class="info">Tel: @Model.empresa.Telefono</p>}
                     @if (Model.empresa.Correo != "" && Model.empresa.Correo != null)
@@ -105,7 +120,180 @@
                         @foreach (var equipo in Model.equipos)
                         {
                             <tr>
-                                <td id="tallerDescripcion1" style="font-size: 14px;">@equipo.Descripcion</td>
+                                <td id="tallerDescripcion1" style="font-size: 14px;">@equipo.Descripcion @if ((equipo.Descripcion != "" && equipo.Descripcion != null) && (equipo.FallaReportada !="" && equipo.FallaReportada != null)) { <span>/</span> } @equipo.FallaReportada</td>
+                                <td id="tallerMarca1" style="font-size: 14px;">@equipo.Marca</td>
+                                <td id="tallerModelo1" style="font-size: 14px;">@equipo.Modelo</td>
+                                <td id="tallerSerie1" style="font-size: 14px;">@equipo.NoSerial</td>
+                            </tr>
+                        }
+                        @*<tr>
+            <td id="tallerDescripcion2" style="font-size: 14px;"></td>
+            <td id="tallerMarca2" style="font-size: 14px;"></td>
+            <td id="tallerModelo2" style="font-size: 14px;"></td>
+            <td id="tallerSerie2" style="font-size: 14px;"></td>
+        </tr>*@
+                        @*<tr>
+            <td id="tallerDescripcion3" style="font-size: 14px;"></td>
+            <td id="tallerMarca3" style="font-size: 14px;"></td>
+            <td id="tallerModelo3" style="font-size: 14px;"></td>
+            <td id="tallerSerie3" style="font-size: 14px;"></td>
+        </tr>*@
+                        @*<tr>
+            <td id="tallerDescripcion4" style="font-size: 14px;"></td>
+            <td id="tallerMarca4" style="font-size: 14px;"></td>
+            <td id="tallerModelo4" style="font-size: 14px;"></td>
+            <td id="tallerSerie4" style="font-size: 14px;"></td>
+        </tr>*@
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- OBSERVACIONES -->
+        <div class="container">
+            <div class="row">
+                <table class="table table-borderless" style="font-size: 14px;">
+                    <thead>
+                        <tr>
+                            <td class="text-left" style="width: 5%;"><b>Observaciones:</b></td>
+                            <td id="tallerObservaciones" class="text-left" style="width: 95%;">@Model.solicitud.Descripcion</td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <!-- OBSERVACIONES -->
+        <!-- NOTA -->
+        <div class="container pb-4">
+            <div class="row">
+                <p style="font-size: 12px;"><b>NOTA:</b> En caso de no efectuarse la reparación por solicitud del cliente o por no existir en el mercado alguna parte o pieza de reemplazo para su equipo, se hará un cargo mínimo de RD$800.00 por concepto de revisión. No somos responsables de datos contenidos en sus equipos. Las reparaciones tienen 30 días de garantía por la misma avería. Equipos dejados por mas de 30 días en nuestros talleres luego de su diagnóstico o reparación serán subastados.</p>
+            </div>
+        </div>
+        <!-- NOTA -->
+        <!-- FIRMAS -->
+        <div class="container">
+            <div class="row">
+                <table class="table table-borderless firma">
+                    <tbody>
+                        <tr>
+                            <td class="border-top text-center">Recibido Por</td>
+                            <td></td>
+                            <td class="border-top text-center">Cliente</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- FIRMAS -->
+    </main>
+     <hr />
+    <header>
+        <div class="container border-bottom border-dark">
+            <div class="row">
+                <div class="col">
+                    @if (Model.empresa.Image != null)
+                    {
+                        var imageUrl = "data:image/jpg; base64," + Convert.ToBase64String(@Model.empresa.Image);
+
+                        <img src="@imageUrl" class="logo" alt="@Model.empresa.RazonSocial" />
+                    }
+
+                </div>
+                <div class="col d-flex justify-content-end align-items-center">
+                    <div class="service-order">
+                        Orden de Servicio No. <form action=""><input id="ticket" name="ticket" type="text" value="@Model.solicitud.NoSecuencia" readonly="readonly"><button id="send" name="send" style="visibility: hidden;"></button></form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col py-2">
+                    @* <p class="info">Av. Nunez de caceres, esquina 31 Oeste, Plaza Castellana Local #205</p>*@
+                    @*<p class="info">La Castellana, Sto. Dgo. D.N., Republica Dominicana</p>*@
+                    @*<p class="info">Tel: (809)-732-3900 Fax: (809)-732-3873</p>*@
+                    @*<p class="info">E-mail: ramvar@claro.net.do</p>*@
+                    @if (@Model.empresa.Direccion != null && @Model.empresa.Direccion.Trim() != "")
+                    {
+                        int c = 0;
+                        c = Model.empresa.Direccion.Split('\n').Count();
+                        if (c > 0)
+                        {
+                            //c++;
+                            for (int i = 0; i < c; i++)
+                            {
+                                <p class="info">@Model.empresa.Direccion.Split('\n')[i]</p>
+                            }
+                        }
+                        else
+                        {
+                            <p class="info">@Model.empresa.Direccion</p>
+                        }
+                    }
+                    @if (Model.empresa.Telefono != "" && Model.empresa.Telefono != null)
+                    {<p class="info">Tel: @Model.empresa.Telefono</p>}
+                    @if (Model.empresa.Correo != "" && Model.empresa.Correo != null)
+                    {<p class="info">E-mail: @Model.empresa.Correo</p>}
+
+                </div>
+                <div class="col d-flex justify-content-end align-items-top py-2">
+                    @if (Model.empresa.Rnc != "" && Model.empresa.Rnc != null)
+                    {<p class="info">RNC: @Model.empresa.Rnc</p>}
+                </div>
+            </div>
+        </div>
+    </header>
+    @*TIPO DE SERVECIO TALLER*@
+    <main>
+        <div class="container text-center">
+            <h6 class="font-weight-bold">INGRESO DE EQUIPOS A TALLER</h6>
+            <div class="row">
+                <table class="table table-borderless" style="font-size: 14px;">
+                    <tbody>
+                        <tr>
+                            <td id="descripcion1" class="text-left" style="padding: 5px!important; font-size: 12px;">Nombre: <span id="nombreTaller" style="font-weight: bold;">@Model.cliente.Nombre</span></td>
+                            <td id="marca1" style="padding: 5px!important; font-size: 12px;"></td>
+                            <td id="modelo1" style="padding: 5px!important; font-size: 12px;"></td>
+                            <td id="serial1" class="text-right" style="padding: 5px!important; font-size: 12px;">Orden de Servicio: <span id="ticketTaller" style="font-weight: bold;">@Model.solicitud.NoSecuencia</span></td>
+                        </tr>
+                        <tr>
+                            <td id="descripcion2" class="text-left" style="padding: 5px!important; font-size: 12px;">Direccion: <span id="direccionTaller" style="font-weight: bold;">@Model.cliente.Direccion</span></td>
+                            <td id="marca2" style="padding: 5px!important; font-size: 12px;"></td>
+                            <td id="modelo2" style="padding: 5px!important; font-size: 12px;"></td>
+                            <td id="serial2" class="text-right" style="padding: 5px!important; font-size: 12px;">Fecha: <span id="horaTaller" style="font-weight: bold;">@Model.solicitud.FechaCreacion.ToString("dd/MM/yyyy")</span></td>
+                        </tr>
+                        <tr>
+                            <td id="descripcion3" class="text-left" style="padding: 5px!important; font-size: 12px;">Telefono: <span id="telefonoTaller" style="font-weight: bold;">@Model.cliente.Telefono</span></td>
+                            <td id="marca3" style="padding: 5px!important; font-size: 12px;"></td>
+                            <td id="modelo3" style="padding: 5px!important; font-size: 12px;"></td>
+                            <td id="serial3" class="text-right" style="padding: 5px!important; font-size: 12px;">Email: <span id="emailTaller" style="font-weight: bold;">@Model.cliente.Correo</span></td>
+                        </tr>
+                        <tr>
+                            <td id="descripcion4" class="text-left" style="padding: 5px!important; font-size: 12px;">Contacto: <span id="contactoTaller" style="font-weight: bold;">@Model.cliente.Contacto</span></td>
+                            <td id="marca4" style="padding: 5px!important; font-size: 12px;"></td>
+                            <td id="modelo4" style="padding: 5px!important; font-size: 12px;"></td>
+                            <td id="serial4" class="text-right" style="padding: 5px!important;">Extension: <span id="extTaller" style="font-weight: bold;">@Model.cliente.Extension</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <table class="table border-bottom border-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">Descripci&oacute;n / Falla Reportada</th>
+                            <th scope="col">Marca</th>
+                            <th scope="col">Modelo</th>
+                            <th scope="col">Serial</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var equipo in Model.equipos)
+                        {
+                            <tr>
+                                <td id="tallerDescripcion1" style="font-size: 14px;">@equipo.Descripcion @if ((equipo.Descripcion != "" && equipo.Descripcion != null) && (equipo.FallaReportada !="" && equipo.FallaReportada != null)) { <span>/</span> } @equipo.FallaReportada</td>
                                 <td id="tallerMarca1" style="font-size: 14px;">@equipo.Marca</td>
                                 <td id="tallerModelo1" style="font-size: 14px;">@equipo.Modelo</td>
                                 <td id="tallerSerie1" style="font-size: 14px;">@equipo.NoSerial</td>

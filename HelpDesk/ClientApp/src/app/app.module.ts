@@ -26,6 +26,7 @@ import { CostumerComponent } from './components/shared/content/costumer/costumer
 import { TicketComponent } from './components/shared/content/ticket/ticket.component';
 import { InboxComponent } from './components/shared/content/inbox/inbox.component';
 import { ReportComponent } from './components/shared/content/report/report.component';
+import { WaitingComponent } from './components/shared/content/waiting/waiting.component';
 
 
 @NgModule({
@@ -48,7 +49,8 @@ import { ReportComponent } from './components/shared/content/report/report.compo
     CostumerComponent,
     TicketComponent,
     InboxComponent,
-    ReportComponent
+    ReportComponent,
+    WaitingComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -64,7 +66,8 @@ import { ReportComponent } from './components/shared/content/report/report.compo
       { path: 'costumer', component: CostumerComponent },
       { path: 'ticket', component: TicketComponent },
       { path: 'inbox', component: InboxComponent },
-      { path: 'report', component: ReportComponent }
+      { path: 'report', component: ReportComponent },
+      { path: 'waiting', component: WaitingComponent }
     ]),
     Ng2Webstorage
   ],

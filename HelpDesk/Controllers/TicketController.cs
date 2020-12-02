@@ -99,12 +99,11 @@ namespace HelpDesk.Controllers
                     var discrepancia = req.TipoSolicitud == "Servicio Taller" ? "Observaciones" : "Falla";
                     var body = $@"<div>
                                 {empresa.RazonSocial}<br>
-                                Orden: <b><i>{req.NoSecuencia}</i></b><br>
-                                Orden de <b><i>{req.TipoSolicitud}</i></b><br> 
-                                Técnico asignado: <b><i>{usuario.Nombre}</i></b><br>
+                                Orden de servicio técnico asignado: <b><i>{usuario.Nombre}</i></b><br>
                                 Fecha: <b><i>{req.FechaCreacion.ToString("dd/MM/yyyy")}</i></b><br>
+                                Orden: <b><i>{req.NoSecuencia}</i></b><br>
                                 Cliente: <b><i>{cliente.Nombre}</i></b><br>
-                                {discrepancia}: < b >< i >{req.Descripcion}</i></b><br>
+                                {discrepancia}: <b><i>{req.Descripcion}</i></b><br>
                             </div>";
 
                     var resp = MailClient.Send(empresa.Host, Convert.ToInt32(empresa.Port), System.Net.Mail.SmtpDeliveryMethod.Network, false,
@@ -201,12 +200,11 @@ namespace HelpDesk.Controllers
                     var discrepancia = req.TipoSolicitud == "Servicio Taller" ? "Observaciones" : "Falla";
                     var body = $@"<div>
                                 {empresa.RazonSocial}<br>
-                                Orden: <b><i>{req.NoSecuencia}</i></b><br>
-                                Orden de <b><i>{req.TipoSolicitud}</i></b><br> 
-                                Técnico asignado: <b><i>{usuario.Nombre}</i></b><br>
+                                Orden de servicio técnico asignado: <b><i>{usuario.Nombre}</i></b><br>
                                 Fecha: <b><i>{req.FechaCreacion.ToString("dd/MM/yyyy")}</i></b><br>
+                                Orden: <b><i>{req.NoSecuencia}</i></b><br>
                                 Cliente: <b><i>{cliente.Nombre}</i></b><br>
-                                {discrepancia}: < b >< i >{req.Descripcion}</i></b><br>
+                                {discrepancia}: <b><i>{req.Descripcion}</i></b><br>
                             </div>";
 
                     //Empresa empresa = context.Empresa.Find(req.IdEmpresa);

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HelpDesk.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace HelpDesk.Pages
 {
@@ -15,6 +16,8 @@ namespace HelpDesk.Pages
         public Solicitud solicitud { get; set; }
         public List<Equipo> equipos { get; set; }
         public Cliente cliente { get; set; }
+        public List<Seguimiento> seguimiento { get; set; }
+        public string soluciones { get; set; }
 
         private readonly HelpDeskDBContext context;
 
@@ -32,6 +35,10 @@ namespace HelpDesk.Pages
             solicitud = context.Solicitud.Where(e => e.NoSecuencia == noTicket).First();
             cliente = context.Cliente.Where(e => e.IdEmpresa == idEmpresa && e.Id==solicitud.IdCliente).First();
             equipos = context.Equipo.Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id).ToList();
+
+            seguimiento = context.Seguimiento.Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id && e.Etiquetado == true).ToList();
+            soluciones = seguimiento.Select(x => x.Texto).Join(",");
+
             while (equipos.Count < 4)
             {
                 var equipoTemp = new Equipo();

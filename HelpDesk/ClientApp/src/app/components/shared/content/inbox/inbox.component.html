@@ -96,13 +96,11 @@
                   <!-- activity -->
                   <div class="row">
                     <div class="form-group col-xs-6 col-sm-6">
-                      <div class="form-group col-xs-6 col-sm-6">
-                          <label>Solicitante:</label>
-                          <select class="form-control" [(ngModel)]="ticket.idCliente" [disabled]="option!='add'">
-                            <option value="" selected [hidden]="ticket.idCliente!=''">Seleccione</option>
-                            <option value="{{costumer.id}}" *ngFor="let costumer of costumers">{{ costumer.nombre }} | "{{ costumer.rnc }}"</option>
-                          </select>                    
-                        </div>
+                      <label>Solicitante:</label>
+                      <select class="form-control" [(ngModel)]="ticket.idCliente" [disabled]="option!='add'">
+                        <option value="" selected [hidden]="ticket.idCliente!=''">Seleccione</option>
+                        <option value="{{costumer.id}}" *ngFor="let costumer of costumers">{{ costumer.nombre }} | "{{ costumer.rnc }}"</option>
+                      </select>                    
                     </div>                        
                     <div class="form-group col-xs-3 col-sm-3">
                       <label>Tipo de Solicitud:</label>
@@ -160,20 +158,20 @@
                           <thead>
                             <tr>
                               <th scope="col" class="text-center">Descripci&oacute;n</th>
+                              <th scope="col" class="text-center">Falla reportada</th>
                               <th scope="col" class="text-center">Marca</th>
                               <th scope="col" class="text-center">Modelo</th>
                               <th scope="col" class="text-center">Serial No.</th>
-                              <th scope="col" class="text-center">Falla reportada</th>
                               <th scope="col" class="text-center" [hidden]="ticket.tipoSolicitud !='Servicio a Domicilio' || devices.length >= 4 || ticket.estado =='Completado'"><a class="btn-link" (click)="addDevice=true;device={}" [hidden]="addDevice || devices.length >= 4"><i class="fa fa-plus"></i></a></th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr [hidden]="!addDevice">
                               <td><input type="text" [(ngModel)]="device.descripcion" placeholder="(Requerido)" class="form-control"/></td>
+                              <td ><input type="text" [(ngModel)]="device.fallaReportada" placeholder="(Requerido)" class="form-control"/></td>
                               <td><input type="text" [(ngModel)]="device.marca" placeholder="(Requerido)" class="form-control"/></td>
                               <td><input type="text" [(ngModel)]="device.modelo" placeholder="(Requerido)" class="form-control"/></td>
                               <td><input type="text" [(ngModel)]="device.noSerial" placeholder="(Requerido)" class="form-control"/></td>
-                              <td ><input type="text" [(ngModel)]="device.fallaReportada" placeholder="(Requerido)" class="form-control"/></td>
                               <td>
                                 <a class="btn-link" (click)="addDeviceOne(device)"><i class="fa fa-check"></i></a>
                                 <a class="btn-link" (click)="addDevice=false;device={}"><i class="fa fa-remove"></i></a>
@@ -181,10 +179,10 @@
                             </tr>
                             <tr *ngFor="let e of devices">
                               <td>{{e.descripcion}}</td>
+                              <td>{{e.fallaReportada}}</td>
                               <td>{{e.marca}}</td>
                               <td>{{e.modelo}}</td>
                               <td>{{e.noSerial}}</td>
-                              <td>{{e.fallaReportada}}</td>
                               <!-- <td> -->
                                 <!-- <a class="btn-link" (click)="removeDeviceList(e)"><i class="fa fa-minus"></i></a> -->
                               <!-- </td> -->
