@@ -65,7 +65,7 @@ namespace HelpDesk.Controllers
             try
             {          
                 if (req.Titulo == null || req.Titulo == "" || req.IdEmpresa == null || req.IdEmpresa <= 0
-                    || req.IdUsuario == null || req.IdUsuario <= 0 || req.IdCliente == null || req.IdCliente <= 0
+                    /*|| req.IdUsuario == null || req.IdUsuario <= 0*/ || req.IdCliente == null || req.IdCliente <= 0
                     || req.TipoSolicitud == null || req.TipoSolicitud == "" || req.TipoServicio == null || req.TipoServicio == "")
                 {
                     res = new ObjectResponse
@@ -79,6 +79,8 @@ namespace HelpDesk.Controllers
                     return new JsonResult(res);
                 }
                 Empresa empresa = context.Empresa.Find(req.IdEmpresa);
+
+                req.IdUsuario = req.IdUsuario < 1 ? 0 : req.IdUsuario;
                 req.FechaCreacion = DateTime.Now.Date;
                 req.Habilitado = true;
                 req.NoSecuencia = empresa.Secuenciaticket == string.Empty ? "1" : empresa.Secuenciaticket;
@@ -86,17 +88,29 @@ namespace HelpDesk.Controllers
                 context.Entry(req).State = Microsoft.EntityFrameworkCore.EntityState.Added;
                 context.Entry(empresa).State = Microsoft.EntityFrameworkCore.EntityState.Modified;  
                 context.SaveChanges();
-                Usuario usuario = context.Usuario.Find(req.IdUsuario);
 
-                var subject = $"HelpDesk - Ticket No.{req.NoSecuencia}";
-                var body = $@"<p>Saludos,</p>
-                                <p>Usted tiene el ticket de {req.NoSecuencia} - <b>No.{req.NoSecuencia}</b></p>
 
-                                <p>Este correo se genera de forma automática, favor no responder.</p>                            
-                                ";
+                Cliente cliente = context.Cliente.Find(req.IdCliente);
+                
+                if(req.IdUsuario != 0 )
+                {
+                    Usuario usuario = context.Usuario.Where(u => u.IdEmpresa == req.IdEmpresa && u.Id == req.IdUsuario).SingleOrDefault();
+                    var subject = $"HelpDesk Notification - Ticket No.{req.NoSecuencia}";
 
-                var resp = MailClient.Send(empresa.Host, Convert.ToInt32(empresa.Port), System.Net.Mail.SmtpDeliveryMethod.Network, false,
-                true, empresa.Correo, empresa.Contrasena,usuario.Correo , subject, body, true);
+                    var body = $@"<div>
+                                {empresa.RazonSocial}<br>
+                                Orden: <b><i>{req.NoSecuencia}</i></b><br>
+                                Orden de <b><i>{req.TipoSolicitud}</i></b><br> 
+                                Técnico asignado: <b><i>{usuario.Nombre}</i></b><br>
+                                Fecha: <b><i>{req.FechaCreacion.ToString("dd/MM/yyyy")}</i></b><br>
+                                Cliente: <b><i>{cliente.Nombre}</i></b><br>
+                                Falla: <b><i>########</i></b><br>
+                            </div>";
+
+                    var resp = MailClient.Send(empresa.Host, Convert.ToInt32(empresa.Port), System.Net.Mail.SmtpDeliveryMethod.Network, false,
+                    true, empresa.Correo, empresa.Contrasena, usuario.Correo, subject, body, true);
+
+                }
 
                 var data = context.Solicitud.Where(e => e.NoSecuencia == req.NoSecuencia).LastOrDefault();
                 res = new ObjectResponse
@@ -146,6 +160,10 @@ namespace HelpDesk.Controllers
                     return new JsonResult(res);
                 }
                 Solicitud ticket = context.Solicitud.Find(req.Id);
+                Empresa empresa = context.Empresa.Find(req.IdEmpresa);
+                Usuario usuario = context.Usuario.Find(req.IdUsuario);
+                Cliente cliente = context.Cliente.Find(req.IdCliente);
+
                 if (toDo is "ESTADO")
                 {
                     DateTime today = DateTime.Now.Date;
@@ -180,14 +198,19 @@ namespace HelpDesk.Controllers
                 {
                     ticket.IdUsuario = req.IdUsuario;
 
-                    var subject = $"HelpDesk - Ticket No.{req.NoSecuencia}";
-                    var body = $@"<p>Saludos,</p>
-                                <p>El ticket de {req.NoSecuencia} - <b>No.{req.NoSecuencia}</b> se encuentra en su bandeja.</p>
-
-                                <p>Este correo se genera de forma automática, favor no responder.</p>                            
-                                ";
-                    Empresa empresa = context.Empresa.Find(req.IdEmpresa);
-                    Usuario usuario = context.Usuario.Find(req.IdUsuario);
+                    var subject = $"HelpDesk Notification - Ticket No.{req.NoSecuencia}"; 
+                    var body = $@"<div>
+                                    {empresa.RazonSocial}<br>
+                                    Orden: <b><i>{req.NoSecuencia}</i></b><br>
+                                    Orden de <b><i>{req.TipoSolicitud}</i></b><br> 
+                                    Técnico asignado: <b><i>{usuario.Nombre}</i></b><br>
+                                    Fecha: <b><i>{req.FechaCreacion.ToString("dd/MM/yyyy")}</i></b><br>
+                                    Cliente: <b><i>{cliente.Nombre}</i></b><br>
+                                    Falla: <b><i>########</i></b><br>
+                                </div>";
+                    
+                    //Empresa empresa = context.Empresa.Find(req.IdEmpresa);
+                    //Usuario usuario = context.Usuario.Find(req.IdUsuario);
 
                     var resp = MailClient.Send(empresa.Host, Convert.ToInt32(empresa.Port), System.Net.Mail.SmtpDeliveryMethod.Network, false,
                     true, empresa.Correo, empresa.Contrasena, usuario.Correo, subject, body, true);
@@ -230,19 +253,28 @@ namespace HelpDesk.Controllers
             return new JsonResult(res);
         }
 
-        // DELETE: api/ApiWithActions/5
-        //[HttpDelete/*("{id}")*/]
-        //public ObjectResponse Delete(/*int id*/)
-        //{
+        //DELETE: api/ApiWithActions/5
+        [HttpDelete/*("{id}")*/]
+        public ObjectResponse Delete(/*int id*/)
+        {
+            var today = DateTime.Today.Date;
+            var body = $@"<div>
+                                    RAMVAR Computadoras, SRL.<br>
+                                    Orden:<b><i>20200001</i></b><br>
+                                    Orden de Servicio a Domicilio<br> 
+                                    tecnico asignado:<b><i>tecnico #1</i></b><br>
+                                    Fecha:{today.ToString("dd/MM/yyyy")}<br>
+                                    Cliente:<b><i>Mix Viajes & Cruceros</i></b><br>
+                                    Falla: XXXXXX<br>
+                                </div>";
+            var res = MailClient.Send("smtp-mail.outlook.com", 587, System.Net.Mail.SmtpDeliveryMethod.Network, false,
+                true, "emilio_mem@hotmail.com", "forever1234", "emilio_mem@hotmail.com,thekingemilio@gmail.com", "MAIL TO TEST", body, true);
+            //res = MailClient.Send("smtp-mail.outlook.com", 587, System.Net.Mail.SmtpDeliveryMethod.Network, false,
 
-        //    var res= MailClient.Send("smtp-mail.outlook.com", 587, System.Net.Mail.SmtpDeliveryMethod.Network, false,
-        //        true, "emilio_mem@hotmail.com", "forever1234", "lsaulcastro@gmail.com", "MAIL TO TEST", "<h2 style='color:red'>MAIL TO TEST</h2>", true);
-        //     //res = MailClient.Send("smtp-mail.outlook.com", 587, System.Net.Mail.SmtpDeliveryMethod.Network, false,
+            //   true, "emilio_mem@hotmail.com", "forever1234", "Albertparedesdo @gmail.com", "MAIL TO TEST", "<h2 style='color:red'>MAIL TO TEST</h2>", true);
 
-        //     //   true, "emilio_mem@hotmail.com", "forever1234", "Albertparedesdo @gmail.com", "MAIL TO TEST", "<h2 style='color:red'>MAIL TO TEST</h2>", true);
-
-        //    return res;
-        //}
+            return res;
+        }
         [HttpGet("[action]/{idUser}")]
         public async Task<JsonResult> numbersOfTickets(int idUser)
         {

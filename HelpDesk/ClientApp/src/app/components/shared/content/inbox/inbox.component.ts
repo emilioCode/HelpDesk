@@ -154,7 +154,7 @@ export class InboxComponent implements OnInit {
   }
 
   addDeviceOne(item){
-    if(this.service.validateTrim(item.marca)
+    if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
     ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
       this.service.swal('Campos requeridos','Es necesario suministrar los datos del disposivo','info');
       return false;

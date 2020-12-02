@@ -40,7 +40,7 @@ export class TicketComponent implements OnInit {
       this.ticket.tipoSolicitud= '';
       this.ticket.tipoServicio = '';
       this.ticket.idCliente = '';
-      this.ticket.idUsuario = '';
+      this.ticket.idUsuario = '0';
       this.ticket.estado = this.service.getStatuses()[0].value;
       this.ticket.fechaCreacion= new Date();
       this.devices = [];
@@ -111,7 +111,7 @@ export class TicketComponent implements OnInit {
 
   i=0;
   addDeviceList(item){
-    if(this.service.validateTrim(item.marca)
+    if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
     ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
       this.service.swal('Campos requeridos','Es necesario suministrar los datos del disposivo','info');
       return false;
@@ -149,8 +149,13 @@ export class TicketComponent implements OnInit {
   add(){
     if(this.service.validate(this.ticket.titulo) || this.service.validate(this.ticket.tipoSolicitud)
     || this.service.validate(this.ticket.tipoServicio) || this.service.validate(this.ticket.estado)
-    || this.service.validate(this.ticket.idCliente) || this.service.validate(this.ticket.idUsuario) ){
+    || this.service.validate(this.ticket.idCliente) /*|| this.service.validate(this.ticket.idUsuario)*/ ){
       this.service.swal('Campos requeridos','Asegurese de completar los datos minimos necesarios para crear la orden','warning');
+      return false;
+    }
+    if(this.ticket.tipoSolicitud == 'Servicio a Domicilio' && this.service.validate(this.ticket.descripcion)){
+      this.service.swal('Campos requerido','Favor digite falla reportada','warning');
+      return false;
     }
 
     if(this.service.getLevel(this.service.getUser().acceso) <= 1){
@@ -238,6 +243,7 @@ export class TicketComponent implements OnInit {
 
   clearDevicesIf(){
     if(this.ticket.tipoSolicitud =='Servicio a Domicilio')this.devices = [];
+    this.ticket.descripcion = '';
   }
 
   getTraces(idSolicitud,idEmpresa){

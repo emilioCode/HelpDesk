@@ -48,9 +48,9 @@ namespace HelpDesk.Controllers
             ObjectResponse res;
             try
             {
-                if (req.Marca == "" || req.Marca == null ||
-                req.Modelo == "" || req.Modelo == null ||
-                req.NoSerial == "" || req.NoSerial == null)
+                if (req.Marca == "" || req.Marca == null || req.Modelo == "" 
+                    || req.Modelo == null || req.NoSerial == "" || req.NoSerial == null
+                    || req.FallaReportada == null || req.FallaReportada == "")
                 {
                     res = new ObjectResponse
                     {
@@ -102,9 +102,8 @@ namespace HelpDesk.Controllers
             try
             {            
                 if (req.Where(e=> e.Marca =="" || e.Marca == null ||
-                e.Descripcion == "" || e.Descripcion == null ||
-                e.Modelo =="" || e.Modelo == null ||
-                e.NoSerial == "" || e.NoSerial == null).Count() > 0)
+                e.Descripcion == "" || e.Descripcion == null || e.Modelo =="" || e.Modelo == null ||
+                e.NoSerial == "" || e.NoSerial == null || e.FallaReportada == null || e.FallaReportada == "").Count() > 0)
                 {
                     res = new ObjectResponse
                     {

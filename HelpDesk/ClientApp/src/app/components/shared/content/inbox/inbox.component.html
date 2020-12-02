@@ -89,8 +89,8 @@
         <div class="col-md-12">
             <div class="nav-tabs-custom">
               <ul class="nav nav-tabs">
-                <li id="li_activity" class="active"><a href="#activity" data-toggle="tab">Activity</a></li>
-                <li id="li_timeline" *ngIf="option !=='add'"><a href="#timeline" data-toggle="tab">Timeline</a></li>
+                <li id="li_activity" class="active"><a href="#activity" data-toggle="tab">General</a></li>
+                <li id="li_timeline" *ngIf="option !=='add'"><a href="#timeline" data-toggle="tab">Actividades realizadas</a></li>
                 <!-- <li id="li_settings" *ngIf="option !=='add'"><a href="#settings" data-toggle="tab">Settings</a></li> -->
               </ul>
               <div class="tab-content">
@@ -156,19 +156,21 @@
                         <table class="table table-bordered">
                           <thead>
                             <tr>
-                              <th scope="col" class="text-center" style="width: 50%">Descripci&oacute;n</th>
+                              <th scope="col" class="text-center">Descripci&oacute;n</th>
                               <th scope="col" class="text-center">Marca</th>
                               <th scope="col" class="text-center">Modelo</th>
                               <th scope="col" class="text-center">Serial No.</th>
+                              <th scope="col" class="text-center">Falla reportada</th>
                               <th scope="col" class="text-center" [hidden]="ticket.tipoSolicitud !='Servicio a Domicilio' || devices.length >= 4 || ticket.estado =='Completado'"><a class="btn-link" (click)="addDevice=true;device={}" [hidden]="addDevice || devices.length >= 4"><i class="fa fa-plus"></i></a></th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr [hidden]="!addDevice">
-                              <td><input type="text" [(ngModel)]="device.descripcion" placeholder="(Opcional)"/></td>
-                              <td><input type="text" [(ngModel)]="device.marca" placeholder="(Requerido)"/></td>
-                              <td><input type="text" [(ngModel)]="device.modelo" placeholder="(Requerido)"/></td>
-                              <td><input type="text" [(ngModel)]="device.noSerial" placeholder="(Requerido)"/></td>
+                              <td><input type="text" [(ngModel)]="device.descripcion" placeholder="(Requerido)" class="form-control"/></td>
+                              <td><input type="text" [(ngModel)]="device.marca" placeholder="(Requerido)" class="form-control"/></td>
+                              <td><input type="text" [(ngModel)]="device.modelo" placeholder="(Requerido)" class="form-control"/></td>
+                              <td><input type="text" [(ngModel)]="device.noSerial" placeholder="(Requerido)" class="form-control"/></td>
+                              <td ><input type="text" [(ngModel)]="device.fallaReportada" placeholder="(Requerido)" class="form-control"/></td>
                               <td>
                                 <a class="btn-link" (click)="addDeviceOne(device)"><i class="fa fa-check"></i></a>
                                 <a class="btn-link" (click)="addDevice=false;device={}"><i class="fa fa-remove"></i></a>
@@ -179,6 +181,7 @@
                               <td>{{e.marca}}</td>
                               <td>{{e.modelo}}</td>
                               <td>{{e.noSerial}}</td>
+                              <td>{{e.fallaReportada}}</td>
                               <!-- <td> -->
                                 <!-- <a class="btn-link" (click)="removeDeviceList(e)"><i class="fa fa-minus"></i></a> -->
                               <!-- </td> -->
@@ -188,8 +191,10 @@
                       </div>
                     </div>
                     <div class="form-group col-xs-12 col-sm-12">
-                      <textarea placeholder="Descripción" class="form-control" rows="5" [(ngModel)]="ticket.descripcion" [disabled]="option!='add'"></textarea>
-                    </div>
+                        <textarea *ngIf="ticket.tipoSolicitud =='Servicio Taller'" placeholder="Observaciones" class="form-control" rows="5" [(ngModel)]="ticket.descripcion" [disabled]="option!='add'"></textarea>
+                        <label *ngIf="ticket.tipoSolicitud !='Servicio Taller'">Falla Reportada:</label>
+                        <input *ngIf="ticket.tipoSolicitud !='Servicio Taller'" class="form-control" placeholder="Falla Reportada" [(ngModel)]="ticket.descripcion" [disabled]="option!='add'"/>
+                      </div>
                     <div class="form-group col-xs-3 col-sm-3">
                       <label>Estado: </label>
                       <br *ngIf="option=='add'" />

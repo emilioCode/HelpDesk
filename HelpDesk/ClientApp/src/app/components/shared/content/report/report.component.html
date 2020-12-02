@@ -10,10 +10,10 @@
       <div class="box-body  no-padding">
         <div class="col-xs-12 col-md-12">
           <div class="col-xs-3 col-md-3 form-group">
-            <label>Tipo:</label>
+            <label>Tipo de Servicio:</label>
             
             <select class="form-control" id="tipoComprobante" [(ngModel)]="request.tipoSolicitud">
-              <option value="" [hidden]="request.tipoSolicitud!=''">Seleccione Servicio</option>
+              <option value="" [hidden]="request.tipoSolicitud!=''">Seleccione</option>
               <option *ngFor="let item of service.getTypeOfRequests()" value="{{ item.name }}">{{ item.name }}</option>
             </select>
           </div>

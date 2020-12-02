@@ -165,6 +165,12 @@ namespace HelpDesk.Models
                     .HasColumnName("descripcion")
                     .IsUnicode(false);
 
+                entity.Property(e => e.FallaReportada)
+                    .IsRequired()
+                    .HasColumnName("fallaReportada")
+                    .HasMaxLength(80)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Habilitado).HasColumnName("habilitado");
 
                 entity.Property(e => e.IdEmpresa).HasColumnName("idEmpresa");
