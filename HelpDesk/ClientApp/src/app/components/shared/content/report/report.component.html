@@ -69,7 +69,6 @@
               <th>No. Secuencia</th>
               <th>Tipo Solicitud</th>
               <th>Tipo Servicio</th>
-              <th>Titulo</th>
               <th>Estado</th>
               <th>Técnico</th><!---->
               <th>Cliente</th>
@@ -86,7 +85,6 @@
               <td>{{ item.noSecuencia }}</td>
               <td>{{ item.tipoSolicitud }}</td>
               <td>{{ item.tipoServicio }}</td>
-              <td>{{ item.titulo }}</td>
               <td>{{ item.estado }} <i class="fa fa-check" *ngIf="item.estado=='Completado' && item.aprobadoPor !=null" style="color:green" title="Aprobado"></i> <i class="fa fa-warning" style="color:gold" *ngIf="item.estado=='Completado' && item.aprobadoPor ==null" title="Pendiente de aprobar"></i></td>
               <td>{{ item.atendidoPor }}</td><!---->
               <td>{{ item.cliente }}</td>

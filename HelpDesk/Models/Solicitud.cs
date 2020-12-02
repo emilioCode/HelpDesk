@@ -18,7 +18,6 @@ namespace HelpDesk.Models
         public string TipoServicio { get; set; }
         public string Estado { get; set; }
         public int IdEmpresa { get; set; }
-        public string Titulo { get; set; }
         public string Descripcion { get; set; }
         public int? AprobadoPor { get; set; }
         public bool? Habilitado { get; set; }

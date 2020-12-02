@@ -64,8 +64,7 @@ namespace HelpDesk.Controllers
             ObjectResponse res;
             try
             {          
-                if (req.Titulo == null || req.Titulo == "" || req.IdEmpresa == null || req.IdEmpresa <= 0
-                    /*|| req.IdUsuario == null || req.IdUsuario <= 0*/ || req.IdCliente == null || req.IdCliente <= 0
+                if ( req.IdEmpresa == null || req.IdEmpresa <= 0|| req.IdCliente == null || req.IdCliente <= 0
                     || req.TipoSolicitud == null || req.TipoSolicitud == "" || req.TipoServicio == null || req.TipoServicio == "")
                 {
                     res = new ObjectResponse
@@ -97,6 +96,7 @@ namespace HelpDesk.Controllers
                     Usuario usuario = context.Usuario.Where(u => u.IdEmpresa == req.IdEmpresa && u.Id == req.IdUsuario).SingleOrDefault();
                     var subject = $"HelpDesk Notification - Ticket No.{req.NoSecuencia}";
 
+                    var discrepancia = req.TipoSolicitud == "Servicio Taller" ? "Observaciones" : "Falla";
                     var body = $@"<div>
                                 {empresa.RazonSocial}<br>
                                 Orden: <b><i>{req.NoSecuencia}</i></b><br>
@@ -104,7 +104,7 @@ namespace HelpDesk.Controllers
                                 Técnico asignado: <b><i>{usuario.Nombre}</i></b><br>
                                 Fecha: <b><i>{req.FechaCreacion.ToString("dd/MM/yyyy")}</i></b><br>
                                 Cliente: <b><i>{cliente.Nombre}</i></b><br>
-                                Falla: <b><i>########</i></b><br>
+                                {discrepancia}: < b >< i >{req.Descripcion}</i></b><br>
                             </div>";
 
                     var resp = MailClient.Send(empresa.Host, Convert.ToInt32(empresa.Port), System.Net.Mail.SmtpDeliveryMethod.Network, false,
@@ -145,8 +145,7 @@ namespace HelpDesk.Controllers
             ObjectResponse res;
             try
             {
-                if (req.Titulo == null || req.Titulo == "" || req.IdEmpresa == null || req.IdEmpresa <= 0
-                    || req.IdUsuario == null || req.IdUsuario <= 0 || req.IdCliente == null || req.IdCliente <= 0
+                if (req.IdEmpresa == null || req.IdEmpresa <= 0|| req.IdUsuario == null || req.IdUsuario <= 0 || req.IdCliente == null || req.IdCliente <= 0
                     || req.TipoSolicitud == null || req.TipoSolicitud == "" || req.TipoServicio == null || req.TipoServicio == "")
                 {
                     res = new ObjectResponse
@@ -198,17 +197,18 @@ namespace HelpDesk.Controllers
                 {
                     ticket.IdUsuario = req.IdUsuario;
 
-                    var subject = $"HelpDesk Notification - Ticket No.{req.NoSecuencia}"; 
+                    var subject = $"HelpDesk Notification - Ticket No.{req.NoSecuencia}";
+                    var discrepancia = req.TipoSolicitud == "Servicio Taller" ? "Observaciones" : "Falla";
                     var body = $@"<div>
-                                    {empresa.RazonSocial}<br>
-                                    Orden: <b><i>{req.NoSecuencia}</i></b><br>
-                                    Orden de <b><i>{req.TipoSolicitud}</i></b><br> 
-                                    Técnico asignado: <b><i>{usuario.Nombre}</i></b><br>
-                                    Fecha: <b><i>{req.FechaCreacion.ToString("dd/MM/yyyy")}</i></b><br>
-                                    Cliente: <b><i>{cliente.Nombre}</i></b><br>
-                                    Falla: <b><i>########</i></b><br>
-                                </div>";
-                    
+                                {empresa.RazonSocial}<br>
+                                Orden: <b><i>{req.NoSecuencia}</i></b><br>
+                                Orden de <b><i>{req.TipoSolicitud}</i></b><br> 
+                                Técnico asignado: <b><i>{usuario.Nombre}</i></b><br>
+                                Fecha: <b><i>{req.FechaCreacion.ToString("dd/MM/yyyy")}</i></b><br>
+                                Cliente: <b><i>{cliente.Nombre}</i></b><br>
+                                {discrepancia}: < b >< i >{req.Descripcion}</i></b><br>
+                            </div>";
+
                     //Empresa empresa = context.Empresa.Find(req.IdEmpresa);
                     //Usuario usuario = context.Usuario.Find(req.IdUsuario);
 
@@ -254,27 +254,25 @@ namespace HelpDesk.Controllers
         }
 
         //DELETE: api/ApiWithActions/5
-        [HttpDelete/*("{id}")*/]
-        public ObjectResponse Delete(/*int id*/)
-        {
-            var today = DateTime.Today.Date;
-            var body = $@"<div>
-                                    RAMVAR Computadoras, SRL.<br>
-                                    Orden:<b><i>20200001</i></b><br>
-                                    Orden de Servicio a Domicilio<br> 
-                                    tecnico asignado:<b><i>tecnico #1</i></b><br>
-                                    Fecha:{today.ToString("dd/MM/yyyy")}<br>
-                                    Cliente:<b><i>Mix Viajes & Cruceros</i></b><br>
-                                    Falla: XXXXXX<br>
-                                </div>";
-            var res = MailClient.Send("smtp-mail.outlook.com", 587, System.Net.Mail.SmtpDeliveryMethod.Network, false,
-                true, "emilio_mem@hotmail.com", "forever1234", "emilio_mem@hotmail.com,thekingemilio@gmail.com", "MAIL TO TEST", body, true);
-            //res = MailClient.Send("smtp-mail.outlook.com", 587, System.Net.Mail.SmtpDeliveryMethod.Network, false,
+        //[HttpDelete/*("{id}")*/]
+        //public ObjectResponse Delete(/*int id*/)
+        //{
+        //    var today = DateTime.Today.Date;
+        //    var body = $@"<div>
+        //                            RAMVAR Computadoras, SRL.<br>
+        //                            Orden:<b><i>20200001</i></b><br>
+        //                            Orden de Servicio a Domicilio<br> 
+        //                            tecnico asignado:<b><i>tecnico #1</i></b><br>
+        //                            Fecha:{today.ToString("dd/MM/yyyy")}<br>
+        //                            Cliente:<b><i>Mix Viajes & Cruceros</i></b><br>
+        //                            Falla: XXXXXX<br>
+        //                        </div>";
+        //    var res = MailClient.Send("smtp-mail.outlook.com", 587, System.Net.Mail.SmtpDeliveryMethod.Network, false,
+        //        true, "emilio_mem@hotmail.com", "forever1234", "emilio_mem@hotmail.com,thekingemilio@gmail.com", "MAIL TO TEST", body, true);
+        //    //res = MailClient.Send("smtp-mail.outlook.com", 587, System.Net.Mail.SmtpDeliveryMethod.Network, false,
 
-            //   true, "emilio_mem@hotmail.com", "forever1234", "Albertparedesdo @gmail.com", "MAIL TO TEST", "<h2 style='color:red'>MAIL TO TEST</h2>", true);
-
-            return res;
-        }
+        //    return res;
+        //}
         [HttpGet("[action]/{idUser}")]
         public async Task<JsonResult> numbersOfTickets(int idUser)
         {
@@ -288,12 +286,15 @@ namespace HelpDesk.Controllers
                 var enproceso = tickets.Where(e => e.Estado.ToUpper() != "ABIERTO" || e.Estado.ToUpper() == "EN PROCESO" || (e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor == null)).Count();
                 var completados = tickets.Where(e => e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor != null).Count();
                 var costumers = context.Cliente.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Habilitado == true).ToList().Count();
+                var waitingToAttend = usuario.Acceso == "TECNICO"   ? 0 : context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO").ToList().Count();
+
                 object data = new
                 {
                     abiertos,
                     enproceso,
                     completados,
-                    costumers = costumers
+                    costumers,
+                    waitingToAttend
                 };
 
                 response = new ObjectResponse
@@ -337,7 +338,6 @@ namespace HelpDesk.Controllers
                                sol.TipoSolicitud,
                                sol.TipoServicio,
                                sol.Estado,
-                               sol.Titulo,
                                AprobadoPor = context.Usuario.Where(e => e.Id == sol.AprobadoPor).SingleOrDefault().CuentaUsuario,
                                sol.IdEmpresa
                            }).ToList();

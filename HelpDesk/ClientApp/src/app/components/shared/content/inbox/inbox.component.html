@@ -27,7 +27,6 @@
               <th>No. Secuencia</th>
               <th>Tipo Solicitud</th>
               <th>Tipo Servicio</th>
-              <th>Titulo</th>
               <th>Estado</th>
               <th class="text-center"><i class="fa fa-fw fa-list-alt"></i></th>
             </tr>
@@ -37,7 +36,6 @@
               <td>{{ item.noSecuencia }}</td>
               <td>{{ item.tipoSolicitud }}</td>
               <td>{{ item.tipoServicio }}</td>
-              <td>{{ item.titulo }}</td>
               <td>{{ item.estado }} <i class="fa fa-check" *ngIf="item.estado=='Completado' && item.aprobadoPor !=null" style="color:green" title="Aprobado"></i> <i class="fa fa-warning" style="color:gold" *ngIf="item.estado=='Completado' && item.aprobadoPor ==null" title="Pendiente de aprobar"></i></td>
               <td >
                 <a class="btn-link" (click)="fillModal('edit',item)" *ngIf="service.getLevel(service.getUser().acceso) > 0" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-edit"></i></a>
@@ -98,9 +96,14 @@
                   <!-- activity -->
                   <div class="row">
                     <div class="form-group col-xs-6 col-sm-6">
-                      <label>Titulo:</label>
-                      <input type="text" class="form-control" placeholder="Titulo" [(ngModel)]="ticket.titulo" [disabled]="option!='add'"/>
-                    </div>
+                      <div class="form-group col-xs-6 col-sm-6">
+                          <label>Solicitante:</label>
+                          <select class="form-control" [(ngModel)]="ticket.idCliente" [disabled]="option!='add'">
+                            <option value="" selected [hidden]="ticket.idCliente!=''">Seleccione</option>
+                            <option value="{{costumer.id}}" *ngFor="let costumer of costumers">{{ costumer.nombre }} | "{{ costumer.rnc }}"</option>
+                          </select>                    
+                        </div>
+                    </div>                        
                     <div class="form-group col-xs-3 col-sm-3">
                       <label>Tipo de Solicitud:</label>
                       <select class="form-control" [(ngModel)]="ticket.tipoSolicitud" [disabled]="option!='add'" (change)="clearDevicesIf()">
@@ -195,7 +198,7 @@
                         <label *ngIf="ticket.tipoSolicitud !='Servicio Taller'">Falla Reportada:</label>
                         <input *ngIf="ticket.tipoSolicitud !='Servicio Taller'" class="form-control" placeholder="Falla Reportada" [(ngModel)]="ticket.descripcion" [disabled]="option!='add'"/>
                       </div>
-                    <div class="form-group col-xs-3 col-sm-3">
+                    <div class="form-group col-xs-4 col-sm-4">
                       <label>Estado: </label>
                       <br *ngIf="option=='add'" />
                       <span *ngIf="option=='add'">{{ ticket.estado }}</span>
@@ -203,14 +206,7 @@
                         <option value="{{status.name}}" *ngFor="let status of service.getStatuses()">{{ status.name }}</option>
                       </select>
                     </div>
-                    <div class="form-group col-xs-3 col-sm-3">
-                      <label>Solicitante:</label>
-                      <select class="form-control" [(ngModel)]="ticket.idCliente" [disabled]="option!='add'">
-                        <option value="" selected [hidden]="ticket.idCliente!=''">Seleccione</option>
-                        <option value="{{costumer.id}}" *ngFor="let costumer of costumers">{{ costumer.nombre }} | "{{ costumer.rnc }}"</option>
-                      </select>
-                    </div>
-                    <div class="form-group col-xs-3 col-sm-3">
+                    <div class="form-group col-xs-4 col-sm-4">
                       <label>Técnico asignado:</label>
                       <br *ngIf="!(service.getLevel(service.getUser().acceso)>1)"/>
                       <span *ngIf="!(service.getLevel(service.getUser().acceso)>1)">{{service.getUser().nombre}}</span>
@@ -219,7 +215,7 @@
                         <option value="{{user.id}}" *ngFor="let user of users">{{ user.nombre }} | "{{ user.cuentaUsuario }}"</option>
                       </select>
                     </div>
-                    <div class="form-group col-xs-3 col-sm-3">
+                    <div class="form-group col-xs-4 col-sm-4">
                       <label>Aprobador por:</label>
                       <br *ngIf="ticket.aprobadoPor==null"/>
                       <span *ngIf="ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)==0 && ticket.estado =='Completado'">Pendiente de aprobación</span>

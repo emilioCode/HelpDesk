@@ -147,7 +147,7 @@ export class TicketComponent implements OnInit {
   }
 
   add(){
-    if(this.service.validate(this.ticket.titulo) || this.service.validate(this.ticket.tipoSolicitud)
+    if(this.service.validate(this.ticket.tipoSolicitud)
     || this.service.validate(this.ticket.tipoServicio) || this.service.validate(this.ticket.estado)
     || this.service.validate(this.ticket.idCliente) /*|| this.service.validate(this.ticket.idUsuario)*/ ){
       this.service.swal('Campos requeridos','Asegurese de completar los datos minimos necesarios para crear la orden','warning');

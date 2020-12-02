@@ -291,12 +291,6 @@ namespace HelpDesk.Models
                     .HasColumnName("tipoSolicitud")
                     .HasMaxLength(20)
                     .IsUnicode(false);
-
-                entity.Property(e => e.Titulo)
-                    .IsRequired()
-                    .HasColumnName("titulo")
-                    .HasMaxLength(150)
-                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Usuario>(entity =>

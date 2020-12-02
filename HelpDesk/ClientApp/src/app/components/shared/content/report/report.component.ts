@@ -60,7 +60,7 @@ export class ReportComponent implements OnInit {
     
     var comma =",";
     var enter = "\n";
-    var file = "NO. SECUENCIA, TIPO SOLICITUD, TIPO SERVICIO, TITULO, ESTADO, ATENDIDO POR, CLIENTE, FECHA CREACION, FECHA INICIAL, HORA INICIAL, FECHA TERMINO, HORA TERMINO, APROBADO POR" + enter;
+    var file = "NO. SECUENCIA, TIPO SOLICITUD, TIPO SERVICIO, ESTADO, ATENDIDO POR, CLIENTE, FECHA CREACION, FECHA INICIAL, HORA INICIAL, FECHA TERMINO, HORA TERMINO, APROBADO POR" + enter;
  
     this.requests.forEach(e => {
       var fechaCreacion = this.service.isNull(e.fechaCreacion) !=""?this.service.isNull(e.fechaCreacion).split('T')[0]:"";
@@ -69,7 +69,8 @@ export class ReportComponent implements OnInit {
       var aprobadorPor = this.service.isNull(e.aprobadoPor) != ""?this.service.isNull(this.service.replaceAll(e.aprobadoPor,',',' ')):"";
       var horaInicio = this.service.isNull(e.horaInicio) !=""?this.service.setTime(this.service.isNull(e.horaInicio)):"";
       var horaTermino = this.service.isNull(e.horaTermino) !=""?this.service.setTime(this.service.isNull(e.horaTermino)):"";
-      file += this.service.setEspecialPasted(e.noSecuencia) + comma + this.service.isNull(e.tipoSolicitud) + comma + this.service.isNull(e.tipoServicio) + comma + this.service.isNull(this.service.replaceAll(e.titulo,',',' ')) + comma + this.service.isNull(e.estado) + comma + this.service.isNull(this.service.replaceAll(e.atendidoPor,',',' ')) + comma + this.service.isNull(this.service.replaceAll(e.cliente,',',' ')) + comma + fechaCreacion + comma + fechaInicial + comma + horaInicio + comma + fechaFinal + comma + horaTermino + comma + aprobadorPor + enter;
+      var atendidoPor = this.service.isNull(e.atendidoPor) !=""?this.service.isNull(this.service.replaceAll(e.atendidoPor,',',' ')):"";
+      file += this.service.setEspecialPasted(e.noSecuencia) + comma + this.service.isNull(e.tipoSolicitud) + comma + this.service.isNull(e.tipoServicio) + comma + this.service.isNull(e.estado) + comma + atendidoPor + comma + this.service.isNull(this.service.replaceAll(e.cliente,',',' ')) + comma + fechaCreacion + comma + fechaInicial + comma + horaInicio + comma + fechaFinal + comma + horaTermino + comma + aprobadorPor + enter;
     });
    
     var universalBOM = "\uFEFF";
