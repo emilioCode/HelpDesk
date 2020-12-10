@@ -1,6 +1,6 @@
 import { Component, OnInit, Pipe } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
-import { serializePath } from '@angular/router/src/url_tree';
+import * as signalR from '@aspnet/signalr';
 
 @Component({
   selector: 'app-costumer',
@@ -14,9 +14,6 @@ export class CostumerComponent implements OnInit {
     this.getCostumers(this.service.getUser().id,"*")
   }
 
-  ngOnInit() {
-  }
-
   isLoading = false;
   empresas:any;
   costumers:any;
@@ -24,6 +21,38 @@ export class CostumerComponent implements OnInit {
   costumer:any={};
   imageUrl;
   levels:any;
+  hubConnection: signalR.HubConnection;
+
+  ngOnInit() {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+    .withUrl(this.service.baseUrl+'/hub')
+    .build();
+
+    this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
+      console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
+      // debugger
+      if( (component=='costumer' && idEmpresa == this.service.getUser().idEmpresa) || this.service.getUser().acceso =="ROOT" ){
+        
+        /* */
+        this.service.http.get(this.service.baseUrl + 'api/Costumer/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
+          .subscribe(res=>{
+            this.costumers = res;
+            if(idUsuario >0 && this.costumer.id == idUsuario){
+              this.costumer = this.costumers.filter(c=>c.id==idUsuario)[0];
+            }
+            this.service.isLoading = false;
+          },error => {
+            console.error(error);
+            this.service.isLoading = false;
+          });
+        /* */
+
+      }
+      
+    })
+
+    this.hubConnection.start().catch(err => console.error(err.toString()));
+  }
 
   getCostumers(id,option){
     this.service.isLoading = true;
@@ -68,7 +97,8 @@ export class CostumerComponent implements OnInit {
       console.log( res )
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
-        this.getCostumers(this.service.getUser().id,"*")
+        // this.getCostumers(this.service.getUser().id,"*")
+        this.hubConnection.invoke('refresh', 'costumer',this.costumer.idEmpresa,0,0)
       }
       this.service.isLoading =false;
       },error => {
@@ -88,7 +118,8 @@ export class CostumerComponent implements OnInit {
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
-        this.getCostumers(this.service.getUser().id,"*")
+        // this.getCostumers(this.service.getUser().id,"*")
+        this.hubConnection.invoke('refresh', 'costumer',this.costumer.idEmpresa,this.costumer.id,0)
       }
       this.service.isLoading =false;
       },error => {
@@ -104,7 +135,8 @@ export class CostumerComponent implements OnInit {
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
-        this.getCostumers(this.service.getUser().id,"*")
+        // this.getCostumers(this.service.getUser().id,"*")
+        this.hubConnection.invoke('refresh', 'costumer',this.costumer.idEmpresa,0,0)
       }
       this.service.isLoading =false;
       },error => {

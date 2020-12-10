@@ -1,6 +1,7 @@
 import { Component, OnInit, Pipe } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 import { FilterPipe } from '../../../../pipes/filter.pipe';
+import * as signalR from '@aspnet/signalr';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
@@ -26,8 +27,41 @@ export class UserComponent implements OnInit {
   user:any={};
   imageUrl;
   levels:any;
+  hubConnection: signalR.HubConnection;
 
   ngOnInit() {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+    .withUrl(this.service.baseUrl+'/hub')
+    .build();
+
+    this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
+      console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
+      // debugger
+      if( (component=='users' && idEmpresa == this.service.getUser().idEmpresa) ){
+        
+        /* */
+        // this.service.isLoading = true;
+        this.service.http.get(this.service.baseUrl + 'api/User/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
+          .subscribe(res=>{
+            this.users = res;
+            this.service.updateSession(this.users);
+            if(!this.service.getUser().habilitado){
+              alert('Su usuario ha sido deshabilitado, comuniquese con el administrador');
+              this.service.closeSession();
+            }
+          
+            this.service.isLoading = false;
+          },error => {
+            console.error(error);
+            this.service.isLoading = false;
+          });
+        /* */
+
+      }
+      
+    })
+
+    this.hubConnection.start().catch(err => console.error(err.toString()));
   }
 
   renderHTML1:string='';
@@ -98,7 +132,8 @@ export class UserComponent implements OnInit {
       console.log( res )
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
-        this.getUsers(this.service.getUser().id,"*");
+        // this.getUsers(this.service.getUser().id,"*");
+        this.hubConnection.invoke('refresh', 'users',this.user.idEmpresa,this.user.id,0)
       }
       this.service.isLoading =false;
       },error => {
@@ -114,7 +149,8 @@ export class UserComponent implements OnInit {
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
-        this.getUsers(this.service.getUser().id,"*");
+        // this.getUsers(this.service.getUser().id,"*");
+        this.hubConnection.invoke('refresh', 'users',this.user.idEmpresa,this.user.id,0)
       }
       this.service.isLoading =false;
       },error => {
@@ -129,7 +165,10 @@ export class UserComponent implements OnInit {
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
-        this.getUsers(this.service.getUser().id,"*");
+        // this.getUsers(this.service.getUser().id,"*");
+        this.hubConnection.invoke('refresh', 'users',this.user.idEmpresa,this.user.id,0)
+        var abled = this.user.habilitado== true?1:0;
+        this.hubConnection.invoke('refresh', 'session',this.user.idEmpresa,this.user.id,abled)
       }
       this.service.isLoading =false;
       },error => {

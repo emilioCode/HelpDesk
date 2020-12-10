@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
+import * as signalR from '@aspnet/signalr';
 
 @Component({
   selector: 'app-empresa',
@@ -21,8 +22,47 @@ export class EmpresaComponent implements OnInit {
   option;
   empresa:any={};
   imageUrl;
+  hubConnection: signalR.HubConnection;
 
   ngOnInit() {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+    .withUrl(this.service.baseUrl+'/hub')
+    .build();
+
+    this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
+      console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
+      // debugger
+      if( (component=='empresa' && idEmpresa == this.service.getUser().idEmpresa) || this.service.getUser().acceso =="ROOT" ){
+        
+        /* */
+        // this.service.isLoading = true;
+        this.service.http.get(this.service.baseUrl + 'api/Business/'+this.service.getUser().id,{headers:this.service.headers,responseType:'json'})
+          .subscribe(res=>{
+            this.empresas = res;
+            var item =this.empresas.filter(e=>e.id == this.service.getUser().idEmpresa)[0];
+            if(item.habilitado != true){
+              this.service.closeSession();
+            }else{
+              this.fillModal('edit',item)
+            }
+            this.service.isLoading = false;
+          },error => {
+            console.error(error);
+            this.service.isLoading = false;
+          });
+        /* */
+
+      }
+      
+      if( component=='session' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id  ){
+        if(idOther == 0 ){
+          alert('Su usuario ha sido deshabilitado, comuniquese con el administrador');
+          this.service.closeSession();
+        }
+      }
+    })
+
+    this.hubConnection.start().catch(err => console.error(err.toString()));
   }
 
   getBusiness(id){
@@ -83,7 +123,8 @@ export class EmpresaComponent implements OnInit {
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
-        this.getBusiness(this.service.getUser().id);
+        // this.getBusiness(this.service.getUser().id);
+        this.hubConnection.invoke('refresh', 'empresa', this.empresa.id, 0,0)
       }
       this.service.isLoading =false;
       },error => {
@@ -98,7 +139,8 @@ export class EmpresaComponent implements OnInit {
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
-        this.getBusiness(this.service.getUser().id);
+        // this.getBusiness(this.service.getUser().id);        
+        this.hubConnection.invoke('refresh', 'empresa', this.empresa.id, 0,0)
       }
       this.service.isLoading =false;
       },error => {

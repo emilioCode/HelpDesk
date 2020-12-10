@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
-
+import * as signalR from '@aspnet/signalr';
 
 @Component({
   selector: 'app-ticket',
@@ -18,13 +18,11 @@ export class TicketComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-  }
-
   tickets:any;
   ticket:any={};
   option;
   costumers:any;
+  costumer:any={};
   users:any;
   devices:any = [];
   device:any={};
@@ -32,8 +30,70 @@ export class TicketComponent implements OnInit {
   traces:any=[];
   trace:any={};
   costumerAPs:any =[];
+  hubConnection: signalR.HubConnection;
 
-  fillModal(option='add',object){
+  ngOnInit() {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+    .withUrl(this.service.baseUrl+'/hub')
+    .build();
+
+    this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
+      console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
+      // debugger
+      if( (component=='ticket' && idEmpresa == this.service.getUser().idEmpresa) || this.service.getUser().acceso =="ROOT" ){
+        
+        /* */
+        // this.service.isLoading = true;
+        this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
+          .subscribe(res=>{
+            this.tickets = res;
+            var id = this.ticket.id===null?0:this.ticket.id;
+            if(idUsuario >0 &&  id== idOther){
+              this.ticket = this.tickets.filter(c=>c.id==idOther)[0];
+              this.fillModal('edit',this.ticket,false);
+              // debugger
+              // var element = document.getElementById('divScroll');
+              // element.scrollTop = element.scrollHeight + 60;
+            }
+
+            this.service.isLoading = false;
+          },error => {
+            console.error(error);
+            this.service.isLoading = false;
+          });
+        /* */
+
+      }
+      
+      if( component=='session' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id  ){
+        if(idOther == 0 ){
+          alert('Su usuario ha sido deshabilitado, comuniquese con el administrador');
+          this.service.closeSession();
+        }
+      }
+
+      if( (component=='costumer' && idEmpresa == this.service.getUser().idEmpresa) ){
+        
+        /* */
+        this.service.http.get(this.service.baseUrl + 'api/Costumer/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
+          .subscribe(res=>{
+            this.costumers = res;
+            
+            this.service.isLoading = false;
+          },error => {
+            console.error(error);
+            this.service.isLoading = false;
+          });
+        /* */
+
+      }
+
+    })
+
+    this.hubConnection.start().catch(err => console.error(err.toString()));
+  }
+
+  fillModal(option='add',object,doProcess=true){
     this.addDevice=false;
     this.option = option;
     this.ticket = object;
@@ -70,14 +130,17 @@ export class TicketComponent implements OnInit {
       
     }
 
-    var element  = document.getElementById('timeline')
-    element.classList.remove("active")
-    if(document.getElementById("li_timeline")!==null)document.getElementById("li_timeline").classList.remove('active');
+    if(doProcess){
+      var element  = document.getElementById('timeline')
+      element.classList.remove("active")
+      if(document.getElementById("li_timeline")!==null)document.getElementById("li_timeline").classList.remove('active');
+  
+      var element  = document.getElementById('activity')
+      element.classList.add("active")
+      document.getElementById("li_activity").classList.remove('active')
+      document.getElementById("li_activity").classList.add('active')
+    }
 
-    var element  = document.getElementById('activity')
-    element.classList.add("active")
-    document.getElementById("li_activity").classList.remove('active')
-    document.getElementById("li_activity").classList.add('active')
 
     if(this.option == 'edit'){
       this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
@@ -184,6 +247,8 @@ export class TicketComponent implements OnInit {
         this.option = 'edit';
         var idSolicitud = res.data.id;
         if(this.devices.length > 0)this.addDevices(idSolicitud);
+        this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,0)
+        this.ticket.id = res.data.id;
         this.ticket.noSecuencia = res.data.noSecuencia;
         this.ticket.fechaCreacion = res.data.fechaCreacion;
         this.ticket.fechaInicio = res.data.fechaInicio;
@@ -218,10 +283,8 @@ export class TicketComponent implements OnInit {
         console.log('devices saved')
         
 
-        this.getDevices(idSolicitud,this.service.getUser().idEmpresa);
-        // var object = this.devices.filter(x=>x.idSolicitud==idSolicitud)[0];
-        // console.log(""+this.option+" "+object)
-        // this.fillModal(this.option,object);
+        // this.getDevices(idSolicitud,this.service.getUser().idEmpresa);
+
       }else{
         this.devices = temp;
         this.service.swal(res.title,res.message,res.icon);
@@ -274,10 +337,11 @@ export class TicketComponent implements OnInit {
     this.service.isLoading = true;
     this.service.http.post(this.service.baseUrl + 'api/Trace', this.trace ,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
-        this.getTraces(this.ticket.id,this.ticket.idEmpresa)
+        // this.getTraces(this.ticket.id,this.ticket.idEmpresa)
+        this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
         this.trace = {};
         var element = document.getElementById('divScroll');
-        element.scrollTop = 500;
+        element.scrollTop = element.scrollHeight + 60;
 
         this.service.isLoading = false;
       },error => {
@@ -300,7 +364,8 @@ export class TicketComponent implements OnInit {
     this.service.isLoading = true;
     this.service.http.put(this.service.baseUrl + 'api/Trace', trace ,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
-        this.getTraces(this.ticket.id,this.ticket.idEmpresa)
+        // this.getTraces(this.ticket.id,this.ticket.idEmpresa)
+        this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
 
         this.service.isLoading = false;
       },error => {
@@ -373,13 +438,14 @@ export class TicketComponent implements OnInit {
     this.service.http.put(this.service.baseUrl + 'api/Ticket/'+option, this.ticket ,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         console.log(res.data)
-        this.getTickets(this.service.getUser().id,"*")
+        // this.getTickets(this.service.getUser().id,"*")
+        this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
         // debugger;
         var item = res.data;
         if(item.horaInicio !=null)item.horaInicio = item.horaInicio.split('.')[0];
         if(item.horaTermino !=null)item.horaTermino = item.horaTermino.split('.')[0];
         
-        this.fillModal('edit',item)
+        this.fillModal('edit',item,true)
         // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
         // this.getTraces(this.ticket.id,this.ticket.idEmpresa)
 
@@ -416,6 +482,44 @@ export class TicketComponent implements OnInit {
       },error => {
         console.error(error);
         this.service.isLoading = false;
+      });
+  }
+
+  chooseClient(client){
+    console.log(client);
+    this.ticket.idCliente = String(client.id);
+  }
+
+  addClient(){
+    
+    this.costumer.idEmpresa = this.service.getUser().idEmpresa;
+
+    if(this.service.getLevel(this.service.getUser().acceso) <= 1){
+      this.service.swal('Access denied','','error');
+      return false;
+    }
+    this.service.isLoading = true;
+     this.service.http.post(this.service.baseUrl + 'api/Costumer',this.costumer,{headers:this.service.headers,responseType:'json'})
+      .subscribe(res=>{
+        debugger;
+      console.log( res )
+      
+      this.service.swal(res.title,res.message,res.icon);
+      if(res.code=="1") {
+        // this.getCostumers(this.service.getUser().id,"*")
+        this.hubConnection.invoke('refresh', 'costumer',this.costumer.idEmpresa,0,0);
+        //here
+        document.getElementById('btnCloseClient2').click();
+        document.getElementById('btnCloseClient').click();
+
+        this.ticket.idCliente = String(res.data.id);
+        this.costumer = {};
+        
+      }
+      this.service.isLoading =false;
+      },error => {
+        console.error(error);
+        this.service.isLoading =false;
       });
   }
 }

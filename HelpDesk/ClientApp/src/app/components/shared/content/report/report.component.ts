@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
+import * as signalR from '@aspnet/signalr';
 
 @Component({
   selector: 'app-report',
@@ -21,7 +22,27 @@ export class ReportComponent implements OnInit {
   requests:any=[];
   request:any={};
 
+  hubConnection: signalR.HubConnection;
+
   ngOnInit() {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+    .withUrl(this.service.baseUrl+'/hub')
+    .build();
+
+    this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
+      console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
+      // debugger
+
+    if( component=='session' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id  ){
+      if(idOther == 0 ){
+        alert('Su usuario ha sido deshabilitado, comuniquese con el administrador');
+        this.service.closeSession();
+      }
+
+    }
+    })
+
+    this.hubConnection.start().catch(err => console.error(err.toString()));
   }
 
   toSearch(){

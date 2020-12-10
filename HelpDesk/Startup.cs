@@ -26,6 +26,8 @@ namespace HelpDesk
             services.AddDbContext<HelpDeskDBContext>(option =>
                 option.UseSqlServer(Configuration.GetConnectionString("HelpDeskDBContext")));
 
+            services.AddSignalR();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             //now, i creating a scope with the dbLibraryContext
@@ -55,6 +57,10 @@ namespace HelpDesk
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
+            app.UseSignalR(x =>
+            {
+                x.MapHub<Hubs.hub>("/hub");
+            });
 
             app.UseMvc(routes =>
             {

@@ -1,10 +1,9 @@
 import { Injectable,Inject } from '@angular/core';
 import { SessionStorageService } from 'ngx-webstorage';
-
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
 import Swal from 'sweetalert2';
+
 
 @Injectable()
 export class ApiService {
@@ -14,6 +13,7 @@ export class ApiService {
   http;
   swal = Swal;
   isLoading:boolean;
+  
   constructor(
     private sessionSt: SessionStorageService,
     private _route: Router,
@@ -22,7 +22,7 @@ export class ApiService {
     ) {
       this.route =_route;
       this.baseUrl = _baseUrl; 
-      this.http =_http;      
+      this.http =_http;    
   }
 
   //AplicationName
@@ -162,5 +162,5 @@ export class ApiService {
     }
     return str;
   }
-  
+
 }
