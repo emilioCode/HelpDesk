@@ -144,7 +144,7 @@ namespace HelpDesk.Controllers
             ObjectResponse res;
             try
             {
-                if (req.IdEmpresa == null || req.IdEmpresa <= 0|| req.IdUsuario == null || req.IdUsuario <= 0 || req.IdCliente == null || req.IdCliente <= 0
+                if (req.IdEmpresa == null || req.IdEmpresa <= 0|| /*req.IdUsuario == null || req.IdUsuario <= 0 ||*/ req.IdCliente == null || req.IdCliente <= 0
                     || req.TipoSolicitud == null || req.TipoSolicitud == "" || req.TipoServicio == null || req.TipoServicio == "")
                 {
                     res = new ObjectResponse

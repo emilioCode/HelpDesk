@@ -280,7 +280,12 @@ export class InboxComponent implements OnInit {
     
     if(option =='ESTADO'){
       var variable = this.ticket.estado.toUpperCase();
+      if(this.ticket.idUsuario == '0'){
+        alert('Esta orden no tiene tecnico asignado.\nNecesita primero asignar un tecnico para trabajarla.');
+        variable = '';
+      }
       switch (variable) {
+
         case "ABIERTO":
         var temp = this.ticket.estado;
         var response = confirm('Seguro que desea reabrir esta ticket?');
@@ -305,6 +310,7 @@ export class InboxComponent implements OnInit {
         }
           break;
         default:
+          option = "NOCHANGEPLEASE";
           break;
       }
     }else if(option =='USUARIO'){
@@ -342,9 +348,10 @@ export class InboxComponent implements OnInit {
         this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
         // debugger;
         var item = res.data;
-        if(item.horaInicio !=null)item.horaInicio = item.horaInicio.split('.')[0];
-        if(item.horaTermino !=null)item.horaTermino = item.horaTermino.split('.')[0];
         
+        if(item.horaInicio !=null)item.horaInicio = item.horaInicio.split('.')[0];
+        if(item.horaTermino !=null)item.horaTermino = item.horaTermino.split('.')[0];          
+               
         this.fillModal('edit',item,true)
         // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
         // this.getTraces(this.ticket.id,this.ticket.idEmpresa)
