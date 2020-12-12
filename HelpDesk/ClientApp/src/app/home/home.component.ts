@@ -8,7 +8,7 @@ import * as signalR from '@aspnet/signalr';
 export class HomeComponent implements OnInit{
 
   constructor(private service: ApiService){
-    this.numbersOfTickets(this.service.getUser().id)
+    if(this.service.getUser() !=null)this.numbersOfTickets(this.service.getUser().id)
   }
 
   hubConnection: signalR.HubConnection;
