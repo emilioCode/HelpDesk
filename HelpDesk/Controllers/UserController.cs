@@ -216,5 +216,12 @@ namespace HelpDesk.Controllers
         public void Delete(int id)
         {
         }
+
+        // PACTH: api/ApiWithActions/5
+        [HttpPatch("{password}")]
+        public string Patch(string password)
+        {
+            return Security.Encripting(password);
+        }
     }
 }
