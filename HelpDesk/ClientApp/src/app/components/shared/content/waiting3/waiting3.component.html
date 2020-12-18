@@ -6,7 +6,7 @@
     <div class="col-xs-12">
       <div class="box">
           <div class="box-header">
-              <h3 class="box-title">Buzón</h3>
+              <h3 class="box-title">Ordenes de Servicio a Domicilio pendiente por asignar</h3>
               <!-- &nbsp;<a class="btn-link" style="position:absolute;z-index: 1" *ngIf="service.getLevel(service.getUser().acceso) > 1" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default"> crear orden</a> -->
               <br/>
               <div class="box-tools">
@@ -74,9 +74,9 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ><!--(click)='getTickets(service.getUser().id,"unique")'-->
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ><!--(click)='getTickets(service.getUser().id,"*")'-->
           <span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Orden No.<u>{{ ticket.noSecuencia }}</u> <a class="btn-link" *ngIf="ticket.tipoSolicitud =='Servicio a Domicilio'" href="/OrderReport?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a> <a class="btn-link" *ngIf="ticket.tipoSolicitud =='Servicio Taller'" href="/OrderReport1?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a> </h4>
+          <h4 class="modal-title">Orden No.<u>{{ ticket.noSecuencia }}</u> <a class="btn-link" *ngIf="ticket.tipoSolicitud =='Servicio a Domicilio'" href="/OrderReport?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a> <a class="btn-link" *ngIf="ticket.tipoSolicitud =='Servicio Taller'" href="/OrderReport1?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a> </h4>
         <!-- <h4 class="modal-title" *ngIf="option=='add'"><b>Nuevo Cliente</b></h4>
         <h4 class="modal-title" *ngIf="option=='edit'"><b>Cliente</b></h4>
         <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea deshabilitar este Cliente?</b></h4> -->
@@ -101,9 +101,9 @@
                         <option value="" selected [hidden]="ticket.idCliente!=''">Seleccione</option>
                         <option value="{{costumer.id}}" *ngFor="let costumer of costumers">{{ costumer.nombre }} | "{{ costumer.rnc }}"</option>
                       </select>                    
-                    </div>                        
+                    </div>
                     <div class="form-group col-xs-3 col-sm-3">
-                      <label>Tipo de Solicitud:</label>
+                      <label>Tipo de Solicitud</label>
                       <select class="form-control" [(ngModel)]="ticket.tipoSolicitud" [disabled]="option!='add'" (change)="clearDevicesIf()">
                         <option value="" selected [hidden]="ticket.tipoSolicitud!=''">Tipo Solicitud</option>
                         <option value="{{type.value}}" *ngFor="let type of service.getTypeOfRequests()">{{ type.value }}</option>
@@ -128,26 +128,26 @@
                         <label>Fecha inicio:</label>
                         <div class="input-group">
                           <!-- <input type="date" class="form-control" [(ngModel)]="ticket.fechaInicio" disabled> -->
-                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaInicio" (change)="edit()" [disabled]="option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
+                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaInicio" (change)="edit()" disabled>
                           
                         </div>
                       </div>
                       <div class="form-group col-xs-2 col-sm-2">
                         <label>Hora inicio:</label>
                         <div class="input-group">
-                          <input type="time" class="form-control timepicker" [(ngModel)]="ticket.horaInicio" (change)="edit()" [disabled]="option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
+                          <input type="time" class="form-control timepicker" [(ngModel)]="ticket.horaInicio" (change)="edit()" disabled>
                         </div>
                       </div>
                       <div class="form-group col-xs-3 col-sm-3">
                         <label>Fecha fin:</label>
                         <div class="input-group">
-                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaTermino" (change)="edit()" [disabled]="ticket.estado!='Completado' || option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
+                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaTermino" (change)="edit()" [disabled]="ticket.estado!='Completado' || option=='add'">
                         </div>
                       </div>
                       <div class="form-group col-xs-2 col-sm-2">
                         <label>Hora fin:</label>
                         <div class="input-group">
-                          <input type="time" class="form-control timepicker" [(ngModel)]="ticket.horaTermino" (change)="edit()" [disabled]="ticket.estado!='Completado' || option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
+                          <input type="time" class="form-control timepicker" [(ngModel)]="ticket.horaTermino" (change)="edit()" [disabled]="ticket.estado!='Completado' || option=='add'">
                         </div>
                       </div>
                     </div>
@@ -162,61 +162,58 @@
                               <th scope="col" class="text-center">Marca</th>
                               <th scope="col" class="text-center">Modelo</th>
                               <th scope="col" class="text-center">Serial No.</th>
-                              <th scope="col" class="text-center" [hidden]="ticket.tipoSolicitud !='Servicio a Domicilio' || devices.length >= 4 || ticket.estado =='Completado'"><a class="btn-link" (click)="addDevice=true;device={}" [hidden]="addDevice || devices.length >= 4"><i class="fa fa-plus"></i></a></th>
+                              <th scope="col" class="text-center" [hidden]="ticket.tipoSolicitud =='Servicio a Domicilio' || option=='edit' || ticket.estado != 'Abierto'"><a class="btn-link" (click)="addDevice=true;device={}" [hidden]="addDevice || devices.length >= 4 || option !='add'"><i class="fa fa-plus"></i></a></th>
                             </tr>
                           </thead>
                           <tbody>
-                            <tr [hidden]="!addDevice">
-                              <td><input type="text" [(ngModel)]="device.descripcion" placeholder="(Requerido)" class="form-control"/></td>
-                              <td ><input type="text" [(ngModel)]="device.fallaReportada" placeholder="(Requerido)" class="form-control"/></td>
-                              <td><input type="text" [(ngModel)]="device.marca" placeholder="(Requerido)" class="form-control"/></td>
-                              <td><input type="text" [(ngModel)]="device.modelo" placeholder="(Requerido)" class="form-control"/></td>
-                              <td><input type="text" [(ngModel)]="device.noSerial" placeholder="(Requerido)" class="form-control"/></td>
-                              <td>
-                                <a class="btn-link" (click)="addDeviceOne(device)"><i class="fa fa-check"></i></a>
-                                <a class="btn-link" (click)="addDevice=false;device={}"><i class="fa fa-remove"></i></a>
-                              </td>
-                            </tr>
+                              <tr [hidden]="!addDevice" >
+                                <td><input type="text" [(ngModel)]="device.descripcion" placeholder="(Requerido)" class="form-control"/></td>
+                                <td ><input type="text" [(ngModel)]="device.fallaReportada" placeholder="(Requerido)" class="form-control"/></td>
+                                <td><input type="text" [(ngModel)]="device.marca" placeholder="(Requerido)" class="form-control"/></td>
+                                <td><input type="text" [(ngModel)]="device.modelo" placeholder="(Requerido)" class="form-control"/></td>
+                                <td><input type="text" [(ngModel)]="device.noSerial" placeholder="(Requerido)" class="form-control"/></td>
+                                <td [hidden]="ticket.tipoSolicitud =='Servicio a Domicilio'">
+                                  <a class="btn-link" (click)="addDeviceList(device)"><i class="fa fa-check"></i></a>
+                                  <a class="btn-link" (click)="addDevice=false;device={}"><i class="fa fa-remove"></i></a>
+                                </td>
+                              </tr>
                             <tr *ngFor="let e of devices">
                               <td>{{e.descripcion}}</td>
                               <td>{{e.fallaReportada}}</td>
                               <td>{{e.marca}}</td>
                               <td>{{e.modelo}}</td>
                               <td>{{e.noSerial}}</td>
-                              <!-- <td> -->
-                                <!-- <a class="btn-link" (click)="removeDeviceList(e)"><i class="fa fa-minus"></i></a> -->
-                              <!-- </td> -->
+                              <td [hidden]="option=='edit'">
+                                <a class="btn-link" (click)="removeDeviceList(e)"><i class="fa fa-minus"></i></a>
+                              </td>
                             </tr>
                           </tbody>
                         </table>
                       </div>
                     </div>
                     <div class="form-group col-xs-12 col-sm-12">
-                        <textarea *ngIf="ticket.tipoSolicitud =='Servicio Taller'" placeholder="Observaciones" class="form-control" rows="5" [(ngModel)]="ticket.descripcion" [disabled]="option!='add'"></textarea>
-                        <label *ngIf="ticket.tipoSolicitud !='Servicio Taller'">Falla Reportada:</label>
-                        <input *ngIf="ticket.tipoSolicitud !='Servicio Taller'" class="form-control" placeholder="Falla Reportada" [(ngModel)]="ticket.descripcion" [disabled]="option!='add'"/>
-                      </div>
+                      <textarea *ngIf="ticket.tipoSolicitud =='Servicio Taller'" placeholder="Observaciones" class="form-control" rows="5" [(ngModel)]="ticket.descripcion" [disabled]="option!='add'"></textarea>
+                      <label *ngIf="ticket.tipoSolicitud !='Servicio Taller'">Falla Reportada:</label>
+                      <input *ngIf="ticket.tipoSolicitud !='Servicio Taller'" class="form-control" placeholder="Falla Reportada" [(ngModel)]="ticket.descripcion" [disabled]="option!='add'"/>
+                    </div>
                     <div class="form-group col-xs-4 col-sm-4">
                       <label>Estado: </label>
                       <br *ngIf="option=='add'" />
                       <span *ngIf="option=='add'">{{ ticket.estado }}</span>
-                      <select class="form-control" [(ngModel)]="ticket.estado" *ngIf="option=='edit' && (ticket.idUsuario == service.getUser().id || service.getLevel(service.getUser().acceso)>1)" (change)="putTicket('ESTADO')">
+                      <select class="form-control" [(ngModel)]="ticket.estado" *ngIf="option=='edit' && (ticket.idUsuario == service.getUser().id || service.getLevel(service.getUser().acceso)>1)" (change)="putTicket('ESTADO')" disabled>
                         <option value="{{status.name}}" *ngFor="let status of service.getStatuses()">{{ status.name }}</option>
                       </select>
                     </div>
                     <div class="form-group col-xs-4 col-sm-4">
                       <label>Técnico asignado:</label>
-                      <br *ngIf="!(service.getLevel(service.getUser().acceso)>1)"/>
-                      <span *ngIf="!(service.getLevel(service.getUser().acceso)>1)">{{service.getUser().nombre}}</span>
-                      <select class="form-control" [(ngModel)]="ticket.idUsuario" *ngIf="service.getLevel(service.getUser().acceso)>1" (change)="putTicket('USUARIO')">
-                        <option value="" selected [hidden]="ticket.idUsuario!=''">Seleccione</option>
+                      <select class="form-control" [(ngModel)]="ticket.idUsuario" [disabled]="service.getLevel(service.getUser().acceso)<2 || (option!='add' && service.getUser().id == ticket.idUsuario && service.getLevel(this.service.getUser().acceso)<3)" (change)="putTicket('USUARIO')" [disabled]="ticket.idUsuario !='0'">
+                        <option value="0" selected [hidden]="ticket.idUsuario!='0'">Seleccione</option>
                         <option value="{{user.id}}" *ngFor="let user of users">{{ user.nombre }} | "{{ user.cuentaUsuario }}"</option>
                       </select>
                     </div>
                     <div class="form-group col-xs-4 col-sm-4">
                       <label>Aprobador por:</label>
                       <br *ngIf="ticket.aprobadoPor==null"/>
-                      <span *ngIf="ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)==0 && ticket.estado =='Completado'">Pendiente de aprobación</span>
                       <span *ngIf="ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)>1 && ticket.estado =='Completado'"><a class="btn-link" (click)="aprobar()">Aprobar</a></span>
                       <select class="form-control" [(ngModel)]="ticket.aprobadoPor" *ngIf="ticket.aprobadoPor!=null" disabled>
                         <option value="{{costumer.id}}" *ngFor="let costumer of costumerAPs">{{ costumer.nombre }}</option>
@@ -341,10 +338,10 @@
           <div class="overlay" [hidden]="!service.isLoading">
               <i class="fa fa-refresh fa-spin"></i>
           </div>
-          <button type="button" class="btn btn-primary"  *ngIf="option=='add'" [disabled]="addDevice" (click)="add()" ><i class="fa fa-fw fa-file-o"></i> Crear</button>
+          <button type="button" class="btn btn-primary"  *ngIf="option=='add'" [disabled]="addDevice || ticket.tipoSolicitud === '' || (ticket.tipoSolicitud === 'Servicio Taller' && devices.length == 0)" (click)="add()" ><i class="fa fa-fw fa-file-o"></i> Crear</button>
           <!-- <button type="button" class="btn btn-success"  *ngIf="option=='edit'" (click)="edit()" ><i class="fa fa-fw fa-save"></i> Guardar</button> -->
           <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
-          <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button><!--(click)='getTickets(service.getUser().id,"unique")'-->
+          <button type="button" class="btn btn-default" id="btnClose" data-dismiss="modal" >Close</button><!--(click)='getTickets(service.getUser().id,"*")'-->
         <!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->
         <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
       </div>

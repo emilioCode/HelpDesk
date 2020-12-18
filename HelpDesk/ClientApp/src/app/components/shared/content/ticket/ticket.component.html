@@ -89,7 +89,7 @@
               <ul class="nav nav-tabs">
                 <li id="li_activity" class="active"><a href="#activity" data-toggle="tab">General</a></li>
                 <li id="li_timeline" *ngIf="option !=='add'"><a href="#timeline" data-toggle="tab">Actividades realizadas</a></li>
-                <!-- <li id="li_settings" *ngIf="option !=='add'"><a href="#settings" data-toggle="tab">Settings</a></li> -->
+                <li id="li_settings" *ngIf="option !=='add'"><a href="#settings" data-toggle="tab">Partes utilizadas</a></li>
               </ul>
               <div class="tab-content">
                 <div class="active tab-pane" id="activity">
@@ -138,13 +138,13 @@
                           <input type="time" class="form-control timepicker" [(ngModel)]="ticket.horaInicio" (change)="edit()" [disabled]="option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
                         </div>
                       </div>
-                      <div class="form-group col-xs-3 col-sm-3" [hidden]="ticket.tipoSolicitud =='Servicio Taller'">
+                      <div class="form-group col-xs-3 col-sm-3">
                         <label>Fecha fin:</label>
                         <div class="input-group">
                           <input type="date" class="form-control" [(ngModel)]="ticket.fechaTermino" (change)="edit()" [disabled]="ticket.estado!='Completado' || option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
                         </div>
                       </div>
-                      <div class="form-group col-xs-2 col-sm-2" [hidden]="ticket.tipoSolicitud =='Servicio Taller'">
+                      <div class="form-group col-xs-2 col-sm-2">
                         <label>Hora fin:</label>
                         <div class="input-group">
                           <input type="time" class="form-control timepicker" [(ngModel)]="ticket.horaTermino" (change)="edit()" [disabled]="ticket.estado!='Completado' || option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
@@ -287,9 +287,42 @@
                 </div>
                 <!-- /.tab-pane -->
   
-                <!-- <div class="tab-pane" id="settings">
-                  settings
-                </div> -->
+                <div class="tab-pane" id="settings">
+                  <!-- Partes Utilizadas -->
+                  <div class="form-group col-xs-12 col-sm-12">
+                    <br/>
+                    <h6 class="text-center">PARTES UTILIZADAS</h6>
+                    <div class="row">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th scope="col" class="text-center">Cantidad</th>
+                            <th scope="col" class="text-center">Serial No.</th>
+                            <th scope="col" class="text-center">Descripci&oacute;n</th>
+                            <th scope="col" class="text-center" [hidden]="ticket.estado == 'Completado' || parts.length >= 4 || option =='add'"><a class="btn-link" (click)="addPart=true;part={}" [hidden]="addPart"><i class="fa fa-plus"></i></a></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <tr [hidden]="!addPart" >
+                              <td ><input type="number" min="1" [(ngModel)]="part.cantidad" placeholder="(Requerido)" class="form-control"/></td>
+                              <td><input type="text" [(ngModel)]="part.noSerial" placeholder="(Requerido)" class="form-control"/></td>
+                              <td><input type="text" [(ngModel)]="part.descripcion" placeholder="(Requerido)" class="form-control"/></td>
+                              <td >
+                                <a class="btn-link" (click)="addPartOne(part)"><i class="fa fa-check"></i></a>
+                                <a class="btn-link" (click)="addPart=false;part={}"><i class="fa fa-remove"></i></a>
+                              </td>
+                            </tr>
+                          <tr *ngFor="let e of parts">
+                            <td>{{e.cantidad}}</td>
+                            <td>{{e.noSerial}}</td>
+                            <td>{{e.descripcion}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <!-- Partes Utilizadas -->
+                </div>
                 <!-- /.tab-pane -->
               </div>
               <!-- /.tab-content -->
@@ -305,7 +338,7 @@
           <div class="overlay" [hidden]="!service.isLoading">
               <i class="fa fa-refresh fa-spin"></i>
           </div>
-          <button type="button" class="btn btn-primary"  *ngIf="option=='add'" [disabled]="addDevice" (click)="add()" ><i class="fa fa-fw fa-file-o"></i> Crear</button>
+          <button type="button" class="btn btn-primary"  *ngIf="option=='add'" [disabled]="addDevice || ticket.tipoSolicitud === '' || (ticket.tipoSolicitud === 'Servicio Taller' && devices.length == 0)" (click)="add()" ><i class="fa fa-fw fa-file-o"></i> Crear</button>
           <!-- <button type="button" class="btn btn-success"  *ngIf="option=='edit'" (click)="edit()" ><i class="fa fa-fw fa-save"></i> Guardar</button> -->
           <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
           <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button><!--(click)='getTickets(service.getUser().id,"*")'-->

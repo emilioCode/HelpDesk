@@ -3,14 +3,19 @@ import { ApiService } from '../../../../services/api.service';
 import * as signalR from '@aspnet/signalr';
 
 @Component({
-  selector: 'app-inbox',
-  templateUrl: './inbox.component.html',
+  selector: 'app-waiting3',
+  templateUrl: './waiting3.component.html',
   styles: []
 })
-export class InboxComponent implements OnInit {
+export class Waiting3Component implements OnInit {
 
   constructor(private service: ApiService) { 
-    this.getTickets(this.service.getUser().id,"unique")
+    if(this.service.getLevel(this.service.getUser().acceso) < 2 ){
+      alert("No tiene permisos para acceder");
+      this.service.route.navigateByUrl('/');
+    }else{
+      this.getTickets(this.service.getUser().id,"*")
+    }
   }
 
   tickets:any;
@@ -37,17 +42,26 @@ export class InboxComponent implements OnInit {
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
       console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
       // debugger
-      if( (component=='ticket' && idEmpresa == this.service.getUser().idEmpresa )  || this.service.getUser().acceso =="ROOT" ){
+      if( (component=='ticket' && idEmpresa == this.service.getUser().idEmpresa) || this.service.getUser().acceso =="ROOT" ){
         
         /* */
         // this.service.isLoading = true;
-        this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ this.service.getUser().id + '/' + 'unique',{headers:this.service.headers,responseType:'json'})
+        this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
           .subscribe(res=>{
-            this.tickets = res;
+            this.tickets = res.filter(x=>x.idUsuario ==0  && x.tipoSolicitud == "Servicio a Domicilio");
             var id = this.ticket.id===null?0:this.ticket.id;
-            if(idUsuario >0 &&  id== idOther){
+            if(/*idUsuario >0 &&*/  id== idOther){
+              
               this.ticket = this.tickets.filter(c=>c.id==idOther)[0];
-              this.fillModal('edit',this.ticket,false);
+              console.log(this.ticket)
+              if(this.ticket === undefined){
+                this.ticket = {};
+                // debugger;
+                var modal = document.getElementById('modal-default');
+                document.getElementById('btnClose').click();
+              }else{
+                this.fillModal('edit',this.ticket,false);
+              }
               // debugger
               // var element = document.getElementById('divScroll');
               // element.scrollTop = element.scrollHeight + 60;
@@ -72,7 +86,6 @@ export class InboxComponent implements OnInit {
 
     this.hubConnection.start().catch(err => console.error(err.toString()));
   }
-
 
   fillModal(option='add',object,doProcess=true){
     this.addDevice=false;
@@ -161,16 +174,21 @@ export class InboxComponent implements OnInit {
       });
   }
 
-  // i=0;
-  // addDeviceList(item){
-  //   item.id =  this.i++;
-  //   item.idEmpresa = this.service.getUser().idEmpresa;
-  //   item.idSolicitud = 0;
-  //   this.devices.push(item)
-  //   this.addDevice =false;
+  i=0;
+  addDeviceList(item){
+    if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
+    ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
+      this.service.swal('Campos requeridos','Es necesario suministrar los datos del disposivo','info');
+      return false;
+    }
+    item.id =  this.i++;
+    item.idEmpresa = this.service.getUser().idEmpresa;
+    item.idSolicitud = 0;
+    this.devices.push(item)
+    this.addDevice =false;
 
-  //   console.log( this.devices )
-  // }
+    console.log( this.devices )
+  }
 
   removeDeviceList(item){
     // var index = this.devices.filter(x=>x.id==item.id)[0];
@@ -184,12 +202,94 @@ export class InboxComponent implements OnInit {
     this.service.isLoading = true;
     this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
-        this.tickets = res;
+        this.tickets = res.filter(x=>x.idUsuario ==0  && x.tipoSolicitud == "Servicio a Domicilio");
         console.log(  this.tickets )
         this.service.isLoading = false;
       },error => {
         console.error(error);
         this.service.isLoading = false;
+      });
+  }
+
+  add(){
+    if(this.service.validate(this.ticket.tipoSolicitud)
+    || this.service.validate(this.ticket.tipoServicio) || this.service.validate(this.ticket.estado)
+    || this.service.validate(this.ticket.idCliente) /*|| this.service.validate(this.ticket.idUsuario)*/ ){
+      this.service.swal('Campos requeridos','Asegurese de completar los datos minimos necesarios para crear la orden','warning');
+      return false;
+    }
+    if(this.ticket.tipoSolicitud == 'Servicio a Domicilio' && this.service.validate(this.ticket.descripcion)){
+      this.service.swal('Campos requerido','Favor digite falla reportada','warning');
+      return false;
+    }
+
+    if(this.service.getLevel(this.service.getUser().acceso) <= 1){
+      this.service.swal('Access denied','','error');
+      return false;
+    }
+
+    if(this.devices.lentgh == 0 && this.ticket.tipoSolicitud =='Servicio Taller'){
+      this.service.swal('Must have a device as well','','warning');
+      return false;
+    }
+    this.ticket.idUsuario = parseInt(this.ticket.idUsuario);
+    console.log('--TICKET REQUEST--')
+    console.log(this.ticket)
+    this.service.isLoading = true;
+     this.service.http.post(this.service.baseUrl + 'api/Ticket',this.ticket,{headers:this.service.headers,responseType:'json'})
+      .subscribe(res=>{
+      console.log( res )
+      this.service.swal(res.title,res.message,res.icon);
+      if(res.code=="1") {
+        this.option = 'edit';
+        var idSolicitud = res.data.id;
+        if(this.devices.length > 0)this.addDevices(idSolicitud);
+        this.ticket.noSecuencia = res.data.noSecuencia;
+        this.ticket.fechaCreacion = res.data.fechaCreacion;
+        this.ticket.fechaInicio = res.data.fechaInicio;
+        this.ticket.fechaTermino = res.data.fechaTermino;
+        this.ticket.horaTermino = res.data.horaTermino;
+        this.service.swal('No:'+ this.ticket.noSecuencia,'','success')
+      }
+      this.service.isLoading =false;
+      },error => {
+        console.error(error);
+        this.service.isLoading =false;
+      });
+  }
+
+  addDevices(idSolicitud){
+    if(this.devices.lentgh == 0){
+      this.service.swal('Must have a device as well','','warning');
+      return false;
+    }
+    this.service.isLoading = true;
+    var temp = this.devices;
+    this.devices.forEach(element => {
+      element.idSolicitud = idSolicitud;
+    });
+    console.log('devices')
+    console.log(this.devices)
+     this.service.http.post(this.service.baseUrl + 'api/Device/PostArray',this.devices,{headers:this.service.headers,responseType:'json'})
+      .subscribe(res=>{
+      console.log( res )
+      
+      if(res.code=="1") {
+        console.log('devices saved')
+        
+
+        this.getDevices(idSolicitud,this.service.getUser().idEmpresa);
+        // var object = this.devices.filter(x=>x.idSolicitud==idSolicitud)[0];
+        // console.log(""+this.option+" "+object)
+        // this.fillModal(this.option,object);
+      }else{
+        this.devices = temp;
+        this.service.swal(res.title,res.message,res.icon);
+      }
+      this.service.isLoading =false;
+      },error => {
+        console.error(error);
+        this.service.isLoading =false;
       });
   }
 
@@ -206,18 +306,9 @@ export class InboxComponent implements OnInit {
       });
   }
 
-  addDeviceOne(item){
-    if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
-    ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
-      this.service.swal('Campos requeridos','Es necesario suministrar los datos del disposivo','info');
-      return false;
-    }
-    item.id = 0;
-    item.idEmpresa = this.service.getUser().idEmpresa;
-    item.idSolicitud = Number(this.ticket.id);
-    // this.devices.push(item)
-    this.addDevicePostOne(item);
-    this.addDevice =false;
+  clearDevicesIf(){
+    if(this.ticket.tipoSolicitud =='Servicio a Domicilio')this.devices = [];
+    this.ticket.descripcion = '';
   }
 
   getTraces(idSolicitud,idEmpresa){
@@ -243,11 +334,10 @@ export class InboxComponent implements OnInit {
     this.service.isLoading = true;
     this.service.http.post(this.service.baseUrl + 'api/Trace', this.trace ,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
-        // this.getTraces(this.ticket.id,this.ticket.idEmpresa)
-        this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
+        this.getTraces(this.ticket.id,this.ticket.idEmpresa)
         this.trace = {};
         var element = document.getElementById('divScroll');
-        element.scrollTop = element.scrollHeight + 60;
+        element.scrollTop = 500;
 
         this.service.isLoading = false;
       },error => {
@@ -377,6 +467,13 @@ export class InboxComponent implements OnInit {
         this.service.isLoading = false;
       });
   }
+      // to Check!
+  //   parseDate(dateString: string): any {
+  //     if (dateString) {// new Date().toISOString().split('T')[0];
+  //         return new Date( dateString ).toISOString().split('T')[0];
+  //     }
+  //     return null;
+  // }
 
   edit(){
     this.putTicket('EDITAR')
@@ -397,29 +494,6 @@ export class InboxComponent implements OnInit {
       },error => {
         console.error(error);
         this.service.isLoading = false;
-      });
-  }
-
-  addDevicePostOne(device){
-    this.service.isLoading = true;
-    // console.log('devices')
-    // console.log(this.devices)
-     this.service.http.post(this.service.baseUrl + 'api/Device/PostOne',device,{headers:this.service.headers,responseType:'json'})
-      .subscribe(res=>{
-      console.log( res )
-      
-      if(res.code=="1") {
-        console.log('devices saved')
-        // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
-        this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
-      }else{
-        this.devices = [];
-        this.service.swal(res.title,res.message,res.icon);
-      }
-      this.service.isLoading =false;
-      },error => {
-        console.error(error);
-        this.service.isLoading =false;
       });
   }
 
@@ -467,4 +541,5 @@ export class InboxComponent implements OnInit {
         this.service.isLoading =false;
       });
   }
+
 }

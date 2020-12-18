@@ -29,6 +29,9 @@ export class WaitingComponent implements OnInit {
   traces:any=[];
   trace:any={};
   costumerAPs:any =[];
+  parts:any = [];
+  part:any={};
+  addPart=false;
   hubConnection: signalR.HubConnection;
 
   ngOnInit() {
@@ -47,7 +50,7 @@ export class WaitingComponent implements OnInit {
           .subscribe(res=>{
             this.tickets = res.filter(x=>x.idUsuario ==0);
             var id = this.ticket.id===null?0:this.ticket.id;
-            if(idUsuario >0 &&  id== idOther){
+            if(/*idUsuario >0 &&*/  id== idOther){
               
               this.ticket = this.tickets.filter(c=>c.id==idOther)[0];
               console.log(this.ticket)
@@ -100,6 +103,7 @@ export class WaitingComponent implements OnInit {
       this.ticket.estado = this.service.getStatuses()[0].value;
       this.ticket.fechaCreacion= new Date();
       this.devices = [];
+      this.parts = [];
       // debugger;
       // var element  = document.getElementById('timeline')
       // element.classList.remove("active")
@@ -122,9 +126,10 @@ export class WaitingComponent implements OnInit {
     }
 
     if(doProcess){
-      var element  = document.getElementById('timeline')
-      element.classList.remove("active")
+      // var element  = document.getElementById('timeline')
+      // element.classList.remove("active")
       if(document.getElementById("li_timeline")!==null)document.getElementById("li_timeline").classList.remove('active');
+      if(document.getElementById("li_settings")!==null)document.getElementById("li_settings").classList.remove('active');
   
       var element  = document.getElementById('activity')
       element.classList.add("active")
@@ -135,6 +140,7 @@ export class WaitingComponent implements OnInit {
 
     if(this.option == 'edit'){
       this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
+      this.getParts(this.ticket.id,this.service.getUser().idEmpresa);
       this.getTraces(this.ticket.id,this.ticket.idEmpresa);
       this.getUsersAP(this.service.getUser().id,"JUST NAME");
     } 
@@ -386,10 +392,19 @@ export class WaitingComponent implements OnInit {
           option = "NOCHANGEPLEASE";
          
         }
+        case "EN PROCESO":
+          var response = confirm('Seguro que desea reabrir esta ticket?');
+          if(!response){
+      
+            // this.getTickets(this.service.getUser().id,"*")
+            // this.ticket = this.tickets.filter(x=>x.id == idSolicitud)[0];
+            option = "NOCHANGEPLEASE";
+          
+          }
           break;
         case "COMPLETADO":
         
-        var response = confirm('Cerrar ticket?');
+        var response = confirm('Utilizó partes o repuestos?\nDesea cerrar la orden?');
         if(!response){
         
           // this.getTickets(this.service.getUser().id,"*")
@@ -416,7 +431,7 @@ export class WaitingComponent implements OnInit {
 
     }else if(option =='APROBAR'){
       var response = confirm('Seguro que desea confirmar como completado?');
-      option ='EDITAR';
+      // option ='EDITAR';
       if(!response){
         
         // this.getTickets(this.service.getUser().id,"*")
@@ -482,4 +497,48 @@ export class WaitingComponent implements OnInit {
       });
   }
 
+  getParts(id,option){
+    this.service.isLoading = true;
+    this.service.http.get(this.service.baseUrl + 'api/Part/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+      .subscribe(res=>{
+        this.parts = res;
+        console.log(  this.parts )
+        this.service.isLoading = false;
+      },error => {
+        console.error(error);
+        this.service.isLoading = false;
+      });
+  }
+
+  addPartOne(part){
+    this.service.isLoading = true;
+    if(part.cantidad <1 || this.service.isNullorEmpty(part.noSerial) || this.service.isNullorEmpty(part.descripcion)
+    || this.service.isNullorEmpty(part.cantidad) ){
+      this.service.swal('Campos requeridos','Favor completar campos.','warning');
+      return false;
+    }
+    part.idSolicitud = this.ticket.id;
+    part.idEmpresa = this.ticket.idEmpresa;
+    // console.log('devices')
+    // console.log(this.devices)
+     this.service.http.post(this.service.baseUrl + 'api/Part',part,{headers:this.service.headers,responseType:'json'})
+      .subscribe(res=>{
+      console.log( res )
+      
+      if(res.code=="1") {
+        console.log('part saved')
+        this.addPart = false;
+        this.part = {};
+        // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
+        this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
+      }else{
+        this.parts = [];
+        this.service.swal(res.title,res.message,res.icon);
+      }
+      this.service.isLoading =false;
+      },error => {
+        console.error(error);
+        this.service.isLoading =false;
+      });
+  }
 }

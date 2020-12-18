@@ -18,6 +18,7 @@ namespace HelpDesk.Models
         public virtual DbSet<Cliente> Cliente { get; set; }
         public virtual DbSet<Empresa> Empresa { get; set; }
         public virtual DbSet<Equipo> Equipo { get; set; }
+        public virtual DbSet<Piezas> Piezas { get; set; }
         public virtual DbSet<Seguimiento> Seguimiento { get; set; }
         public virtual DbSet<Solicitud> Solicitud { get; set; }
         public virtual DbSet<Usuario> Usuario { get; set; }
@@ -130,7 +131,7 @@ namespace HelpDesk.Models
 
                 entity.Property(e => e.Rnc)
                     .HasColumnName("rnc")
-                    .HasMaxLength(30)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.SectorComercial)
@@ -146,7 +147,7 @@ namespace HelpDesk.Models
 
                 entity.Property(e => e.Telefono)
                     .HasColumnName("telefono")
-                    .HasMaxLength(20)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Url)
@@ -187,6 +188,31 @@ namespace HelpDesk.Models
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.NoSerial)
+                    .IsRequired()
+                    .HasColumnName("noSerial")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Piezas>(entity =>
+            {
+                entity.ToTable("PIEZAS");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Cantidad).HasColumnName("cantidad");
+
+                entity.Property(e => e.Descripcion)
+                    .HasColumnName("descripcion")
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Habilitado).HasColumnName("habilitado");
+
+                entity.Property(e => e.IdEmpresa).HasColumnName("idEmpresa");
+
+                entity.Property(e => e.IdSolicitud).HasColumnName("idSolicitud");
 
                 entity.Property(e => e.NoSerial)
                     .IsRequired()

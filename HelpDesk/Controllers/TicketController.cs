@@ -94,7 +94,7 @@ namespace HelpDesk.Controllers
                 if(req.IdUsuario != 0 )
                 {
                     Usuario usuario = context.Usuario.Where(u => u.IdEmpresa == req.IdEmpresa && u.Id == req.IdUsuario).SingleOrDefault();
-                    var subject = $"HelpDesk Notification - Ticket No.{req.NoSecuencia}";
+                    var subject = $"HelpDesk Notification - Orden No.{req.NoSecuencia}";
 
                     var discrepancia = req.TipoSolicitud == "Servicio Taller" ? "Observaciones" : "Falla";
                     var body = $@"<div>
@@ -196,7 +196,7 @@ namespace HelpDesk.Controllers
                 {
                     ticket.IdUsuario = req.IdUsuario;
 
-                    var subject = $"HelpDesk Notification - Ticket No.{req.NoSecuencia}";
+                    var subject = $"HelpDesk Notification - Orden No.{req.NoSecuencia}";
                     var discrepancia = req.TipoSolicitud == "Servicio Taller" ? "Observaciones" : "Falla";
                     var body = $@"<div>
                                 {empresa.RazonSocial}<br>
@@ -220,6 +220,111 @@ namespace HelpDesk.Controllers
                     ticket.FechaTermino = req.FechaTermino;
                     ticket.HoraTermino = req.HoraTermino;
                     ticket.AprobadoPor = req.AprobadoPor;
+                    if(toDo == "APROBAR")
+                    {
+                        List<Equipo> equipos = context.Equipo.Where(e => e.IdEmpresa == req.IdEmpresa && e.IdSolicitud == req.Id && e.Habilitado == true).ToList();
+                        var subject = $"{empresa.RazonSocial} - Orden No.{req.NoSecuencia}";
+                        
+                        var style = @" <meta charset='UTF-8'>
+                                   <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css' integrity='sha384 -TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2' crossorigin='anonymous'>
+                                   <style>
+                                    .logo {
+                                        width: 100%;
+                                        height: auto;
+                                        max-width: 60%;
+                                    }
+
+                                    .info {
+                                        color: black;
+                                        font-size: 12px;
+                                        font-style: italic;
+                                        font-weight: bold;
+                                        line-height: 0;
+                                    }
+
+                                    .service-order {
+                                        background-color: #F8F9FA;
+                                        border-radius: 6px;
+                                        padding: 10px;
+                                    }
+
+                                    .custom-border {
+                                        border-top: 0;
+                                        border-right: 0;
+                                        border-left: 0;
+                                        border-radius: 0;
+                                    }
+
+                                    .table-bordered,
+                                    .table-bordered td, .table-bordered th {
+                                        border: 1px solid black!important;
+                                    }
+
+                                    .table td, .table th {
+                                        padding: .25rem!important;
+                                    }
+
+                                    td {
+                                        height: 25px;
+                                    }
+
+                                    .firma {
+                                        border-collapse: separate; border-spacing: 50px; 
+                                    }
+
+                                    .border-bottom {
+                                        border-color: black!important;
+                                    }
+                                    </style>";
+                        var body = style + $@"
+                                    <!-- HEADER -->
+                                    <header>
+                                      <div class='row border-bottom border-dark pb-2'>
+                                        <div class='col-6'>
+                                          <img src='{"data:image/jpeg;base64,"+Convert.ToBase64String(empresa.Image)}' class='logo' alt='{empresa.RazonSocial}'/>
+                                        </div>
+                                        <div class='col-6 d-flex justify-content-end align-items-center'>
+                                          <div class='service-order'>Orden No. <span class='service-order--number'>{ticket.NoSecuencia}</span></div>
+                                        </div>
+                                      </div>
+                                      <div class='row py-2'>
+                                      
+                                        <div class='col-6'>";
+                        var c = empresa.Direccion.Split('\n').Count();
+                                        for (int i = 0; i < c; i++)
+			                            {
+                            body = body + $"<p class='info'>{empresa.Direccion.Split('\n')[i]}</p>";
+
+                                        }
+
+                        body = body+ $@"<p class='info'>Tel: {empresa.Telefono}</p>
+                                          <p class='info'>E-mail: {empresa.Correo}</p>
+                                        </div>
+                                        <div class='col-6 d-flex justify-content-end align-items-top py-2'>
+                                          <p class='info'>RNC: {empresa.Rnc}</p>
+                                        </div>
+                                      </div>
+                                    </header>
+                                <!-- HEADER -->";
+                        //var msg = "";
+                        //for (int i = 0; i < body.Length; i++)
+                        //{
+                        //    char chartext = ' ';
+                        //    if (body[i].ToString() == "'")
+                        //    {
+                        //        chartext = '"';
+                        //    }
+                        //    else
+                        //    {
+                        //        chartext = body[i];
+
+                        //    }
+                        //    msg = msg + chartext;
+                        //}
+                        //"albertparedesdo@gmail.com"
+                        var resp = MailClient.Send(empresa.Host, Convert.ToInt32(empresa.Port), System.Net.Mail.SmtpDeliveryMethod.Network, false,
+                                true, empresa.Correo, empresa.Contrasena, "thekingemilio@gmail.com", subject, /*msg*/body, true);
+                    }
                 }
                 context.Entry(ticket).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 if (toDo != "NOCHANGEPLEASE") context.SaveChanges();
@@ -285,6 +390,9 @@ namespace HelpDesk.Controllers
                 var completados = tickets.Where(e => e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor != null).Count();
                 var costumers = context.Cliente.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Habilitado == true).ToList().Count();
                 var waitingToAttend = usuario.Acceso == "TECNICO"   ? 0 : context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO").ToList().Count();
+                var waiting2ToAttend = usuario.Acceso == "TECNICO" ? 0 : context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO" && e.TipoSolicitud =="Servicio Taller").ToList().Count();
+                var waiting3ToAttend = usuario.Acceso == "TECNICO" ? 0 : context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO" && e.TipoSolicitud == "Servicio a Domicilio").ToList().Count();
+                var finished = usuario.Acceso == "TECNICO" ? 0 : context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor != null).ToList().Count();
 
                 object data = new
                 {
@@ -292,7 +400,10 @@ namespace HelpDesk.Controllers
                     enproceso,
                     completados,
                     costumers,
-                    waitingToAttend
+                    waitingToAttend,
+                    waiting2ToAttend,
+                    waiting3ToAttend,
+                    finished
                 };
 
                 response = new ObjectResponse
