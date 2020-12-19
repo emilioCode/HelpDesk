@@ -275,6 +275,25 @@ namespace HelpDesk.Controllers
                                     .border-bottom {
                                         border-color: black!important;
                                     }
+
+
+                                    table {
+                                      font-family: arial, sans-serif;
+                                      border-collapse: collapse;
+                                      width: 100%;
+                                    }
+
+                                    td, th {
+                                      border: 1px solid #dddddd;
+                                      text-align: left;
+                                      padding: 8px;
+                                    }
+
+                                    tr:nth-child(even) {
+                                      background-color: #dddddd;
+                                    }
+
+
                                     </style>";
                         var body = style + $@"
                                     <!-- HEADER -->
@@ -306,24 +325,33 @@ namespace HelpDesk.Controllers
                                       </div>
                                     </header>
                                 <!-- HEADER -->";
-                        //var msg = "";
-                        //for (int i = 0; i < body.Length; i++)
-                        //{
-                        //    char chartext = ' ';
-                        //    if (body[i].ToString() == "'")
-                        //    {
-                        //        chartext = '"';
-                        //    }
-                        //    else
-                        //    {
-                        //        chartext = body[i];
 
-                        //    }
-                        //    msg = msg + chartext;
-                        //}
+                        if (equipos.Count() >0)
+                        {
+                            body += $@"
+                              <h2>Equipos</h2>
+                        <table border='1'>
+                          <tr>
+                            <th >Descripción</th>
+                            <th>Marca</th>
+                            <th >Modelo</th>
+                            <th >No. Serial</th>
+                          </tr>
+                          <tr>";
+                            equipos.ForEach(e => {
+                                body += $@"                            
+                             <td>{e.Descripcion}</td>
+                            <td >{e.Marca}</td>
+                            <td >{e.Modelo}</td>
+                            <td>{e.NoSerial}</td>";
+                            });
+
+                          body+=@"</tr>
+                        </table>";
+                        }
                         //"albertparedesdo@gmail.com"
                         var resp = MailClient.Send(empresa.Host, Convert.ToInt32(empresa.Port), System.Net.Mail.SmtpDeliveryMethod.Network, false,
-                                true, empresa.Correo, empresa.Contrasena, "thekingemilio@gmail.com", subject, /*msg*/body, true);
+                                true, empresa.Correo, empresa.Contrasena, cliente.Correo, subject,body, true);
                     }
                 }
                 context.Entry(ticket).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
