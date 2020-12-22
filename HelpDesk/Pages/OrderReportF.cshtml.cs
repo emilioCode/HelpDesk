@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 
 namespace HelpDesk.Pages
 {
-    public class OrderReportModel : PageModel
+    public class OrderReportFModel : PageModel
     {
         public string title { get; set; }
         public Empresa empresa { get; set; }
@@ -22,7 +22,7 @@ namespace HelpDesk.Pages
 
         private readonly HelpDeskDBContext context;
 
-        public OrderReportModel(HelpDeskDBContext _context)
+        public OrderReportFModel(HelpDeskDBContext _context)
         {
             this.context = _context;
         }
@@ -34,7 +34,7 @@ namespace HelpDesk.Pages
             var idEmpresa = Convert.ToInt32(value.Split('-')[1]);
             empresa = context.Empresa.Find(idEmpresa);
             solicitud = context.Solicitud.Where(e => e.NoSecuencia == noTicket).First();
-            cliente = context.Cliente.Where(e => e.IdEmpresa == idEmpresa && e.Id==solicitud.IdCliente).First();
+            cliente = context.Cliente.Where(e => e.IdEmpresa == idEmpresa && e.Id == solicitud.IdCliente).First();
             equipos = context.Equipo.Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id).ToList();
             piezas = context.Piezas.Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id).ToList();
 
