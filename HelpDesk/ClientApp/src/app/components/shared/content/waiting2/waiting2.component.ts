@@ -393,26 +393,22 @@ export class Waiting2Component implements OnInit {
          
         }
         case "EN PROCESO":
-          var response = confirm('Seguro que desea reabrir esta ticket?');
-          if(!response){
+          // var response = confirm('Seguro que desea reabrir esta ticket?');
+          // if(!response){
       
-            // this.getTickets(this.service.getUser().id,"*")
-            // this.ticket = this.tickets.filter(x=>x.id == idSolicitud)[0];
-            option = "NOCHANGEPLEASE";
+          //   // this.getTickets(this.service.getUser().id,"*")
+          //   // this.ticket = this.tickets.filter(x=>x.id == idSolicitud)[0];
+          //   option = "NOCHANGEPLEASE";
           
-          }
+          // }
           break;
         case "COMPLETADO":
         
-        var response = confirm('Utilizó partes o repuestos?\nDesea cerrar la orden?');
-        if(!response){
-        
-          // this.getTickets(this.service.getUser().id,"*")
-          // this.ticket = this.tickets.filter(x=>x.id == idSolicitud)[0];
-          // this.fillModal('edit',this.ticket)
+        // var response = confirm('Utilizó partes o repuestos?\nDesea cerrar la orden?');
+        // if(!response){
          
-          option = "NOCHANGEPLEASE";
-        }
+        //   option = "NOCHANGEPLEASE";
+        // }
           break;
         default:
           option = "NOCHANGEPLEASE";
@@ -449,6 +445,12 @@ export class Waiting2Component implements OnInit {
     this.service.http.put(this.service.baseUrl + 'api/Ticket/'+option, this.ticket ,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         console.log(res.data)
+
+        if(res.code == '5'){
+          this.ticket.estado  = temp;
+          this.service.swal(res.title,res.message,res.icon);
+        }
+         
         // this.getTickets(this.service.getUser().id,"*")
         this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
         // debugger;
@@ -456,10 +458,11 @@ export class Waiting2Component implements OnInit {
         
         if(item.horaInicio !=null)item.horaInicio = item.horaInicio.split('.')[0];
         if(item.horaTermino !=null)item.horaTermino = item.horaTermino.split('.')[0];          
-               
-        this.fillModal('edit',item,true)
+                
+        this.fillModal('edit',item,false)
         // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
         // this.getTraces(this.ticket.id,this.ticket.idEmpresa)
+        
 
         this.service.isLoading = false;
       },error => {
@@ -481,6 +484,59 @@ export class Waiting2Component implements OnInit {
 
   aprobar(){
     this.putTicket('APROBAR')
+  }
+
+  setEstatus(){
+    if(this.ticket.estado.toUpperCase() == 'COMPLETADO'){
+      this.service.swal({
+        title: 'Utilizó partes o repuestos?',
+        text: "Desea adicionar algún repuesto?",
+        type: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText:'No, ya está completo'
+      }).then((result) => {
+        // debugger;
+        var res = String(result.dismiss);
+        if(res =="undefined") res = String(result.value);
+        console.log(result);
+        switch(res){
+  
+          case 'overlay':
+          this.ticket.estado = "NOCHANGEPLEASE";
+          this.putTicket('ESTADO');
+            break;
+  
+          case 'cancel':
+          this.putTicket('ESTADO');
+            break;
+  
+          case 'true':
+          this.ticket.estado = "NOCHANGEPLEASE";
+          /* */
+          document.getElementById("li_activity").classList.remove('active')
+          document.getElementById("li_settings").classList.add('active')
+          
+          document.getElementById("activity").classList.remove('active')
+          document.getElementById("settings").classList.add('active')
+          
+          /* */
+          this.putTicket('ESTADO');
+            break;
+  
+          default:
+          this.ticket.estado = "NOCHANGEPLEASE";
+          this.putTicket('ESTADO');
+            break;
+        }
+  
+  
+      })
+    }else{
+      this.putTicket('ESTADO');
+    }
   }
 
   getUsersAP(id,option){

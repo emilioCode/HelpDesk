@@ -76,7 +76,7 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" ><!--(click)='getTickets(service.getUser().id,"*")'-->
           <span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">Orden No.<u>{{ ticket.noSecuencia }}</u> <a class="btn-link" *ngIf="ticket.tipoSolicitud =='Servicio a Domicilio' && option=='edit'" href="/OrderReport?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a> <a class="btn-link" *ngIf="ticket.tipoSolicitud =='Servicio a Domicilio' && option=='edit' && ticket.aprobadoPor != null" href="/OrderReportF?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a> <a class="btn-link" *ngIf="ticket.tipoSolicitud =='Servicio Taller' && ticket.aprobadoPor != null  && option=='edit'" href="/OrderReportF?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a> <a class="btn-link" *ngIf="ticket.tipoSolicitud =='Servicio Taller' && ticket.aprobadoPor == null  && option=='edit'" href="/OrderReport1?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a> </h4>
+          <h4 class="modal-title">Orden No.<u>{{ ticket.noSecuencia }}</u> <a class="btn-link" *ngIf="ticket.tipoSolicitud =='Servicio a Domicilio' && option=='edit'" href="/OrderReport?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a>  <a class="btn-link" *ngIf="ticket.tipoSolicitud =='Servicio Taller' && ticket.aprobadoPor != null  && option=='edit'" href="/OrderReportF?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a> <a class="btn-link" *ngIf="ticket.tipoSolicitud =='Servicio Taller' && ticket.aprobadoPor == null  && option=='edit'" href="/OrderReport1?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a> </h4>
         <!-- <h4 class="modal-title" *ngIf="option=='add'"><b>Nuevo Cliente</b></h4>
         <h4 class="modal-title" *ngIf="option=='edit'"><b>Cliente</b></h4>
         <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea deshabilitar este Cliente?</b></h4> -->
@@ -141,13 +141,13 @@
                       <div class="form-group col-xs-3 col-sm-3">
                         <label>Fecha fin:</label>
                         <div class="input-group">
-                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaTermino" (change)="edit()" [disabled]="ticket.estado!='Completado' || option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
+                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaTermino" (change)="edit()" [disabled]="option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
                         </div>
                       </div>
                       <div class="form-group col-xs-2 col-sm-2">
                         <label>Hora fin:</label>
                         <div class="input-group">
-                          <input type="time" class="form-control timepicker" [(ngModel)]="ticket.horaTermino" (change)="edit()" [disabled]="ticket.estado!='Completado' || option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
+                          <input type="time" class="form-control timepicker" [(ngModel)]="ticket.horaTermino" (change)="edit()" [disabled]="option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
                         </div>
                       </div>
                     </div>
@@ -200,7 +200,7 @@
                       <label>Estado: </label>
                       <br *ngIf="option=='add'" />
                       <span *ngIf="option=='add'">{{ ticket.estado }}</span>
-                      <select class="form-control" [(ngModel)]="ticket.estado" *ngIf="option=='edit' && (ticket.idUsuario == service.getUser().id || service.getLevel(service.getUser().acceso)>1)" (change)="putTicket('ESTADO')">
+                      <select class="form-control" [(ngModel)]="ticket.estado" *ngIf="option=='edit' && (ticket.idUsuario == service.getUser().id || service.getLevel(service.getUser().acceso)>1)" (change)="setEstatus()">
                         <option value="{{status.name}}" *ngFor="let status of service.getStatuses()">{{ status.name }}</option>
                       </select>
                     </div>

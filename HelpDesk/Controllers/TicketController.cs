@@ -170,22 +170,52 @@ namespace HelpDesk.Controllers
                     switch (req.Estado.ToUpper())
                     {
                         case "ABIERTO":
-                            ticket.FechaTermino = null;
-                            ticket.HoraTermino = null;
+                            //ticket.FechaTermino = null;
+                            //ticket.HoraTermino = null;
                             ticket.AprobadoPor = null;
                             break;
                         case "EN PROCESO":
-                            ticket.FechaInicio = req.FechaInicio ==null?today: req.FechaInicio;
-                            ticket.HoraInicio = req.FechaInicio==null? time: req.HoraInicio;
-                            ticket.FechaTermino = null;
-                            ticket.HoraTermino = null;
+                            //ticket.FechaInicio = req.FechaInicio ==null?today: req.FechaInicio;
+                            //ticket.HoraInicio = req.FechaInicio==null? time: req.HoraInicio;
+                            //ticket.FechaTermino = null;
+                            //ticket.HoraTermino = null;
                             ticket.AprobadoPor = null;
                             break;
                         case "COMPLETADO":
-                            if(ticket.FechaInicio is null) ticket.FechaInicio = today;
-                            if (ticket.HoraInicio is null) ticket.HoraInicio = time;
-                            ticket.FechaTermino = today;
-                            ticket.HoraTermino = time;
+                            //if(ticket.FechaInicio is null) ticket.FechaInicio = today;
+                            //if (ticket.HoraInicio is null) ticket.HoraInicio = time;
+                            //ticket.FechaTermino = today;
+                            //ticket.HoraTermino = time;
+                            if (ticket.FechaInicio is null || ticket.HoraInicio is null
+                                || ticket.FechaTermino is null || ticket.HoraTermino is null)
+                            {
+                                toDo = "NOCHANGEPLEASE";
+
+                                res = new ObjectResponse
+                                {
+                                    code = "5",
+                                    title = "Datos requeridos",
+                                    icon = "warning",
+                                    message = "Favor completar los campos correspondientes a las fechas y horas",
+                                    data = context.Solicitud.Find(ticket.Id)
+                                };
+                                return new JsonResult(res);
+                            }
+                            else if ( ticket.FechaInicio > ticket.FechaTermino ||
+                            (ticket.FechaInicio == ticket.FechaTermino && ticket.HoraInicio > ticket.HoraTermino)   )
+                                {
+                                    toDo = "NOCHANGEPLEASE";
+
+                                    res = new ObjectResponse
+                                    {
+                                        code = "5",
+                                        title = "Fecha y hora no coinciden",
+                                        icon = "warning",
+                                        message = "Favor verificar la fecha y hora de inicio con la fecha y hora de termino. Este ultimo debe ser posterior a la fecha de inicio.",
+                                        data = context.Solicitud.Find(ticket.Id)
+                                    };
+                                    return new JsonResult(res);
+                                }
                             break;
                         default:
                             break;
@@ -220,7 +250,8 @@ namespace HelpDesk.Controllers
                     ticket.FechaTermino = req.FechaTermino;
                     ticket.HoraTermino = req.HoraTermino;
                     ticket.AprobadoPor = req.AprobadoPor;
-                    if(toDo == "APROBAR")
+                    
+                    if (toDo == "APROBAR")
                     {
                         List<Equipo> equipos = context.Equipo.Where(e => e.IdEmpresa == req.IdEmpresa && e.IdSolicitud == req.Id && e.Habilitado == true).ToList();
                         var subject = $"{empresa.RazonSocial} - Orden No.{req.NoSecuencia}";
