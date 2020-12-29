@@ -48,7 +48,7 @@ export class Waiting4Component implements OnInit {
         // this.service.isLoading = true;
         this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
           .subscribe(res=>{
-            this.tickets = res.filter(x=>/*x.idUsuario ==0  &&*/ x.estado == "Completado" && x.aprobadoPor!=null);
+            this.tickets = res.filter(x=>/*x.idUsuario ==0  &&*/ x.estado == "Completado" && x.aprobadoPor==null);
             var id = this.ticket.id===null?0:this.ticket.id;
             if(/*idUsuario >0 &&*/  id== idOther){
               
@@ -202,7 +202,7 @@ export class Waiting4Component implements OnInit {
     this.service.isLoading = true;
     this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
-        this.tickets = res.filter(x=>/*x.idUsuario ==0  &&*/ x.estado == "Completado" && x.aprobadoPor!=null);
+        this.tickets = res.filter(x=>/*x.idUsuario ==0  &&*/ x.estado == "Completado" && x.aprobadoPor==null);
         console.log(  this.tickets )
         this.service.isLoading = false;
       },error => {

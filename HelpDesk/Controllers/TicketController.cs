@@ -22,12 +22,44 @@ namespace HelpDesk.Controllers
         [HttpGet("{idUser}/{option}")]
         public JsonResult Get(int idUser, string option = "unique")
         {
-            List<Solicitud> solicitudes = new List<Solicitud>();
+            //List<Solicitud> solicitudes = new List<Solicitud>();
+            List<SolicitudT> solicitudes = new List<SolicitudT>();
 
             if (option.ToLower() == "unique")
             {
                 var array = context.Solicitud.Where(s => s.IdUsuario == idUser).OrderByDescending(s=>s.Id);
-                solicitudes.AddRange(array);
+                //solicitudes.AddRange(array);
+                array.ToList().ForEach(e =>
+                {
+                    var codigos = context.Cliente.Find(e.IdCliente).Nombre +", "+ context.Cliente.Find(e.IdCliente).Contacto;
+                    var eq = context.Equipo.Where(a => a.IdSolicitud == e.Id).ToList();
+                    var codigos2 = "";// eq.Select(r => r.NoSerial).Join(",");
+                    eq.ForEach(r =>
+                    {
+                        codigos2 = codigos2 + r.NoSerial +", ";
+                    });
+
+
+                    solicitudes.Add(new SolicitudT {
+                        Id = e.Id,
+                        NoSecuencia = e.NoSecuencia,
+                        FechaCreacion = e.FechaCreacion,
+                        FechaInicio = e.FechaInicio,
+                        HoraInicio = e.HoraInicio,
+                        HoraTermino = e.HoraTermino,
+                        FechaTermino = e.FechaTermino,
+                        IdUsuario = e.IdUsuario,
+                        IdCliente = e.IdCliente,
+                        TipoSolicitud = e.TipoSolicitud,
+                        TipoServicio = e.TipoServicio,
+                        Estado = e.Estado,
+                        IdEmpresa = e.IdEmpresa,
+                        Descripcion = e.Descripcion,
+                        AprobadoPor = e.AprobadoPor,
+                        Habilitado = e.Habilitado,
+                        claves = codigos + ", " + codigos2
+                    });
+                });
             }
             else if (option == "*" || option.ToLower() == "all")
             {                                            
@@ -39,8 +71,41 @@ namespace HelpDesk.Controllers
                     case "ADMINISTRADOR":
                         //break;
                     case "MODERADOR":
-                        solicitudes.AddRange(context.Solicitud.Where(u => u.IdEmpresa == usuario.IdEmpresa).OrderByDescending(x => x.Id));
-                    break;
+                        //solicitudes.AddRange(context.Solicitud.Where(u => u.IdEmpresa == usuario.IdEmpresa).OrderByDescending(x => x.Id));
+                        var list = context.Solicitud.Where(u => u.IdEmpresa == usuario.IdEmpresa).OrderByDescending(x => x.Id);
+                        list.ToList().ForEach(e =>
+                        {
+                            var codigos = context.Cliente.Find(e.IdCliente).Nombre + ", " + context.Cliente.Find(e.IdCliente).Contacto;
+                            var eq = context.Equipo.Where(a => a.IdSolicitud == e.Id).ToList();
+                            var codigos2 = "";// eq.Select(r => r.NoSerial).Join(",");
+                            eq.ForEach(r =>
+                            {
+                                codigos2 = codigos2 + r.NoSerial + ", ";
+                            });
+
+
+                            solicitudes.Add(new SolicitudT
+                            {
+                                Id = e.Id,
+                                NoSecuencia = e.NoSecuencia,
+                                FechaCreacion = e.FechaCreacion,
+                                FechaInicio =e.FechaInicio,
+                                HoraInicio = e.HoraInicio,
+                                HoraTermino = e.HoraTermino,
+                                FechaTermino = e.FechaTermino,
+                                IdUsuario = e.IdUsuario,
+                                IdCliente = e.IdCliente,
+                                TipoSolicitud = e.TipoSolicitud,
+                                TipoServicio = e.TipoServicio,
+                                Estado = e.Estado,
+                                IdEmpresa = e.IdEmpresa,
+                                Descripcion = e.Descripcion,
+                                AprobadoPor = e.AprobadoPor,
+                                Habilitado = e.Habilitado,
+                                claves = codigos + ", " + codigos2
+                            });
+                        });
+                        break;
                     case "TECNICO":
                     //break;
                     default:
@@ -452,6 +517,7 @@ namespace HelpDesk.Controllers
                 var waiting2ToAttend = usuario.Acceso == "TECNICO" ? 0 : context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO" && e.TipoSolicitud =="Servicio Taller").ToList().Count();
                 var waiting3ToAttend = usuario.Acceso == "TECNICO" ? 0 : context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO" && e.TipoSolicitud == "Servicio a Domicilio").ToList().Count();
                 var finished = usuario.Acceso == "TECNICO" ? 0 : context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor != null).ToList().Count();
+                var finishedToAttend = usuario.Acceso == "TECNICO" ? 0 : context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor == null).ToList().Count();
 
                 object data = new
                 {
@@ -462,7 +528,8 @@ namespace HelpDesk.Controllers
                     waitingToAttend,
                     waiting2ToAttend,
                     waiting3ToAttend,
-                    finished
+                    finished,//(deprecated)
+                    finishedToAttend
                 };
 
                 response = new ObjectResponse
