@@ -510,7 +510,8 @@ namespace HelpDesk.Controllers
                 Usuario usuario = await context.Usuario.FindAsync(idUser);
                 var tickets = context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario == usuario.Id).ToList();
                 var abiertos = tickets.Where(e=>e.Estado.ToUpper() =="ABIERTO").Count();
-                var enproceso = tickets.Where(e => e.Estado.ToUpper() != "ABIERTO" || e.Estado.ToUpper() == "EN PROCESO" || (e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor == null)).Count();
+                //var enproceso = tickets.Where(e => e.Estado.ToUpper() != "ABIERTO" || e.Estado.ToUpper() == "EN PROCESO" || (e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor == null)).Count();//deprecated
+                var enproceso = tickets.Where(e => /*e.Estado.ToUpper() != "ABIERTO" ||*/ e.Estado.ToUpper() == "EN PROCESO" /*|| (e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor == null)*/).Count();
                 var completados = tickets.Where(e => e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor != null).Count();
                 var costumers = context.Cliente.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Habilitado == true).ToList().Count();
                 var waitingToAttend = usuario.Acceso == "TECNICO"   ? 0 : context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO").ToList().Count();

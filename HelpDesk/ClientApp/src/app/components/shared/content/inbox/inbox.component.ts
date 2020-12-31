@@ -42,12 +42,20 @@ export class InboxComponent implements OnInit {
         /* */
         // this.service.isLoading = true;
         this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ this.service.getUser().id + '/' + 'unique',{headers:this.service.headers,responseType:'json'})
-          .subscribe(res=>{
-            this.tickets = res;
+          .subscribe(res => {
+            //this.tickets = res;
+            this.tickets = res.filter(t=>t.aprobadoPor == null);
             var id = this.ticket.id===null?0:this.ticket.id;
             if(idUsuario >0 &&  id== idOther){
               this.ticket = this.tickets.filter(c=>c.id==idOther)[0];
-              this.fillModal('edit',this.ticket,false);
+              if(this.ticket === undefined){
+                this.ticket = {};
+                // debugger;
+                var modal = document.getElementById('modal-default');
+                document.getElementById('btnClose').click();
+              }else{
+                this.fillModal('edit',this.ticket,false);
+              }
               // debugger
               // var element = document.getElementById('divScroll');
               // element.scrollTop = element.scrollHeight + 60;
@@ -183,8 +191,9 @@ export class InboxComponent implements OnInit {
   getTickets(id,option){
     this.service.isLoading = true;
     this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
-      .subscribe(res=>{
-        this.tickets = res;
+      .subscribe(res => {
+        //this.tickets = res;
+        this.tickets = res.filter(t=>t.aprobadoPor == null);
         console.log(  this.tickets )
         this.service.isLoading = false;
       },error => {
