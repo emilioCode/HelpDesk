@@ -23,9 +23,9 @@ namespace HelpDesk
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {                                  
-            var Server = Configuration.GetConnectionString("Server");
-            var Database = Configuration.GetConnectionString("Database");
-            var User = Configuration.GetConnectionString("User");
+            var Server = Security.Decrypting( Configuration.GetConnectionString("Server") );//"Server": "ASUS" ó "Server": "127.0.0.1"
+            var Database = Security.Decrypting( Configuration.GetConnectionString("Database") ); //"Database": "HelpDeskDB"
+            var User = Security.Decrypting( Configuration.GetConnectionString("User") ); //"User": "sa"
             var Password = Security.Decrypting(Configuration.GetConnectionString("Password"));
 
             string connectionString = $"Server={Server};Database={Database};User Id={User};Password={Password};";
