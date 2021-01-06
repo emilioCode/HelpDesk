@@ -27,6 +27,7 @@
               <th>No. Secuencia</th>
               <th>Tipo Solicitud</th>
               <th>Tipo Servicio</th>
+              <th>Cliente</th>
               <th>Estado</th>
               <th class="text-center"><i class="fa fa-fw fa-list-alt"></i></th>
             </tr>
@@ -36,6 +37,7 @@
               <td>{{ item.noSecuencia }}</td>
               <td>{{ item.tipoSolicitud }}</td>
               <td>{{ item.tipoServicio }}</td>
+              <td>{{ item.cliente }}</td>
               <td>{{ item.estado }} <i class="fa fa-check" *ngIf="item.estado=='Completado' && item.aprobadoPor !=null" style="color:green" title="Aprobado"></i> <i class="fa fa-warning" style="color:gold" *ngIf="item.estado=='Completado' && item.aprobadoPor ==null" title="Pendiente de aprobar"></i></td>
               <td >
                 <a class="btn-link" (click)="fillModal('edit',item)" *ngIf="service.getLevel(service.getUser().acceso) > 0" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-edit"></i></a>
@@ -162,7 +164,7 @@
                               <th scope="col" class="text-center">Marca</th>
                               <th scope="col" class="text-center">Modelo</th>
                               <th scope="col" class="text-center">Serial No.</th>
-                              <th scope="col" class="text-center" [hidden]="ticket.tipoSolicitud =='Servicio a Domicilio' || option=='edit' || ticket.estado != 'Abierto'"><a class="btn-link" (click)="addDevice=true;device={}" [hidden]="addDevice || devices.length >= 4 || option !='add'"><i class="fa fa-plus"></i></a></th>
+                              <th scope="col" class="text-center" [hidden]="devices.length >= 4 || (option =='add' && ticket.tipoSolicitud != 'Servicio Taller') || (option !='add' && ticket.tipoSolicitud == 'Servicio Taller') || ticket.estado == 'Completado'"><a class="btn-link" (click)="addDevice=true;device={}" ><i class="fa fa-plus"></i></a></th>
                             </tr>
                           </thead>
                           <tbody>
@@ -172,7 +174,7 @@
                                 <td><input type="text" [(ngModel)]="device.marca" placeholder="(Requerido)" class="form-control"/></td>
                                 <td><input type="text" [(ngModel)]="device.modelo" placeholder="(Requerido)" class="form-control"/></td>
                                 <td><input type="text" [(ngModel)]="device.noSerial" placeholder="(Requerido)" class="form-control"/></td>
-                                <td [hidden]="ticket.tipoSolicitud =='Servicio a Domicilio'">
+                                <td >
                                   <a class="btn-link" (click)="addDeviceList(device)"><i class="fa fa-check"></i></a>
                                   <a class="btn-link" (click)="addDevice=false;device={}"><i class="fa fa-remove"></i></a>
                                 </td>
@@ -273,7 +275,7 @@
                             <div class="img-push input-group">
                               <input type="text" class="form-control " [(ngModel)]="trace.texto" (keyup.enter)="addTrace()" placeholder="Press enter to post comment" [disabled]="ticket.estado=='Completado' && ticket.aprobadoPor!=null">
                               <span class="input-group-btn">
-                                <button class="btn btn-primary btn-flat" (click)="addTrace()"  [disabled]="service.validateTrim( trace.texto )">Send</button>
+                                <button class="btn btn-primary btn-flat" (click)="addTrace()"  [disabled]="service.validateTrim( trace.texto )"><i class="fa fa-paper-plane" aria-hidden="true"></i> Colocar actividad</button>
                               </span>
                             </div>
                           </div>

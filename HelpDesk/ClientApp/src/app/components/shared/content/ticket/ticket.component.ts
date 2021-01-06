@@ -186,18 +186,24 @@ export class TicketComponent implements OnInit {
 
   i=0;
   addDeviceList(item){
-    if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
-    ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
-      this.service.swal('Campos requeridos','Es necesario suministrar los datos del disposivo','info');
-      return false;
-    }
-    item.id =  this.i++;
-    item.idEmpresa = this.service.getUser().idEmpresa;
-    item.idSolicitud = 0;
-    this.devices.push(item)
-    this.addDevice =false;
+    if(this.ticket.tipoSolicitud =="Servicio a Domicilio"){
+      this.addDeviceOne(item);
 
-    console.log( this.devices )
+
+    }else if(this.ticket.tipoSolicitud =="Servicio Taller"){
+      if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
+      ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
+        this.service.swal('Campos requeridos','Es necesario suministrar los datos del disposivo','info');
+        return false;
+      }
+      item.id =  this.i++;
+      item.idEmpresa = this.service.getUser().idEmpresa;
+      item.idSolicitud = 0;
+      this.devices.push(item)
+      this.addDevice =false;
+  
+      console.log( this.devices );
+    }
   }
 
   removeDeviceList(item){
@@ -498,7 +504,16 @@ export class TicketComponent implements OnInit {
   }
 
   setEstatus(){
-    if(this.ticket.estado.toUpperCase() == 'COMPLETADO'){
+    if(this.ticket.estado.toUpperCase() == 'COMPLETADO' && this.traces.length == 0){
+      this.service.swal("Actividades requeridas","Se necesita al menos una actividad realizada",'warning');
+      this.ticket.estado = "NOCHANGEPLEASE";
+      this.putTicket('ESTADO');
+      document.getElementById("li_activity").classList.remove('active');
+      document.getElementById("li_timeline").classList.add('active');
+      
+      document.getElementById("activity").classList.remove('active');
+      document.getElementById("timeline").classList.add('active');
+    } else if(this.ticket.estado.toUpperCase() == 'COMPLETADO'){
       this.service.swal({
         title: 'Utilizó partes o repuestos?',
         text: "Desea adicionar algún repuesto?",
@@ -645,5 +660,42 @@ export class TicketComponent implements OnInit {
         console.error(error);
         this.service.isLoading =false;
       });
+  }
+
+  addDevicePostOne(device){
+    this.service.isLoading = true;
+    // console.log('devices')
+    // console.log(this.devices)
+     this.service.http.post(this.service.baseUrl + 'api/Device/PostOne',device,{headers:this.service.headers,responseType:'json'})
+      .subscribe(res=>{
+      console.log( res )
+      
+      if(res.code=="1") {
+        console.log('devices saved')
+        // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
+        this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
+      }else{
+        this.devices = [];
+        this.service.swal(res.title,res.message,res.icon);
+      }
+      this.service.isLoading =false;
+      },error => {
+        console.error(error);
+        this.service.isLoading =false;
+      });
+  }
+
+  addDeviceOne(item){
+    if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
+    ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
+      this.service.swal('Campos requeridos','Es necesario suministrar los datos del disposivo','info');
+      return false;
+    }
+    item.id = 0;
+    item.idEmpresa = this.service.getUser().idEmpresa;
+    item.idSolicitud = Number(this.ticket.id);
+    // this.devices.push(item)
+    this.addDevicePostOne(item);
+    this.addDevice =false;
   }
 }

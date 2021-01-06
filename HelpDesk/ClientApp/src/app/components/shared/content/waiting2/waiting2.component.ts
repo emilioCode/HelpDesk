@@ -487,7 +487,16 @@ export class Waiting2Component implements OnInit {
   }
 
   setEstatus(){
-    if(this.ticket.estado.toUpperCase() == 'COMPLETADO'){
+    if(this.ticket.estado.toUpperCase() == 'COMPLETADO' && this.traces.length == 0){
+      this.service.swal("Actividades requeridas","Se necesita al menos una actividad realizada",'warning');
+      this.ticket.estado = "NOCHANGEPLEASE";
+      this.putTicket('ESTADO');
+      document.getElementById("li_activity").classList.remove('active');
+      document.getElementById("li_timeline").classList.add('active');
+      
+      document.getElementById("activity").classList.remove('active');
+      document.getElementById("timeline").classList.add('active');
+    } else if(this.ticket.estado.toUpperCase() == 'COMPLETADO'){
       this.service.swal({
         title: 'Utilizó partes o repuestos?',
         text: "Desea adicionar algún repuesto?",

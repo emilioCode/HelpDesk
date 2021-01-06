@@ -8,5 +8,6 @@ namespace HelpDesk.Models
     public class SolicitudT :Solicitud
     {
         public string claves { get; set; }
+        public string cliente { get; set; }
     }
 }

@@ -57,6 +57,7 @@ namespace HelpDesk.Controllers
                         Descripcion = e.Descripcion,
                         AprobadoPor = e.AprobadoPor,
                         Habilitado = e.Habilitado,
+                        cliente = context.Cliente.Find(e.IdCliente).Nombre,
                         claves = codigos + ", " + codigos2
                     });
                 });
@@ -102,6 +103,7 @@ namespace HelpDesk.Controllers
                                 Descripcion = e.Descripcion,
                                 AprobadoPor = e.AprobadoPor,
                                 Habilitado = e.Habilitado,
+                                cliente = context.Cliente.Find(e.IdCliente).Nombre,
                                 claves = codigos + ", " + codigos2
                             });
                         });
