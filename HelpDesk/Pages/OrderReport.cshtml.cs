@@ -46,7 +46,7 @@ namespace HelpDesk.Pages
                 var equipoTemp = new Equipo();
                 equipos.Add(equipoTemp);
             }
-            while (piezas.Count < 4)
+            while (piezas.Count < 3)
             {
                 var piezaTemp = new Piezas();
                 piezas.Add(piezaTemp);

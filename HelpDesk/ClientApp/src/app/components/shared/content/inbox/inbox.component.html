@@ -90,7 +90,7 @@
             <div class="nav-tabs-custom">
               <ul class="nav nav-tabs">
                 <li id="li_activity" class="active"><a href="#activity" data-toggle="tab">General</a></li>
-                <li id="li_timeline" *ngIf="option !=='add'"><a href="#timeline" data-toggle="tab">Actividades realizadas</a></li>
+                <li id="li_timeline" *ngIf="option !=='add'"><a href="#timeline" data-toggle="tab">Actividades</a></li>
                 <li id="li_settings" *ngIf="option !=='add'"><a href="#settings" data-toggle="tab">Partes utilizadas</a></li>
               </ul>
               <div class="tab-content">
@@ -195,7 +195,7 @@
                     </div>
                     <div class="form-group col-xs-12 col-sm-12">
                         <textarea *ngIf="ticket.tipoSolicitud =='Servicio Taller'" placeholder="Observaciones" class="form-control" rows="5" [(ngModel)]="ticket.descripcion" [disabled]="option!='add'"></textarea>
-                        <label *ngIf="ticket.tipoSolicitud !='Servicio Taller'">Falla Reportada:</label>
+                        <label *ngIf="ticket.tipoSolicitud !='Servicio Taller'">Falla Reportada por el cliente:</label>
                         <input *ngIf="ticket.tipoSolicitud !='Servicio Taller'" class="form-control" placeholder="Falla Reportada" [(ngModel)]="ticket.descripcion" [disabled]="option!='add'"/>
                       </div>
                     <div class="form-group col-xs-4 col-sm-4">
@@ -247,10 +247,9 @@
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
-                          <!-- <img class="img-responsive pad" src="../dist/img/photo2.png" alt="Photo">
-            
-                          <p>I took this photo this morning. What do you guys think?</p>
-                          <span class="pull-right text-muted">127 likes - 3 comments</span> -->
+                          <div class="alert" role="alert">
+                            <strong>Nota:</strong> Aquellas actividades marcadas como solución serán aquellas que se mostrarán en el reporte como actividades realizadas.
+                          </div>
                         </div>
                         <!-- /.box-body -->
                         <div class="box-footer box-comments" id="divScroll" style="max-height: 300px;overflow:auto;" >
@@ -304,7 +303,7 @@
                             <th scope="col" class="text-center">Cantidad</th>
                             <th scope="col" class="text-center">Serial No.</th>
                             <th scope="col" class="text-center">Descripci&oacute;n</th>
-                            <th scope="col" class="text-center" [hidden]="ticket.estado == 'Completado' || parts.length >= 4 || option =='add'"><a class="btn-link" (click)="addPart=true;part={}" [hidden]="addPart"><i class="fa fa-plus"></i></a></th>
+                            <th scope="col" class="text-center" [hidden]="ticket.estado == 'Completado' || parts.length >= 3 || option =='add'"><a class="btn-link" (click)="addPart=true;part={}" [hidden]="addPart"><i class="fa fa-plus"></i></a></th>
                           </tr>
                         </thead>
                         <tbody>

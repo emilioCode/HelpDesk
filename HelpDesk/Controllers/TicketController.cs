@@ -293,7 +293,7 @@ namespace HelpDesk.Controllers
                 {
                     ticket.IdUsuario = req.IdUsuario;
 
-                    var subject = $"HelpDesk Notification - Orden No.{req.NoSecuencia}";
+                    var subject = $"Orden asignada No.{req.NoSecuencia}";
                     var discrepancia = req.TipoSolicitud == "Servicio Taller" ? "Observaciones" : "Falla";
                     var body = $@"<div>
                                 {empresa.RazonSocial}<br>
@@ -322,7 +322,8 @@ namespace HelpDesk.Controllers
                     {
                         List<Equipo> equipos = context.Equipo.Where(e => e.IdEmpresa == req.IdEmpresa && e.IdSolicitud == req.Id && e.Habilitado == true).ToList();
                         var subject = $"{empresa.RazonSocial} - Orden No.{req.NoSecuencia}";
-                        
+                        var activities = context.Seguimiento.Where(s => s.IdEmpresa == req.IdEmpresa && s.IdSolicitud == req.Id && s.Etiquetado == true && s.Habilitado == true).ToList();
+                            
                         var style = @" <meta charset='UTF-8'>
                                    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css' integrity='sha384 -TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2' crossorigin='anonymous'>
                                    <style>
@@ -400,9 +401,7 @@ namespace HelpDesk.Controllers
                                         <div class='col-6'>
                                           <img src='{"data:image/jpeg;base64,"+Convert.ToBase64String(empresa.Image)}' class='logo' alt='{empresa.RazonSocial}'/>
                                         </div>
-                                        <div class='col-6 d-flex justify-content-end align-items-center'>
-                                          <div class='service-order'>Orden No. <span class='service-order--number'>{ticket.NoSecuencia}</span></div>
-                                        </div>
+
                                       </div>
                                       <div class='row py-2'>
                                       
@@ -424,6 +423,9 @@ namespace HelpDesk.Controllers
                                     </header>
                                 <!-- HEADER -->";
 
+                        body = body + $@"<div class='col-6 d-flex justify-content-end align-items-center'>
+                                          <div class='service-order'>Les informamos que la orden de servicio No. <span class='service-order--number'>{ticket.NoSecuencia}</span> ha sido cerrada.</div>
+                                        </div>";
                         if (equipos.Count() >0)
                         {
                             body += $@"
@@ -446,6 +448,18 @@ namespace HelpDesk.Controllers
 
                           body+=@"</tr>
                         </table>";
+
+                            if (activities.Count > 0)
+                            {
+                               
+
+                                body += @"<h2>Actividades Realizadas</h2>
+                                            <ul>";
+                                activities.ForEach(a => {
+                                    body += $@"<li>{a.Texto}</li>";
+                                });
+                                body += @"</ul>";
+                            }
                         }
                         //"albertparedesdo@gmail.com"
                         var resp = MailClient.Send(empresa.Host, Convert.ToInt32(empresa.Port), System.Net.Mail.SmtpDeliveryMethod.Network, false,

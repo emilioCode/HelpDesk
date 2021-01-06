@@ -64,12 +64,15 @@
             </header>
             @*TIPO DE SERVECIO DOMICILIO*@
             <main>
-                <div class="container text-center py-3 mb-5">
+                @*<div class="container text-center py-3 mb-5">
                     <h3 class="font-weight-bold">ORDEN DE SERVICIO</h3>
-                </div>
+                </div>*@
                 <div class="container">
+                    <span class="text-center">
+                        <h3 class="font-weight-bold">ORDEN DE SERVICIO</h3> <br />
+                    </span>
                     <div class="row">
-                        <div class="col pb-3 pad-left" ><b class="d-inline" style="font-size: 15px;">Cliente  </b><span class="border-bottom d-inline-block" style="width: 75%;">@Model.cliente.Nombre</span></div>
+                        <div class="col pb-3 pad-left"><b class="d-inline" style="font-size: 15px;">Cliente  </b><span class="border-bottom d-inline-block" style="width: 75%;">@Model.cliente.Nombre</span></div>
                         <div class="col"><b class="d-inline" style="font-size: 15px;">E-mail  </b><span class="border-bottom d-inline-block" style="width: 70%;">@Model.cliente.Correo</span></div>
                         <div class="col pad-right"><b class="d-inline" style="font-size: 15px;">Tel </b><span class="border-bottom d-inline-block" style="width: 90%;">@Model.cliente.Telefono</span></div>
                     </div>
@@ -89,31 +92,31 @@
                                         <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Creado:</span></b></td>}
                                     @if (@Model.solicitud.FechaCreacion != null)
                                     {
-                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Creado:</span></b> @*<input name="horaReporte" class="form-control d-inline" type="datetime" style="width: 50%;  font-size: 14px;">*@ @Model.solicitud.FechaCreacion.ToString("dd/MM/yyyy")</td>}
+                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Creado:</span></b>  @Model.solicitud.FechaCreacion.ToString("dd/MM/yyyy")</td>}
                                     @if (@Model.solicitud.FechaInicio == null)
                                     {
-                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="fechaInicio" class="form-control d-inline" type="date" style="width: 75%;  font-size: 14px;"></td>}
+                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="fechaInicio" class="form-control d-inline" type="date" style="width: 75%;  font-size: 12px;"></td>}
                                     @if (@Model.solicitud.FechaInicio != null)
                                     {
-                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="fechaInicio" class="form-control d-inline" type="date" style="width: 75%;  font-size: 14px;" value="@Model.solicitud.FechaInicio.Value.ToString("yyyy-MM-dd")"></td>}
+                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="fechaInicio" class="form-control d-inline" type="date" style="width: 75%;  font-size: 12px;" value="@Model.solicitud.FechaInicio.Value.ToString("yyyy-MM-dd")"></td>}
                                     @if (@Model.solicitud.HoraInicio == null)
                                     {
-                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Inicio:</span></b> <input name="horaInicio" class="form-control d-inline" type="time" style="width: 60%; font-size: 14px;"></td>}
+                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Inicio:</span></b> <input name="horaInicio" class="form-control d-inline" type="time" style="width: 60%; font-size: 12px;"></td>}
                                     @if (@Model.solicitud.HoraInicio != null)
                                     {
-                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Inicio:</span></b> <input name="horaInicio" class="form-control d-inline" type="time" style="width: 60%; font-size: 14px;" value="@Model.solicitud.HoraInicio.Value"></td>}
+                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Inicio:</span></b> <input name="horaInicio" class="form-control d-inline" type="time" style="width: 60%; font-size: 12px;" value="@Model.solicitud.HoraInicio.Value"></td>}
                                     @if (@Model.solicitud.FechaTermino == null)
                                     {
-                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="horaInicio" class="form-control d-inline" type="date" style="width: 75%; font-size: 14px;"></td>}
+                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="horaInicio" class="form-control d-inline" type="date" style="width: 75%; font-size: 12px;"></td>}
                                     @if (@Model.solicitud.FechaTermino != null)
                                     {
-                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="horaInicio" class="form-control d-inline" type="date" style="width: 75%; font-size: 14px;" value="@Model.solicitud.FechaTermino.Value.ToString("yyyy-MM-dd")"></td>}
+                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="horaInicio" class="form-control d-inline" type="date" style="width: 75%; font-size: 12px;" value="@Model.solicitud.FechaTermino.Value.ToString("yyyy-MM-dd")"></td>}
                                     @if (@Model.solicitud.HoraTermino == null)
                                     {
-                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Termino:</span></b> <input name="horaTermino" class="form-control d-inline" type="time" style="width: 60%;  font-size: 14px;"></td>}
+                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Termino:</span></b> <input name="horaTermino" class="form-control d-inline" type="time" style="width: 60%;  font-size: 12px;"></td>}
                                     @if (@Model.solicitud.HoraTermino != null)
                                     {
-                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Termino:</span></b> <input name="horaTermino" class="form-control d-inline" type="time" style="width: 60%;  font-size: 14px;" value="@Model.solicitud.HoraTermino.Value"></td>}
+                                        <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Termino:</span></b> <input name="horaTermino" class="form-control d-inline" type="time" style="width: 60%;  font-size: 12px;" value="@Model.solicitud.HoraTermino.Value"></td>}
 
                                 </tr>
                             </tbody>
@@ -156,8 +159,8 @@
                         <table class="table table-borderless" style="font-size: 14px;">
                             <tbody>
                                 <tr>
-                                    <th style="width: 20%;" class="text-center">FALLA REPORTADA</th>
-                                    <td style="width: 80%; border: 1px solid #dee2e6;">@Model.solicitud.Descripcion</td>
+                                    <th style="width: 30%;" class="text-center">FALLA REPORTADA POR EL CLIENTE</th>
+                                    <td style="width: 70%; border: 1px solid #dee2e6;">@Model.solicitud.Descripcion</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -246,18 +249,18 @@
                                 <td class="border-bottom"></td>
                                 <td class="border-bottom"></td>*@
                                 </tr>
-                                @*<tr>
-                                <td class="border-bottom"></td>
-                                <td class="border-bottom"></td>
-                                <td class="border-bottom"></td>
-                                <td class="border-bottom"></td>
-                            </tr>*@
-                                @*<tr>
-                                <td class="border-bottom"></td>
-                                <td class="border-bottom"></td>
-                                <td class="border-bottom"></td>
-                                <td class="border-bottom"></td>
-                            </tr>*@
+                                <tr>
+                                    <td class="border-bottom"></td>
+                                    @*<td class="border-bottom"></td>
+                                    <td class="border-bottom"></td>
+                                    <td class="border-bottom"></td>*@
+                                </tr>
+                                <tr>
+                                    <td class="border-bottom"></td>
+                                    @*<td class="border-bottom"></td>
+                                    <td class="border-bottom"></td>
+                                    <td class="border-bottom"></td>*@
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -313,17 +316,17 @@
         <footer>
             <div class="container py-4">
                 <div class="row">
-                    <table class="table table-borderless my-4">
-                        <tbody>
-                            <tr>
-                                <td class="border-top text-center">Nombre Representante de Servicios</td>
-                                <td style="width: 5%!important;"></td>
-                                <td class="border-top text-center">Nombre (Aclaraci&oacute;n Firma Cliente)</td>
-                                <td style="width: 5%!important;"></td>
-                                <td class="border-top text-center" style="width: 25%!important;">Firma Cliente</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <table class="table table-borderless my-4">
+                    <tbody>
+                        <tr>
+                            <td class="border-top text-center" style="width: 30%!important;">Nombre Representante de Servicios</td>
+                            <td style="width: 5%!important;"></td>
+                            <td class="border-top text-center" style="width: 30%!important;">Nombre (Aclaraci&oacute;n Firma Cliente)</td>
+                            <td style="width: 5%!important;"></td>
+                            <td class="border-top text-center" style="width: 30%!important;">Firma Cliente</td>
+                        </tr>
+                    </tbody>
+                </table>
                 </div>
                 <div class="row">
                     <p class="text-justify" style="font-size: 13px;">*Mediante la firma de esta orden reconozco haberme enterado de los t&eacute;rminos mediante las cuales se realizan estos servicios facturables y estoy autorizado a cumplirlos.</p>
