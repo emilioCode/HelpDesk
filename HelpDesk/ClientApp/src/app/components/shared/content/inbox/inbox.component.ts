@@ -397,6 +397,23 @@ export class InboxComponent implements OnInit {
     this.putTicket('EDITAR')
   }
 
+  editAsAdministrator(){
+    var todo='EDITAR';
+    if(this.option =='edit' && this.ticket.estado.toUpperCase() == 'COMPLETADO'){
+      this.service.swal('Orden Cerrada','No se pudo aplicar ajusto debido a que la orden se encuentra cerrada.', 'warning');
+      this.ticket.estado = "NOCHANGEPLEASE";
+      todo = 'ESTADO';
+    }else if(this.option =='edit'){
+      if( !(this.service.getLevel(this.service.getUser().acceso)>1) ){
+        this.service.swal('Ajuste no aplicado','No cuenta con los permisos de Administrador para realizar el ajuste', 'error');
+        this.ticket.estado = "NOCHANGEPLEASE";
+        todo = 'ESTADO';
+      }
+  
+      this.putTicket(todo);
+    }
+  }
+
   aprobar(){
     this.putTicket('APROBAR')
   }
@@ -544,5 +561,64 @@ export class InboxComponent implements OnInit {
         console.error(error);
         this.service.isLoading =false;
       });
+  }
+
+  parToEdit:any={};
+  partChoosen(item){
+    this.parToEdit = item;
+
+  }
+
+  editPartUsed(part){
+    this.service.isLoading = true;
+    if(part.cantidad <1 || this.service.isNullorEmpty(part.noSerial) || this.service.isNullorEmpty(part.descripcion)
+    || this.service.isNullorEmpty(part.cantidad) ){
+      this.service.swal('Campos requeridos','Favor completar campos.','warning');
+      return false;
+    }
+    
+    this.service.http.put(this.service.baseUrl + 'api/Part',part,{headers:this.service.headers,responseType:'json'})
+    .subscribe(res=>{
+    console.log( res )
+    
+    if(res.code=="1") {
+      console.log('part edited')
+      this.addPart = false;
+      this.part = {};
+      this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
+      this.service.swal(res.title,res.message,res.icon);
+    }else{
+      this.getParts(this.ticket.id,this.service.getUser().idEmpresa);
+      this.service.swal(res.title,res.message,res.icon);
+    }
+    this.service.isLoading =false;
+    },error => {
+      console.error(error);
+      this.service.isLoading =false;
+    });
+  }
+
+  deletePartUsed(part){
+    console.log(part);
+    this.service.http.delete(this.service.baseUrl + 'api/Part/'+part.id,{headers:this.service.headers,responseType:'json'})
+    .subscribe(res=>{
+    console.log( res )
+    
+    if(res.code=="1") {
+      console.log('part deleted')
+      this.addPart = false;
+      this.part = {};
+      // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
+      this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
+      this.service.swal(res.title,res.message,res.icon);
+    }else{
+      this.getParts(this.ticket.id,this.service.getUser().idEmpresa);
+      this.service.swal(res.title,res.message,res.icon);
+    }
+    this.service.isLoading =false;
+    },error => {
+      console.error(error);
+      this.service.isLoading =false;
+    });
   }
 }

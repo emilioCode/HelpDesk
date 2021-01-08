@@ -317,6 +317,11 @@ namespace HelpDesk.Controllers
                     ticket.FechaTermino = req.FechaTermino;
                     ticket.HoraTermino = req.HoraTermino;
                     ticket.AprobadoPor = req.AprobadoPor;
+
+                    ticket.Descripcion = req.Descripcion;
+                    ticket.TipoServicio = req.TipoServicio;
+                    ticket.TipoSolicitud = req.TipoSolicitud;
+
                     
                     if (toDo == "APROBAR")
                     {
@@ -424,7 +429,7 @@ namespace HelpDesk.Controllers
                                 <!-- HEADER -->";
 
                         body = body + $@"<div class='col-6 d-flex justify-content-end align-items-center'>
-                                          <div class='service-order'>Les informamos que la orden de servicio No. <span class='service-order--number'>{ticket.NoSecuencia}</span> ha sido cerrada.</div>
+                                          <div class='service-order'>Les informamos que la orden de servicio No. <span class='service-order--number'>{ticket.NoSecuencia}</span> ha sido concluida.</div>
                                         </div>";
                         if (equipos.Count() >0)
                         {

@@ -113,7 +113,7 @@
                     </div>
                     <div class="form-group col-xs-3 col-sm-3">
                       <label>Tipo de Servicio:</label>
-                      <select class="form-control" [(ngModel)]="ticket.tipoServicio" [disabled]="option!='add'">
+                      <select class="form-control" [(ngModel)]="ticket.tipoServicio" [disabled]="option!='add' &&   2>service.getLevel(service.getUser().acceso ) || ticket.estado =='Completado'" (change)="editAsAdministrator()">
                         <option value="" selected [hidden]="ticket.tipoServicio!=''">Tipo Servicio</option>
                         <option value="{{type.value}}" *ngFor="let type of service.getTypeOfServices()">{{ type.value }}</option>
                       </select>
@@ -194,9 +194,9 @@
                       </div>
                     </div>
                     <div class="form-group col-xs-12 col-sm-12">
-                      <textarea *ngIf="ticket.tipoSolicitud =='Servicio Taller'" placeholder="Observaciones" class="form-control" rows="5" [(ngModel)]="ticket.descripcion" [disabled]="option!='add'"></textarea>
+                      <textarea *ngIf="ticket.tipoSolicitud =='Servicio Taller'" placeholder="Observaciones" class="form-control" rows="5" [(ngModel)]="ticket.descripcion" [disabled]="option!='add' &&   2>service.getLevel(service.getUser().acceso )  || ticket.estado =='Completado'" (change)="editAsAdministrator()"></textarea>
                       <label *ngIf="ticket.tipoSolicitud !='Servicio Taller'">Falla Reportada por el cliente:</label>
-                      <input *ngIf="ticket.tipoSolicitud !='Servicio Taller'" class="form-control" placeholder="Falla Reportada" [(ngModel)]="ticket.descripcion" [disabled]="option!='add'"/>
+                      <input *ngIf="ticket.tipoSolicitud !='Servicio Taller'" class="form-control" placeholder="Falla Reportada" [(ngModel)]="ticket.descripcion" [disabled]="option!='add' &&   2>service.getLevel(service.getUser().acceso )  || ticket.estado =='Completado'" (change)="editAsAdministrator()"/>
                     </div>
                     <div class="form-group col-xs-4 col-sm-4">
                       <label>Estado: </label>
@@ -316,7 +316,12 @@
                           <tr *ngFor="let e of parts">
                             <td>{{e.cantidad}}</td>
                             <td>{{e.noSerial}}</td>
-                            <td>{{e.descripcion}}</td>
+                            <td>{{e.descripcion}}  
+                              <span style="float: right;">
+                                <span data-toggle="modal" data-target="#modalclient3" *ngIf="ticket.estado != 'Completado'" class="btn-link" title="editar"  (click)="partChoosen(e)"><i class="fa fa-edit"></i></span> 
+                                <span data-toggle="modal" data-target="#modalclient4" *ngIf="ticket.estado != 'Completado'" class="btn-link" title="editar"  (click)="partChoosen(e)"><i class="fa fa-remove"></i></span>
+                            </span>
+                            </td>
                           </tr>
                         </tbody>
                       </table>
@@ -493,3 +498,105 @@
     <!-- /.modal-dialog -->
   </div>
   <!-- /.modal -->
+
+
+
+
+  <!-- Modal 3 to edit parts used -->
+<div class="modal fade" id="modalclient3" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog ">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ><!--(click)='getCostumers(this.service.getUser().id,"*")'-->
+          <span aria-hidden="true">&times;</span></button>
+        <!-- <h4 class="modal-title">Default Modal</h4> -->
+        <h4 class="modal-title" ><b>Registro de parte utilizada</b></h4><!--*ngIf="option=='add'"-->
+        <!-- <h4 class="modal-title" *ngIf="option=='edit'"><b>Cliente</b></h4>
+        <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea deshabilitar este Cliente?</b></h4> -->
+      </div>
+      <div class="modal-body">
+        
+        <!---->
+        <div class="row">
+
+        <div class="form-group col-xs-4 col-sm-4">
+          <label for="razonSocial">Cantidad:</label>
+          <input type="number" class="form-control" min="1" placeholder="(Requerido)" [(ngModel)]="parToEdit.cantidad">
+        </div>
+        <div class="form-group col-xs-4 col-sm-4">
+          <label for="razonSocial">Serial No.:</label>
+          <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="parToEdit.noSerial">
+        </div>
+        <div class="form-group col-xs-4 col-sm-4">
+          <label for="correo">Descripción:</label>
+          <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="parToEdit.descripcion">
+        </div>
+
+      <!---->
+
+      </div>
+      <div class="modal-footer">
+          <div class="overlay" [hidden]="!service.isLoading">
+              <i class="fa fa-refresh fa-spin"></i>
+          </div>
+          <button type="button" class="btn btn-success" data-dismiss="modal" (click)="editPartUsed(parToEdit)" [disabled]="service.isNullorEmpty(parToEdit.noSerial) || service.isNullorEmpty(parToEdit.descripcion) || 1>parToEdit "><i class="fa fa-edit"></i> Editar</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" (click)="getParts(ticket.id,service.getUser().idEmpresa)">Close</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+</div>
+
+
+
+  <!-- Modal 4 to edit parts used -->
+  <div class="modal fade" id="modalclient4" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog ">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" ><!--(click)='getCostumers(this.service.getUser().id,"*")'-->
+              <span aria-hidden="true">&times;</span></button>
+            <!-- <h4 class="modal-title">Default Modal</h4> -->
+            <h4 class="modal-title" ><b>Desea eliminar este registro?</b></h4><!--*ngIf="option=='add'"-->
+            <!-- <h4 class="modal-title" *ngIf="option=='edit'"><b>Cliente</b></h4>
+            <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea deshabilitar este Cliente?</b></h4> -->
+          </div>
+          <div class="modal-body">
+            
+            <!---->
+            <div class="row">
+    
+            <div class="form-group col-xs-4 col-sm-4">
+              <label for="razonSocial">Cantidad:</label>
+              <input type="number" class="form-control" min="1" placeholder="(Requerido)" [(ngModel)]="parToEdit.cantidad" disabled>
+            </div>
+            <div class="form-group col-xs-4 col-sm-4">
+              <label for="razonSocial">Serial No.:</label>
+              <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="parToEdit.noSerial" disabled>
+            </div>
+            <div class="form-group col-xs-4 col-sm-4">
+              <label for="correo">Descripción:</label>
+              <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="parToEdit.descripcion" disabled>
+            </div>
+
+          <!---->
+    
+          </div>
+          <div class="modal-footer">
+              <div class="overlay" [hidden]="!service.isLoading">
+                  <i class="fa fa-refresh fa-spin"></i>
+              </div>
+              <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deletePartUsed(parToEdit)"><i class="fa fa-remove"></i> Eliminar</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    
+  </div>

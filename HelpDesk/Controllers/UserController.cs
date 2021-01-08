@@ -40,11 +40,12 @@ namespace HelpDesk.Controllers
                     case "ROOT":
                         usuarios.AddRange(context.Usuario);
                         break;
+                    case "MODERADOR":
+                        //break;
                     case "ADMINISTRADOR":
                         usuarios.AddRange(context.Usuario.Where(u=>u.Acceso != "ROOT" && u.IdEmpresa==usuario.IdEmpresa));
                         break;
-                    case "MODERADOR":  
-                        break;
+
                     case "TECNICO":                              
                         break;
                     default:             
