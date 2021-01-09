@@ -188,7 +188,7 @@
                               <td>{{e.marca}}</td>
                               <td>{{e.modelo}}</td>
                               <td>{{e.noSerial}}
-                                  <span style="float: right;">
+                                  <span style="float: right;" *ngIf="option=='edit'">
                                       <span data-toggle="modal" data-target="#modalclient5" *ngIf="ticket.estado != 'Completado'" class="btn-link" title="editar"  (click)="deviceChoosen(e)"><i class="fa fa-edit"></i></span> 
                                       <span data-toggle="modal" data-target="#modalclient6" *ngIf="ticket.estado != 'Completado'" class="btn-link" title="eliminar"  (click)="deviceChoosen(e)"><i class="fa fa-remove"></i></span>
                                   </span>
@@ -216,7 +216,7 @@
                     </div>
                     <div class="form-group col-xs-4 col-sm-4">
                       <label>Técnico asignado:</label>
-                      <select class="form-control" [(ngModel)]="ticket.idUsuario" [disabled]="service.getLevel(service.getUser().acceso)<2 || (option!='add' && service.getUser().id == ticket.idUsuario && service.getLevel(this.service.getUser().acceso)<3)" (change)="putTicket('USUARIO')">
+                      <select class="form-control" [(ngModel)]="ticket.idUsuario" [disabled]="service.getLevel(service.getUser().acceso)<2 || (option!='add' && service.getUser().id == ticket.idUsuario && service.getLevel(this.service.getUser().acceso)<1)" (change)="putTicket('USUARIO')">
                         <option value="0" selected [hidden]="ticket.idUsuario!='0'">Seleccione</option>
                         <option value="{{user.id}}" *ngFor="let user of users">{{ user.nombre }} | "{{ user.cuentaUsuario }}"</option>
                       </select>
