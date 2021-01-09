@@ -150,16 +150,94 @@ namespace HelpDesk.Controllers
             return new JsonResult(res);
         }
 
-        // PUT: api/Device/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // PUT: api/Device
+        [HttpPut]
+        public JsonResult Put([FromBody] Equipo req)
         {
+            ObjectResponse res;
+            try
+            {
+                if (req.Marca == "" || req.Marca == null ||
+                req.Descripcion == "" || req.Descripcion == null || req.Modelo == "" || req.Modelo == null ||
+                req.NoSerial == "" || req.NoSerial == null || req.FallaReportada == null || req.FallaReportada == "")
+                {
+                    res = new ObjectResponse
+                    {
+                        code = "2",
+                        title = "Validation errors",
+                        icon = "warning",
+                        message = "Field(s) required!",
+                        data = null
+                    };
+                    return new JsonResult(res);
+                }
+                req.Habilitado = true;
+
+                context.Entry(req).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                context.SaveChanges();
+
+                int idSolicitud = req.IdSolicitud;
+                int idEmpresa = req.IdEmpresa;
+                var data = context.Piezas.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
+                res = new ObjectResponse
+                {
+                    code = "1",
+                    title = "Saved",
+                    icon = "success",
+                    message = "modified successfully",
+                    data = data
+                };
+
+            }
+            catch (Exception e)
+            {
+                res = new ObjectResponse
+                {
+                    code = "0",
+                    title = "Error",
+                    icon = "error",
+                    message = e.Message,
+                    data = null
+                };
+            }
+
+            return new JsonResult(res);
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public JsonResult Delete(int id)
         {
+            ObjectResponse res;
+            try
+            {
+                var req = context.Equipo.Find(id);
+                context.Entry(req).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
+                context.SaveChanges();
+
+                res = new ObjectResponse
+                {
+                    code = "1",
+                    title = "Saved",
+                    icon = "success",
+                    message = "modified successfully",
+                    data = null
+                };
+
+            }
+            catch (Exception e)
+            {
+                res = new ObjectResponse
+                {
+                    code = "0",
+                    title = "Error",
+                    icon = "error",
+                    message = e.Message,
+                    data = null
+                };
+            }
+
+            return new JsonResult(res);
         }
     }
 }

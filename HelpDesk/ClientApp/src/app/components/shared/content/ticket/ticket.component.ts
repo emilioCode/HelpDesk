@@ -193,7 +193,7 @@ export class TicketComponent implements OnInit {
     }else if(this.ticket.tipoSolicitud =="Servicio Taller"){
       if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
       ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
-        this.service.swal('Campos requeridos','Es necesario suministrar los datos del disposivo','info');
+        this.service.swal('Campos requeridos','Es necesario suministrar los datos del dispositivo','info');
         return false;
       }
       item.id =  this.i++;
@@ -705,7 +705,7 @@ export class TicketComponent implements OnInit {
   addDeviceOne(item){
     if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
     ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
-      this.service.swal('Campos requeridos','Es necesario suministrar los datos del disposivo','info');
+      this.service.swal('Campos requeridos','Es necesario suministrar los datos del dispositivo','info');
       return false;
     }
     item.id = 0;
@@ -775,4 +775,62 @@ export class TicketComponent implements OnInit {
     });
   }
 
+  deviceToEdit:any={};
+  deviceChoosen(item){
+    console.log(item);
+    this.deviceToEdit = item;
+  }
+
+  deleteDevice(part){
+    console.log(part);
+    this.service.http.delete(this.service.baseUrl + 'api/Device/'+part.id,{headers:this.service.headers,responseType:'json'})
+    .subscribe(res=>{
+    console.log( res )
+    
+    if(res.code=="1") {
+      console.log('device deleted')
+      this.addPart = false;
+      this.part = {};
+      // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
+      this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
+      this.service.swal(res.title,res.message,res.icon);
+    }else{
+      this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
+      this.service.swal(res.title,res.message,res.icon);
+    }
+    this.service.isLoading =false;
+    },error => {
+      console.error(error);
+      this.service.isLoading =false;
+    });
+  }
+
+  editDevice(part){
+    this.service.isLoading = true;
+    if(this.service.validateTrim(part.marca) || this.service.validateTrim(part.fallaReportada)
+    ||this.service.validateTrim(part.modelo) ||this.service.validateTrim(part.noSerial)){
+      this.service.swal('Campos requeridos','Es necesario suministrar los datos del dispositivo','info');
+      return false;
+    }
+    
+    this.service.http.put(this.service.baseUrl + 'api/Device',part,{headers:this.service.headers,responseType:'json'})
+    .subscribe(res=>{
+    console.log( res )
+    
+    if(res.code=="1") {
+      console.log('part edited')
+      this.addPart = false;
+      this.part = {};
+      this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
+      this.service.swal(res.title,res.message,res.icon);
+    }else{
+      this.getParts(this.ticket.id,this.service.getUser().idEmpresa);
+      this.service.swal(res.title,res.message,res.icon);
+    }
+    this.service.isLoading =false;
+    },error => {
+      console.error(error);
+      this.service.isLoading =false;
+    });
+  }
 }
