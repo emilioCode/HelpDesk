@@ -30,7 +30,7 @@ export class EmpresaComponent implements OnInit {
     .build();
 
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
-      console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
+      // console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
       // debugger
       if( (component=='empresa' && idEmpresa == this.service.getUser().idEmpresa) || this.service.getUser().acceso =="ROOT" ){
         
@@ -80,14 +80,14 @@ export class EmpresaComponent implements OnInit {
   fillModal(option='add',object){
     this.option = option;
     this.empresa = object;
-    console.log(this.empresa)
+    // console.log(this.empresa)
   }
 
   fileUpload:File = null;
   handleFileInput(file: FileList){
-    console.log(file)
+    // console.log(file)
     this.fileUpload = file.item(0);
-    console.log(this.fileUpload)
+    // console.log(this.fileUpload)
     //Show image preview
     var reader = new FileReader();
     reader.onload = (event:any) =>{
@@ -104,7 +104,7 @@ export class EmpresaComponent implements OnInit {
     this.service.isLoading = true;
      this.service.http.post(this.service.baseUrl + 'api/Business',this.empresa,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
-      console.log( res )
+      // console.log( res )
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
         this.getBusiness(this.service.getUser().id);

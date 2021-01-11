@@ -99,7 +99,7 @@
                   <div class="row">
                     <div class="form-group col-xs-6 col-sm-6">
                       <label>Solicitante:</label>
-                      <select class="form-control" [(ngModel)]="ticket.idCliente" [disabled]="option!='add'">
+                      <select class="form-control" [(ngModel)]="ticket.idCliente" [disabled]="option!='add' &&   2>service.getLevel(service.getUser().acceso )  || ticket.estado =='Completado'" (change)="editAsAdministrator()">
                         <option value="" selected [hidden]="ticket.idCliente!=''">Seleccione</option>
                         <option value="{{costumer.id}}" *ngFor="let costumer of costumers">{{ costumer.nombre }} | "{{ costumer.rnc }}"</option>
                       </select>                    

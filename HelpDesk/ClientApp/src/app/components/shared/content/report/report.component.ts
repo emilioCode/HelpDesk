@@ -30,7 +30,7 @@ export class ReportComponent implements OnInit {
     .build();
 
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
-      console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
+      // console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
       // debugger
 
     if( component=='session' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id  ){
@@ -63,7 +63,7 @@ export class ReportComponent implements OnInit {
     this.service.http.post(this.service.baseUrl + 'api/Ticket/GetJsonTicket',this.request,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         this.requests = res;
-        console.table( this.requests )
+        // console.table( this.requests )
         this.service.isLoading = false;
       },error => {
         console.error(error);

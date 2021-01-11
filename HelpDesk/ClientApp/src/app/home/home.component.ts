@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit{
     .build();
 
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
-      console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
+      // console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
       // debugger
       if( (component=='ticket' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id ) 
       || (this.service.getLevel(this.service.getUser().acceso)>1 && idEmpresa == this.service.getUser().idEmpresa)
@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit{
         this.service.http.get(this.service.baseUrl + 'api/Ticket/numbersOfTickets/'+ this.service.getUser().id ,{headers:this.service.headers,responseType:'json'})
           .subscribe(res=>{
             this.numbers =  res.data;
-            console.log( this.numbers );
+            // console.log( this.numbers );
             this.service.isLoading = false;
           },error => {
             console.error(error);
@@ -57,7 +57,7 @@ export class HomeComponent implements OnInit{
     this.service.http.get(this.service.baseUrl + 'api/Ticket/numbersOfTickets/'+ idUser ,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         this.numbers =  res.data;
-        console.log( this.numbers );
+        // console.log( this.numbers );
         this.service.isLoading = false;
       },error => {
         console.error(error);

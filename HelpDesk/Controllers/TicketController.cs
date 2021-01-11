@@ -321,6 +321,7 @@ namespace HelpDesk.Controllers
                     ticket.Descripcion = req.Descripcion;
                     ticket.TipoServicio = req.TipoServicio;
                     ticket.TipoSolicitud = req.TipoSolicitud;
+                    ticket.IdCliente = req.IdCliente;
 
                     
                     if (toDo == "APROBAR")

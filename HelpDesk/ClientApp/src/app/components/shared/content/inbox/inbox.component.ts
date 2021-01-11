@@ -35,7 +35,7 @@ export class InboxComponent implements OnInit {
     .build();
 
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
-      console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
+      // console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
       // debugger
       if( (component=='ticket' && idEmpresa == this.service.getUser().idEmpresa )  || this.service.getUser().acceso =="ROOT" ){
         
@@ -139,8 +139,8 @@ export class InboxComponent implements OnInit {
       this.getTraces(this.ticket.id,this.ticket.idEmpresa);
       this.getUsersAP(this.service.getUser().id,"JUST NAME");
     } 
-    console.log(this.ticket);
-    console.log(this.option);
+    // console.log(this.ticket);
+    // console.log(this.option);
     this.getCostumers(this.service.getUser().id,'*')
     this.getUsers(this.service.getUser().id,'*')
   }
@@ -185,7 +185,7 @@ export class InboxComponent implements OnInit {
     var array = this.devices.indexOf(item)
     this.devices.splice(array,1)
 
-    console.log( this.devices )
+    // console.log( this.devices )
   }
 
   getTickets(id,option){
@@ -194,7 +194,7 @@ export class InboxComponent implements OnInit {
       .subscribe(res => {
         //this.tickets = res;
         this.tickets = res.filter(t=>t.aprobadoPor == null);
-        console.log(  this.tickets )
+        // console.log(  this.tickets )
         this.service.isLoading = false;
       },error => {
         console.error(error);
@@ -207,7 +207,7 @@ export class InboxComponent implements OnInit {
     this.service.http.get(this.service.baseUrl + 'api/Device/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         this.devices = res;
-        console.log(  this.devices )
+        // console.log(  this.devices )
         this.service.isLoading = false;
       },error => {
         console.error(error);
@@ -234,7 +234,7 @@ export class InboxComponent implements OnInit {
     this.service.http.get(this.service.baseUrl + 'api/Trace/'+ idSolicitud + '/' + idEmpresa,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         this.traces = res.data;
-        console.log(  this.traces )
+        // console.log(  this.traces )
 
         this.service.isLoading = false;
       },error => {
@@ -366,7 +366,7 @@ export class InboxComponent implements OnInit {
     this.service.isLoading = true;
     this.service.http.put(this.service.baseUrl + 'api/Ticket/'+option, this.ticket ,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
-        console.log(res.data)
+        // console.log(res.data)
 
         if(res.code == '5'){
           this.ticket.estado  = temp;
@@ -443,7 +443,7 @@ export class InboxComponent implements OnInit {
         // debugger;
         var res = String(result.dismiss);
         if(res =="undefined") res = String(result.value);
-        console.log(result);
+        // console.log(result);
         switch(res){
   
           case 'overlay':
@@ -487,7 +487,7 @@ export class InboxComponent implements OnInit {
       .subscribe(res=>{
         this.costumerAPs = res;
 
-        console.log( this.costumerAPs )
+        // console.log( this.costumerAPs )
         this.service.isLoading = false;
       },error => {
         console.error(error);
@@ -501,10 +501,10 @@ export class InboxComponent implements OnInit {
     // console.log(this.devices)
      this.service.http.post(this.service.baseUrl + 'api/Device/PostOne',device,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
-      console.log( res )
+      // console.log( res )
       
       if(res.code=="1") {
-        console.log('devices saved')
+        // console.log('devices saved')
         // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
         this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
       }else{
@@ -523,7 +523,7 @@ export class InboxComponent implements OnInit {
     this.service.http.get(this.service.baseUrl + 'api/Part/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         this.parts = res;
-        console.log(  this.parts )
+        // console.log(  this.parts )
         this.service.isLoading = false;
       },error => {
         console.error(error);
@@ -544,10 +544,10 @@ export class InboxComponent implements OnInit {
     // console.log(this.devices)
      this.service.http.post(this.service.baseUrl + 'api/Part',part,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
-      console.log( res )
+      // console.log( res )
       
       if(res.code=="1") {
-        console.log('part saved')
+        // console.log('part saved')
         this.addPart = false;
         this.part = {};
         // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
@@ -579,10 +579,10 @@ export class InboxComponent implements OnInit {
     
     this.service.http.put(this.service.baseUrl + 'api/Part',part,{headers:this.service.headers,responseType:'json'})
     .subscribe(res=>{
-    console.log( res )
+    // console.log( res )
     
     if(res.code=="1") {
-      console.log('part edited')
+      // console.log('part edited')
       this.addPart = false;
       this.part = {};
       this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
@@ -599,13 +599,13 @@ export class InboxComponent implements OnInit {
   }
 
   deletePartUsed(part){
-    console.log(part);
+    // console.log(part);
     this.service.http.delete(this.service.baseUrl + 'api/Part/'+part.id,{headers:this.service.headers,responseType:'json'})
     .subscribe(res=>{
-    console.log( res )
+    // console.log( res )
     
     if(res.code=="1") {
-      console.log('part deleted')
+      // console.log('part deleted')
       this.addPart = false;
       this.part = {};
       // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
@@ -624,18 +624,18 @@ export class InboxComponent implements OnInit {
 
   deviceToEdit:any={};
   deviceChoosen(item){
-    console.log(item);
+    // console.log(item);
     this.deviceToEdit = item;
   }
 
   deleteDevice(part){
-    console.log(part);
+    // console.log(part);
     this.service.http.delete(this.service.baseUrl + 'api/Device/'+part.id,{headers:this.service.headers,responseType:'json'})
     .subscribe(res=>{
-    console.log( res )
+    // console.log( res )
     
     if(res.code=="1") {
-      console.log('device deleted')
+      // console.log('device deleted')
       this.addPart = false;
       this.part = {};
       // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
@@ -662,10 +662,10 @@ export class InboxComponent implements OnInit {
     
     this.service.http.put(this.service.baseUrl + 'api/Device',part,{headers:this.service.headers,responseType:'json'})
     .subscribe(res=>{
-    console.log( res )
+    // console.log( res )
     
     if(res.code=="1") {
-      console.log('part edited')
+      // console.log('part edited')
       this.addPart = false;
       this.part = {};
       this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)

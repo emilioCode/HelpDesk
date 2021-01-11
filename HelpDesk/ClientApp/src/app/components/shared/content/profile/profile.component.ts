@@ -23,7 +23,7 @@ export class ProfileComponent implements OnInit {
     .build();
 
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
-      console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
+      // console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
       // debugger
 
     if( component=='session' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id  ){
@@ -108,7 +108,7 @@ export class ProfileComponent implements OnInit {
     this.service.http.get(this.service.baseUrl + 'api/Ticket/numbersOfTickets/'+ idUser ,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         this.numbers =  res.data;
-        console.log( this.numbers );
+        // console.log( this.numbers );
         this.service.isLoading = false;
       },error => {
         console.error(error);

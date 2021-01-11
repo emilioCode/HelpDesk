@@ -35,7 +35,7 @@ export class UserComponent implements OnInit {
     .build();
 
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
-      console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
+      // console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
       // debugger
       if( (component=='users' && idEmpresa == this.service.getUser().idEmpresa) ){
         
@@ -98,9 +98,9 @@ export class UserComponent implements OnInit {
 
   fileUpload:File = null;
   handleFileInput(file: FileList){
-    console.log(file)
+    // console.log(file)
     this.fileUpload = file.item(0);
-    console.log(this.fileUpload)
+    // console.log(this.fileUpload)
     //Show image preview
     var reader = new FileReader();
     reader.onload = (event:any) =>{
@@ -129,7 +129,7 @@ export class UserComponent implements OnInit {
     this.service.isLoading = true;
      this.service.http.post(this.service.baseUrl + 'api/User',this.user,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
-      console.log( res )
+      // console.log( res )
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
         // this.getUsers(this.service.getUser().id,"*");

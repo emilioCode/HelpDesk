@@ -64,252 +64,292 @@
             </div>
         </header>
         @*TIPO DE SERVECIO DOMICILIO*@
-        <main>
-            <div class="container text-center py-3 mb-5">
-                <h3 class="font-weight-bold">SERVICIO DE TALLER</h3>
+    <main>
+        <div class="container text-center py-3 mb-5">
+            <h3 class="font-weight-bold">SERVICIO DE TALLER</h3>
+        </div>
+        @*<div class="container">
+            <div class="row">
+                <div class="col pb-3 pad-left"><b class="d-inline" style="font-size: 15px;">Cliente  </b><span class="border-bottom d-inline-block" style="width: 75%;">@Model.cliente.Nombre</span></div>
+                <div class="col"><b class="d-inline" style="font-size: 15px;">Dirección  </b><span class="border-bottom d-inline-block" style="width: 70%;">@Model.cliente.Direccion</span></div>
+                <div class="col pad-right"><b class="d-inline" style="font-size: 15px;">Tel </b><span class="border-bottom d-inline-block" style="width: 50%;">@Model.cliente.Telefono</span></div>
             </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col pb-3 pad-left"><b class="d-inline" style="font-size: 15px;">Cliente  </b><span class="border-bottom d-inline-block" style="width: 75%;">@Model.cliente.Nombre</span></div>
-                    <div class="col"><b class="d-inline" style="font-size: 15px;">E-mail  </b><span class="border-bottom d-inline-block" style="width: 70%;">@Model.cliente.Correo</span></div>
-                    <div class="col pad-right"><b class="d-inline" style="font-size: 15px;">Tel </b><span class="border-bottom d-inline-block" style="width: 90%;">@Model.cliente.Telefono</span></div>
-                </div>
-                <div class="row">
-                    <div class="col pb-3 pad-left"><b class="d-inline" style="font-size: 15px;">Contacto </b><span class="border-bottom d-inline-block" style="width: 70%;">@Model.cliente.Contacto</span></div>
-                    <div class="col"><b class="d-inline" style="font-size: 15px;">Departamento </b><span class="border-bottom d-inline-block" style="width: 60%;">@Model.cliente.Departamento</span></div>
-                    <div class="col pad-right"><b class="d-inline" style="font-size: 15px;">Ext </b><span class="border-bottom d-inline-block" style="width: 90%;">@Model.cliente.Extension</span></div>
-                </div>
+            <div class="row">
+                <div class="col pb-3 pad-left"><b class="d-inline" style="font-size: 15px;">Contacto </b><span class="border-bottom d-inline-block" style="width: 70%;">@Model.cliente.Contacto</span></div>
+                <div class="col"><b class="d-inline" style="font-size: 15px;">Departamento </b><span class="border-bottom d-inline-block" style="width: 60%;">@Model.cliente.Departamento</span></div>
+                <div class="col pad-right"><b class="d-inline" style="font-size: 15px;">Ext </b><span class="border-bottom d-inline-block" style="width: 50%;">@Model.cliente.Extension</span></div>
             </div>
-            <div class="container">
-                <div class="row">
-                    <table class="table table-borderless">
-                        <tbody>
-                            <tr>
-                                @if (@Model.solicitud.FechaCreacion == null)
-                                {
-                                    <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Creado:</span></b></td>}
-                                @if (@Model.solicitud.FechaCreacion != null)
-                                {
-                                    <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Creado:</span></b> @*<input name="horaReporte" class="form-control d-inline" type="datetime" style="width: 50%;  font-size: 14px;">*@ @Model.solicitud.FechaCreacion.ToString("dd/MM/yyyy")</td>}
-                                @if (@Model.solicitud.FechaInicio == null)
-                                {
-                                    <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="fechaInicio" class="form-control d-inline" type="date" style="width: 75%;  font-size: 12px;"></td>}
-                                @if (@Model.solicitud.FechaInicio != null)
-                                {
-                                    <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="fechaInicio" class="form-control d-inline" type="date" style="width: 75%;  font-size: 12px;" value="@Model.solicitud.FechaInicio.Value.ToString("yyyy-MM-dd")"></td>}
-                                @if (@Model.solicitud.HoraInicio == null)
-                                {
-                                    <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Inicio:</span></b> <input name="horaInicio" class="form-control d-inline" type="time" style="width: 60%; font-size: 12px;"></td>}
-                                @if (@Model.solicitud.HoraInicio != null)
-                                {
-                                    <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Inicio:</span></b> <input name="horaInicio" class="form-control d-inline" type="time" style="width: 60%; font-size: 12px;" value="@Model.solicitud.HoraInicio.Value"></td>}
-                                @if (@Model.solicitud.FechaTermino == null)
-                                {
-                                    <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="horaInicio" class="form-control d-inline" type="date" style="width: 75%; font-size: 12px;"></td>}
-                                @if (@Model.solicitud.FechaTermino != null)
-                                {
-                                    <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="horaInicio" class="form-control d-inline" type="date" style="width: 75%; font-size: 12px;" value="@Model.solicitud.FechaTermino.Value.ToString("yyyy-MM-dd")"></td>}
-                                @if (@Model.solicitud.HoraTermino == null)
-                                {
-                                    <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Termino:</span></b> <input name="horaTermino" class="form-control d-inline" type="time" style="width: 60%;  font-size: 12px;"></td>}
-                                @if (@Model.solicitud.HoraTermino != null)
-                                {
-                                    <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Termino:</span></b> <input name="horaTermino" class="form-control d-inline" type="time" style="width: 60%;  font-size: 12px;" value="@Model.solicitud.HoraTermino.Value"></td>}
+        </div>*@
+        <!-- CLIENT INFO -->
+        <div class="row pb-2">
+            <div class="col-5">
+                <span class="cliente-title">Cliente:</span>
+                <input type="text" id="nombre" name="nombre" style="width: 300px;"  value="@Model.cliente.Nombre">
+            </div>
+            <div class="col-5">
+                <span class="cliente-title">Dirección:</span>
+                <input type="text" id="direccion" name="direccion" style="width: 300px;" value="@Model.cliente.Direccion">
+            </div>
+            <div class="col-2 d-flex justify-content-end">
+                <span class="cliente-title">Tel:</span>
+                <input type="text" id="telefono" name="telefono" style="width: 100px;" value="@Model.cliente.Telefono">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-5">
+                <span class="cliente-title">Contacto:</span>
+                <input type="text" id="contacto" name="contacto" style="width: 260px;" value="@Model.cliente.Contacto">
+            </div>
+            <div class="col-5">
+                <span class="cliente-title">Departamento:</span>
+                <input type="text" id="departamento" name="departamento" style="width: 260px;" value="@Model.cliente.Departamento">
+            </div>
+            <div class="col-2 d-flex justify-content-end">
+                <span class="cliente-title">Ext:</span>
+                <input type="text" id="ext" name="ext" style="width: 100px;" value="@Model.cliente.Extension">
+            </div>
+        </div>
+        <!-- CLIENT INFO -->
+        <div class="container">
+            <div class="row py-4">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            @if (@Model.solicitud.FechaCreacion == null)
+                            {
+                                <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Creado:</span></b></td>
+}
+                            @if (@Model.solicitud.FechaCreacion != null)
+                            {
+                                <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Creado:</span></b> @*<input name="horaReporte" class="form-control d-inline" type="datetime" style="width: 50%;  font-size: 14px;">*@ @Model.solicitud.FechaCreacion.ToString("dd/MM/yyyy")</td>
+}
+                            @if (@Model.solicitud.FechaInicio == null)
+                            {
+                                <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="fechaInicio" class="form-control d-inline" type="date" style="width: 75%;  font-size: 12px;"></td>
+}
+                            @if (@Model.solicitud.FechaInicio != null)
+                            {
+                                <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="fechaInicio" class="form-control d-inline" type="date" style="width: 75%;  font-size: 12px;" value="@Model.solicitud.FechaInicio.Value.ToString("yyyy-MM-dd")"></td>
+}
+                            @if (@Model.solicitud.HoraInicio == null)
+                            {
+                                <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Inicio:</span></b> <input name="horaInicio" class="form-control d-inline" type="time" style="width: 60%; font-size: 12px;"></td>
+}
+                            @if (@Model.solicitud.HoraInicio != null)
+                            {
+                                <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Inicio:</span></b> <input name="horaInicio" class="form-control d-inline" type="time" style="width: 60%; font-size: 12px;" value="@Model.solicitud.HoraInicio.Value"></td>
+}
+                            @if (@Model.solicitud.FechaTermino == null)
+                            {
+                                <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="horaInicio" class="form-control d-inline" type="date" style="width: 75%; font-size: 12px;"></td>
+}
+                            @if (@Model.solicitud.FechaTermino != null)
+                            {
+                                <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="horaInicio" class="form-control d-inline" type="date" style="width: 75%; font-size: 12px;" value="@Model.solicitud.FechaTermino.Value.ToString("yyyy-MM-dd")"></td>
+}
+                            @if (@Model.solicitud.HoraTermino == null)
+                            {
+                                <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Termino:</span></b> <input name="horaTermino" class="form-control d-inline" type="time" style="width: 60%;  font-size: 12px;"></td>
+}
+                            @if (@Model.solicitud.HoraTermino != null)
+                            {
+                                <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Termino:</span></b> <input name="horaTermino" class="form-control d-inline" type="time" style="width: 60%;  font-size: 12px;" value="@Model.solicitud.HoraTermino.Value"></td>
+}
 
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            @*EQUIPOS*@
-            <div class="container text-center pb-4">
-                <h6 class="font-weight-bold">EQUIPOS</h6>
-                <div class="row">
-                    <table class="table table-bordered">
-                        <thead>
+        </div>
+        @*EQUIPOS*@
+        <div class="container text-center pb-4">
+            <h6 class="font-weight-bold">EQUIPOS</h6>
+            <div class="row">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">Descripci&oacute;n</th>
+                            <th scope="col" class="text-center">Falla reportada</th>
+                            <th scope="col" class="text-center">Marca</th>
+                            <th scope="col" class="text-center">Modelo</th>
+                            <th scope="col" class="text-center">Serial No.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var equipo in Model.equipos)
+                        {
                             <tr>
-                                <th scope="col" class="text-center">Descripci&oacute;n</th>
-                                <th scope="col" class="text-center">Falla reportada</th>
-                                <th scope="col" class="text-center">Marca</th>
-                                <th scope="col" class="text-center">Modelo</th>
-                                <th scope="col" class="text-center">Serial No.</th>
+                                <td>@equipo.Descripcion</td>
+                                <td>@equipo.FallaReportada</td>
+                                <td>@equipo.Marca</td>
+                                <td>@equipo.Modelo</td>
+                                <td>@equipo.NoSerial</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var equipo in Model.equipos)
-                            {
-                                <tr>
-                                    <td>@equipo.Descripcion</td>
-                                    <td>@equipo.FallaReportada</td>
-                                    <td>@equipo.Marca</td>
-                                    <td>@equipo.Modelo</td>
-                                    <td>@equipo.NoSerial</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                        }
+                    </tbody>
+                </table>
             </div>
-            @*EQUIPOS*@
-            @*FALLA REPORTADA*@
-            @*<div class="container ">
-                <div class="row">
-                    <table class="table table-borderless" style="font-size: 14px;">
-                        <tbody>
-                            <tr>
-                                <th style="width: 20%;" class="text-center">FALLA REPORTADA</th>
-                                <td style="width: 80%; border: 1px solid #dee2e6;">@Model.solicitud.Descripcion</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>*@
-            @*FALLA REPORTADA*@
-            @*PARTES UTILIZADAS*@
-            <div class="container text-center pb-4">
-                <h6 class="font-weight-bold">PARTES UTILIZADAS</h6>
-                <div class="row">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="text-center">Cant.</th>
-                                <th scope="col" class="text-center">Serial No.</th>
-                                <th scope="col" class="text-center" style="width: 70%">Descripci&oacute;n</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var pieza in Model.piezas)
-                            {
-                                <tr>
-                                    <td>@pieza.Descripcion</td>
-                                    <td>@pieza.NoSerial</td>
-                                    <td>@pieza.Descripcion</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+        </div>
+        @*EQUIPOS*@
+        @*FALLA REPORTADA*@
+        @*<div class="container ">
+            <div class="row">
+                <table class="table table-borderless" style="font-size: 14px;">
+                    <tbody>
+                        <tr>
+                            <th style="width: 20%;" class="text-center">FALLA REPORTADA</th>
+                            <td style="width: 80%; border: 1px solid #dee2e6;">@Model.solicitud.Descripcion</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            @*PARTES UTILIZADAS*@
-            @*TIPO DE SERVICIOS*@
-            <div class="container text-center pb-2">
-                <h6 class="font-weight-bold">TIPO SERVICIO</h6>
-                <div class="row">
-                    <table class="table table-borderless">
-                        <thead>
+        </div>*@
+        @*FALLA REPORTADA*@
+        @*PARTES UTILIZADAS*@
+        <div class="container text-center pb-4">
+            <h6 class="font-weight-bold">PARTES UTILIZADAS</h6>
+            <div class="row">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">Cant.</th>
+                            <th scope="col" class="text-center">Serial No.</th>
+                            <th scope="col" class="text-center" style="width: 70%">Descripci&oacute;n</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var pieza in Model.piezas)
+                        {
                             <tr>
-                                <th scope="col">
-                                    { @if (Model.solicitud.TipoServicio.ToUpper() == "Garantía".ToUpper())
-                                    {<b>X</b>} } GARANT&Iacute;A
-                                </th>
-                                <th scope="col">
-                                    { @if (Model.solicitud.TipoServicio.ToUpper() == "Contrato".ToUpper())
-                                    {<b>X</b>} } CONTRATO
-                                </th>
-                                <th scope="col">
-                                    { @if (Model.solicitud.TipoServicio.ToUpper() == "Facturable".ToUpper())
-                                    {<b>X</b>} } FACTURABLE
-                                </th>
-                                <th scope="col">
-                                    { @if (Model.solicitud.TipoServicio.ToUpper() == "Renta".ToUpper())
-                                    {<b>X</b>} } RENTA
-                                </th>
-                                <th scope="col">
-                                    { @if (Model.solicitud.TipoServicio.ToUpper() == "Préstamo".ToUpper())
-                                    {<b>X</b>} } PRESTAMO
-                                </th>
-                                <th scope="col">
-                                    { @if (Model.solicitud.TipoServicio.ToUpper() == "Interno".ToUpper())
-                                    {<b>X</b>} } INTERNO
-                                </th>
+                                <td>@pieza.Descripcion</td>
+                                <td>@pieza.NoSerial</td>
+                                <td>@pieza.Descripcion</td>
                             </tr>
-                        </thead>
-                    </table>
-                </div>
+                        }
+                    </tbody>
+                </table>
             </div>
-            @*TIPO DE SERVICIOS*@
-            @*ACTIVIDADES REALIZADAS*@
-            <div class="container py-2">
-                <div class="row">
-                    <table class="table table-borderless">
-                        <thead>
-                            <tr>
-                                <th scope="col" style="width: 20%;">Actividades Realizadas</th>
-                                @*<th scope="col" class="border-bottom" style="width: 30%;"></th>
-                                    <th scope="col" class="border-bottom" style="width: 25%;"></th>
-                                    <th scope="col" class="border-bottom" style="width: 25%;"></th>*@
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="border-bottom" colspan="4">@Model.soluciones</td>
-                                @*<td class="border-bottom"></td>
-                                    <td class="border-bottom"></td>
-                                    <td class="border-bottom"></td>*@
-                            </tr>
-                            @*<tr>
-                                    <td class="border-bottom"></td>
-                                    <td class="border-bottom"></td>
-                                    <td class="border-bottom"></td>
-                                    <td class="border-bottom"></td>
-                                </tr>*@
-                            @*<tr>
-                                    <td class="border-bottom"></td>
-                                    <td class="border-bottom"></td>
-                                    <td class="border-bottom"></td>
-                                    <td class="border-bottom"></td>
-                                </tr>*@
-                        </tbody>
-                    </table>
-                </div>
+        </div>
+        @*PARTES UTILIZADAS*@
+        @*TIPO DE SERVICIOS*@
+        <div class="container text-center pb-2">
+            <h6 class="font-weight-bold">TIPO SERVICIO</h6>
+            <div class="row">
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                { @if (Model.solicitud.TipoServicio.ToUpper() == "Garantía".ToUpper())
+                                {<b>X</b>} } GARANT&Iacute;A
+                            </th>
+                            <th scope="col">
+                                { @if (Model.solicitud.TipoServicio.ToUpper() == "Contrato".ToUpper())
+                                {<b>X</b>} } CONTRATO
+                            </th>
+                            <th scope="col">
+                                { @if (Model.solicitud.TipoServicio.ToUpper() == "Facturable".ToUpper())
+                                {<b>X</b>} } FACTURABLE
+                            </th>
+                            <th scope="col">
+                                { @if (Model.solicitud.TipoServicio.ToUpper() == "Renta".ToUpper())
+                                {<b>X</b>} } RENTA
+                            </th>
+                            <th scope="col">
+                                { @if (Model.solicitud.TipoServicio.ToUpper() == "Préstamo".ToUpper())
+                                {<b>X</b>} } PRESTAMO
+                            </th>
+                            <th scope="col">
+                                { @if (Model.solicitud.TipoServicio.ToUpper() == "Interno".ToUpper())
+                                {<b>X</b>} } INTERNO
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
-            @*ACTIVIDADES REALIZADAS*@
-            @*SATISFACCION*@
-            <div class="container py-4">
-                <h6 class="font-weight-bold">QUE TAN SATISFECHO ESTA USTED CON....</h6>
-                <div class="row">
-                    <table class="table table-borderless" style="font-size: 15px;">
-                        <thead>
-                            <tr>
-                                <td colspan="3" scope="col">1. El tiempo de respuesta?</td>
-                                <td colspan="3" scope="col" style="width: 40%;">2. El tiempo para solucionar el problema?</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="3">3. El profesionalismo y la atenci&oacute;n del Representante de Servicio?</td>
-                                <td colspan="3" style="width: 40%;">4. El conocimiento t&eacute;cnico del Representante de Servicio?</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Leyendas:</strong></td>
-                                <td style="width: 16.66%;"><strong>1.</strong> Insatisfecho</td>
-                                <td style="width: 16.66%;"><strong>2.</strong> Indiferente</td>
-                                <td style="width: 16.66%;"><strong>3.</strong> Satisfecho</td>
-                                <td style="width: 16.66%;"><strong>4.</strong> Bastante Satisfecho</td>
-                                <td style="width: 16.66%;"><strong>5.</strong> Muy Satisfecho</td>
-                            </tr>
-                            <tr>
-                                <td style="width: 10%;"><strong>Comentarios</strong></td>
-                                <td class="border-bottom" style="width: 16.66%;"></td>
-                                <td class="border-bottom" style="width: 16.66%;"></td>
-                                <td class="border-bottom" style="width: 16.66%;"></td>
-                                <td class="border-bottom" style="width: 16.66%;"></td>
-                                <td class="border-bottom" style="width: 16.66%;"></td>
-                            </tr>
-                            @*<tr>
-                                    <td class="border-bottom"></td>
-                                    <td class="border-bottom"></td>
-                                    <td class="border-bottom"></td>
-                                    <td class="border-bottom"></td>
-                                    <td class="border-bottom"></td>
-                                    <td class="border-bottom"></td>
-                                </tr>*@
-                        </tbody>
-                    </table>
-                </div>
+        </div>
+        @*TIPO DE SERVICIOS*@
+        @*ACTIVIDADES REALIZADAS*@
+        <div class="container py-2">
+            <div class="row">
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 20%;">Actividades Realizadas</th>
+                            @*<th scope="col" class="border-bottom" style="width: 30%;"></th>
+                            <th scope="col" class="border-bottom" style="width: 25%;"></th>
+                            <th scope="col" class="border-bottom" style="width: 25%;"></th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border-bottom" colspan="4">@Model.soluciones</td>
+                            @*<td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>*@
+                        </tr>
+                        @*<tr>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                        </tr>*@
+                        @*<tr>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                        </tr>*@
+                    </tbody>
+                </table>
             </div>
-            @*SATISFACCION*@
-        </main>
+        </div>
+        @*ACTIVIDADES REALIZADAS*@
+        @*SATISFACCION*@
+        <div class="container py-4">
+            <h6 class="font-weight-bold">QUE TAN SATISFECHO ESTA USTED CON....</h6>
+            <div class="row">
+                <table class="table table-borderless" style="font-size: 15px;">
+                    <thead>
+                        <tr>
+                            <td colspan="3" scope="col">1. El tiempo de respuesta?</td>
+                            <td colspan="3" scope="col" style="width: 40%;">2. El tiempo para solucionar el problema?</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="3">3. El profesionalismo y la atenci&oacute;n del Representante de Servicio?</td>
+                            <td colspan="3" style="width: 40%;">4. El conocimiento t&eacute;cnico del Representante de Servicio?</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Leyendas:</strong></td>
+                            <td style="width: 16.66%;"><strong>1.</strong> Insatisfecho</td>
+                            <td style="width: 16.66%;"><strong>2.</strong> Indiferente</td>
+                            <td style="width: 16.66%;"><strong>3.</strong> Satisfecho</td>
+                            <td style="width: 16.66%;"><strong>4.</strong> Bastante Satisfecho</td>
+                            <td style="width: 16.66%;"><strong>5.</strong> Muy Satisfecho</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 10%;"><strong>Comentarios</strong></td>
+                            <td class="border-bottom" style="width: 16.66%;"></td>
+                            <td class="border-bottom" style="width: 16.66%;"></td>
+                            <td class="border-bottom" style="width: 16.66%;"></td>
+                            <td class="border-bottom" style="width: 16.66%;"></td>
+                            <td class="border-bottom" style="width: 16.66%;"></td>
+                        </tr>
+                        @*<tr>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                            <td class="border-bottom"></td>
+                        </tr>*@
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @*SATISFACCION*@
+    </main>
 
         <footer>
             <div class="container py-4">
