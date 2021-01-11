@@ -205,8 +205,9 @@ namespace HelpDesk.Controllers
         }
 
         // PUT: api/Ticket/5
-        [HttpPut("{toDo}")]
-        public JsonResult Put(string toDo, [FromBody] Solicitud req)
+        //[HttpPut("{toDo}")]
+        [HttpPost("[action]/{toDo}")]
+        public JsonResult /*Put*/EDIT(string toDo, [FromBody] Solicitud req)
         {
             ObjectResponse res;
             try

@@ -364,7 +364,7 @@ export class InboxComponent implements OnInit {
       option = "NOCHANGEPLEASE";
     }
     this.service.isLoading = true;
-    this.service.http.put(this.service.baseUrl + 'api/Ticket/'+option, this.ticket ,{headers:this.service.headers,responseType:'json'})
+    this.service.http.post(this.service.baseUrl + 'api/Ticket/EDIT/'+option, this.ticket ,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         // console.log(res.data)
 
