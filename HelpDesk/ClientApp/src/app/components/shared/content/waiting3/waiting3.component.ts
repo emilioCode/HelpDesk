@@ -358,7 +358,7 @@ export class Waiting3Component implements OnInit {
         break;
     }
     this.service.isLoading = true;
-    this.service.http.put(this.service.baseUrl + 'api/Trace', trace ,{headers:this.service.headers,responseType:'json'})
+    this.service.http.post(this.service.baseUrl + 'api/Trace/Put', trace ,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         // this.getTraces(this.ticket.id,this.ticket.idEmpresa)
         this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
@@ -675,7 +675,7 @@ export class Waiting3Component implements OnInit {
       return false;
     }
     
-    this.service.http.put(this.service.baseUrl + 'api/Part',part,{headers:this.service.headers,responseType:'json'})
+    this.service.http.post(this.service.baseUrl + 'api/Part/Put',part,{headers:this.service.headers,responseType:'json'})
     .subscribe(res=>{
     // console.log( res )
     
@@ -698,7 +698,7 @@ export class Waiting3Component implements OnInit {
 
   deletePartUsed(part){
     // console.log(part);
-    this.service.http.delete(this.service.baseUrl + 'api/Part/'+part.id,{headers:this.service.headers,responseType:'json'})
+    this.service.http.post(this.service.baseUrl + 'api/Part/Delete/'+part.id,{headers:this.service.headers,responseType:'json'})
     .subscribe(res=>{
     // console.log( res )
     
@@ -728,7 +728,7 @@ export class Waiting3Component implements OnInit {
 
   deleteDevice(part){
     // console.log(part);
-    this.service.http.delete(this.service.baseUrl + 'api/Device/'+part.id,{headers:this.service.headers,responseType:'json'})
+    this.service.http.post(this.service.baseUrl + 'api/Device/Delete/'+part.id,{headers:this.service.headers,responseType:'json'})
     .subscribe(res=>{
     // console.log( res )
     
@@ -758,7 +758,7 @@ export class Waiting3Component implements OnInit {
       return false;
     }
     
-    this.service.http.put(this.service.baseUrl + 'api/Device',part,{headers:this.service.headers,responseType:'json'})
+    this.service.http.post(this.service.baseUrl + 'api/Device/Put/',part,{headers:this.service.headers,responseType:'json'})
     .subscribe(res=>{
     // console.log( res )
     

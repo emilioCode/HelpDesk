@@ -128,7 +128,8 @@ namespace HelpDesk.Controllers
         }
 
         // PUT: api/Trace/5
-        [HttpPut]
+        //[HttpPut]
+        [HttpPost("[action]")]
         public JsonResult Put([FromBody] Seguimiento req)
         {
             ObjectResponse res;

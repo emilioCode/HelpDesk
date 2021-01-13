@@ -94,7 +94,8 @@ namespace HelpDesk.Controllers
         }
 
         // PUT: api/Business/5
-        [HttpPut("{id}")]
+        //[HttpPut("{id}")]
+        [HttpPost("[action]/{id}")]
         public JsonResult Put(int id, [FromBody] Empresa req)
         {   
             ObjectResponse res;

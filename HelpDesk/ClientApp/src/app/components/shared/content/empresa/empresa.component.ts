@@ -119,7 +119,7 @@ export class EmpresaComponent implements OnInit {
   edit(){
     this.service.isLoading = true;
     this.empresa.habilitado = true;
-     this.service.http.put(this.service.baseUrl + 'api/Business/'+this.empresa.id,this.empresa,{headers:this.service.headers,responseType:'json'})
+     this.service.http.post(this.service.baseUrl + 'api/Business/Put/'+this.empresa.id,this.empresa,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -135,7 +135,7 @@ export class EmpresaComponent implements OnInit {
   delete(){
     this.service.isLoading = true;
     this.empresa.habilitado = !this.empresa.habilitado;
-     this.service.http.put(this.service.baseUrl + 'api/Business/'+this.empresa.id,this.empresa,{headers:this.service.headers,responseType:'json'})
+     this.service.http.post(this.service.baseUrl + 'api/Business/Put/'+this.empresa.id,this.empresa,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {

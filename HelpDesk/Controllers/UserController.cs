@@ -135,7 +135,8 @@ namespace HelpDesk.Controllers
         }
 
         // PUT: api/User/5
-        [HttpPut("{idUserReq}")]
+        //[HttpPut("{idUserReq}")]
+        [HttpPost("[action]/{idUserReq}")]
         public JsonResult Put(int idUserReq, [FromBody] Usuario req)
         {
             ObjectResponse res;

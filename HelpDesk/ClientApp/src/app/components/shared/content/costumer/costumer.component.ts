@@ -114,7 +114,7 @@ export class CostumerComponent implements OnInit {
     }
     this.service.isLoading = true;
     this.costumer.habilitado = true;
-     this.service.http.put(this.service.baseUrl + 'api/Costumer/'+this.costumer.id,this.costumer,{headers:this.service.headers,responseType:'json'})
+     this.service.http.post(this.service.baseUrl + 'api/Costumer/Put/'+this.costumer.id,this.costumer,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -131,7 +131,7 @@ export class CostumerComponent implements OnInit {
   delete(){
     this.service.isLoading = true;
     this.costumer.habilitado = !this.costumer.habilitado;
-     this.service.http.put(this.service.baseUrl + 'api/Costumer/'+this.costumer.id,this.costumer,{headers:this.service.headers,responseType:'json'})
+     this.service.http.post(this.service.baseUrl + 'api/Costumer/Put/'+this.costumer.id,this.costumer,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {

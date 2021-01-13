@@ -89,7 +89,7 @@ export class ProfileComponent implements OnInit {
     }else{
     this.service.isLoading = true;
     // this.user.habilitado = true;
-     this.service.http.put(this.service.baseUrl + 'api/User/'+this.service.getUser().id,this.userT,{headers:this.service.headers,responseType:'json'})
+     this.service.http.post(this.service.baseUrl + 'api/User/Put/'+this.service.getUser().id,this.userT,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {

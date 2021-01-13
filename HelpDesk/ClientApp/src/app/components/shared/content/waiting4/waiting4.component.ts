@@ -358,7 +358,7 @@ export class Waiting4Component implements OnInit {
         break;
     }
     this.service.isLoading = true;
-    this.service.http.put(this.service.baseUrl + 'api/Trace', trace ,{headers:this.service.headers,responseType:'json'})
+    this.service.http.post(this.service.baseUrl + 'api/Trace/Put', trace ,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         // this.getTraces(this.ticket.id,this.ticket.idEmpresa)
         this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)

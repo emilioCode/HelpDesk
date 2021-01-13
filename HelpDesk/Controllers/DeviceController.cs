@@ -151,7 +151,8 @@ namespace HelpDesk.Controllers
         }
 
         // PUT: api/Device
-        [HttpPut]
+        //[HttpPut]
+        [HttpPost("[action]")]
         public JsonResult Put([FromBody] Equipo req)
         {
             ObjectResponse res;
@@ -205,7 +206,8 @@ namespace HelpDesk.Controllers
         }
 
         // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
+        //[HttpDelete("{id}")]
+        [HttpPost("[action]/{id}")]
         public JsonResult Delete(int id)
         {
             ObjectResponse res;
