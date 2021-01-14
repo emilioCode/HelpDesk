@@ -330,77 +330,78 @@ namespace HelpDesk.Controllers
                         List<Equipo> equipos = context.Equipo.Where(e => e.IdEmpresa == req.IdEmpresa && e.IdSolicitud == req.Id && e.Habilitado == true).ToList();
                         var subject = $"{empresa.RazonSocial} - Orden No.{req.NoSecuencia}";
                         var activities = context.Seguimiento.Where(s => s.IdEmpresa == req.IdEmpresa && s.IdSolicitud == req.Id && s.Etiquetado == true && s.Habilitado == true).ToList();
-                            
-                        var style = @" <meta charset='UTF-8'>
-                                   <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css' integrity='sha384 -TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2' crossorigin='anonymous'>
-                                   <style>
-                                    .logo {
-                                        width: 100%;
-                                        height: auto;
-                                        max-width: 60%;
-                                    }
+                        var style = "";
+                        //var style = @" <meta charset='UTF-8'>
+                        //           <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css' integrity='sha384 -TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2' crossorigin='anonymous'>
+                        //           <style>
+                        //            .logo {
+                        //                width: 100%;
+                        //                height: auto;
+                        //                max-width: 60%;
+                        //            }
 
-                                    .info {
-                                        color: black;
-                                        font-size: 12px;
-                                        font-style: italic;
-                                        font-weight: bold;
-                                        line-height: 0;
-                                    }
+                        //            .info {
+                        //                color: black;
+                        //                font-size: 12px;
+                        //                font-style: italic;
+                        //                font-weight: bold;
+                        //                line-height: 0;
+                        //            }
 
-                                    .service-order {
-                                        background-color: #F8F9FA;
-                                        border-radius: 6px;
-                                        padding: 10px;
-                                    }
+                        //            .service-order {
+                        //                background-color: #F8F9FA;
+                        //                border-radius: 6px;
+                        //                padding: 10px;
+                        //            }
 
-                                    .custom-border {
-                                        border-top: 0;
-                                        border-right: 0;
-                                        border-left: 0;
-                                        border-radius: 0;
-                                    }
+                        //            .custom-border {
+                        //                border-top: 0;
+                        //                border-right: 0;
+                        //                border-left: 0;
+                        //                border-radius: 0;
+                        //            }
 
-                                    .table-bordered,
-                                    .table-bordered td, .table-bordered th {
-                                        border: 1px solid black!important;
-                                    }
+                        //            .table-bordered,
+                        //            .table-bordered td, .table-bordered th {
+                        //                border: 1px solid black!important;
+                        //            }
 
-                                    .table td, .table th {
-                                        padding: .25rem!important;
-                                    }
+                        //            .table td, .table th {
+                        //                padding: .25rem!important;
+                        //            }
 
-                                    td {
-                                        height: 25px;
-                                    }
+                        //            td {
+                        //                height: 25px;
+                        //            }
 
-                                    .firma {
-                                        border-collapse: separate; border-spacing: 50px; 
-                                    }
+                        //            .firma {
+                        //                border-collapse: separate; border-spacing: 50px; 
+                        //            }
 
-                                    .border-bottom {
-                                        border-color: black!important;
-                                    }
-
-
-                                    table {
-                                      font-family: arial, sans-serif;
-                                      border-collapse: collapse;
-                                      width: 100%;
-                                    }
-
-                                    td, th {
-                                      border: 1px solid #dddddd;
-                                      text-align: left;
-                                      padding: 8px;
-                                    }
-
-                                    tr:nth-child(even) {
-                                      background-color: #dddddd;
-                                    }
+                        //            .border-bottom {
+                        //                border-color: black!important;
+                        //            }
 
 
-                                    </style>";
+                        //            table {
+                        //              font-family: arial, sans-serif;
+                        //              border-collapse: collapse;
+                        //              width: 100%;
+                        //            }
+
+                        //            td, th {
+                        //              border: 1px solid #dddddd;
+                        //              text-align: left;
+                        //              padding: 8px;
+                        //            }
+
+                        //            tr:nth-child(even) {
+                        //              background-color: #dddddd;
+                        //            }
+
+
+                        //            </style>";
+
                         var body = style + $@"
                                     <!-- HEADER -->
                                     <header>
@@ -453,7 +454,7 @@ namespace HelpDesk.Controllers
                             <td>{e.NoSerial}</td>";
                             });
 
-                          body+=@"</tr>
+                            body += @"</tr>
                         </table>";
 
                             if (activities.Count > 0)
