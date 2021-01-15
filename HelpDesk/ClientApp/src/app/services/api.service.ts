@@ -32,8 +32,8 @@ export class ApiService {
   version = '1.0.0';
   year:any = new Date().getFullYear();;
   company = {
-    name:'Propietario',
-    value:'mailto: emilio_mem@hotmail.com'
+    name:'soporte de la aplicación',
+    email:'mailto: emilio_mem@hotmail.com'
   };
   copyright ='Copyright';
   legacy = 'Todo los derechos reservados.';

@@ -87,14 +87,14 @@ namespace HelpDesk.Controllers
                 int quantity = context.Usuario.Where(e => e.IdEmpresa == req.IdEmpresa).Count();
                 var limit = context.Empresa.Where(b => b.Id == req.IdEmpresa).Select(b=>b.Limit).SingleOrDefault();
                 limit = limit == null ? 1 : limit;
-                if (quantity > limit)
+                if (quantity >= limit)
                 {
                     res = new ObjectResponse
                     {
                         code = "2",
                         title = "No fue posible agregar usuario",
                         icon = "warning",
-                        message = $"Las cuentas de usuario o usuarios que puedes tener como máximo registrados en la plataforma es de {limit}.",
+                        message = $"Las cuentas de usuario que puedes tener como máximo registrados en la plataforma es de {limit}.\nPara reclamaciones favor dirigirse a Términos y condiciones.",
                         data = null
                     };
                     return new JsonResult(res);
