@@ -20,5 +20,6 @@ namespace HelpDesk.Models
         public string NoAutorizacion { get; set; }
         public string Secuenciaticket { get; set; }
         public bool? Habilitado { get; set; }
+        public int? Limit { get; set; }
     }
 }

@@ -117,6 +117,10 @@ namespace HelpDesk.Models
                     .HasColumnName("image")
                     .HasColumnType("image");
 
+                entity.Property(e => e.Limit)
+                    .HasColumnName("limit")
+                    .HasDefaultValueSql("((1))");
+
                 entity.Property(e => e.NoAutorizacion)
                     .HasColumnName("noAutorizacion")
                     .HasMaxLength(12)
