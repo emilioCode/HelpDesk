@@ -221,7 +221,8 @@
                         @foreach (var pieza in Model.piezas)
                         {
                             <tr>
-                                <td>@pieza.Descripcion</td>
+                                <td>@if (pieza.Cantidad > 0)
+                                {@pieza.Cantidad}</td>
                                 <td>@pieza.NoSerial</td>
                                 <td>@pieza.Descripcion</td>
                             </tr>

@@ -576,12 +576,12 @@ export class Waiting4Component implements OnInit {
   }
 
   addPartOne(part){
-    this.service.isLoading = true;
     if(part.cantidad <1 || this.service.isNullorEmpty(part.noSerial) || this.service.isNullorEmpty(part.descripcion)
     || this.service.isNullorEmpty(part.cantidad) ){
       this.service.swal('Campos requeridos','Favor completar campos.','warning');
       return false;
     }
+    this.service.isLoading = true;
     part.idSolicitud = this.ticket.id;
     part.idEmpresa = this.ticket.idEmpresa;
     // console.log('devices')

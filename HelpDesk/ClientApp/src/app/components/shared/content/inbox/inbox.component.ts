@@ -532,12 +532,12 @@ export class InboxComponent implements OnInit {
   }
 
   addPartOne(part){
-    this.service.isLoading = true;
     if(part.cantidad <1 || this.service.isNullorEmpty(part.noSerial) || this.service.isNullorEmpty(part.descripcion)
     || this.service.isNullorEmpty(part.cantidad) ){
       this.service.swal('Campos requeridos','Favor completar campos.','warning');
       return false;
     }
+    this.service.isLoading = true;
     part.idSolicitud = this.ticket.id;
     part.idEmpresa = this.ticket.idEmpresa;
     // console.log('devices')
@@ -570,12 +570,12 @@ export class InboxComponent implements OnInit {
   }
 
   editPartUsed(part){
-    this.service.isLoading = true;
     if(part.cantidad <1 || this.service.isNullorEmpty(part.noSerial) || this.service.isNullorEmpty(part.descripcion)
     || this.service.isNullorEmpty(part.cantidad) ){
       this.service.swal('Campos requeridos','Favor completar campos.','warning');
       return false;
     }
+    this.service.isLoading = true;
     
     this.service.http.post(this.service.baseUrl + 'api/Part/Put',part,{headers:this.service.headers,responseType:'json'})
     .subscribe(res=>{
@@ -653,12 +653,12 @@ export class InboxComponent implements OnInit {
   }
 
   editDevice(part){
-    this.service.isLoading = true;
     if(this.service.validateTrim(part.marca) || this.service.validateTrim(part.fallaReportada)
     ||this.service.validateTrim(part.modelo) ||this.service.validateTrim(part.noSerial)){
       this.service.swal('Campos requeridos','Es necesario suministrar los datos del dispositivo','info');
       return false;
     }
+    this.service.isLoading = true;
     
     this.service.http.post(this.service.baseUrl + 'api/Device/Put/',part,{headers:this.service.headers,responseType:'json'})
     .subscribe(res=>{
