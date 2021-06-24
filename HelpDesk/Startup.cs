@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using HelpDesk.Models;
 using Microsoft.EntityFrameworkCore;
 using HelpDesk.Controllers;
+using Microsoft.Extensions.Hosting;
 
 namespace HelpDesk
 {
@@ -35,8 +36,8 @@ namespace HelpDesk
 
             services.AddSignalR();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddControllersWithViews();
             //now, i creating a scope with the dbLibraryContext
             services.AddScoped<HelpDeskDBContext, HelpDeskDBContext>();
 
@@ -48,7 +49,7 @@ namespace HelpDesk
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, /*IHostingEnvironment*/IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -62,18 +63,34 @@ namespace HelpDesk
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseDefaultFiles();
             app.UseSpaStaticFiles();
 
-            app.UseSignalR(x =>
+            app.UseCors(options =>
             {
-                x.MapHub<Hubs.hub>("/hub");
+                options.AllowAnyOrigin();
+                options.AllowAnyHeader();
+                options.AllowAnyMethod();
             });
+            //app.UseSignalR(x =>
+            //{
+            //    x.MapHub<Hubs.hub>("/hub");
+            //});
 
-            app.UseMvc(routes =>
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller}/{action=Index}/{id?}");
+            //});
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    pattern: "{controller}/{action=Index}/{id?}"//,
+                    /*defaults: new { controller="App", Action="Index" }*/);
+                endpoints.MapHub<Hubs.hub>("/hub");
             });
 
             app.UseSpa(spa =>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
-import * as signalR from '@aspnet/signalr';
+// import * as signalR from '@aspnet/signalr';
+import * as signalR from '@microsoft/signalr';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -13,9 +14,14 @@ export class HomeComponent implements OnInit{
 
   hubConnection: signalR.HubConnection;
 
-  ngOnInit() {
+  ngOnInit() {console.log(this.service.baseUrl+'/hub')
     this.hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl(this.service.baseUrl+'/hub')
+    .withUrl('/hub'//this.service.baseUrl+'/hub'
+    ,{
+      skipNegotiation: true,
+      transport: signalR.HttpTransportType.WebSockets, // | signalR.HttpTransportType.LongPolling
+    })
+    .configureLogging(signalR.LogLevel.Debug)
     .build();
 
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {

@@ -1,7 +1,8 @@
 import { Component, OnInit, Pipe } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 import { FilterPipe } from '../../../../pipes/filter.pipe';
-import * as signalR from '@aspnet/signalr';
+// import * as signalR from '@aspnet/signalr';
+import * as signalR from '@microsoft/signalr';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
@@ -31,7 +32,12 @@ export class UserComponent implements OnInit {
 
   ngOnInit() {
     this.hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl(this.service.baseUrl+'/hub')
+    .withUrl('/hub'//this.service.baseUrl+'/hub'
+    ,{
+      skipNegotiation: true,
+      transport: signalR.HttpTransportType.WebSockets, // | signalR.HttpTransportType.LongPolling
+    })
+    .configureLogging(signalR.LogLevel.Debug)
     .build();
 
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
