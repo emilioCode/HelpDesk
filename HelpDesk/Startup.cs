@@ -37,6 +37,7 @@ namespace HelpDesk
             services.AddSignalR();
 
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddRazorPages();
             services.AddControllersWithViews();
             //now, i creating a scope with the dbLibraryContext
             services.AddScoped<HelpDeskDBContext, HelpDeskDBContext>();
@@ -86,12 +87,14 @@ namespace HelpDesk
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}"//,
                     /*defaults: new { controller="App", Action="Index" }*/);
                 endpoints.MapHub<Hubs.hub>("/hub");
             });
+           
 
             app.UseSpa(spa =>
             {
