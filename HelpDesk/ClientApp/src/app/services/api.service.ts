@@ -139,7 +139,8 @@ export class ApiService {
     return value == "" || value == null || value === undefined || value.trim() == "";
   }
 
-  setTime(value):String{
+  setTime(value1):String{
+    var value = this.ftmHour(value1);
     var dateStr = value.split(':');
     var hora = Number(dateStr[0]) >12? Number(dateStr[0])-12 : Number(dateStr[0]);
     var tanda = Number(dateStr[0]) >12? " PM" : " AM";
@@ -163,4 +164,11 @@ export class ApiService {
     return str;
   }
 
+  fillZeroWithNumber(n){
+    return n > 9 ? "" + n: "0" + n;
+  }
+
+  ftmHour(timeSpan){
+    return this.fillZeroWithNumber(timeSpan.hours) + ":" + this.fillZeroWithNumber(timeSpan.minutes) + ":" + this.fillZeroWithNumber(timeSpan.seconds);
+  }
 }

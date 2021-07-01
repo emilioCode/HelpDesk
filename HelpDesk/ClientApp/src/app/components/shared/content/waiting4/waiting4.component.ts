@@ -36,11 +36,18 @@ export class Waiting4Component implements OnInit {
   hubConnection: signalR.HubConnection;
 
   ngOnInit() {
+    console.log("hub:" + this.service.baseUrl+'hub')
     this.hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl(this.service.baseUrl+'/hub')
+    .withUrl(this.service.baseUrl+'hub')
+    //.withUrl('/hub'//this.service.baseUrl+'/hub'
+    // ,{
+    //   skipNegotiation: true,
+    //   transport: signalR.HttpTransportType.WebSockets, // | signalR.HttpTransportType.LongPolling
+    // })
+    // .configureLogging(signalR.LogLevel.Debug)
     .build();
 
-    this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
+    this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {//debugger;
       // console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
       // debugger
       if( (component=='ticket' && idEmpresa == this.service.getUser().idEmpresa) || this.service.getUser().acceso =="ROOT" ){
@@ -205,6 +212,10 @@ export class Waiting4Component implements OnInit {
       .subscribe(res=>{
         this.tickets = res.filter(x=>/*x.idUsuario ==0  &&*/ x.estado == "Completado" && x.aprobadoPor==null);
         // console.log(  this.tickets )
+        this.tickets.forEach(element => {
+          if(element.horaInicio != null)element.horaInicio = this.service.fillZeroWithNumber(element.horaInicio.value.hours) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.minutes) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.seconds); 
+          if(element.horaTermino != null)element.horaTermino = this.service.fillZeroWithNumber(element.horaTermino.value.hours) + ":" + this.service.fillZeroWithNumber(element.horaTermino.value.minutes) + ":" + this.service.fillZeroWithNumber(element.horaTermino.value.seconds); 
+        });
         this.service.isLoading = false;
       },error => {
         console.error(error);

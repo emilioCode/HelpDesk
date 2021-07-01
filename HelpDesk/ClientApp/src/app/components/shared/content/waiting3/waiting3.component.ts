@@ -37,7 +37,13 @@ export class Waiting3Component implements OnInit {
 
   ngOnInit() {
     this.hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl(this.service.baseUrl+'/hub')
+    .withUrl(this.service.baseUrl+'hub')
+    //.withUrl('/hub'//this.service.baseUrl+'/hub'
+    // ,{
+    //   skipNegotiation: true,
+    //   transport: signalR.HttpTransportType.WebSockets, // | signalR.HttpTransportType.LongPolling
+    // })
+    // .configureLogging(signalR.LogLevel.Debug)
     .build();
 
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
@@ -205,6 +211,10 @@ export class Waiting3Component implements OnInit {
       .subscribe(res=>{
         this.tickets = res.filter(x=>x.idUsuario ==0  && x.tipoSolicitud == "Servicio a Domicilio");
         // console.log(  this.tickets )
+        this.tickets.forEach(element => {
+          if(element.horaInicio != null)element.horaInicio = this.service.fillZeroWithNumber(element.horaInicio.value.hours) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.minutes) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.seconds); 
+          if(element.horaTermino != null)element.horaTermino = this.service.fillZeroWithNumber(element.horaTermino.value.hours) + ":" + this.service.fillZeroWithNumber(element.horaTermino.value.minutes) + ":" + this.service.fillZeroWithNumber(element.horaTermino.value.seconds); 
+        });
         this.service.isLoading = false;
       },error => {
         console.error(error);

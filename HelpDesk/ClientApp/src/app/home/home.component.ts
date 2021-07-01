@@ -14,15 +14,16 @@ export class HomeComponent implements OnInit{
 
   hubConnection: signalR.HubConnection;
 
-  ngOnInit() {console.log(this.service.baseUrl+'/hub')
-    this.hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl('/hub'//this.service.baseUrl+'/hub'
-    ,{
-      skipNegotiation: true,
-      transport: signalR.HttpTransportType.WebSockets, // | signalR.HttpTransportType.LongPolling
-    })
-    .configureLogging(signalR.LogLevel.Debug)
-    .build();
+  ngOnInit() {
+  this.hubConnection = new signalR.HubConnectionBuilder()
+  .withUrl(this.service.baseUrl+'hub')
+  //.withUrl('/hub'//this.service.baseUrl+'/hub'
+  // ,{
+  //   skipNegotiation: true,
+  //   transport: signalR.HttpTransportType.WebSockets, // | signalR.HttpTransportType.LongPolling
+  // })
+  // .configureLogging(signalR.LogLevel.Debug)
+  .build();
 
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
       // console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
