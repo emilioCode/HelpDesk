@@ -35,10 +35,10 @@ namespace HelpDesk.Controllers
             }
             else if(option =="*" || option.ToLower() == "all")
             {
-                switch (usuario.Acceso)
+                switch (usuario.Acceso) 
                 {
                     case "ROOT":
-                        usuarios.AddRange(context.Usuario);
+                        usuarios.AddRange(context.Usuario.ToList());
                         break;
                     case "MODERADOR":
                         //break;
