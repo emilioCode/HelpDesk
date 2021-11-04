@@ -30,6 +30,7 @@ import { WaitingComponent } from './components/shared/content/waiting/waiting.co
 import { Waiting2Component } from './components/shared/content/waiting2/waiting2.component';
 import { Waiting3Component } from './components/shared/content/waiting3/waiting3.component';
 import { Waiting4Component } from './components/shared/content/waiting4/waiting4.component';
+import { CalendarComponent } from './components/shared/content/calendar/calendar.component';
 
 
 @NgModule({
@@ -56,7 +57,8 @@ import { Waiting4Component } from './components/shared/content/waiting4/waiting4
     WaitingComponent,
     Waiting2Component,
     Waiting3Component,
-    Waiting4Component
+    Waiting4Component,
+    CalendarComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -76,7 +78,8 @@ import { Waiting4Component } from './components/shared/content/waiting4/waiting4
       { path: 'waiting', component: WaitingComponent },
       { path: 'waiting2', component: Waiting2Component },
       { path: 'waiting3', component: Waiting3Component },
-      { path: 'finished', component:Waiting4Component}
+      { path: 'finished', component:Waiting4Component},
+      { path: 'calendar', component: CalendarComponent }
     ]),
     Ng2Webstorage
   ],

@@ -127,6 +127,8 @@ namespace HelpDesk.Controllers
                 empresa.Image = req.Image;
                 empresa.NoAutorizacion = req.NoAutorizacion == "" ? null : req.NoAutorizacion;
                 empresa.Secuenciaticket = req.Secuenciaticket == "" ? null : req.Secuenciaticket;
+                empresa.CondicionesDomicilio = req.CondicionesDomicilio == "" ? null : req.CondicionesDomicilio;
+                empresa.CondicionesTaller = req.CondicionesTaller == "" ? null : req.CondicionesTaller;
                 empresa.Habilitado = req.Habilitado;
                 context.Entry(empresa).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 res = new ObjectResponse {

@@ -91,6 +91,14 @@ namespace HelpDesk.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.CondicionesDomicilio)
+                    .HasColumnName("condicionesDomicilio")
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CondicionesTaller)
+                    .HasColumnName("condicionesTaller")
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Contrasena)
                     .HasColumnName("contrasena")
                     .HasMaxLength(30)
@@ -369,6 +377,10 @@ namespace HelpDesk.Models
                     .HasMaxLength(30)
                     .IsUnicode(false);
             });
+
+            OnModelCreatingPartial(modelBuilder);
         }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

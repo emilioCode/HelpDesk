@@ -23,7 +23,8 @@ export class MenuComponent implements OnInit {
       {label:'Clientes', route:'costumer', iconClasses: 'fa fa-users', see: this.service.getLevel(this.service.getUser().acceso)>0},
       {label:'Ordenes de servicio', route:'ticket', iconClasses: 'fa fa-ticket', see: this.service.getLevel(this.service.getUser().acceso)>1},
       {label:'Buzón', route:'inbox', iconClasses: 'fa fa-inbox', see: this.service.getLevel(this.service.getUser().acceso)>0},
-      {label:'Reportes', route:'report', iconClasses: 'fa fa-pie-chart', see: this.service.getLevel(this.service.getUser().acceso)>2}
+      {label:'Reportes', route:'report', iconClasses: 'fa fa-pie-chart', see: this.service.getLevel(this.service.getUser().acceso)>2},
+      {label: 'Calendar', route:'calendar', iconClasses:'fa fa-calendar', see:true}
     ]}
   ]
 }
