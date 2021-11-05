@@ -88,6 +88,10 @@ export class EmpresaComponent implements OnInit {
     this.option = option;
     this.empresa = object;
     // console.log(this.empresa)
+    let collapseOne =document.getElementById('collapseOne');
+    let collapseTwo =document.getElementById('collapseTwo');
+    if(collapseOne.classList.contains('in')) collapseOne.classList.remove('in');
+    if(collapseTwo.classList.contains('in')) collapseTwo.classList.remove('in');
   }
 
   fileUpload:File = null;
