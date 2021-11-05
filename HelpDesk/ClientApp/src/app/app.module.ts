@@ -32,14 +32,6 @@ import { Waiting3Component } from './components/shared/content/waiting3/waiting3
 import { Waiting4Component } from './components/shared/content/waiting4/waiting4.component';
 import { CalendarComponent } from './components/shared/content/calendar/calendar.component';
 
-import { FullCalendarModule } from '@fullcalendar/angular'; // must go before plugins
-import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
-import interactionPlugin from '@fullcalendar/interaction'; // a plugin!
-
-FullCalendarModule.registerPlugins([
-  dayGridPlugin,
-  interactionPlugin
-]);
 
 @NgModule({
   declarations: [
@@ -89,8 +81,7 @@ FullCalendarModule.registerPlugins([
       { path: 'finished', component:Waiting4Component},
       { path: 'calendar', component: CalendarComponent }
     ]),
-    Ng2Webstorage,
-    FullCalendarModule
+    Ng2Webstorage
   ],
   providers: [ApiService],
   bootstrap: [AppComponent]
