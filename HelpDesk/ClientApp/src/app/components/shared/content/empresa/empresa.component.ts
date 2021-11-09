@@ -87,7 +87,9 @@ export class EmpresaComponent implements OnInit {
   fillModal(option='add',object){
     this.option = option;
     this.empresa = object;
-    // console.log(this.empresa)
+
+    if(document.getElementById('collapseOne').classList.length > 1) document.getElementById('collapseOnebtn').click();
+    if(document.getElementById('collapseTwo').classList.length > 1) document.getElementById('collapseTwobtn').click();
   }
 
   fileUpload:File = null;
