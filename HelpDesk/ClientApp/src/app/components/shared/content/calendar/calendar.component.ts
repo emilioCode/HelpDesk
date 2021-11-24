@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 declare var $:any;
-import 'fullcalendar';
-import { Calendar } from 'fullcalendar'
 
 @Component({
   selector: 'app-calendar',
