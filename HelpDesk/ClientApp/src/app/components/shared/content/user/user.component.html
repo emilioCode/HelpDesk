@@ -45,7 +45,7 @@
               <td width="17%">{{ item.correo }}</td>
               <td  width="15%">
                 <a class="btn-link" (click)="fillModal('edit',item)" *ngIf="service.getLevel(service.getUser().acceso) > 2" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-edit"></i></a>
-                <a class="btn-link" (click)="fillModal('delete',item);delete()" *ngIf="service.getLevel(service.getUser().acceso) >= 3"><i class="fa fa-fw fa-toggle-on" [hidden]="!item.habilitado"></i><i class="fa fa-fw fa-toggle-off" [hidden]="item.habilitado"></i></a>
+                <a class="btn-link" (click)="fillModal('delete',item);delete()" *ngIf="service.getLevel(service.getUser().acceso) >= 3"><i class="fa fa-fw fa-toggle-on" *ngIf="item.habilitado"></i><i class="fa fa-fw fa-toggle-off" *ngIf="!item.habilitado"></i></a>
               </td>
             </tr>
           </tbody>
