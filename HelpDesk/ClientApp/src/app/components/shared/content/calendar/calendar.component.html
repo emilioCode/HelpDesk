@@ -1,3 +1,4 @@
+
 <br/>
 <div class="row">
   <div class="col-xs-12">
@@ -8,10 +9,11 @@
   </div>
   <div class="col-xs-12">
     <div class="box box-primary">
+      <div class="overlay" [hidden]="!service.isLoading">
+        <i class="fa fa-refresh fa-spin"></i>
+      </div>
       <div class="box-body no-padding">
-        <div class="overlay" >
-          <i class="fa fa-refresh fa-spin"></i>
-        </div>
+
         <!-- THE CALENDAR -->
         <div id="calendar"></div>
       </div>
