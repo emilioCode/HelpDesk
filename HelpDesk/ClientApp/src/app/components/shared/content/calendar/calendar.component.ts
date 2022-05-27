@@ -12,14 +12,19 @@ export class CalendarComponent implements OnInit {
 
   constructor(private service: ApiService) {}
   events: Event[];
-  
+  event: Event = {
+    title: '',
+    start: null,
+    end: null,
+    path: null,
+    user: null,
+    ticket: null
+  };
+
   ngOnInit() {
     this.getEvents(this.service.getUser().id);
   }
 
-  showModal(){
-    $('#exampleModal').modal('show');
-  }
 
   calendarInit(){
         /* initialize the calendar
@@ -49,8 +54,16 @@ export class CalendarComponent implements OnInit {
         // this function is called when something is dropped
       },
       eventClick: function(info){
-        console.log('Event: ');
+        // console.log('Event: ');
         console.log(info);
+        // this.event = info;
+        document.getElementById('modalTitle').innerText = info.title;
+        var html = `<p><strong>${info.user.acceso}:</strong> ${info.user.nombre}</p>`;
+        let descripcion = info.ticket.descripcion? info.ticket.descripcion: '';
+        html = html + `<p><strong>Descripción:</strong> ${descripcion}</p>`;
+        html = html + `<p><a href="${info.path}" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i></a></p>`;
+        document.getElementById('modalText').innerHTML = html;
+        $('#exampleModal').modal('show');
       }
     })
   
@@ -116,12 +129,12 @@ export class CalendarComponent implements OnInit {
           }
           if(e.ticket.tipoSolicitud == "Servicio Taller"){
             if(!e.ticket.aprobadoPor){
-              url = this.service.baseUrl + '/OrderReport1?value=' + e.ticket.noSecuencia;
+              url = this.service.baseUrl + 'OrderReport1?value=' + e.ticket.noSecuencia + "-" + e.ticket.idEmpresa;
             }else{
-              url = this.service.baseUrl + '/OrderReportF?value=' + e.ticket.noSecuencia;
+              url = this.service.baseUrl + 'OrderReportF?value=' + e.ticket.noSecuencia + "-" + e.ticket.idEmpresa;
             }
           }else{
-            url = this.service.baseUrl + '/OrderReport?value=' + e.ticket.noSecuencia;
+            url = this.service.baseUrl + 'OrderReport?value=' + e.ticket.noSecuencia + "-" + e.ticket.idEmpresa;
           }
 
           if(e.start == null && e.end == null){

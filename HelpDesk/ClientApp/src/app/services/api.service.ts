@@ -37,7 +37,7 @@ export class ApiService {
   };
   copyright ='Copyright';
   legacy = 'Todo los derechos reservados.';
-  info = 'version: 2020.2';
+  info = 'version: 2022.1';
 
   user:any='';
   defaultPhoto = '../../../../assets/dist/img/photo_default.png';
