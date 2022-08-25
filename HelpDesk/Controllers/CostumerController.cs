@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelpDesk.Core.Entities;
+using HelpDesk.Infrastructure.Data;
 using HelpDesk.Models;
 using HelpDesk.Models.classes;
 using Microsoft.AspNetCore.Http;
@@ -27,25 +29,25 @@ namespace HelpDesk.Controllers
            
             if (option.ToLower() == "unique")
             {
-                Cliente cliente = context.Cliente.Find(idUserOridClient);
+                Cliente cliente = context.Clientes.Find(idUserOridClient);
                 clientes.Add(cliente);
             }
             else if (option == "*" || option.ToLower() == "all")
             {
-                Usuario usuario = context.Usuario.Find(idUserOridClient);
+                Usuario usuario = context.Usuarios.Find(idUserOridClient);
                 switch (usuario.Acceso)
                 {
                     case "ROOT":
                         //break;
                     case "ADMINISTRADOR":
-                        clientes.AddRange(context.Cliente.Where(u => u.IdEmpresa == usuario.IdEmpresa).OrderByDescending(x => x.Id));
+                        clientes.AddRange(context.Clientes.Where(u => u.IdEmpresa == usuario.IdEmpresa).OrderByDescending(x => x.Id));
                         break;
                     case "MODERADOR":
                         //break;
                     case "TECNICO":
                         //break;
                     default:
-                        clientes.AddRange(context.Cliente.Where(u => u.IdEmpresa == usuario.IdEmpresa && u.Habilitado == true).OrderByDescending(x => x.Id));
+                        clientes.AddRange(context.Clientes.Where(u => u.IdEmpresa == usuario.IdEmpresa && u.Habilitado == true).OrderByDescending(x => x.Id));
                         break;
                 }
             }
@@ -82,7 +84,7 @@ namespace HelpDesk.Controllers
                 context.Entry(req).State = Microsoft.EntityFrameworkCore.EntityState.Added;
                 context.SaveChanges();
 
-                var data = context.Cliente.Where(e => e.Nombre == req.Nombre
+                var data = context.Clientes.Where(e => e.Nombre == req.Nombre
                 && e.Contacto == req.Contacto && e.Telefono == req.Telefono && e.Extension == req.Extension
                 && e.Rnc == req.Rnc && e.Departamento == req.Departamento && e.Correo == req.Correo
                 && e.Direccion == req.Direccion && e.IdEmpresa == req.IdEmpresa).SingleOrDefault();
@@ -131,7 +133,7 @@ namespace HelpDesk.Controllers
                     };
                     return new JsonResult(res);
                 }
-                var cliente = context.Cliente.Find(id);
+                var cliente = context.Clientes.Find(id);
                 cliente.Nombre = req.Nombre == "" ? null : req.Nombre;
                 cliente.Contacto = req.Contacto == "" ? null : req.Contacto;
                 cliente.Telefono = req.Telefono == "" ? null : req.Telefono;

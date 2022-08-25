@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelpDesk.Core.Entities;
+using HelpDesk.Infrastructure.Data;
 using HelpDesk.Models;
 using HelpDesk.Models.classes;
 using Microsoft.AspNetCore.Http;
@@ -22,14 +24,14 @@ namespace HelpDesk.Controllers
         [HttpGet("{idSolicitud}/{idEmpresa}")]
         public JsonResult Get(int idSolicitud, int idEmpresa)
         {
-            //List<Seguimiento> seguimientos = new List<Seguimiento>();
+            //List<Seguimientos> seguimientos = new List<Seguimientos>();
             ObjectResponse res = new ObjectResponse();
             try
             {
-                //seguimientos = context.Seguimiento.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
-                var traces = from seguimiento in context.Seguimiento
-                             join solicitud in context.Solicitud on seguimiento.IdSolicitud equals solicitud.Id
-                             join usuario in context.Usuario on seguimiento.IdUsuario equals usuario.Id
+                //seguimientos = context.Seguimientos.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
+                var traces = from seguimiento in context.Seguimientos
+                             join solicitud in context.Solicitudes on seguimiento.IdSolicitud equals solicitud.Id
+                             join usuario in context.Usuarios on seguimiento.IdUsuario equals usuario.Id
                              where solicitud.Id == idSolicitud && solicitud.IdEmpresa == idEmpresa
                              select new
                              {
@@ -100,7 +102,7 @@ namespace HelpDesk.Controllers
                 context.Entry(req).State = Microsoft.EntityFrameworkCore.EntityState.Added;
                 context.SaveChanges();
 
-                var data = context.Seguimiento.Where(e => e.IdSolicitud == req.IdSolicitud
+                var data = context.Seguimientos.Where(e => e.IdSolicitud == req.IdSolicitud
                 && e.IdEmpresa == req.IdEmpresa).ToList();
                 res = new ObjectResponse
                 {

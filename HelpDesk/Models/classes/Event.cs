@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HelpDesk.Core.Entities;
+using System;
 
 namespace HelpDesk.Models.classes
 {

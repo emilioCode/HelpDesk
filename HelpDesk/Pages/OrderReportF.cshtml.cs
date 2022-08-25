@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelpDesk.Core.Entities;
+using HelpDesk.Infrastructure.Data;
 using HelpDesk.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -32,13 +34,13 @@ namespace HelpDesk.Pages
         {
             var noTicket = value.Split('-')[0];
             var idEmpresa = Convert.ToInt32(value.Split('-')[1]);
-            empresa = context.Empresa.Find(idEmpresa);
-            solicitud = context.Solicitud.Where(e => e.NoSecuencia == noTicket).First();
-            cliente = context.Cliente.Where(e => e.IdEmpresa == idEmpresa && e.Id == solicitud.IdCliente).First();
-            equipos = context.Equipo.Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id).ToList();
+            empresa = context.Empresas.Find(idEmpresa);
+            solicitud = context.Solicitudes.Where(e => e.NoSecuencia == noTicket).First();
+            cliente = context.Clientes.Where(e => e.IdEmpresa == idEmpresa && e.Id == solicitud.IdCliente).First();
+            equipos = context.Equipos.Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id).ToList();
             piezas = context.Piezas.Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id).ToList();
 
-            seguimiento = context.Seguimiento.Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id && e.Etiquetado == true).ToList();
+            seguimiento = context.Seguimientos.Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id && e.Etiquetado == true).ToList();
             soluciones = seguimiento.Select(x => x.Texto).Join(",");
 
             while (equipos.Count < 4)

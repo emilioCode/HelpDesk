@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelpDesk.Core.CustomEntities;
+using HelpDesk.Core.Entities;
+using HelpDesk.Infrastructure.Data;
 using HelpDesk.Models;
 using HelpDesk.Models.classes;
 using Microsoft.AspNetCore.Http;
@@ -22,17 +25,17 @@ namespace HelpDesk.Controllers
         [HttpGet("{idUser}/{option}")]
         public JsonResult Get(int idUser, string option = "unique")
         {
-            //List<Solicitud> solicitudes = new List<Solicitud>();
+            //List<Solicitudes> solicitudes = new List<Solicitudes>();
             List<SolicitudT> solicitudes = new List<SolicitudT>();
 
             if (option.ToLower() == "unique")
             {
-                var array = context.Solicitud.Where(s => s.IdUsuario == idUser).OrderByDescending(s=>s.Id);
+                var array = context.Solicitudes.Where(s => s.IdUsuario == idUser).OrderByDescending(s=>s.Id);
                 //solicitudes.AddRange(array);
                 array.ToList().ForEach(e =>
                 {
-                    var codigos = context.Cliente.Find(e.IdCliente).Nombre +", "+ context.Cliente.Find(e.IdCliente).Contacto;
-                    var eq = context.Equipo.Where(a => a.IdSolicitud == e.Id).ToList();
+                    var codigos = context.Clientes.Find(e.IdCliente).Nombre +", "+ context.Clientes.Find(e.IdCliente).Contacto;
+                    var eq = context.Equipos.Where(a => a.IdSolicitud == e.Id).ToList();
                     var codigos2 = "";// eq.Select(r => r.NoSerial).Join(",");
                     eq.ForEach(r =>
                     {
@@ -57,14 +60,14 @@ namespace HelpDesk.Controllers
                         Descripcion = e.Descripcion,
                         AprobadoPor = e.AprobadoPor,
                         Habilitado = e.Habilitado,
-                        cliente = context.Cliente.Find(e.IdCliente).Nombre,
+                        cliente = context.Clientes.Find(e.IdCliente).Nombre,
                         claves = codigos + ", " + codigos2
                     });
                 });
             }
             else if (option == "*" || option.ToLower() == "all")
             {                                            
-                Usuario usuario = context.Usuario.Find(idUser);
+                Usuario usuario = context.Usuarios.Find(idUser);
                 switch (usuario.Acceso)
                 {
                     case "ROOT":
@@ -72,12 +75,12 @@ namespace HelpDesk.Controllers
                     case "ADMINISTRADOR":
                         //break;
                     case "MODERADOR":
-                        //solicitudes.AddRange(context.Solicitud.Where(u => u.IdEmpresa == usuario.IdEmpresa).OrderByDescending(x => x.Id));
-                        var list = context.Solicitud.Where(u => u.IdEmpresa == usuario.IdEmpresa).OrderByDescending(x => x.Id);
+                        //solicitudes.AddRange(context.Solicitudes.Where(u => u.IdEmpresa == usuario.IdEmpresa).OrderByDescending(x => x.Id));
+                        var list = context.Solicitudes.Where(u => u.IdEmpresa == usuario.IdEmpresa).OrderByDescending(x => x.Id);
                         list.ToList().ForEach(e =>
                         {
-                            var codigos = context.Cliente.Find(e.IdCliente).Nombre + ", " + context.Cliente.Find(e.IdCliente).Contacto;
-                            var eq = context.Equipo.Where(a => a.IdSolicitud == e.Id).ToList();
+                            var codigos = context.Clientes.Find(e.IdCliente).Nombre + ", " + context.Clientes.Find(e.IdCliente).Contacto;
+                            var eq = context.Equipos.Where(a => a.IdSolicitud == e.Id).ToList();
                             var codigos2 = "";// eq.Select(r => r.NoSerial).Join(",");
                             eq.ForEach(r =>
                             {
@@ -103,7 +106,7 @@ namespace HelpDesk.Controllers
                                 Descripcion = e.Descripcion,
                                 AprobadoPor = e.AprobadoPor,
                                 Habilitado = e.Habilitado,
-                                cliente = context.Cliente.Find(e.IdCliente).Nombre,
+                                cliente = context.Clientes.Find(e.IdCliente).Nombre,
                                 claves = codigos + ", " + codigos2
                             });
                         });
@@ -144,7 +147,7 @@ namespace HelpDesk.Controllers
                     };
                     return new JsonResult(res);
                 }
-                Empresa empresa = context.Empresa.Find(req.IdEmpresa);
+                Empresa empresa = context.Empresas.Find(req.IdEmpresa);
 
                 req.IdUsuario = req.IdUsuario < 1 ? 0 : req.IdUsuario;
                 req.FechaCreacion = DateTime.Now.Date;
@@ -156,11 +159,11 @@ namespace HelpDesk.Controllers
                 context.SaveChanges();
 
 
-                Cliente cliente = context.Cliente.Find(req.IdCliente);
+                Cliente cliente = context.Clientes.Find(req.IdCliente);
                 
                 if(req.IdUsuario != 0 )
                 {
-                    Usuario usuario = context.Usuario.Where(u => u.IdEmpresa == req.IdEmpresa && u.Id == req.IdUsuario).SingleOrDefault();
+                    Usuario usuario = context.Usuarios.Where(u => u.IdEmpresa == req.IdEmpresa && u.Id == req.IdUsuario).SingleOrDefault();
                     var subject = $"HelpDesk Notification - Orden No.{req.NoSecuencia}";
 
                     var discrepancia = req.TipoSolicitud == "Servicio Taller" ? "Observaciones" : "Falla";
@@ -169,7 +172,7 @@ namespace HelpDesk.Controllers
                                 Orden de servicio técnico asignado: <b><i>{usuario.Nombre}</i></b><br>
                                 Fecha: <b><i>{req.FechaCreacion.ToString("dd/MM/yyyy")}</i></b><br>
                                 Orden: <b><i>{req.NoSecuencia}</i></b><br>
-                                Cliente: <b><i>{cliente.Nombre}</i></b><br>
+                                Clientes: <b><i>{cliente.Nombre}</i></b><br>
                                 {discrepancia}: <b><i>{req.Descripcion}</i></b><br>
                             </div>";
 
@@ -178,7 +181,7 @@ namespace HelpDesk.Controllers
 
                 }
 
-                var data = context.Solicitud.Where(e => e.NoSecuencia == req.NoSecuencia).LastOrDefault();
+                var data = context.Solicitudes.Where(e => e.NoSecuencia == req.NoSecuencia).LastOrDefault();
                 res = new ObjectResponse
                 {
                     code = "1",
@@ -225,10 +228,10 @@ namespace HelpDesk.Controllers
                     };
                     return new JsonResult(res);
                 }
-                Solicitud ticket = context.Solicitud.Find(req.Id);
-                Empresa empresa = context.Empresa.Find(req.IdEmpresa);
-                Usuario usuario = context.Usuario.Find(req.IdUsuario);
-                Cliente cliente = context.Cliente.Find(req.IdCliente);
+                Solicitud ticket = context.Solicitudes.Find(req.Id);
+                Empresa empresa = context.Empresas.Find(req.IdEmpresa);
+                Usuario usuario = context.Usuarios.Find(req.IdUsuario);
+                Cliente cliente = context.Clientes.Find(req.IdCliente);
 
                 if (toDo is "ESTADO")
                 {
@@ -265,7 +268,7 @@ namespace HelpDesk.Controllers
                                     title = "Datos requeridos",
                                     icon = "warning",
                                     message = "Favor completar los campos correspondientes a las fechas y horas",
-                                    data = context.Solicitud.Find(ticket.Id)
+                                    data = context.Solicitudes.Find(ticket.Id)
                                 };
                                 return new JsonResult(res);
                             }
@@ -280,7 +283,7 @@ namespace HelpDesk.Controllers
                                         title = "Fecha y hora no coinciden",
                                         icon = "warning",
                                         message = "Favor verificar la fecha y hora de inicio con la fecha y hora de termino. Este ultimo debe ser posterior a la fecha de inicio.",
-                                        data = context.Solicitud.Find(ticket.Id)
+                                        data = context.Solicitudes.Find(ticket.Id)
                                     };
                                     return new JsonResult(res);
                                 }
@@ -301,12 +304,12 @@ namespace HelpDesk.Controllers
                                 Orden de servicio técnico asignado: <b><i>{usuario.Nombre}</i></b><br>
                                 Fecha: <b><i>{req.FechaCreacion.ToString("dd/MM/yyyy")}</i></b><br>
                                 Orden: <b><i>{req.NoSecuencia}</i></b><br>
-                                Cliente: <b><i>{cliente.Nombre}</i></b><br>
+                                Clientes: <b><i>{cliente.Nombre}</i></b><br>
                                 {discrepancia}: <b><i>{req.Descripcion}</i></b><br>
                             </div>";
 
-                    //Empresa empresa = context.Empresa.Find(req.IdEmpresa);
-                    //Usuario usuario = context.Usuario.Find(req.IdUsuario);
+                    //Empresas empresa = context.Empresas.Find(req.IdEmpresa);
+                    //Usuarios usuario = context.Usuarios.Find(req.IdUsuario);
 
                     var resp = MailClient.Send(empresa.Host, Convert.ToInt32(empresa.Port), System.Net.Mail.SmtpDeliveryMethod.Network, false,
                     true, empresa.Correo, empresa.Contrasena, usuario.Correo, subject, body, true);
@@ -327,9 +330,9 @@ namespace HelpDesk.Controllers
                     
                     if (toDo == "APROBAR")
                     {
-                        List<Equipo> equipos = context.Equipo.Where(e => e.IdEmpresa == req.IdEmpresa && e.IdSolicitud == req.Id && e.Habilitado == true).ToList();
+                        List<Equipo> equipos = context.Equipos.Where(e => e.IdEmpresa == req.IdEmpresa && e.IdSolicitud == req.Id && e.Habilitado == true).ToList();
                         var subject = $"{empresa.RazonSocial} - Orden No.{req.NoSecuencia}";
-                        var activities = context.Seguimiento.Where(s => s.IdEmpresa == req.IdEmpresa && s.IdSolicitud == req.Id && s.Etiquetado == true && s.Habilitado == true).ToList();
+                        var activities = context.Seguimientos.Where(s => s.IdEmpresa == req.IdEmpresa && s.IdSolicitud == req.Id && s.Etiquetado == true && s.Habilitado == true).ToList();
                         var style = "";
                         //var style = @" <meta charset='UTF-8'>
                         //           <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css' integrity='sha384 -TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2' crossorigin='anonymous'>
@@ -477,7 +480,7 @@ namespace HelpDesk.Controllers
                 context.Entry(ticket).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 if (toDo != "NOCHANGEPLEASE") context.SaveChanges();
 
-                var ticket_res = context.Solicitud.Find(req.Id);
+                var ticket_res = context.Solicitudes.Find(req.Id);
 
                 
                 res = new ObjectResponse
@@ -515,7 +518,7 @@ namespace HelpDesk.Controllers
         //                            Orden de Servicio a Domicilio<br> 
         //                            tecnico asignado:<b><i>tecnico #1</i></b><br>
         //                            Fecha:{today.ToString("dd/MM/yyyy")}<br>
-        //                            Cliente:<b><i>Mix Viajes & Cruceros</i></b><br>
+        //                            Clientes:<b><i>Mix Viajes & Cruceros</i></b><br>
         //                            Falla: XXXXXX<br>
         //                        </div>";
         //    var res = MailClient.Send("smtp-mail.outlook.com", 587, System.Net.Mail.SmtpDeliveryMethod.Network, false,
@@ -531,18 +534,18 @@ namespace HelpDesk.Controllers
             ObjectResponse response;
             try
             {
-                Usuario usuario = await context.Usuario.FindAsync(idUser);
-                var tickets = context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario == usuario.Id).ToList();
+                Usuario usuario = await context.Usuarios.FindAsync(idUser);
+                var tickets = context.Solicitudes.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario == usuario.Id).ToList();
                 var abiertos = tickets.Where(e=>e.Estado.ToUpper() =="ABIERTO").Count();
                 //var enproceso = tickets.Where(e => e.Estado.ToUpper() != "ABIERTO" || e.Estado.ToUpper() == "EN PROCESO" || (e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor == null)).Count();//deprecated
                 var enproceso = tickets.Where(e => /*e.Estado.ToUpper() != "ABIERTO" ||*/ e.Estado.ToUpper() == "EN PROCESO" /*|| (e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor == null)*/).Count();
                 var completados = tickets.Where(e => e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor != null).Count();
-                var costumers = context.Cliente.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Habilitado == true).ToList().Count();
-                var waitingToAttend = usuario.Acceso == "TECNICO"   ? 0 : context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO").ToList().Count();
-                var waiting2ToAttend = usuario.Acceso == "TECNICO" ? 0 : context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO" && e.TipoSolicitud =="Servicio Taller").ToList().Count();
-                var waiting3ToAttend = usuario.Acceso == "TECNICO" ? 0 : context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO" && e.TipoSolicitud == "Servicio a Domicilio").ToList().Count();
-                var finished = usuario.Acceso == "TECNICO" ? 0 : context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor != null).ToList().Count();
-                var finishedToAttend = usuario.Acceso == "TECNICO" ? 0 : context.Solicitud.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor == null).ToList().Count();
+                var costumers = context.Clientes.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Habilitado == true).ToList().Count();
+                var waitingToAttend = usuario.Acceso == "TECNICO"   ? 0 : context.Solicitudes.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO").ToList().Count();
+                var waiting2ToAttend = usuario.Acceso == "TECNICO" ? 0 : context.Solicitudes.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO" && e.TipoSolicitud =="Servicio Taller").ToList().Count();
+                var waiting3ToAttend = usuario.Acceso == "TECNICO" ? 0 : context.Solicitudes.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO" && e.TipoSolicitud == "Servicio a Domicilio").ToList().Count();
+                var finished = usuario.Acceso == "TECNICO" ? 0 : context.Solicitudes.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor != null).ToList().Count();
+                var finishedToAttend = usuario.Acceso == "TECNICO" ? 0 : context.Solicitudes.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor == null).ToList().Count();
 
                 object data = new
                 {
@@ -579,7 +582,7 @@ namespace HelpDesk.Controllers
         [HttpPost("[action]")]
         public JsonResult GetJsonTicket([FromBody] Solicitud solicitud)
         {//parameters: idEmpresa, fechaInicio(from), fechaTermino(to),tipoSolicitud,noSecuencia
-            var requests = (from sol in context.Solicitud
+            var requests = (from sol in context.Solicitudes
                             where sol.IdEmpresa == solicitud.IdEmpresa
                             && (sol.NoSecuencia == solicitud.NoSecuencia || solicitud.NoSecuencia == "" || solicitud.NoSecuencia == null)
                             && (sol.TipoSolicitud == solicitud.TipoSolicitud || solicitud.TipoSolicitud == null || solicitud.TipoSolicitud == "")
@@ -593,12 +596,12 @@ namespace HelpDesk.Controllers
                                HoraInicio=sol.HoraInicio,
                                FechaTermino=sol.FechaTermino,
                                HoraTermino = sol.HoraTermino,
-                               atendidoPor = context.Usuario.Where(e=>e.Id == sol.IdUsuario).SingleOrDefault().CuentaUsuario,
-                               cliente = context.Cliente.Where(e => e.Id == sol.IdCliente).SingleOrDefault().Nombre,
+                               atendidoPor = context.Usuarios.Where(e=>e.Id == sol.IdUsuario).SingleOrDefault().CuentaUsuario,
+                               cliente = context.Clientes.Where(e => e.Id == sol.IdCliente).SingleOrDefault().Nombre,
                                sol.TipoSolicitud,
                                sol.TipoServicio,
                                sol.Estado,
-                               AprobadoPor = context.Usuario.Where(e => e.Id == sol.AprobadoPor).SingleOrDefault().CuentaUsuario,
+                               AprobadoPor = context.Usuarios.Where(e => e.Id == sol.AprobadoPor).SingleOrDefault().CuentaUsuario,
                                sol.IdEmpresa
                            }).ToList();
 

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelpDesk.Core.Entities;
+using HelpDesk.Infrastructure.Data;
 using HelpDesk.Models;
 using HelpDesk.Models.classes;
 using Microsoft.AspNetCore.Http;
@@ -25,7 +27,7 @@ namespace HelpDesk.Controllers
             List<Equipo> equipos = new List<Equipo>();
             try
             {
-                 equipos = context.Equipo.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
+                 equipos = context.Equipos.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
             }
             catch (Exception)
             {
@@ -64,12 +66,12 @@ namespace HelpDesk.Controllers
                 }
                 req.Habilitado = true;
 
-                context.Equipo.Add(req);
+                context.Equipos.Add(req);
                 context.SaveChanges();
 
                 int idSolicitud = req.IdSolicitud;
                 int idEmpresa = req.IdEmpresa;
-                var data = context.Equipo.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
+                var data = context.Equipos.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
                 res = new ObjectResponse
                 {
                     code = "1",
@@ -119,12 +121,12 @@ namespace HelpDesk.Controllers
                     e.Id = 0;
                     e.Habilitado = true;
                 });
-                context.Equipo.AddRange(req);
+                context.Equipos.AddRange(req);
                 context.SaveChanges();        
 
                 int idSolicitud = req[0].IdSolicitud;
                 int idEmpresa = req[0].IdEmpresa;
-                var data = context.Equipo.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
+                var data = context.Equipos.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
                 res = new ObjectResponse
                 {
                     code = "1",
@@ -213,7 +215,7 @@ namespace HelpDesk.Controllers
             ObjectResponse res;
             try
             {
-                var req = context.Equipo.Find(id);
+                var req = context.Equipos.Find(id);
                 context.Entry(req).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
                 context.SaveChanges();
 

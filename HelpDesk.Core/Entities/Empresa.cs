@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace HelpDesk.Models
+﻿namespace HelpDesk.Core.Entities
 {
-    public partial class Empresa
+    public partial class Empresa : BaseEntity
     {
-        public int Id { get; set; }
         public string RazonSocial { get; set; }
         public string SectorComercial { get; set; }
         public string Rnc { get; set; }
@@ -19,7 +15,6 @@ namespace HelpDesk.Models
         public byte[] Image { get; set; }
         public string NoAutorizacion { get; set; }
         public string Secuenciaticket { get; set; }
-        public bool? Habilitado { get; set; }
         public int? Limit { get; set; }
         public string CondicionesTaller { get; set; }
         public string CondicionesDomicilio { get; set; }

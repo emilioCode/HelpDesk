@@ -1,4 +1,6 @@
-﻿using HelpDesk.Models;
+﻿using HelpDesk.Core.Entities;
+using HelpDesk.Infrastructure.Data;
+using HelpDesk.Models;
 using HelpDesk.Models.classes;
 using HelpDesk.Models.Dictionaries;
 using Microsoft.AspNetCore.Http;
@@ -26,12 +28,12 @@ namespace HelpDesk.Controllers
         public async Task<JsonResult> Post([FromBody] Usuario usuario)
         {
             ObjectResponse res;
-            Usuario user = await context.Usuario.FindAsync(usuario.Id);
+            Usuario user = await context.Usuarios.FindAsync(usuario.Id);
 
             try
             {
                 List<Event> events = new List<Event>();
-                var resquests = context.Solicitud.Where(rq => rq.IdEmpresa == user.IdEmpresa);
+                var resquests = context.Solicitudes.Where(rq => rq.IdEmpresa == user.IdEmpresa);
                 if (Levels.AccessLevel[user.Acceso] < Levels.AccessLevel["MODERADOR"]) resquests = resquests.Where(rq => rq.IdUsuario == user.Id);
                 resquests.ToList().ForEach(rq =>
                  {
@@ -55,7 +57,7 @@ namespace HelpDesk.Controllers
                      {
                          id = rq.Id,    
                          title = $"{ rq.TipoSolicitud } No.{ rq.NoSecuencia } | Estado: { rq.Estado }",
-                         user =  context.Usuario.Find(rq.IdUsuario),
+                         user =  context.Usuarios.Find(rq.IdUsuario),
                          ticket = rq,
                          start = fmtStart,
                          end = fmtEnd

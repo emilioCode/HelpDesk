@@ -9,6 +9,7 @@ using HelpDesk.Models;
 using Microsoft.EntityFrameworkCore;
 using HelpDesk.Controllers;
 using Microsoft.Extensions.Hosting;
+using HelpDesk.Infrastructure.Data;
 
 namespace HelpDesk
 {
@@ -23,16 +24,11 @@ namespace HelpDesk
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {                                  
-            var Server = Security.Decrypting( Configuration.GetConnectionString("Server") );//"Server": "ASUS" ó "Server": "127.0.0.1"
-            var Database = Security.Decrypting( Configuration.GetConnectionString("Database") ); //"Database": "HelpDeskDB"
-            var User = Security.Decrypting( Configuration.GetConnectionString("User") ); //"User": "sa"
-            var Password = Security.Decrypting(Configuration.GetConnectionString("Password"));
-
-            string connectionString = $"Server={Server};Database={Database};User Id={User};Password={Password};";
+        {     
             //conection through appsettings.json
             services.AddDbContext<HelpDeskDBContext>(option =>
-                option.UseSqlServer(connectionString));
+                option.UseSqlServer(Configuration.GetConnectionString("HelpDesk"))
+            );
 
             services.AddSignalR();
 

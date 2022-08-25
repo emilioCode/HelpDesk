@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace HelpDesk.Models
+namespace HelpDesk.Core.Entities
 {
-    public partial class Solicitud
+    public partial class Solicitud : BaseEntity
     {
-        public int Id { get; set; }
         public string NoSecuencia { get; set; }
         public DateTime FechaCreacion { get; set; }
         public DateTime? FechaInicio { get; set; }
@@ -20,6 +18,5 @@ namespace HelpDesk.Models
         public int IdEmpresa { get; set; }
         public string Descripcion { get; set; }
         public int? AprobadoPor { get; set; }
-        public bool? Habilitado { get; set; }
     }
 }
