@@ -19,9 +19,20 @@
       "prefix": "app",
       "styles": [
         "styles.css",
-        "../node_modules/bootstrap/dist/css/bootstrap.min.css"
+        "../node_modules/admin-lte/bower_components/bootstrap/dist/css/bootstrap.min.css",
+        "../node_modules/admin-lte/dist/css/AdminLTE.min.css",
+        "../node_modules/admin-lte/bower_components/Ionicons/css/ionicons.min.css",
+        "../node_modules/admin-lte/bower_components/font-awesome/css/font-awesome.min.css",
+        "../node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.min.css",
+        "../node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.print.min.css"
       ],
-      "scripts": [],
+      "scripts": [
+        "../node_modules/admin-lte/bower_components/jquery/dist/jquery.min.js",
+        "../node_modules/admin-lte/bower_components/bootstrap/dist/js/bootstrap.min.js",
+        "../node_modules/admin-lte/dist/js/adminlte.min.js",
+        "../node_modules/admin-lte/bower_components/moment/moment.js",
+        "../node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.min.js"
+      ],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",

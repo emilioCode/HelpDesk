@@ -1,0 +1,116 @@
+.logo {
+    width: 100%;
+    height: auto;
+    max-width: 60%;
+}
+
+.info {
+    color: black;
+    font-size: 12px;
+    font-style: italic;
+    font-weight: bold;
+    line-height: 0;
+}
+
+.service-order {
+    background-color: #F8F9FA;
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.service-order--number {
+    color: red;
+    font-weight: bold;
+}
+
+.custom-border {
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+    border-radius: 0;
+}
+
+.table-bordered,
+.table-bordered td, .table-bordered th {
+    border: 1px solid black !important;
+}
+
+.table td, .table th {
+    padding: .25rem !important;
+}
+
+td {
+    height: 25px;
+}
+
+.firma {
+    border-collapse: separate;
+    border-spacing: 50px;
+}
+
+.border-bottom {
+    border-color: black !important;
+}
+
+input[type="text"] {
+    outline: none;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 1px solid black;
+    border-left: 0;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input #nombre,
+input #direccion,
+input #telefono,
+input #contacto,
+input #departamento,
+input #ext {
+    /* width: 100%; */
+}
+
+
+.cliente-title {
+    vertical-align: center;
+}
+
+.notes {
+    background-image: -webkit-linear-gradient(left, white 10px, transparent 10px), -webkit-linear-gradient(right, white 10px, transparent 10px), -webkit-linear-gradient(white 30px, #ccc 30px, #ccc 31px, white 31px);
+    background-image: -moz-linear-gradient(left, white 10px, transparent 10px), -moz-linear-gradient(right, white 10px, transparent 10px), -moz-linear-gradient(white 30px, #ccc 30px, #ccc 31px, white 31px);
+    background-image: -ms-linear-gradient(left, white 10px, transparent 10px), -ms-linear-gradient(right, white 10px, transparent 10px), -ms-linear-gradient(white 30px, #ccc 30px, #ccc 31px, white 31px);
+    background-image: -o-linear-gradient(left, white 10px, transparent 10px), -o-linear-gradient(right, white 10px, transparent 10px), -o-linear-gradient(white 30px, #ccc 30px, #ccc 31px, white 31px);
+    background-image: linear-gradient(left, white 10px, transparent 10px), linear-gradient(right, white 10px, transparent 10px), linear-gradient(white 30px, #ccc 30px, #ccc 31px, white 31px);
+    background-size: 100% 100%, 100% 100%, 100% 31px;
+    line-height: 24px;
+    padding: 8px;
+    border: none;
+    resize: none;
+    text-indent: 215px;
+}
+
+    .notes:focus {
+        outline: none;
+    }
+
+#lactividad {
+    position: relative;
+}
+
+    #lactividad::before {
+        content: 'ACTIVIDADES REALIZADAS:';
+        position: absolute;
+        color: black;
+        font-weight: bold;
+        top: 8px;
+        left: 8px;
+    }
+
+.pad-left {
+    padding-left: 0 !important;
+}
+
+.pad-right {
+    padding-right: 0 !important;
+}

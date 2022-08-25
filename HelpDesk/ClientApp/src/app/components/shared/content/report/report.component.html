@@ -1,0 +1,123 @@
+<br/>
+<!-- Main content -->
+<div class="col-xs-12" >
+    <div class="box box-primary">
+      <div class="box-header">
+        <h3 class="box-title"></h3>
+
+      </div>
+      <!-- /.box-header -->
+      <div class="box-body  no-padding">
+        <div class="col-xs-12 col-md-12">
+          <div class="col-xs-3 col-md-3 form-group">
+            <label>Tipo de Servicio:</label>
+            
+            <select class="form-control" id="tipoComprobante" [(ngModel)]="request.tipoSolicitud">
+              <option value="" [hidden]="request.tipoSolicitud!=''">Seleccione</option>
+              <option *ngFor="let item of service.getTypeOfRequests()" value="{{ item.name }}">{{ item.name }}</option>
+            </select>
+          </div>
+          <div class="col-xs-3 col-md-3 form-group">
+            <label>Desde:</label>
+            <input type="date" class="form-control" placeholder="" [(ngModel)]="request.fechaInicio"/>
+          </div>
+          <div class="col-xs-3 col-md-3 form-group">
+            <label>Hasta:</label>
+            <input type="date" class="form-control" placeholder="" [(ngModel)]="request.fechaTermino"/>
+          </div>
+          <div class="col-xs-3 col-md-3 form-group" style="margin-top:2.5%">
+            <div class="btn-group" role="group">
+                <button class="btn btn-primary" (click)='toSearch();search=""'><i class="fa fa-search" aria-hidden="true"></i> Buscar</button>
+                <button class="btn btn-default" (click)="clear()"><i class="fa fa-eraser" aria-hidden="true"></i> Limpiar</button>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-xs-12 col-md-12" [hidden]="requests.length == 0">
+          <a class="btn-link" (click)="exportCSV()"><i class="fa fa-download" aria-hidden="true"></i> Exportar a Excel</a>
+        </div>
+      </div> 
+      <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+  </div>
+
+  <!-- Main content -->
+<!-- <section class="content"> -->
+  <div>
+    <div class="col-xs-12">
+      <div class="box">
+          <div class="box-header">
+              <h3 class="box-title">Histórico</h3>
+              <!-- &nbsp;<a class="btn-link" style="position:absolute;z-index: 1" *ngIf="service.getLevel(service.getUser().acceso) > 1" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default"> crear orden</a> -->
+              <br/>
+              <div class="box-tools">
+                <div class="input-group input-group-sm" style="width: 25%; float:right; z-index: 2">
+                  <input type="text" name="table_search" class="form-control pull-right" placeholder="Search" [(ngModel)]="search">
+        
+                  <div class="input-group-btn">
+                    <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        <!-- /.box-header -->
+        <div class="box-body table-responsive no-padding">
+          <table id="example2" class="table table-bordered table-striped table-hover">
+            <thead>
+            <tr>
+              <th>No. Secuencia</th>
+              <th>Tipo Solicitud</th>
+              <th>Tipo Servicio</th>
+              <th>Estado</th>
+              <th>Técnico</th><!---->
+              <th>Cliente</th>
+              <th>Creado</th>
+              <th>fecha I</th>
+              <th>hora I</th>
+              <th>fecha F</th>
+              <th>hora F</th>
+              <th>Aprobador</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of requests | filter: search">
+              <td>{{ item.noSecuencia }}</td>
+              <td>{{ item.tipoSolicitud }}</td>
+              <td>{{ item.tipoServicio }}</td>
+              <td>{{ item.estado }} <i class="fa fa-check" *ngIf="item.estado=='Completado' && item.aprobadoPor !=null" style="color:green" title="Aprobado"></i> <i class="fa fa-warning" style="color:gold" *ngIf="item.estado=='Completado' && item.aprobadoPor ==null" title="Pendiente de aprobar"></i></td>
+              <td>{{ item.atendidoPor }}</td><!---->
+              <td>{{ item.cliente }}</td>
+              <td>{{ item.fechaCreacion |date:'dd/MM/yyyy' }}</td>
+              <td>{{ item.fechaInicio  |date:'dd/MM/yyyy'}}</td>
+              <td>{{ item.horaInicio }}</td>
+              <td>{{ item.fechaTermino |date:'dd/MM/yyyy' }}</td>
+              <td>{{ item.horaTermino }}</td>
+              <td>{{ item.aprobadoPor }}</td>
+            </tr>
+            </tbody>
+            <!-- <tfoot>
+            <tr>
+              <th>Rendering engine</th>
+              <th>Browser</th>
+              <th>Platform(s)</th>
+              <th>Engine version</th>
+              <th>CSS grade</th>
+            </tr>
+            </tfoot> -->
+          </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="overlay" [hidden]="!service.isLoading">
+          <i class="fa fa-refresh fa-spin"></i>
+        </div>
+      </div>
+      <!-- /.box -->
+
+
+    </div>
+    <!-- /.col -->
+  </div>
+  <!-- /.row -->
+<!-- </section> -->
+<!-- /.content -->

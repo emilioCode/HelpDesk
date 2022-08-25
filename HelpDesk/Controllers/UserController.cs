@@ -23,23 +23,29 @@ namespace HelpDesk.Controllers
         public JsonResult Get(int idUser,string option = "unique")
         {
             List<Usuario> usuarios = new List<Usuario>();
+            
             Usuario usuario = context.Usuario.Find(idUser);
-            if (option.ToLower() == "unique")
+            if (option == "JUST NAME") {
+                var users = context.Usuario.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Acceso != "ROOT").Select(e=> new { e.Id, e.Nombre}).ToList();
+                return new JsonResult(users.OrderByDescending(x => x.Id));
+            }
+            else if (option.ToLower() == "unique")
             {
                 usuarios.Add(usuario);
             }
             else if(option =="*" || option.ToLower() == "all")
             {
-                switch (usuario.Acceso)
+                switch (usuario.Acceso) 
                 {
                     case "ROOT":
-                        usuarios.AddRange(context.Usuario);
+                        usuarios.AddRange(context.Usuario.ToList());
                         break;
+                    case "MODERADOR":
+                        //break;
                     case "ADMINISTRADOR":
                         usuarios.AddRange(context.Usuario.Where(u=>u.Acceso != "ROOT" && u.IdEmpresa==usuario.IdEmpresa));
                         break;
-                    case "MODERADOR":  
-                        break;
+
                     case "TECNICO":                              
                         break;
                     default:             
@@ -78,8 +84,23 @@ namespace HelpDesk.Controllers
                     };
                     return new JsonResult(res);
                 }
+                int quantity = context.Usuario.Where(e => e.IdEmpresa == req.IdEmpresa).Count();
+                var limit = context.Empresa.Where(b => b.Id == req.IdEmpresa).Select(b=>b.Limit).SingleOrDefault();
+                limit = limit == null ? 1 : limit;
+                if (quantity >= limit)
+                {
+                    res = new ObjectResponse
+                    {
+                        code = "2",
+                        title = "No fue posible agregar usuario",
+                        icon = "warning",
+                        message = $"Las cuentas de usuario que puedes tener como máximo registrados en la plataforma es de {limit}.\nPara reclamaciones favor dirigirse a Términos y condiciones.",
+                        data = null
+                    };
+                    return new JsonResult(res);
+                }
 
-                List<Usuario> userAccounts = context.Usuario.Where(uac => uac.IdEmpresa == req.IdEmpresa && uac.Id != req.Id).ToList();
+                List <Usuario> userAccounts = context.Usuario.Where(uac => uac.IdEmpresa == req.IdEmpresa && uac.Id != req.Id).ToList();
 
                 for (int i = 0; i < userAccounts.Count; i++)
                 {
@@ -129,7 +150,8 @@ namespace HelpDesk.Controllers
         }
 
         // PUT: api/User/5
-        [HttpPut("{idUserReq}")]
+        //[HttpPut("{idUserReq}")]
+        [HttpPost("[action]/{idUserReq}")]
         public JsonResult Put(int idUserReq, [FromBody] Usuario req)
         {
             ObjectResponse res;
@@ -176,6 +198,7 @@ namespace HelpDesk.Controllers
                     usuario.CuentaUsuario = req.CuentaUsuario;
                 usuario.Contrasena = req.Contrasena == "" ? null : req.Contrasena;  
                 usuario.Acceso = req.Acceso == "" ? null : req.Acceso;
+                usuario.Correo = req.Correo == "" ? null : req.Correo;
                 usuario.IdEmpresa = req.IdEmpresa;
                 usuario.Image = req.Image;
                 usuario.Habilitado = req.Habilitado;
@@ -209,6 +232,13 @@ namespace HelpDesk.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        // PACTH: api/ApiWithActions/5
+        [HttpPatch("{password}")]
+        public string Patch(string password)
+        {
+            return Security.Encripting(password);
         }
     }
 }

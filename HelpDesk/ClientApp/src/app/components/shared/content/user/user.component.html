@@ -7,7 +7,17 @@
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">Tabla de Usuarios</h3>
-          <a class="btn-link" *ngIf="service.getLevel(service.getUser().acceso) > 2" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default"> agregar usuario</a>
+          &nbsp;<a class="btn-link" style="position:absolute;z-index: 1" *ngIf="service.getLevel(service.getUser().acceso) > 2" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default"> agregar usuario</a>
+          <br/>
+          <div class="box-tools">
+            <div class="input-group input-group-sm" style="width: 25%; float:right; z-index: 2">
+              <input type="text" id="search" name="table_search" class="form-control pull-right" placeholder="Search" [(ngModel)]="search">
+    
+              <div class="input-group-btn">
+                <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+              </div>
+            </div>
+          </div>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -23,7 +33,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let item of users">
+            <tr *ngFor="let item of users | filter: search">
               <td width="25%">
                   <img  width="20%" *ngIf="item.image ==null" src="../../../../assets/dist/img/photo_default.png" class="img-circle" alt="User Image">
                   <img  width="20%" *ngIf="item.image !=null" [src]="'data:image/jpeg;base64,'+ item.image" class="img-circle" alt="User Image">&nbsp;
@@ -34,10 +44,11 @@
               <td width="17%">{{ item.acceso }}</td>
               <td width="17%">{{ item.correo }}</td>
               <td  width="15%">
-                <a class="btn-link" (click)="fillModal('edit',item)" *ngIf="service.getLevel(service.getUser().acceso) > 2" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-list-alt"></i></a>
-                <a class="btn-link" (click)="fillModal('delete',item);delete()" *ngIf="service.getLevel(service.getUser().acceso) >= 3"><i class="fa fa-fw fa-toggle-on" [hidden]="!item.habilitado"></i><i class="fa fa-fw fa-toggle-off" [hidden]="item.habilitado"></i></a>
+                <a class="btn-link" (click)="fillModal('edit',item)" *ngIf="service.getLevel(service.getUser().acceso) > 2" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-edit"></i></a>
+                <a class="btn-link" (click)="fillModal('delete',item);delete()" *ngIf="service.getLevel(service.getUser().acceso) >= 3"><i class="fa fa-fw fa-toggle-on" *ngIf="item.habilitado"></i><i class="fa fa-fw fa-toggle-off" *ngIf="!item.habilitado"></i></a>
               </td>
             </tr>
+          </tbody>
             <!-- <tfoot>
             <tr>
               <th>Rendering engine</th>
@@ -48,11 +59,11 @@
             </tr>
             </tfoot> -->
           </table>
-          <div class="overlay" [hidden]="!service.isLoading">
-              <i class="fa fa-refresh fa-spin"></i>
-          </div>
         </div>
         <!-- /.box-body -->
+        <div class="overlay" [hidden]="!service.isLoading">
+            <i class="fa fa-refresh fa-spin"></i>
+        </div>
       </div>
       <!-- /.box -->
 
@@ -69,7 +80,7 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)='getUsers(service.getUser().id,"*")'>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" ><!--(click)='getUsers(service.getUser().id,"*")'-->
             <span aria-hidden="true">&times;</span></button>
           <!-- <h4 class="modal-title">Default Modal</h4> -->
           <h4 class="modal-title" *ngIf="option=='add'"><b>Nuevo Usuario</b></h4>
@@ -141,7 +152,7 @@
             <button type="button" class="btn btn-primary" data-dismiss="modal" *ngIf="option=='add'" (click)="add()" [disabled]="service.isNullorEmpty(user.nombre) || service.isNullorEmpty(user.cuentaUsuario) || service.isNullorEmpty(user.contrasena) || service.isNullorEmpty(user.acceso)"><i class="fa fa-fw fa-file-o"></i> Crear</button>
             <button type="button" class="btn btn-success" data-dismiss="modal" *ngIf="option=='edit'" (click)="edit()" [disabled]="service.isNullorEmpty(user.nombre) || service.isNullorEmpty(user.cuentaUsuario) || service.isNullorEmpty(user.contrasena) || service.isNullorEmpty(user.acceso)"><i class="fa fa-fw fa-save"></i> Guardar</button>
             <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
-            <button type="button" class="btn btn-default" data-dismiss="modal" (click)='getUsers(service.getUser().id,"*")'>Close</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button><!--(click)='getUsers(service.getUser().id,"*")'-->
           <!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->
           <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
         </div>

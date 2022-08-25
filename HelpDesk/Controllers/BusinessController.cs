@@ -94,7 +94,8 @@ namespace HelpDesk.Controllers
         }
 
         // PUT: api/Business/5
-        [HttpPut("{id}")]
+        //[HttpPut("{id}")]
+        [HttpPost("[action]/{id}")]
         public JsonResult Put(int id, [FromBody] Empresa req)
         {   
             ObjectResponse res;
@@ -113,19 +114,21 @@ namespace HelpDesk.Controllers
                     return new JsonResult(res);
                 }
                 var empresa = context.Empresa.Find(id);
-                empresa.RazonSocial = req.RazonSocial;
-                empresa.SectorComercial = req.SectorComercial;
-                empresa.Rnc = req.Rnc;
-                empresa.Telefono = req.Telefono;
-                empresa.Correo = req.Correo;
-                empresa.Contrasena = req.Contrasena;
-                empresa.Url = req.Url;
-                empresa.Host = req.Host;
+                empresa.RazonSocial = req.RazonSocial == "" ? null : req.RazonSocial;
+                empresa.SectorComercial = req.SectorComercial == "" ? null : req.SectorComercial;
+                empresa.Rnc = req.Rnc == "" ? null : req.Rnc;
+                empresa.Telefono = req.Telefono == "" ? null : req.Telefono;
+                empresa.Correo = req.Correo == "" ? null : req.Correo;
+                empresa.Contrasena = req.Contrasena == "" ? null : req.Contrasena;
+                empresa.Url = req.Url == "" ? null : req.Url;
+                empresa.Host = req.Host == "" ? null : req.Host;
                 empresa.Port = req.Port;
-                empresa.Direccion = req.Direccion;
+                empresa.Direccion = req.Direccion == "" ? null : req.Direccion;
                 empresa.Image = req.Image;
-                empresa.NoAutorizacion = req.NoAutorizacion;
-                empresa.Secuenciaticket = req.Secuenciaticket;
+                empresa.NoAutorizacion = req.NoAutorizacion == "" ? null : req.NoAutorizacion;
+                empresa.Secuenciaticket = req.Secuenciaticket == "" ? null : req.Secuenciaticket;
+                empresa.CondicionesDomicilio = req.CondicionesDomicilio == "" ? null : req.CondicionesDomicilio;
+                empresa.CondicionesTaller = req.CondicionesTaller == "" ? null : req.CondicionesTaller;
                 empresa.Habilitado = req.Habilitado;
                 context.Entry(empresa).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 res = new ObjectResponse {

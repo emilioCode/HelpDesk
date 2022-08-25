@@ -7,7 +7,7 @@
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">Tabla de Entidades</h3>
-          <a class="btn-link" *ngIf="service.getLevel(service.getUser().acceso) == 4" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default"> agregar entidad</a>
+          &nbsp;<a class="btn-link" *ngIf="service.getLevel(service.getUser().acceso) == 4" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default"> agregar entidad</a>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -28,10 +28,11 @@
               <td>{{ item.correo }}</td>
               <td>{{ item.telefono }}</td>
               <td>
-                <a class="btn-link" (click)="fillModal('edit',item)" *ngIf="service.getLevel(service.getUser().acceso) > 2" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-list-alt"></i></a>
-                <a class="btn-link" (click)="fillModal('delete',item);delete()" *ngIf="service.getLevel(service.getUser().acceso) == 4"><i class="fa fa-fw fa-toggle-on" [hidden]="!item.habilitado"></i><i class="fa fa-fw fa-toggle-off" [hidden]="item.habilitado"></i></a>
+                <a class="btn-link" (click)="fillModal('edit',item)" *ngIf="service.getLevel(service.getUser().acceso) > 2" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-edit"></i></a>
+                <a class="btn-link" (click)="fillModal('delete',item);delete()" *ngIf="service.getLevel(service.getUser().acceso) == 4"><i class="fa fa-fw fa-toggle-on" *ngIf="item.habilitado"></i><i class="fa fa-fw fa-toggle-off" *ngIf="!item.habilitado"></i></a>
               </td>
             </tr>
+            </tbody>
             <!-- <tfoot>
             <tr>
               <th>Rendering engine</th>
@@ -42,11 +43,11 @@
             </tr>
             </tfoot> -->
           </table>
-          <div class="overlay" [hidden]="!service.isLoading">
-              <i class="fa fa-refresh fa-spin"></i>
-          </div>
         </div>
         <!-- /.box-body -->
+        <div class="overlay" [hidden]="!service.isLoading">
+            <i class="fa fa-refresh fa-spin"></i>
+        </div>
       </div>
       <!-- /.box -->
 
@@ -140,6 +141,44 @@
             <label for="direccion">Dirección:</label>
             <textarea class="form-control" rows="2" [(ngModel)]="empresa.direccion" [disabled]="option=='delete'"></textarea>
           </div>
+
+          <div class="form-group col-xs-12 col-sm-12">
+            <div class="accordion" id="accordionExample">
+              <div class="card">
+                <div class="card-header" id="headingOne">
+                  <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" id="collapseOnebtn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      Nota/Observaciones
+                    </button>
+                  </h2>
+                </div>
+            
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <textarea class="form-control" rows="2" [(ngModel)]="empresa.condicionesTaller" [disabled]="option=='delete'"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" id="headingTwo">
+                  <h2 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" id="collapseTwobtn" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      Terminos y condiciones
+                    </button>
+                  </h2>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <textarea class="form-control" rows="2" [(ngModel)]="empresa.condicionesDomicilio" [disabled]="option=='delete'"></textarea>
+                  </div>
+                </div>
+              </div>
+  
+            </div>
+          </div>
+
+
+          
         </div>
 
 

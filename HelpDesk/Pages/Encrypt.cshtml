@@ -1,0 +1,65 @@
+﻿@page
+@model HelpDesk.Pages.EncryptModel
+
+
+
+
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="../../favicon.ico">
+
+        <title>Encrypt Page</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="~/bootstrap.min.css" rel="stylesheet" />
+
+    </head>
+
+    <body>
+
+        <header>
+
+            <div class="navbar navbar-dark bg-dark shadow-sm">
+                <div class="container d-flex justify-content-between">
+                    <span href="#" class="navbar-brand d-flex align-items-center">
+                        <strong>HelpDesk</strong>
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <div class="container-fluid">
+
+            <br />
+            <div class="col-md-5">
+                <form method="post">
+
+                    <div class="form-group">
+                        <label for="pwd">Password:</label>
+                        <input type="password" name="pwd" value="@Model.request" class="form-control" placeholder="Enter password" id="pwd">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+
+        </div><!-- /.container -->
+        @if (Model.result != null && Model.result != "")
+        {
+            <div class="container-fluid">
+                <br />
+                <div class="alert alert-info col-md-5" role="alert">
+                    <strong>Result: </strong> @Model.result
+                </div>
+            </div>
+        }
+
+    </body>
+</html>
