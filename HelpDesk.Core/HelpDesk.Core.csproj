@@ -5,9 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
     <Folder Include="Exceptions\" />
-    <Folder Include="Services\" />
+    <Folder Include="Dictionaries\" />
     <Folder Include="QueryFilters\" />
   </ItemGroup>
 

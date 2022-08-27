@@ -72,8 +72,8 @@ export class ReportComponent implements OnInit {
         this.requests = res;
         // console.table( this.requests )
         this.requests.forEach(element => {
-          if(element.horaInicio != null)element.horaInicio = this.service.fillZeroWithNumber(element.horaInicio.value.hours) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.minutes) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.seconds); 
-          if(element.horaTermino != null)element.horaTermino = this.service.fillZeroWithNumber(element.horaTermino.value.hours) + ":" + this.service.fillZeroWithNumber(element.horaTermino.value.minutes) + ":" + this.service.fillZeroWithNumber(element.horaTermino.value.seconds); 
+          if(element.horaInicio != null)element.horaInicio = element.horaInicio; //this.service.fillZeroWithNumber(element.horaInicio/*.value.hours*/) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.minutes) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.seconds); 
+          if(element.horaTermino != null)element.horaTermino = element.horaTermino; //this.service.fillZeroWithNumber(element.horaTermino/*.value.hours*/) + ":" + this.service.fillZeroWithNumber(element.horaTermino.value.minutes) + ":" + this.service.fillZeroWithNumber(element.horaTermino.value.seconds); 
         });
         this.service.isLoading = false;
       },error => {

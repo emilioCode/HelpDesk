@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
+using HelpDesk.Core.Interfaces;
+using HelpDesk.Core.Services;
 using HelpDesk.Infrastructure.Data;
 using HelpDesk.Models;
 using HelpDesk.Models.classes;
@@ -11,63 +15,40 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HelpDesk.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
         private readonly HelpDeskDBContext context;
-        public UserController(HelpDeskDBContext _context)
+
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
+        public UserController(HelpDeskDBContext _context, IUserService userService, IMapper mapper)
         {
-            this.context = _context;
+            context = _context;
+            _userService = userService;
+            _mapper = mapper;   
         }
+
         // GET: api/User/1/1
         [HttpGet("{idUser}/{option}")]
-        public JsonResult Get(int idUser,string option = "unique")
+        public async Task<IActionResult> Get(int idUser,string option = "unique")
         {
-            List<Usuario> usuarios = new List<Usuario>();
-            
-            Usuario usuario = context.Usuarios.Find(idUser);
-            if (option == "JUST NAME") {
-                var users = context.Usuarios.Where(e => e.IdEmpresa == usuario.IdEmpresa && e.Acceso != "ROOT").Select(e=> new { e.Id, e.Nombre}).ToList();
-                return new JsonResult(users.OrderByDescending(x => x.Id));
-            }
-            else if (option.ToLower() == "unique")
-            {
-                usuarios.Add(usuario);
-            }
-            else if(option =="*" || option.ToLower() == "all")
-            {
-                switch (usuario.Acceso) 
-                {
-                    case "ROOT":
-                        usuarios.AddRange(context.Usuarios.ToList());
-                        break;
-                    case "MODERADOR":
-                        //break;
-                    case "ADMINISTRADOR":
-                        usuarios.AddRange(context.Usuarios.Where(u=>u.Acceso != "ROOT" && u.IdEmpresa==usuario.IdEmpresa));
-                        break;
+            var users = await _userService.GetUsersByIdAndCondition(idUser, option);
+            var userDtos = _mapper.Map<IEnumerable<UsuarioDto>>(users);
+            return Ok(userDtos);
 
-                    case "TECNICO":                              
-                        break;
-                    default:             
-                        break;
-                }
-            }    
-            return new JsonResult(usuarios.OrderByDescending(x => x.Id));
         }
-
-        // GET: api/User/5
-        //[HttpGet("{id}", Name = "Get")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
 
         // POST: api/User
         [HttpPost]
-        public JsonResult Post([FromBody] Usuario req)
+        public async Task<IActionResult> Post([FromBody] UsuarioDto req)
         {
+            var user = _mapper.Map<Usuario>(req);
+            //var response = await _userService.UpdateUSer(user);
+            //return Ok(response);
+            return Ok(null);
             ObjectResponse res;
             try
             {
@@ -228,12 +209,6 @@ namespace HelpDesk.Controllers
             }
 
             return new JsonResult(res);
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
 
         // PACTH: api/ApiWithActions/5
