@@ -1,8 +1,5 @@
 ﻿using FluentValidation;
 using HelpDesk.Core.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HelpDesk.Infrastructure.Validators
 {

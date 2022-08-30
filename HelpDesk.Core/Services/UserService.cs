@@ -26,99 +26,57 @@ namespace HelpDesk.Core.Services
             return await _unitOfWork.UserRepository.GetById(id);
         }
 
-        public async Task InsertUSer(Usuario user)
+        public async Task<Usuario> InsertUSer(Usuario user)
         {
-            //await _unitOfWork.UserRepository.Add(user);
-            //await _unitOfWork.SaveChangeAsync();
-            #region Legacy Code
-            //ObjectResponse res;
-            //try
-            //{
-            //    if (req.Nombre == null || req.Nombre == "" ||
-            //        req.CuentaUsuario == null || req.CuentaUsuario == "" ||
-            //        req.Contrasena == null || req.Contrasena == "" ||
-            //        req.IdEmpresa == null || req.IdEmpresa <= 0)
-            //    {
-            //        res = new ObjectResponse
-            //        {
-            //            code = "2",
-            //            title = "Validation errors",
-            //            icon = "warning",
-            //            message = "missing some field to complete",
-            //            data = null
-            //        };
-            //        return new JsonResult(res);
-            //    }
-            //    int quantity = context.Usuarios.Where(e => e.IdEmpresa == req.IdEmpresa).Count();
-            //    var limit = context.Empresas.Where(b => b.Id == req.IdEmpresa).Select(b => b.Limit).SingleOrDefault();
-            //    limit = limit == null ? 1 : limit;
-            //    if (quantity >= limit)
-            //    {
-            //        res = new ObjectResponse
-            //        {
-            //            code = "2",
-            //            title = "No fue posible agregar usuario",
-            //            icon = "warning",
-            //            message = $"Las cuentas de usuario que puedes tener como máximo registrados en la plataforma es de {limit}.\nPara reclamaciones favor dirigirse a Términos y condiciones.",
-            //            data = null
-            //        };
-            //        return new JsonResult(res);
-            //    }
+            var userAccounts = _unitOfWork.UserRepository.GetByBusinessId(user.IdEmpresa).ToList();
+            int quantity = userAccounts.Count();
+            var business = await _unitOfWork.BusinessRepository.GetById(user.IdEmpresa);
+            var limit = business.Limit ?? 1;
 
-            //    List<Usuario> userAccounts = context.Usuarios.Where(uac => uac.IdEmpresa == req.IdEmpresa && uac.Id != req.Id).ToList();
+            if (quantity >= limit)
+            {
+                throw new Exception($"It isn't available to add users. Your limit is {limit}");
+            }
 
-            //    for (int i = 0; i < userAccounts.Count; i++)
-            //    {
-            //        if (userAccounts[i].CuentaUsuario.Equals(req.CuentaUsuario))
-            //        {
-            //            res = new ObjectResponse
-            //            {
-            //                code = "2",
-            //                title = "Validation errors",
-            //                icon = "warning",
-            //                message = $"the userAccount <b>{req.CuentaUsuario}</b> already exists",
-            //                data = req
-            //            };
-            //            return new JsonResult(res);
-            //        }
-            //    }
-            //    req.Habilitado = true;
-            //    context.Entry(req).State = Microsoft.EntityFrameworkCore.EntityState.Added;
-            //    context.SaveChanges();
+            userAccounts.ForEach(e =>
+            {
+                if (e.CuentaUsuario.Equals(user.CuentaUsuario))
+                {
+                    throw new Exception($"the userAccount <b>{user.CuentaUsuario}</b> already exists");
+                }
+            });
 
-            //    var data = context.Usuarios.Where(e => e.Nombre == req.Nombre
-            //    && e.NumDocumento == req.NumDocumento && e.CuentaUsuario == req.CuentaUsuario && e.Acceso == req.Acceso
-            //    && e.Correo == req.Correo && e.Contrasena == req.Contrasena).SingleOrDefault();
-            //    res = new ObjectResponse
-            //    {
-            //        code = "1",
-            //        title = "Saved",
-            //        icon = "success",
-            //        message = "has been saved successfully",
-            //        data = data
-            //    };
+            user.Habilitado = true;
+            await _unitOfWork.UserRepository.Add(user);
+            await _unitOfWork.SaveChangeAsync();
 
-            //}
-            //catch (Exception e)
-            //{
-            //    res = new ObjectResponse
-            //    {
-            //        code = "0",
-            //        title = "Error",
-            //        icon = "error",
-            //        message = e.Message,
-            //        data = null
-            //    };
-            //}
-
-            //return new JsonResult(res);
-            #endregion Legacy Code
+            return user;
         }
 
-        public async Task<bool> UpdateUSer(Usuario user)
+        public async Task<bool> UpdateUSer(Usuario user, int userCreatorId)
         {
-            _unitOfWork.UserRepository.Update(user);
-           await _unitOfWork.SaveChangeAsync();
+            var userAccounts = _unitOfWork.UserRepository.GetByBusinessId(user.IdEmpresa);
+
+            var userAccountRepeated = userAccounts.Where(e => e.CuentaUsuario == user.CuentaUsuario).Count() > 1;
+
+            if (userAccountRepeated)
+            {
+                throw new Exception($"the userAccount <b>{user.CuentaUsuario}</b> already exists");
+            }
+
+            var userCreator = await _unitOfWork.UserRepository.GetById(userCreatorId);
+            var usuario = await _unitOfWork.UserRepository.GetById(user.Id);
+            usuario.Nombre = user.Nombre == "" ? null : user.Nombre;
+            usuario.NumDocumento = user.NumDocumento == "" ? null : user.NumDocumento;
+            if (userCreator.Acceso == "ROOT" && user.CuentaUsuario != null && user.CuentaUsuario != "") usuario.CuentaUsuario = user.CuentaUsuario;
+            usuario.Contrasena = user.Contrasena == "" ? null : user.Contrasena;
+            usuario.Acceso = user.Acceso == "" ? null : user.Acceso;
+            usuario.Correo = user.Correo == "" ? null : user.Correo;
+            usuario.IdEmpresa = user.IdEmpresa;
+            usuario.Image = user.Image;
+            usuario.Habilitado = user.Habilitado;
+            _unitOfWork.UserRepository.Update(usuario);
+            await _unitOfWork.SaveChangeAsync();
             return true;
         }
 

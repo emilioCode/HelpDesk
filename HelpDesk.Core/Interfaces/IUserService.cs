@@ -8,8 +8,8 @@ namespace HelpDesk.Core.Interfaces
     {
         IEnumerable<Usuario> GetUsers();
         Task<Usuario> GetUserById(int id);
-        Task InsertUSer(Usuario user);
-        Task<bool> UpdateUSer(Usuario user);
+        Task<Usuario> InsertUSer(Usuario user);
+        Task<bool> UpdateUSer(Usuario user, int userCreatorId);
         Task<bool> Delete(int id);
         Task<List<Usuario>> GetUsersByIdAndCondition(int id, string condition);
     }

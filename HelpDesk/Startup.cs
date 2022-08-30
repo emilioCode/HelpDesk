@@ -1,23 +1,20 @@
+using AutoMapper;
+using FluentValidation.AspNetCore;
+using HelpDesk.Core.Interfaces;
+using HelpDesk.Core.Services;
+using HelpDesk.Infrastructure.Data;
+using HelpDesk.Infrastructure.Filters;
+using HelpDesk.Infrastructure.Interfaces;
+using HelpDesk.Infrastructure.Repositories;
+using HelpDesk.Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using HelpDesk.Models;
-using Microsoft.EntityFrameworkCore;
-using HelpDesk.Controllers;
 using Microsoft.Extensions.Hosting;
-using HelpDesk.Infrastructure.Data;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using HelpDesk.Core.Interfaces;
-using HelpDesk.Infrastructure.Repositories;
-using HelpDesk.Core.Services;
-using AutoMapper;
 using System;
-using FluentValidation.AspNetCore;
-using HelpDesk.Infrastructure.Filters;
 
 namespace HelpDesk
 {
@@ -31,7 +28,7 @@ namespace HelpDesk
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public async void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {     
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());    
             //conection through appsettings.json
@@ -39,13 +36,7 @@ namespace HelpDesk
                 option.UseSqlServer(Configuration.GetConnectionString("HelpDesk"))
             );
 
-        
-
             services.AddSignalR();
-
-            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            
-
             services.AddRazorPages();
             services
                 .AddControllersWithViews(options =>
@@ -61,6 +52,7 @@ namespace HelpDesk
                 {
                     //options.SuppressModelStateInvalidFilter = true; //to disable the ModelState in an ApiController
                 });
+
             services
                 .AddMvc(options =>
                 {
@@ -73,6 +65,7 @@ namespace HelpDesk
 
             //now, i creating a scope with the dbLibraryContext
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ISecurityService, Security>();
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             // In production, the Angular files will be served from this directory

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HelpDesk.Infrastructure.Interfaces;
+using System;
 
-namespace HelpDesk.Controllers
+namespace HelpDesk.Infrastructure.Services
 {
-    public class Security
+    public class Security : ISecurityService
     {
-        public static string Encripting(string password)
+        public string Encripting(string password)
         {
             string result = string.Empty;
             try
@@ -21,7 +19,7 @@ namespace HelpDesk.Controllers
             return result;
         }
 
-        public static string Decrypting(string password)
+        public string Decrypting(string password)
         {
             string result = string.Empty;
             try

@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HelpDesk.Controllers;
-using Microsoft.AspNetCore.Mvc;
+﻿using HelpDesk.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace HelpDesk.Pages
 {
     public class EncryptModel : PageModel
     {
+        private readonly ISecurityService _securityService;
+        public EncryptModel(ISecurityService securityService)
+        {
+            _securityService = securityService;
+        }
         public string request { get; set; }
         public string result { get; set; }
         public void OnGet()
@@ -19,7 +19,7 @@ namespace HelpDesk.Pages
 
         public void OnPost(string pwd)
         {
-            result = pwd != "" ? Security.Encripting(pwd) : "";
+            result = pwd != "" ? _securityService.Encripting(pwd) : "";
         }
     }
 }

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using HelpDesk.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using HelpDesk.Models.classes;
 using HelpDesk.Infrastructure.Data;
 using HelpDesk.Core.Entities;
+using HelpDesk.Responses;
 
 namespace HelpDesk.Controllers
 {
