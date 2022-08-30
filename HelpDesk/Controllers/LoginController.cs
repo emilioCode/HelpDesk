@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelpDesk.Core.Entities;
+using HelpDesk.Infrastructure.Data;
 using HelpDesk.Models;
-using HelpDesk.Models.classes;
+using HelpDesk.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,7 +39,7 @@ namespace HelpDesk.Controllers
                         data = new { renderHTML1 = "", renderHTML2 = "invisible", renderHTML3 = "" }
                     });
 
-                List<String> userAccounts = context.Usuario
+                List<String> userAccounts = context.Usuarios
                     .Where(u => u.IdEmpresa == idEmpresa).Select(u => u.CuentaUsuario).ToList();
                  res = userAccounts.Where(uac => uac == userAccount).Count() == 0 ?
                     new ObjectResponse
@@ -83,8 +85,8 @@ namespace HelpDesk.Controllers
         [HttpPost]
         public JsonResult Post([FromBody] Usuario loginUser)
         {
-            var user = from usuario in context.Usuario
-                       join empresa in context.Empresa on usuario.IdEmpresa equals empresa.Id
+            var user = from usuario in context.Usuarios
+                       join empresa in context.Empresas on usuario.IdEmpresa equals empresa.Id
                        where usuario.CuentaUsuario == loginUser.CuentaUsuario
                        //&& (checkHash(loginUser.pwd, usuario.Contrasena, hashType.MD5) == true)
                        && usuario.Contrasena == loginUser.Contrasena

@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using HelpDesk.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using HelpDesk.Models.classes;
+using HelpDesk.Infrastructure.Data;
+using HelpDesk.Core.Entities;
+using HelpDesk.Responses;
 
 namespace HelpDesk.Controllers
 {
@@ -20,27 +22,27 @@ namespace HelpDesk.Controllers
             this.context = _context;
         }
 
-        // GET: api/Business
+        // GET: api/Empresas
         [HttpGet("{id}")]
         public JsonResult Get(int id)
         {
             List<Empresa> empresas = new List<Empresa>();
-            var user = context.Usuario.Find(id);
+            var user = context.Usuarios.Find(id);
             if (user.Acceso != "ROOT")
-                empresas.Add(context.Empresa.Find(user.IdEmpresa));
+                empresas.Add(context.Empresas.Find(user.IdEmpresa));
             else
-                empresas = context.Empresa.ToList();
+                empresas = context.Empresas.ToList();
             return new JsonResult(empresas.OrderByDescending(x=>x.Id));
         }
 
-        // GET: api/Business/5
+        // GET: api/Empresas/5
         //[HttpGet("{id}", Name = "Get")]
         //public string Get(int id)
         //{
         //    return "value";
         //}
 
-        // POST: api/Business
+        // POST: api/Empresas
         [HttpPost]
         public JsonResult Post([FromBody] Empresa req)
         {
@@ -63,7 +65,7 @@ namespace HelpDesk.Controllers
                 context.Entry(req).State = Microsoft.EntityFrameworkCore.EntityState.Added;
                 context.SaveChanges();
 
-                var data = context.Empresa.Where(e => e.RazonSocial == req.RazonSocial
+                var data = context.Empresas.Where(e => e.RazonSocial == req.RazonSocial
                 && e.SectorComercial == req.SectorComercial && e.Rnc == req.Rnc && e.Telefono == req.Telefono
                 && e.Correo == req.Correo && e.Contrasena == req.Contrasena && e.Url ==req.Url && e.Port ==req.Port
                 && e.Host == req.Host && e.Direccion ==req.Direccion 
@@ -93,7 +95,7 @@ namespace HelpDesk.Controllers
             return new JsonResult(res);
         }
 
-        // PUT: api/Business/5
+        // PUT: api/Empresas/5
         //[HttpPut("{id}")]
         [HttpPost("[action]/{id}")]
         public JsonResult Put(int id, [FromBody] Empresa req)
@@ -113,7 +115,7 @@ namespace HelpDesk.Controllers
                     };
                     return new JsonResult(res);
                 }
-                var empresa = context.Empresa.Find(id);
+                var empresa = context.Empresas.Find(id);
                 empresa.RazonSocial = req.RazonSocial == "" ? null : req.RazonSocial;
                 empresa.SectorComercial = req.SectorComercial == "" ? null : req.SectorComercial;
                 empresa.Rnc = req.Rnc == "" ? null : req.Rnc;

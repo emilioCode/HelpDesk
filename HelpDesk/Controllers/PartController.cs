@@ -1,9 +1,12 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelpDesk.Core.Entities;
+using HelpDesk.Infrastructure.Data;
 using HelpDesk.Models;
-using HelpDesk.Models.classes;
+using HelpDesk.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

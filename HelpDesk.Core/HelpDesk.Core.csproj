@@ -5,12 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
-    <Folder Include="Entities\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="CustomEntitties\" />
     <Folder Include="Exceptions\" />
-    <Folder Include="Services\" />
+    <Folder Include="Dictionaries\" />
     <Folder Include="QueryFilters\" />
   </ItemGroup>
 

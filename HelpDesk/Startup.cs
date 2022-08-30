@@ -1,14 +1,20 @@
+using AutoMapper;
+using FluentValidation.AspNetCore;
+using HelpDesk.Core.Interfaces;
+using HelpDesk.Core.Services;
+using HelpDesk.Infrastructure.Data;
+using HelpDesk.Infrastructure.Filters;
+using HelpDesk.Infrastructure.Interfaces;
+using HelpDesk.Infrastructure.Repositories;
+using HelpDesk.Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using HelpDesk.Models;
-using Microsoft.EntityFrameworkCore;
-using HelpDesk.Controllers;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace HelpDesk
 {
@@ -23,25 +29,45 @@ namespace HelpDesk
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {                                  
-            var Server = Security.Decrypting( Configuration.GetConnectionString("Server") );//"Server": "ASUS" ó "Server": "127.0.0.1"
-            var Database = Security.Decrypting( Configuration.GetConnectionString("Database") ); //"Database": "HelpDeskDB"
-            var User = Security.Decrypting( Configuration.GetConnectionString("User") ); //"User": "sa"
-            var Password = Security.Decrypting(Configuration.GetConnectionString("Password"));
-
-            string connectionString = $"Server={Server};Database={Database};User Id={User};Password={Password};";
+        {     
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());    
             //conection through appsettings.json
             services.AddDbContext<HelpDeskDBContext>(option =>
-                option.UseSqlServer(connectionString));
+                option.UseSqlServer(Configuration.GetConnectionString("HelpDesk"))
+            );
 
             services.AddSignalR();
-
-            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddRazorPages();
-            services.AddControllersWithViews();
-            //now, i creating a scope with the dbLibraryContext
-            services.AddScoped<HelpDeskDBContext, HelpDeskDBContext>();
+            services
+                .AddControllersWithViews(options =>
+                {
+                    options.Filters.Add<GlobalExceptionFilter>();
+                })
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                })
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    //options.SuppressModelStateInvalidFilter = true; //to disable the ModelState in an ApiController
+                });
 
+            services
+                .AddMvc(options =>
+                {
+                    options.Filters.Add<ValidationFilter>();
+                })
+                .AddFluentValidation(options =>
+                {
+                    options.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+                });
+
+            //now, i creating a scope with the dbLibraryContext
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ISecurityService, Security>();
+            services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
