@@ -44,12 +44,21 @@ export class LoginComponent implements OnInit {
         //console.log(this.service.getUser());
         // this.service.route.navigateByUrl()('/');
        }
-        
-       
        this.isLoading =false;
       },error => {
+        var errors = error.error.errors;
+        var title = error.error.title ? error.error.title : 'Warning';
+        var list = [];
+        if(title !== "Warning"){
+          var objectKeys =  Object.keys(errors);
+          objectKeys.forEach(x => {
+            list.push(errors[x]);
+          });
+        }
+        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        this.service.swal(title, message, 'warning');
         console.error(error);
-        this.isLoading =false;
+        this.service.isLoading =false;
       });
   }
 

@@ -211,19 +211,40 @@ export class UserComponent implements OnInit {
 
   validateUserAccount(userAccount){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Login/'+ this.service.getUser().idEmpresa + '/' + userAccount,{headers:this.service.headers,responseType:'json'})
+
+    if(userAccount === null || userAccount == ''){
+      this.renderHTML1 = "";
+      this.renderHTML2 = "";
+      this.renderHTML3 = "";
+      this.message = "";
+    }else{
+      this.service.http.get(this.service.baseUrl + 'api/Login/'+ this.service.getUser().idEmpresa + '/' + userAccount,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         
-        this.renderHTML1= res.data.renderHTML1;
-        this.renderHTML2= res.data.renderHTML2;
-        this.renderHTML3= res.data.renderHTML3;
-        this.message = res.message;
+        this.renderHTML1= res ? "has-success has-feedback": "has-warning has-feedback";
+        this.renderHTML2= res ? "glyphicon glyphicon-ok form-control-feedback": "glyphicon glyphicon-warning-sign form-control-feedback";
+        this.renderHTML3= res ? "text-success": "text-warning";
+        this.message = res ? "It's ok.": "There exists another account with this name";
         
 
         this.service.isLoading = false;
       },error => {
+        var errors = error.error.errors;
+        var title = error.error.title ? error.error.title : 'Warning';
+        var list = [];
+        if(title !== "Warning"){
+          var objectKeys =  Object.keys(errors);
+          objectKeys.forEach(x => {
+            list.push(errors[x]);
+          });
+        }
+        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        this.service.swal(title, message, 'warning');
         console.error(error);
-        this.service.isLoading = false;
+        this.service.isLoading =false;
       });
+    }
+
+
   }
 }

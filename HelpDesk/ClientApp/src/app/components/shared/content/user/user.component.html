@@ -149,7 +149,6 @@
             <div class="overlay" [hidden]="!service.isLoading">
                 <i class="fa fa-refresh fa-spin"></i>
             </div>
-            <button type="button" class="btn btn-primary" *ngIf="option=='add'" (click)="add()"><i class="fa fa-fw fa-file-o"></i> Test</button>
             <button type="button" class="btn btn-primary" *ngIf="option=='add'" (click)="add()" [disabled]="service.isNullorEmpty(user.nombre) || service.isNullorEmpty(user.cuentaUsuario) || service.isNullorEmpty(user.contrasena) || service.isNullorEmpty(user.acceso)"><i class="fa fa-fw fa-file-o"></i> Crear</button>
             <button type="button" class="btn btn-success" *ngIf="option=='edit'" (click)="edit()" [disabled]="service.isNullorEmpty(user.nombre) || service.isNullorEmpty(user.cuentaUsuario) || service.isNullorEmpty(user.contrasena) || service.isNullorEmpty(user.acceso)"><i class="fa fa-fw fa-save"></i> Guardar</button>
             <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->

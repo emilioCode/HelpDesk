@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
+using HelpDesk.Core.CustomEntitties;
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
-using System;
-using System.Text;
 
 namespace HelpDesk.Infrastructure.Mappings
 {
@@ -32,6 +31,8 @@ namespace HelpDesk.Infrastructure.Mappings
                         dest.Image = null;
                     }
                 });
+
+            CreateMap<UserLogin, Usuario>();
 
             CreateMap<EmpresaDto, Empresa>()
                 .AfterMap((src, dest) =>
