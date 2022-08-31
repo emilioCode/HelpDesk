@@ -19,7 +19,7 @@ namespace HelpDesk.Pages
 
         public void OnPost(string pwd)
         {
-            result = pwd != "" ? _securityService.Encripting(pwd) : "";
+            result = _securityService.Encripting(pwd);
         }
     }
 }
