@@ -1,10 +1,9 @@
-﻿using HelpDesk.Core.Entities;
+﻿using HelpDesk.Core.CustomEntitties;
+using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace HelpDesk.Core.Services
@@ -123,6 +122,39 @@ namespace HelpDesk.Core.Services
                 }
             }
             return result;
+        }
+
+        public UserIdentity GetLoginByCredentials(Usuario login)
+        {
+            var users = _unitOfWork.UserRepository.GetAll().ToList();
+            var businesses = _unitOfWork.BusinessRepository.GetAll().ToList();
+
+            var userCredentials = from usuario in users
+                       join empresa in businesses on usuario.IdEmpresa equals empresa.Id
+                       where usuario.CuentaUsuario == login.CuentaUsuario
+                       && usuario.Contrasena == login.Contrasena
+                       && empresa.Id == usuario.IdEmpresa && usuario.Habilitado == true && (empresa.Habilitado == true || usuario.Acceso == "ROOT")
+                       select new UserIdentity
+                       {
+                           Id = usuario.Id,
+                           Nombre = usuario.Nombre,
+                           Acceso = usuario.Acceso,
+                           IdEmpresa  = usuario.IdEmpresa,
+                           Empresa = empresa.RazonSocial,
+                           UserName = usuario.CuentaUsuario,
+                           Image = usuario.Image,
+                           Logo = empresa.Image
+                       };
+            var result = userCredentials.Where(x => x.UserName.Equals(login.CuentaUsuario)).FirstOrDefault();
+            return result;
+        }
+
+        public async Task<bool> ValidateUserAccount(int IdEmpresa, string CuentaUsuario)
+        {
+            var users = _unitOfWork.UserRepository.GetByBusinessId(IdEmpresa);
+            var response = users.Where(uac => uac.CuentaUsuario == CuentaUsuario).Count() == 0;
+            return response;
+
         }
     }
 }

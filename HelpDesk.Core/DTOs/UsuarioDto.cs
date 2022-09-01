@@ -10,7 +10,7 @@
         public string Acceso { get; set; }
         public string Correo { get; set; }
         public int? IdEmpresa { get; set; }
-        public byte[] Image { get; set; } = null;
+        public byte[] Image { get; set; }
         public bool? Habilitado { get; set; }
     }
 }

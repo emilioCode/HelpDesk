@@ -65,6 +65,7 @@ namespace HelpDesk
 
             //now, i creating a scope with the dbLibraryContext
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IBusinessService, BusinessService>();
             services.AddTransient<ISecurityService, Security>();
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
-using HelpDesk.Core.Services;
-using HelpDesk.Infrastructure.Data;
 using HelpDesk.Infrastructure.Interfaces;
-using HelpDesk.Infrastructure.Services;
-using HelpDesk.Models;
 using HelpDesk.Responses;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HelpDesk.Controllers
 {

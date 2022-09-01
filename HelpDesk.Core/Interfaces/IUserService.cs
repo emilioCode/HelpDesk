@@ -1,4 +1,5 @@
-﻿using HelpDesk.Core.Entities;
+﻿using HelpDesk.Core.CustomEntitties;
+using HelpDesk.Core.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,5 +13,7 @@ namespace HelpDesk.Core.Interfaces
         Task<bool> UpdateUSer(Usuario user, int userCreatorId);
         Task<bool> Delete(int id);
         Task<List<Usuario>> GetUsersByIdAndCondition(int id, string condition);
+        UserIdentity GetLoginByCredentials(Usuario login);
+        Task<bool> ValidateUserAccount (int idEmpresa, string userAccount);
     }
 }
