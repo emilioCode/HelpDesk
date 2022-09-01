@@ -86,9 +86,9 @@ namespace HelpDesk.Core.Services
             return true;
         }
 
-        public async Task<List<Usuario>> GetUsersByIdAndCondition(int id, string condition)
+        public async Task<IEnumerable<Usuario>> GetUsersByIdAndCondition(int id, string condition)
         {
-            List < Usuario > result = new List<Usuario>();
+            List <Usuario> result = new List<Usuario>();
             var user = await GetUserById(id);
             condition = condition.ToLower();
             var users = _unitOfWork.UserRepository.GetByBusinessId(user.IdEmpresa).Where(x => x.Acceso != "ROOT");
@@ -121,7 +121,7 @@ namespace HelpDesk.Core.Services
                         break;
                 }
             }
-            return result;
+            return result.AsEnumerable();
         }
 
         public UserIdentity GetLoginByCredentials(Usuario login)

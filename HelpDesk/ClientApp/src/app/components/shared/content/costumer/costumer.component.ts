@@ -121,7 +121,7 @@ export class CostumerComponent implements OnInit {
     }
     this.service.isLoading = true;
     this.costumer.habilitado = true;
-     this.service.http.post(this.service.baseUrl + 'api/Costumer/Put/'+this.costumer.id,this.costumer,{headers:this.service.headers,responseType:'json'})
+     this.service.http.post(this.service.baseUrl + 'api/Costumer/Put/'+ this.service.getUser().id,this.costumer,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -130,6 +130,17 @@ export class CostumerComponent implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
+        var errors = error.error.errors;
+        var title = error.error.title ? error.error.title : 'Warning';
+        var list = [];
+        if(title !== "Warning"){
+          var objectKeys =  Object.keys(errors);
+          objectKeys.forEach(x => {
+            list.push(errors[x]);
+          });
+        }
+        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;
       });
@@ -138,7 +149,7 @@ export class CostumerComponent implements OnInit {
   delete(){
     this.service.isLoading = true;
     this.costumer.habilitado = !this.costumer.habilitado;
-     this.service.http.post(this.service.baseUrl + 'api/Costumer/Put/'+this.costumer.id,this.costumer,{headers:this.service.headers,responseType:'json'})
+     this.service.http.post(this.service.baseUrl + 'api/Costumer/Put/'+this.service.getUser().id,this.costumer,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -147,6 +158,17 @@ export class CostumerComponent implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
+        var errors = error.error.errors;
+        var title = error.error.title ? error.error.title : 'Warning';
+        var list = [];
+        if(title !== "Warning"){
+          var objectKeys =  Object.keys(errors);
+          objectKeys.forEach(x => {
+            list.push(errors[x]);
+          });
+        }
+        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;
       });

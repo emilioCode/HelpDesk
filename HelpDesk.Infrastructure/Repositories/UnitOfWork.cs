@@ -9,7 +9,7 @@ namespace HelpDesk.Infrastructure.Repositories
     {
         private readonly HelpDeskDBContext _context;
 
-        private readonly IRepository<Cliente> _customerRepository;
+        private readonly ICustomerRepository _customerRepository;
         private readonly IRepository<Empresa> _businessRepository;
         private readonly IRepository<Equipo> _componentRepository;
         private readonly IRepository<Piezas> _pieceRepository;
@@ -22,7 +22,7 @@ namespace HelpDesk.Infrastructure.Repositories
             _context = context;
         }
 
-        public IRepository<Cliente> CustomerRepository => _customerRepository ?? new BaseRepository<Cliente>(_context);
+        public ICustomerRepository CustomerRepository => _customerRepository ?? new CustomerRepository(_context);
 
         public IRepository<Empresa> BusinessRepository => _businessRepository ?? new BaseRepository<Empresa>(_context);
 

@@ -59,6 +59,9 @@ namespace HelpDesk.Infrastructure.Mappings
                         dest.Image = null;
                     }
                 });
+
+            CreateMap<ClienteDto, Cliente>();
+            CreateMap<Cliente, ClienteDto>();
         }
     }
 }
