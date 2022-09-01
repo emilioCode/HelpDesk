@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace HelpDesk.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class BusinessController : ControllerBase

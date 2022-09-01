@@ -6,7 +6,7 @@ namespace HelpDesk.Core.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IRepository<Cliente> CustomerRepository { get; }
+        ICustomerRepository CustomerRepository { get; }
         IRepository<Empresa> BusinessRepository { get; }
         IRepository<Equipo> ComponentRepository { get; }
         IRepository<Piezas> PieceRepository { get; }
