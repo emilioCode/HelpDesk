@@ -1,4 +1,4 @@
-﻿using HelpDesk.Core.CustomEntitties;
+﻿using HelpDesk.Core.CustomEntities;
 using HelpDesk.Core.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;

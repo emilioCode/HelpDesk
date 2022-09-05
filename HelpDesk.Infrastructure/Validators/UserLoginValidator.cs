@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using HelpDesk.Core.CustomEntitties;
+using HelpDesk.Core.CustomEntities;
 
 namespace HelpDesk.Infrastructure.Validators
 {

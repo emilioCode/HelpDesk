@@ -441,7 +441,12 @@ export class TicketComponent implements OnInit {
           option = "NOCHANGEPLEASE";
           break;
       }
-    }else if(option =='USUARIO'){
+    }else if(option =='USUARIO'){debugger;
+      let result = this.ticket.noSecuencia;
+      if(!result){
+        return false;
+      }
+      
       var response = confirm('Seguro que desea asignar este ticket a este usuario?');
       if(!response){
   
