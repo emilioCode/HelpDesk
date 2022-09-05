@@ -1,4 +1,4 @@
-﻿namespace HelpDesk.Core.CustomEntitties
+﻿namespace HelpDesk.Core.CustomEntities
 {
     public class UserIdentity
     {

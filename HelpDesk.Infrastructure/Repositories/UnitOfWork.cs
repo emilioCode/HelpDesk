@@ -11,10 +11,10 @@ namespace HelpDesk.Infrastructure.Repositories
 
         private readonly ICustomerRepository _customerRepository;
         private readonly IRepository<Empresa> _businessRepository;
-        private readonly IRepository<Equipo> _componentRepository;
+        private readonly IDeviceRepository _deviceRepository;
         private readonly IRepository<Piezas> _pieceRepository;
         private readonly IRepository<Seguimiento> _traceRepository;
-        private readonly IRepository<Solicitud> _requestRepository;
+        private readonly ITicketRepository _ticketRepository;
         private readonly IUserRepository _userRepository;
 
         public UnitOfWork(HelpDeskDBContext context)
@@ -26,13 +26,13 @@ namespace HelpDesk.Infrastructure.Repositories
 
         public IRepository<Empresa> BusinessRepository => _businessRepository ?? new BaseRepository<Empresa>(_context);
 
-        public IRepository<Equipo> ComponentRepository => _componentRepository ?? new BaseRepository<Equipo>(_context);
+        public IDeviceRepository DeviceRepository => _deviceRepository ?? new DeviceRepository(_context);
 
         public IRepository<Piezas> PieceRepository => _pieceRepository ?? new BaseRepository<Piezas>(_context);
 
         public IRepository<Seguimiento> TraceRepository => _traceRepository ?? new BaseRepository<Seguimiento>(_context);
 
-        public IRepository<Solicitud> RequestRepository => _requestRepository ?? new BaseRepository<Solicitud>(_context);
+        public ITicketRepository TicketRepository => _ticketRepository ?? new TicketRepository(_context);
 
         public IUserRepository UserRepository => _userRepository ?? new UserRepository(_context);
 

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using HelpDesk.Core.CustomEntitties;
+using HelpDesk.Core.CustomEntities;
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
 
@@ -10,8 +10,7 @@ namespace HelpDesk.Infrastructure.Mappings
         public AutomapperProfile()
         {
             CreateMap<UsuarioDto, Usuario>();
-            CreateMap<Usuario, UsuarioDto>()
-                .AfterMap((src, dest) =>
+            CreateMap<Usuario, UsuarioDto>().AfterMap((src, dest) =>
                 {
                     if (src.IdEmpresa != 0)
                     {
@@ -34,8 +33,7 @@ namespace HelpDesk.Infrastructure.Mappings
 
             CreateMap<UserLogin, Usuario>();
 
-            CreateMap<EmpresaDto, Empresa>()
-                .AfterMap((src, dest) =>
+            CreateMap<EmpresaDto, Empresa>().AfterMap((src, dest) =>
                 {
                     if (src.Image != null)
                     {
@@ -47,8 +45,7 @@ namespace HelpDesk.Infrastructure.Mappings
                     }
                 });
 
-            CreateMap<Empresa, EmpresaDto>()
-                .AfterMap((src, dest) =>
+            CreateMap<Empresa, EmpresaDto>().AfterMap((src, dest) =>
                 {
                     if (src.Image != null)
                     {
@@ -62,6 +59,28 @@ namespace HelpDesk.Infrastructure.Mappings
 
             CreateMap<ClienteDto, Cliente>();
             CreateMap<Cliente, ClienteDto>();
+
+            CreateMap<Solicitud, SolicitudT>();
+            //    .AfterMap(async (src, dest) =>
+            //{
+
+            //    var customer = await _unitOfWork.CustomerRepository.GetById(src.IdCliente);
+            //    var codes1 = customer.Nombre + ", " + customer.Contacto;
+            //    var eq = _unitOfWork.DeviceRepository.GetDevicesByTicketId(src.Id);
+            //    var codes2 = "";
+            //    eq.ToList().ForEach(r =>
+            //    {
+            //        codes2 = codes2 + r.NoSerial + ", ";
+            //    });
+
+            //    dest.cliente = customer.Nombre;
+            //    dest.claves = codes1 + ", " + codes2;
+
+
+            //});
+            CreateMap<SolicitudDto, Solicitud>();
+            CreateMap<Solicitud, SolicitudDto>();
+            CreateMap<SolicitudLiteDto, Solicitud>();
         }
     }
 }

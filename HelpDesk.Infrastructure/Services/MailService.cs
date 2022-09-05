@@ -1,21 +1,17 @@
-﻿using HelpDesk.Responses;
+﻿using HelpDesk.Infrastructure.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mail;
-using System.Threading.Tasks;
 
-namespace HelpDesk.Controllers
+namespace HelpDesk.Infrastructure.Services
 {
-    public class MailClient
+    public class MailService : IMailService
     {
-        public static ObjectResponse Send(string host, int port, SmtpDeliveryMethod method, Boolean useDefaultCredentials, Boolean enableSsl,
-            string emailFrom, string password, string emailTo, string subject, string message, Boolean isBodyHtml)
+        public bool Send(string host, int port, SmtpDeliveryMethod method, Boolean useDefaultCredentials, Boolean enableSsl,
+    string emailFrom, string password, string emailTo, string subject, string message, Boolean isBodyHtml)
         {
-            ObjectResponse response;
+            bool response = true;
             try
             {
-                response = new ObjectResponse();
                 if (TestConnection())
                 {
                     SmtpClient client = new SmtpClient(host);
@@ -33,36 +29,16 @@ namespace HelpDesk.Controllers
                     mail.Body = message;
                     mail.IsBodyHtml = isBodyHtml;
                     client.Send(mail);
-
-                    //res = $"success@DONE@The E-mail has been sent succesfully.";
-                    response = new ObjectResponse
-                    {
-                        title = "success",
-                        code = "1",
-                        message = "The E-mail has been sent succesfully.",
-                        data = null
-                    };
                 }
                 else
                 {
-                    response = new ObjectResponse
-                    {
-                        title = "ERROR CONNECTION",
-                        code = "",
-                        message = "Check the internet connection",
-                        data = null
-                    };
+                    response = false;
                 }
 
             }
             catch (Exception ex)
             {
-                response = new ObjectResponse {
-                    title = "ERROR",
-                    code = "0",
-                    message = ex.Message,
-                    data = ex
-                };
+                response = false;
             }
             return response;
         }
@@ -72,7 +48,7 @@ namespace HelpDesk.Controllers
         /// test Internet return Boolean
         /// </summary>
         /// <returns></returns>
-        public static Boolean TestConnection()
+        public bool TestConnection()
         {
             bool result = false;
             System.Uri Url = new System.Uri("http://www.google.com/");
@@ -82,13 +58,13 @@ namespace HelpDesk.Controllers
             try
             {
                 objResp = WebRequest.GetResponse();
-                result = true;//"Su dispositivo está correctamente conectado a internet";
+                result = true;
                 objResp.Close();
                 WebRequest = null;
             }
-            catch (Exception /*ex*/)
+            catch
             {
-                result = false;//"Error al intentar conectarse a internet " + ex.Message;
+                result = false;
                 WebRequest = null;
             }
             return result;

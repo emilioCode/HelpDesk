@@ -8,10 +8,10 @@ namespace HelpDesk.Core.Interfaces
     {
         ICustomerRepository CustomerRepository { get; }
         IRepository<Empresa> BusinessRepository { get; }
-        IRepository<Equipo> ComponentRepository { get; }
+        IDeviceRepository DeviceRepository { get; }
         IRepository<Piezas> PieceRepository { get; }
         IRepository<Seguimiento> TraceRepository { get; }
-        IRepository<Solicitud> RequestRepository { get; }
+        ITicketRepository TicketRepository { get; }
         IUserRepository UserRepository { get; }
 
         void SaveChanges();

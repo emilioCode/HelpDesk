@@ -1,7 +1,7 @@
 ﻿using HelpDesk.Core.Entities;
 using System;
 
-namespace HelpDesk.Models.classes
+namespace HelpDesk.Core.CustomEntities
 {
     public class Event
     {

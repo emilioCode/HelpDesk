@@ -68,9 +68,12 @@ namespace HelpDesk
             services.AddTransient<IBusinessService, BusinessService>();
             services.AddTransient<ISecurityService, Security>();
             services.AddTransient<ICustomerService, CustomerService>();
+            services.AddTransient<ITicketService, TicketService>();
+            services.AddTransient<IMailService, MailService>();
 
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
