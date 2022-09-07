@@ -71,6 +71,7 @@ namespace HelpDesk
             services.AddTransient<ITicketService, TicketService>();
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IDeviceService, DeviceService>();
+            services.AddTransient<ITraceService, TraceService>();
 
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
