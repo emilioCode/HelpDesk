@@ -122,6 +122,11 @@ namespace HelpDesk.Core.Services
             return response;
         }
 
+        public IEnumerable<Solicitud> GetTicketBySecuencialNumber(string secuencialNumber)
+        {
+            return _unitOfWork.TicketRepository.GetAll().Where(e => e.NoSecuencia == secuencialNumber);
+        }
+
         public async Task<IEnumerable<SolicitudT>> GetTicketsByIdAndCondition(int id, string option)
         {
             if (option is null)

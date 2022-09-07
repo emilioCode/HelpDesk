@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HelpDesk.Models.Dictionaries
+namespace HelpDesk.Core.Dictionaries
 {
     public class Levels
     {

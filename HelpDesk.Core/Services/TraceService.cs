@@ -61,5 +61,10 @@ namespace HelpDesk.Core.Services
             await _unitOfWork.SaveChangeAsync();
             return trace;
         }
+
+        public IEnumerable<Seguimiento> GetAllTraces()
+        {
+            return _unitOfWork.TraceRepository.GetAll();
+        }
     }
 }

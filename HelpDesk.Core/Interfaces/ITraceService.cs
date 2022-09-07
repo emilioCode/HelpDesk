@@ -10,5 +10,6 @@ namespace HelpDesk.Core.Interfaces
         IEnumerable<CustomTrace> GetTracesById(int ticketId, int businessId);
         Task<Seguimiento> AddTrace(Seguimiento trace);
         Task<Seguimiento> UpdateTrace(Seguimiento trace);
+        IEnumerable<Seguimiento> GetAllTraces();
     }
 }

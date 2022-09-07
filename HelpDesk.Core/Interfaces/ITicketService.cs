@@ -12,5 +12,6 @@ namespace HelpDesk.Core.Interfaces
         IEnumerable<SummaryInformation> GetSummaryInformation(Solicitud ticket);
         Task<Metric> GetMetricsByUserId(int userId);
         Task<(Solicitud, EmailMessage)> UpdateTicket(Solicitud ticket, string action);
+        IEnumerable<Solicitud> GetTicketBySecuencialNumber(string secuencialNumber);
     }
 }

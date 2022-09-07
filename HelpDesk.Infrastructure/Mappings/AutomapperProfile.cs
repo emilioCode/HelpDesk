@@ -77,6 +77,8 @@ namespace HelpDesk.Infrastructure.Mappings
             CreateMap<EquipoDto, Equipo>();
             CreateMap<SeguimientoDto, Seguimiento>();
             CreateMap<Seguimiento, SeguimientoDto>();
+            CreateMap<Piezas, PiezasDto>();
+            CreateMap<PiezasDto, Piezas>();
         }
     }
 }
