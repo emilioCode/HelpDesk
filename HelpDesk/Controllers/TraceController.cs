@@ -21,7 +21,7 @@ namespace HelpDesk.Controllers
         }
         // GET: api/Trace/1/1
         [HttpGet("{ticketId}/{businnesId}")]
-        public async Task<IActionResult> Get(int ticketId, int businnesId)
+        public IActionResult Get(int ticketId, int businnesId)
         {
             var customTraces = _traceService.GetTracesById(ticketId, businnesId);
             var response = new ObjectResponse

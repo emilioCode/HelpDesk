@@ -23,7 +23,7 @@ namespace HelpDesk.Controllers
 
         // GET: api/Part/1/1
         [HttpGet("{ticketId}/{businessId}")]
-        public async Task<IActionResult> Get(int ticketId, int businessId)
+        public IActionResult Get(int ticketId, int businessId)
         {
             var parts = _pieceService.GetPieces(ticketId, businessId);
             var partsDtos = _mapper.Map<IEnumerable<PiezasDto>>(parts);
