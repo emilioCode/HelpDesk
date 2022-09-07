@@ -34,14 +34,15 @@ namespace HelpDesk.Controllers
         public async Task<IActionResult> PostOne([FromBody] EquipoDto deviceDto)
         {
             var device = _mapper.Map<Equipo>(deviceDto);
-            var result = await _deviceService.AddDevice(device);
+            device = await _deviceService.AddDevice(device);
+            deviceDto = _mapper.Map<EquipoDto>(device);
             var response = new ObjectResponse
             {
                 code = "1",
                 title = "Saved",
                 icon = "success",
                 message = "created successfully",
-                data = result
+                data = deviceDto
             };
             return Ok(response);
         }
@@ -50,14 +51,15 @@ namespace HelpDesk.Controllers
         public async Task<IActionResult> PostArray([FromBody] List<EquipoDto> devicesDto)
         {
             var devices = _mapper.Map<List<Equipo>>(devicesDto);
-            var result = await _deviceService.AddRangeDevice(devices);
+            devices = await _deviceService.AddRangeDevice(devices);
+            var deviceDtos = _mapper.Map<IEnumerable<EquipoDto>>(devices);
             var response = new ObjectResponse
             {
                 code = "1",
                 title = "Saved",
                 icon = "success",
                 message = "created successfully",
-                data = result
+                data = deviceDtos
             };
             return Ok(response);
         }
@@ -68,14 +70,15 @@ namespace HelpDesk.Controllers
         {
             var device = _mapper.Map<Equipo>(deviceDto);
             device = await _deviceService.ModifyDevice(device);
+            deviceDto = _mapper.Map<EquipoDto>(device);
             var response = new ObjectResponse
              {
                  code = "1",
                  title = "Saved",
                  icon = "success",
                  message = "modified successfully",
-                 data = device
-             };
+                 data = deviceDto
+            };
             return Ok(response);
         }
 
