@@ -147,7 +147,7 @@ export class Waiting4Component implements OnInit {
 
 
     if(this.option == 'edit'){
-      this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
+      this.getDevices(this.ticket.id);
       this.getParts(this.ticket.id,this.service.getUser().idEmpresa);
       this.getTraces(this.ticket.id,this.ticket.idEmpresa);
       this.getUsersAP(this.service.getUser().id,"JUST NAME");
@@ -290,7 +290,7 @@ export class Waiting4Component implements OnInit {
         // console.log('devices saved')
         
 
-        this.getDevices(idSolicitud,this.service.getUser().idEmpresa);
+        this.getDevices(idSolicitud);
         // var object = this.devices.filter(x=>x.idSolicitud==idSolicitud)[0];
         // console.log(""+this.option+" "+object)
         // this.fillModal(this.option,object);
@@ -305,9 +305,9 @@ export class Waiting4Component implements OnInit {
       });
   }
 
-  getDevices(id,option){
+  getDevices(id){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Device/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.http.get(this.service.baseUrl + 'api/Device/'+ id,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         this.devices = res;
         // console.log(  this.devices )
