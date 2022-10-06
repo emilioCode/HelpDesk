@@ -1,14 +1,11 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
-using HelpDesk.Infrastructure.Data;
-using HelpDesk.Models;
+using HelpDesk.Core.Interfaces;
 using HelpDesk.Responses;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HelpDesk.Controllers
 {
@@ -16,176 +13,74 @@ namespace HelpDesk.Controllers
     [ApiController]
     public class PartController : ControllerBase
     {
-        private readonly HelpDeskDBContext context;
-        public PartController(HelpDeskDBContext _context)
+        private readonly IPieceService _pieceService;
+        private readonly IMapper _mapper;
+        public PartController(IPieceService pieceService, IMapper mapper)
         {
-            this.context = _context;
-        }
-        // GET: api/Part
-        [HttpGet("{idSolicitud}/{idEmpresa}")]
-        public JsonResult Get(int idSolicitud, int idEmpresa)
-        {
-            List<Piezas> parts = new List<Piezas>();
-            try
-            {
-                parts = context.Piezas.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
-            }
-            catch (Exception)
-            {
-
-            }
-            return new JsonResult(parts);
+            _pieceService = pieceService;
+            _mapper = mapper;
         }
 
-        //// GET: api/Part/5
-        //[HttpGet("{id}", Name = "Get")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
+        // GET: api/Part/1/1
+        [HttpGet("{ticketId}/{businessId}")]
+        public IActionResult Get(int ticketId, int businessId)
+        {
+            var parts = _pieceService.GetPieces(ticketId, businessId);
+            var partsDtos = _mapper.Map<IEnumerable<PiezasDto>>(parts);
+            return Ok(partsDtos);
+        }
 
         // POST: api/Part
         [HttpPost]
-        public JsonResult Post([FromBody] Piezas req)
+        public async Task<IActionResult> Post([FromBody] PiezasDto pieceDto)
         {
-            ObjectResponse res;
-            try
+            var piece = _mapper.Map<Piezas>(pieceDto);
+            piece = await _pieceService.AddPiece(piece);
+            pieceDto = _mapper.Map<PiezasDto>(piece);
+            var response = new ObjectResponse
             {
-                if (req.Descripcion == "" || req.Descripcion == null || req.Cantidad <= 0
-                    || req.Cantidad == null || req.NoSerial == "" || req.NoSerial == null)
-                {
-                    res = new ObjectResponse
-                    {
-                        code = "2",
-                        title = "Validation errors",
-                        icon = "warning",
-                        message = "Field(s) required!",
-                        data = null
-                    };
-                    return new JsonResult(res);
-                }
-                req.Habilitado = true;
-
-                context.Piezas.Add(req);
-                context.SaveChanges();
-
-                int idSolicitud = req.IdSolicitud;
-                int idEmpresa = req.IdEmpresa;
-                var data = context.Piezas.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
-                res = new ObjectResponse
-                {
-                    code = "1",
-                    title = "Saved",
-                    icon = "success",
-                    message = "created successfully",
-                    data = data
-                };
-
-            }
-            catch (Exception e)
-            {
-                res = new ObjectResponse
-                {
-                    code = "0",
-                    title = "Error",
-                    icon = "error",
-                    message = e.Message,
-                    data = null
-                };
-            }
-
-            return new JsonResult(res);
+                code = "1",
+                title = "Saved",
+                icon = "success",
+                message = "created successfully",
+                data = pieceDto
+            };
+            return Ok(response);
         }
 
         // PUT: api/Part
         //[HttpPut]
         [HttpPost("[action]")]
-        public JsonResult Put([FromBody] Piezas req)
+        public async Task<IActionResult> Put([FromBody] PiezasDto pieceDto)
         {
-            ObjectResponse res;
-            try
+            var piece = _mapper.Map<Piezas>(pieceDto);
+            piece = await _pieceService.UpdatePiece(piece);
+            pieceDto = _mapper.Map<PiezasDto>(piece);
+            var response = new ObjectResponse
             {
-                if (req.Descripcion == "" || req.Descripcion == null || req.Cantidad <= 0
-                    || req.Cantidad == null || req.NoSerial == "" || req.NoSerial == null)
-                {
-                    res = new ObjectResponse
-                    {
-                        code = "2",
-                        title = "Validation errors",
-                        icon = "warning",
-                        message = "Field(s) required!",
-                        data = null
-                    };
-                    return new JsonResult(res);
-                }
-                req.Habilitado = true;
-
-                context.Entry(req).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-                context.SaveChanges();
-
-                int idSolicitud = req.IdSolicitud;
-                int idEmpresa = req.IdEmpresa;
-                var data = context.Piezas.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
-                res = new ObjectResponse
-                {
-                    code = "1",
-                    title = "Saved",
-                    icon = "success",
-                    message = "modified successfully",
-                    data = data
-                };
-
-            }
-            catch (Exception e)
-            {
-                res = new ObjectResponse
-                {
-                    code = "0",
-                    title = "Error",
-                    icon = "error",
-                    message = e.Message,
-                    data = null
-                };
-            }
-
-            return new JsonResult(res);
+                code = "1",
+                title = "Saved",
+                icon = "success",
+                message = "modified successfully",
+                data = pieceDto
+            };
+            return Ok(response);
         }
 
-        // DELETE: api/ApiWithActions/5
-        //[HttpDelete("{id}")]
+        // DELETE: api/Part/Delete/5
         [HttpPost("[action]/{id}")]
-        public JsonResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            ObjectResponse res;
-            try
+            var result = await _pieceService.DeletePiece(id);
+            var response = new ObjectResponse
             {
-                var req = context.Piezas.Find(id);
-                context.Entry(req).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
-                context.SaveChanges();
-
-                res = new ObjectResponse
-                {
-                    code = "1",
-                    title = "Saved",
-                    icon = "success",
-                    message = "modified successfully",
-                    data = null
-                };
-
-            }
-            catch (Exception e)
-            {
-                res = new ObjectResponse
-                {
-                    code = "0",
-                    title = "Error",
-                    icon = "error",
-                    message = e.Message,
-                    data = null
-                };
-            }
-
-            return new JsonResult(res);
+                code = "1",
+                title = "Saved",
+                icon = "success",
+                message = "modified successfully",
+                data = result
+            };
+            return Ok(response);
         }
     }
 }

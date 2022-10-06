@@ -1,16 +1,10 @@
 using AutoMapper;
 using FluentValidation.AspNetCore;
-using HelpDesk.Core.Interfaces;
-using HelpDesk.Core.Services;
-using HelpDesk.Infrastructure.Data;
+using HelpDesk.Infrastructure.Extensions;
 using HelpDesk.Infrastructure.Filters;
-using HelpDesk.Infrastructure.Interfaces;
-using HelpDesk.Infrastructure.Repositories;
-using HelpDesk.Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,11 +24,8 @@ namespace HelpDesk
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {     
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());    
-            //conection through appsettings.json
-            services.AddDbContext<HelpDeskDBContext>(option =>
-                option.UseSqlServer(Configuration.GetConnectionString("HelpDesk"))
-            );
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddDbContexts(Configuration);
 
             services.AddSignalR();
             services.AddRazorPages();
@@ -63,17 +54,7 @@ namespace HelpDesk
                     options.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
                 });
 
-            //now, i creating a scope with the dbLibraryContext
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IBusinessService, BusinessService>();
-            services.AddTransient<ISecurityService, Security>();
-            services.AddTransient<ICustomerService, CustomerService>();
-            services.AddTransient<ITicketService, TicketService>();
-            services.AddTransient<IMailService, MailService>();
-
-            services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+            services.AddServices();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -109,7 +90,6 @@ namespace HelpDesk
             //{
             //    x.MapHub<Hubs.hub>("/hub");
             //});
-
             //app.UseMvc(routes =>
             //{
             //    routes.MapRoute(

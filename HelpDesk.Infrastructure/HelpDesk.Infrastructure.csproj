@@ -3,13 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-
+  
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);0168</NoWarn>
+    <NoWarn>$(NoWarn);0649</NoWarn>
+  </PropertyGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\HelpDesk.Core\HelpDesk.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Extensions\" />
   </ItemGroup>
 
   <ItemGroup>

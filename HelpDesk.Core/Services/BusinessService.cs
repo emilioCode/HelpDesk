@@ -70,5 +70,10 @@ namespace HelpDesk.Core.Services
 
             return true;
         }
+
+        public async Task<Empresa> GetById(int businessId)
+        {
+            return await _unitOfWork.BusinessRepository.GetById(businessId);
+        }
     }
 }
