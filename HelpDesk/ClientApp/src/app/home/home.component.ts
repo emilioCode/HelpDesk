@@ -7,8 +7,8 @@ import * as signalR from '@microsoft/signalr';
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit{
-
-  constructor(private service: ApiService){
+  
+  constructor(public service: ApiService){
     if(this.service.getUser() !=null)this.numbersOfTickets(this.service.getUser().id)
   }
 

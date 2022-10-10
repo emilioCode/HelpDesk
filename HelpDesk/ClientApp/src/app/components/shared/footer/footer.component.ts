@@ -7,7 +7,7 @@ import { ApiService } from '../../../services/api.service';
 })
 export class FooterComponent implements OnInit {
 
-  constructor(private service: ApiService){}
+  constructor(public service: ApiService){}
 
   ngOnInit() {
   }

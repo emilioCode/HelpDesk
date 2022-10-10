@@ -18,7 +18,8 @@
             "progress": true,
             "polyfills": "src/polyfills.ts",
             "assets": [
-              "src/assets"
+              "src/assets",
+              "src/manifest.json"
             ],
             "styles": [
               "src/styles.css",
@@ -53,7 +54,8 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
                 }
-              ]
+              ],
+              "serviceWorker": true
             }
           }
         },
@@ -98,7 +100,8 @@
               "node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.print.min.css"
             ],
             "assets": [
-              "src/assets"
+              "src/assets",
+              "src/manifest.json"
             ]
           }
         },

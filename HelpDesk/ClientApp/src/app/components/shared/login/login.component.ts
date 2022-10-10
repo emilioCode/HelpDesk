@@ -8,7 +8,7 @@ import { ApiService } from '../../../services/api.service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private service: ApiService) { }
+  constructor(public service: ApiService) { }
 
   title = this.service.aplicationName;
   isLoading = false;

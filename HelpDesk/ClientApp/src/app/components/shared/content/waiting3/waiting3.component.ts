@@ -10,7 +10,7 @@ import * as signalR from '@microsoft/signalr';
 })
 export class Waiting3Component implements OnInit {
 
-  constructor(private service: ApiService) { 
+  constructor(public service: ApiService) { 
     if(this.service.getLevel(this.service.getUser().acceso) < 2 ){
       alert("No tiene permisos para acceder");
       this.service.route.navigateByUrl('/');
@@ -18,7 +18,7 @@ export class Waiting3Component implements OnInit {
       this.getTickets(this.service.getUser().id,"*")
     }
   }
-
+  search: string;
   tickets:any;
   ticket:any={};
   option;
