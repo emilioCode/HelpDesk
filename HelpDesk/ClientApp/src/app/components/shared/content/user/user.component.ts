@@ -11,7 +11,7 @@ import * as signalR from '@microsoft/signalr';
 @Pipe({name:'FilterPipe'})
 export class UserComponent implements OnInit {
   
-  constructor(public service:ApiService) {
+  constructor(private service:ApiService) {
     if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
       alert("No tiene permisos para acceder");
       this.service.route.navigateByUrl('/');
@@ -20,7 +20,7 @@ export class UserComponent implements OnInit {
     }
     
   }
-  search: string;
+
   isLoading = false;
   empresas:any;
   users:any;

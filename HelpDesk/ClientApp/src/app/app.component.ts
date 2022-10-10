@@ -7,7 +7,7 @@ import { ApiService } from './services/api.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor(public service: ApiService){ }
+  constructor(private service: ApiService){ }
   
   title = this.service.aplicationName;
   

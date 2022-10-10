@@ -46,7 +46,7 @@ export class ProfileComponent implements OnInit {
   }
 
 
-  constructor(public service: ApiService) {4
+  constructor(private service: ApiService) {4
     this.getUsers(this.service.getUser().id,'UNIQUE');
     this.numbersOfTickets(this.service.getUser().id);
     

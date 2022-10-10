@@ -7,7 +7,7 @@ import { ApiService } from '../../../services/api.service';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(public service: ApiService) { }
+  constructor(private service: ApiService) { }
   seeNotifications =false;
   ngOnInit() {
   }

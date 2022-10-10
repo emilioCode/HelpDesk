@@ -11,10 +11,10 @@ import * as signalR from '@microsoft/signalr';
 @Pipe({name:'FilterPipe'})
 export class CostumerComponent implements OnInit {
 
-  constructor(public service: ApiService) { 
+  constructor(private service: ApiService) { 
     this.getCostumers(this.service.getUser().id,"*")
   }
-  search: string;
+
   isLoading = false;
   empresas:any;
   costumers:any;

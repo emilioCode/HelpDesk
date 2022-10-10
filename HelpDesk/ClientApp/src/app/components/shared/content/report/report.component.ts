@@ -10,7 +10,7 @@ import * as signalR from '@microsoft/signalr';
 })
 export class ReportComponent implements OnInit {
 
-  constructor(public service: ApiService) {
+  constructor(private service: ApiService) {
     if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
       alert("No tiene permisos para acceder");
       this.service.route.navigateByUrl('/');
@@ -19,7 +19,7 @@ export class ReportComponent implements OnInit {
     }
     
    }
-  search: string;
+
   requests:any=[];
   request:any={};
 

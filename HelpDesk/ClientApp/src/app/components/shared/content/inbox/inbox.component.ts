@@ -10,10 +10,10 @@ import * as signalR from '@microsoft/signalr';
 })
 export class InboxComponent implements OnInit {
 
-  constructor(public service: ApiService) { 
+  constructor(private service: ApiService) { 
     this.getTickets(this.service.getUser().id,"unique")
   }
-  search: string;
+
   tickets:any;
   ticket:any={};
   option;

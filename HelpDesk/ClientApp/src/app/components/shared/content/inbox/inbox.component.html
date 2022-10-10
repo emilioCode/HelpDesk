@@ -106,7 +106,7 @@
                     </div>                        
                     <div class="form-group col-xs-3 col-sm-3">
                       <label>Tipo de Solicitud:</label>
-                      <select class="form-control" [(ngModel)]="ticket.tipoSolicitud" [disabled]="option!='add'" ><!--(change)="clearDevicesIf()"-->
+                      <select class="form-control" [(ngModel)]="ticket.tipoSolicitud" [disabled]="option!='add'" (change)="clearDevicesIf()">
                         <option value="" selected [hidden]="ticket.tipoSolicitud!=''">Tipo Solicitud</option>
                         <option value="{{type.value}}" *ngFor="let type of service.getTypeOfRequests()">{{ type.value }}</option>
                       </select>

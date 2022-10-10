@@ -31,8 +31,6 @@ import { Waiting2Component } from './components/shared/content/waiting2/waiting2
 import { Waiting3Component } from './components/shared/content/waiting3/waiting3.component';
 import { Waiting4Component } from './components/shared/content/waiting4/waiting4.component';
 import { CalendarComponent } from './components/shared/content/calendar/calendar.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
 
 
 @NgModule({
@@ -83,8 +81,7 @@ import { environment } from '../environments/environment';
       { path: 'finished', component:Waiting4Component},
       { path: 'calendar', component: CalendarComponent }
     ]),
-    Ng2Webstorage,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    Ng2Webstorage
   ],
   providers: [ApiService],
   bootstrap: [AppComponent]

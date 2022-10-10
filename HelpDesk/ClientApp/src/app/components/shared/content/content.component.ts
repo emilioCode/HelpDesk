@@ -7,7 +7,7 @@ import { ApiService } from '../../../services/api.service';
 })
 export class ContentComponent implements OnInit {
 
-  constructor(public service: ApiService) { }
+  constructor(private service: ApiService) { }
 
   ngOnInit() {
   }
