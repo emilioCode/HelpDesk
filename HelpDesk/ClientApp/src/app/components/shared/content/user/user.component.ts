@@ -1,15 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Pipe } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
-
+import { FilterPipe } from '../../../../pipes/filter.pipe';
+// import * as signalR from '@aspnet/signalr';
+import * as signalR from '@microsoft/signalr';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styles: []
 })
+@Pipe({name:'FilterPipe'})
 export class UserComponent implements OnInit {
-
+  
   constructor(private service:ApiService) {
-    this.getUsers(this.service.getUser().id,"*");
+    if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
+      alert("No tiene permisos para acceder");
+      this.service.route.navigateByUrl('/');
+    }else{
+      this.getUsers(this.service.getUser().id,"*");
+    }
+    
   }
 
   isLoading = false;
@@ -19,8 +28,47 @@ export class UserComponent implements OnInit {
   user:any={};
   imageUrl;
   levels:any;
+  hubConnection: signalR.HubConnection;
 
   ngOnInit() {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+    .withUrl(this.service.baseUrl+'hub')
+    //.withUrl('/hub'//this.service.baseUrl+'/hub'
+    // ,{
+    //   skipNegotiation: true,
+    //   transport: signalR.HttpTransportType.WebSockets, // | signalR.HttpTransportType.LongPolling
+    // })
+    // .configureLogging(signalR.LogLevel.Debug)
+    .build();
+
+    this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
+      // console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
+      // debugger
+      if( (component=='users' && idEmpresa == this.service.getUser().idEmpresa) ){
+        
+        /* */
+        // this.service.isLoading = true;
+        this.service.http.get(this.service.baseUrl + 'api/User/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
+          .subscribe(res=>{
+            this.users = res;
+            this.service.updateSession(this.users);
+            if(!this.service.getUser().habilitado){
+              alert('Su usuario ha sido deshabilitado, comuniquese con el administrador');
+              this.service.closeSession();
+            }
+          
+            this.service.isLoading = false;
+          },error => {
+            console.error(error);
+            this.service.isLoading = false;
+          });
+        /* */
+
+      }
+      
+    })
+
+    this.hubConnection.start().catch(err => console.error(err.toString()));
   }
 
   renderHTML1:string='';
@@ -57,9 +105,9 @@ export class UserComponent implements OnInit {
 
   fileUpload:File = null;
   handleFileInput(file: FileList){
-    console.log(file)
+    // console.log(file)
     this.fileUpload = file.item(0);
-    console.log(this.fileUpload)
+    // console.log(this.fileUpload)
     //Show image preview
     var reader = new FileReader();
     reader.onload = (event:any) =>{
@@ -88,13 +136,24 @@ export class UserComponent implements OnInit {
     this.service.isLoading = true;
      this.service.http.post(this.service.baseUrl + 'api/User',this.user,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
-      console.log( res )
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
-        this.getUsers(this.service.getUser().id,"*");
+        this.hubConnection.invoke('refresh', 'users',this.user.idEmpresa,this.user.id,0)
       }
+      document.getElementById('closeModalBtn').click();
       this.service.isLoading =false;
       },error => {
+        var errors = error.error.errors;
+        var title = error.error.title ? error.error.title : 'Warning';
+        var list = [];
+        if(title !== "Warning"){
+          var objectKeys =  Object.keys(errors);
+          objectKeys.forEach(x => {
+            list.push(errors[x]);
+          });
+        }
+        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;
       });
@@ -103,14 +162,27 @@ export class UserComponent implements OnInit {
   edit(){
     this.service.isLoading = true;
     this.user.habilitado = true;
-     this.service.http.put(this.service.baseUrl + 'api/User/'+this.service.getUser().id,this.user,{headers:this.service.headers,responseType:'json'})
+     this.service.http.post(this.service.baseUrl + 'api/User/Put/'+this.service.getUser().id,this.user,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
-        this.getUsers(this.service.getUser().id,"*");
+        // this.getUsers(this.service.getUser().id,"*");
+        this.hubConnection.invoke('refresh', 'users',this.user.idEmpresa,this.user.id,0)
       }
+      document.getElementById('closeModalBtn').click();
       this.service.isLoading =false;
       },error => {
+        var errors = error.error.errors;
+        var title = error.error.title ? error.error.title : 'Warning';
+        var list = [];
+        if(title !== "Warning"){
+          var objectKeys =  Object.keys(errors);
+          objectKeys.forEach(x => {
+            list.push(errors[x]);
+          });
+        }
+        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;
       });
@@ -118,11 +190,14 @@ export class UserComponent implements OnInit {
   delete(){
     this.service.isLoading = true;
     this.user.habilitado = !this.user.habilitado;
-     this.service.http.put(this.service.baseUrl + 'api/User/'+this.user.id,this.user,{headers:this.service.headers,responseType:'json'})
+     this.service.http.post(this.service.baseUrl + 'api/User/Put/'+this.user.id,this.user,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
-        this.getUsers(this.service.getUser().id,"*");
+        // this.getUsers(this.service.getUser().id,"*");
+        this.hubConnection.invoke('refresh', 'users',this.user.idEmpresa,this.user.id,0)
+        var abled = this.user.habilitado== true?1:0;
+        this.hubConnection.invoke('refresh', 'session',this.user.idEmpresa,this.user.id,abled)
       }
       this.service.isLoading =false;
       },error => {
@@ -136,19 +211,40 @@ export class UserComponent implements OnInit {
 
   validateUserAccount(userAccount){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Login/'+ this.service.getUser().idEmpresa + '/' + userAccount,{headers:this.service.headers,responseType:'json'})
+
+    if(userAccount === null || userAccount == ''){
+      this.renderHTML1 = "";
+      this.renderHTML2 = "";
+      this.renderHTML3 = "";
+      this.message = "";
+    }else{
+      this.service.http.get(this.service.baseUrl + 'api/Login/'+ this.service.getUser().idEmpresa + '/' + userAccount,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         
-        this.renderHTML1= res.data.renderHTML1;
-        this.renderHTML2= res.data.renderHTML2;
-        this.renderHTML3= res.data.renderHTML3;
-        this.message = res.message;
+        this.renderHTML1= res ? "has-success has-feedback": "has-warning has-feedback";
+        this.renderHTML2= res ? "glyphicon glyphicon-ok form-control-feedback": "glyphicon glyphicon-warning-sign form-control-feedback";
+        this.renderHTML3= res ? "text-success": "text-warning";
+        this.message = res ? "It's ok.": "There exists another account with this name";
         
 
         this.service.isLoading = false;
       },error => {
+        var errors = error.error.errors;
+        var title = error.error.title ? error.error.title : 'Warning';
+        var list = [];
+        if(title !== "Warning"){
+          var objectKeys =  Object.keys(errors);
+          objectKeys.forEach(x => {
+            list.push(errors[x]);
+          });
+        }
+        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        this.service.swal(title, message, 'warning');
         console.error(error);
-        this.service.isLoading = false;
+        this.service.isLoading =false;
       });
+    }
+
+
   }
 }

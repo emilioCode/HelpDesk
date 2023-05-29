@@ -1,126 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HelpDesk.Models;
-using HelpDesk.Models.classes;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using HelpDesk.Core.CustomEntities;
+using HelpDesk.Core.Entities;
+using HelpDesk.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace HelpDesk.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly HelpDeskDBContext context;
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public LoginController(HelpDeskDBContext _context)
+        public LoginController(IUserService userService, IMapper mapper)
         {
-            this.context = _context;
+            _userService = userService;
+            _mapper = mapper;
         }
 
         // GET: api/Login/1/user01
         [HttpGet("{idEmpresa}/{userAccount}")]
-        public JsonResult Get(int idEmpresa, string userAccount)
+        public async Task<IActionResult> Get(int idEmpresa, string userAccount)
         {
-            ObjectResponse res;
-            try
-            {
-                if (userAccount == string.Empty || userAccount == null)
-                    return new JsonResult(new ObjectResponse
-                    {
-                        code = "3",
-                        title = "Validations",
-                        icon = "",
-                        message = "",
-                        data = new { renderHTML1 = "", renderHTML2 = "invisible", renderHTML3 = "" }
-                    });
-
-                List<String> userAccounts = context.Usuario
-                    .Where(u => u.IdEmpresa == idEmpresa).Select(u => u.CuentaUsuario).ToList();
-                 res = userAccounts.Where(uac => uac == userAccount).Count() == 0 ?
-                    new ObjectResponse
-                    {
-                        code = "1",
-                        title = "Validations",
-                        icon = "success",
-                        message = "It's ok.",
-                        data = new { renderHTML1 = "has-success has-feedback", renderHTML2 = "glyphicon glyphicon-ok form-control-feedback", renderHTML3 = "text-success" }
-                    } :
-                    new ObjectResponse
-                    {
-                        code = "1",
-                        title = "Validations",
-                        icon = "warning",
-                        message = "There exists another account with this name",
-                        data = new { renderHTML1 = "has-warning has-feedback", renderHTML2 = "glyphicon glyphicon-warning-sign form-control-feedback", renderHTML3 = "text-warning" }
-                    };
-            }
-            catch (Exception e)
-            {
-               res = new ObjectResponse
-                {
-                    code = "0",
-                    title = "Validation error",
-                    icon = "error",
-                    message = e.Message,
-                    data =  new { renderHTML1 = "has-error has-feedback", renderHTML2 = "glyphicon glyphicon-remove form-control-feedback", renderHTML3 = "text-error" } 
-                };
-            }
-            
-            return new JsonResult(res);
+            var result = await _userService.ValidateUserAccount(idEmpresa, userAccount);
+            return Ok(result);
         }
-
-        // GET: api/Login/5
-        //[HttpGet("{id}", Name = "Get")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
 
         // POST: api/Login
         [HttpPost]
-        public JsonResult Post([FromBody] Usuario loginUser)
+        public IActionResult Post([FromBody] UserLogin loginUser)
         {
-            var user = from usuario in context.Usuario
-                       join empresa in context.Empresa on usuario.IdEmpresa equals empresa.Id
-                       where usuario.CuentaUsuario == loginUser.CuentaUsuario
-                       //&& (checkHash(loginUser.pwd, usuario.Contrasena, hashType.MD5) == true)
-                       && usuario.Contrasena == loginUser.Contrasena
-                       && empresa.Id == usuario.IdEmpresa && usuario.Habilitado == true && ( empresa.Habilitado == true || usuario.Acceso=="ROOT")
-                       select new
-                       {
-                           id = usuario.Id,
-                           nombre = usuario.Nombre,
-                           acceso = usuario.Acceso,
-                           idEmpresa = usuario.IdEmpresa,
-                           empresa = empresa.RazonSocial,
-                           userName = usuario.CuentaUsuario,
-                           image = usuario.Image,
-                           logo = empresa.Image
-                       };
-
-            object userFinal = null;
-            var users = user.ToList();
-            users.ForEach(e =>
-            {
-                if ((e.userName.Equals(loginUser.CuentaUsuario))) userFinal = e;
-            });
-
-            return new JsonResult(userFinal);
-        }
-
-        // PUT: api/Login/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            var user = _mapper.Map<Usuario>(loginUser);
+            var userIdentity = _userService.GetLoginByCredentials(user);
+            return Ok(userIdentity);
         }
     }
 }

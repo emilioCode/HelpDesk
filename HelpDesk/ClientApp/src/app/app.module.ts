@@ -21,6 +21,17 @@ import { Ng2Webstorage } from 'ngx-webstorage';
 import { EmpresaComponent } from './components/shared/content/empresa/empresa.component';
 import { UserComponent } from './components/shared/content/user/user.component';
 import { ProfileComponent } from './components/shared/content/profile/profile.component';
+import { FilterPipe } from './pipes/filter.pipe';
+import { CostumerComponent } from './components/shared/content/costumer/costumer.component';
+import { TicketComponent } from './components/shared/content/ticket/ticket.component';
+import { InboxComponent } from './components/shared/content/inbox/inbox.component';
+import { ReportComponent } from './components/shared/content/report/report.component';
+import { WaitingComponent } from './components/shared/content/waiting/waiting.component';
+import { Waiting2Component } from './components/shared/content/waiting2/waiting2.component';
+import { Waiting3Component } from './components/shared/content/waiting3/waiting3.component';
+import { Waiting4Component } from './components/shared/content/waiting4/waiting4.component';
+import { CalendarComponent } from './components/shared/content/calendar/calendar.component';
+
 
 @NgModule({
   declarations: [
@@ -37,7 +48,17 @@ import { ProfileComponent } from './components/shared/content/profile/profile.co
     LoginComponent,
     EmpresaComponent,
     UserComponent,
-    ProfileComponent
+    ProfileComponent,
+    FilterPipe,
+    CostumerComponent,
+    TicketComponent,
+    InboxComponent,
+    ReportComponent,
+    WaitingComponent,
+    Waiting2Component,
+    Waiting3Component,
+    Waiting4Component,
+    CalendarComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -50,6 +71,15 @@ import { ProfileComponent } from './components/shared/content/profile/profile.co
       { path: 'business', component: EmpresaComponent },
       { path: 'user', component: UserComponent },
       { path: 'profile', component: ProfileComponent },
+      { path: 'costumer', component: CostumerComponent },
+      { path: 'ticket', component: TicketComponent },
+      { path: 'inbox', component: InboxComponent },
+      { path: 'report', component: ReportComponent },
+      { path: 'waiting', component: WaitingComponent },
+      { path: 'waiting2', component: Waiting2Component },
+      { path: 'waiting3', component: Waiting3Component },
+      { path: 'finished', component:Waiting4Component},
+      { path: 'calendar', component: CalendarComponent }
     ]),
     Ng2Webstorage
   ],

@@ -5,5 +5,58 @@
         {{ service.info }}
       </div>
       <!-- Default to the left -->
-      <strong>{{ service.copyright }} &copy; {{ service.year }} <a href="{{ service.company.value }}">{{ service.company.name }}</a>.</strong> {{ service.legacy }}
+      <strong>{{ service.copyright }} &copy; 2020, {{ service.year }} <a data-toggle="modal" data-target="#modal-copyright">Términos y condiciones</a>.</strong> {{ service.legacy }}
     </footer>
+    <!-- Modals -->
+<div class="modal fade" id="modal-copyright" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title text-center">Términos y condiciones</h4>
+      </div>
+      <div class="modal-body">
+     <!---->
+     <div class="card-group">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">DERECHOS DE INSTALACIÓN Y USO</h4>
+          <p class="card-text">Puede utilizar la aplicación en dispositivos certificado por <b>{{ service.company.name }}</b>. <b>{{ service.company.name.charAt(0).toUpperCase() + service.company.name.slice(1) }}</b> se reserva el derecho de modificar nuestras Reglas de uso en cualquier momento.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">SOPORTE A USUARIOS</h4>
+          <p class="card-text"><b>{{ service.company.name.charAt(0).toUpperCase() + service.company.name.slice(1) }}</b> se limitará bajo el tiempo estipulado de prueba luego de la puesta en marcha de la aplicación. Así como tambien el tener en cuenta de que modificaciones, ajustes y mejoras serán evaluados bajo presupuesto.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">LIMITES ESTRUCTURAL DE LA PLATAFORMA</h4>
+          <p class="card-text"><b>HelpDesk Application</b> está por condiciones estructurales de los datos por defecto a 10 usuarios para el uso de trabajo dentro de la plataforma. Esto puede ser sujeto a cambios.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">ALCANCE DE LA LICENCIA</h4>
+          <p class="card-text">La aplicación se otorga bajo licencia y no es objeto de venta. Esta condiciones solo te proporciona algunos derechos de uso de la aplicación. <b>{{ service.company.name.charAt(0).toUpperCase() + service.company.name.slice(1) }}</b> se reserva todos los demás derechos</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">CONTACTO</h4>
+          <p class="card-text">Para contactarse con <a  href="{{ service.company.email }}">{{ service.company.name }}</a> vía correo electrónico.</p>
+        </div>
+      </div>
+    </div>
+      <!---->
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
