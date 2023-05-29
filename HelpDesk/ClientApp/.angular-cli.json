@@ -1,0 +1,74 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "project": {
+    "name": "HelpDesk"
+  },
+  "apps": [
+    {
+      "root": "src",
+      "outDir": "dist",
+      "assets": [
+        "assets"
+      ],
+      "index": "index.html",
+      "main": "main.ts",
+      "polyfills": "polyfills.ts",
+      "test": "test.ts",
+      "tsconfig": "tsconfig.app.json",
+      "testTsconfig": "tsconfig.spec.json",
+      "prefix": "app",
+      "styles": [
+        "styles.css",
+        "../node_modules/admin-lte/bower_components/bootstrap/dist/css/bootstrap.min.css",
+        "../node_modules/admin-lte/dist/css/AdminLTE.min.css",
+        "../node_modules/admin-lte/bower_components/Ionicons/css/ionicons.min.css",
+        "../node_modules/admin-lte/bower_components/font-awesome/css/font-awesome.min.css",
+        "../node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.min.css",
+        "../node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.print.min.css"
+      ],
+      "scripts": [
+        "../node_modules/admin-lte/bower_components/jquery/dist/jquery.min.js",
+        "../node_modules/admin-lte/bower_components/bootstrap/dist/js/bootstrap.min.js",
+        "../node_modules/admin-lte/dist/js/adminlte.min.js",
+        "../node_modules/admin-lte/bower_components/moment/moment.js",
+        "../node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.min.js"
+      ],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    }
+  ],
+  "e2e": {
+    "protractor": {
+      "config": "./protractor.conf.js"
+    }
+  },
+  "lint": [
+    {
+      "project": "src/tsconfig.app.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "src/tsconfig.spec.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "e2e/tsconfig.e2e.json",
+      "exclude": "**/node_modules/**"
+    }
+  ],
+  "test": {
+    "karma": {
+      "config": "./karma.conf.js"
+    }
+  },
+  "defaults": {
+    "styleExt": "css",
+    "component": {},
+    "build": {
+      "progress": true
+    }
+  }
+}
