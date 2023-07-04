@@ -9,5 +9,6 @@ namespace HelpDesk.Core.Interfaces
         Task<IEnumerable<Empresa>> GetBusinessesByUserAccess(int userId);
         Task<Empresa> CreateBusinness(int userId, Empresa business);
         Task<bool> UpdateBusiness(int userId, Empresa business);
+        Task<Empresa> GetById(int businessId);
     }
 }

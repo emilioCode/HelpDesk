@@ -15,7 +15,7 @@ namespace HelpDesk.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserService _userService;
+        public readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly ISecurityService _securityService;
         public UserController(IUserService userService, IMapper mapper, ISecurityService securityService)

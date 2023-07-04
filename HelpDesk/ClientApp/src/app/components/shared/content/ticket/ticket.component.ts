@@ -155,7 +155,7 @@ export class TicketComponent implements OnInit {
 
 
     if(this.option == 'edit'){
-      this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
+      this.getDevices(this.ticket.id);
       this.getParts(this.ticket.id,this.service.getUser().idEmpresa);
       this.getTraces(this.ticket.id,this.ticket.idEmpresa);
       this.getUsersAP(this.service.getUser().id,"JUST NAME");
@@ -314,14 +314,25 @@ export class TicketComponent implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
+        var errors = error.error.errors;
+        var title = error.error.title ? error.error.title : 'Warning';
+        var list = [];
+        if(title !== "Warning"){
+          var objectKeys =  Object.keys(errors);
+          objectKeys.forEach(x => {
+            list.push(errors[x]);
+          });
+        }
+        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;
       });
   }
 
-  getDevices(id,option){
+  getDevices(id){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Device/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.http.get(this.service.baseUrl + 'api/Device/'+ id,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
         this.devices = res;
         // console.log(  this.devices )
@@ -644,6 +655,17 @@ export class TicketComponent implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
+        var errors = error.error.errors;
+        var title = error.error.title ? error.error.title : 'Warning';
+        var list = [];
+        if(title !== "Warning"){
+          var objectKeys =  Object.keys(errors);
+          objectKeys.forEach(x => {
+            list.push(errors[x]);
+          });
+        }
+        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;
       });
@@ -712,6 +734,17 @@ export class TicketComponent implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
+        var errors = error.error.errors;
+        var title = error.error.title ? error.error.title : 'Warning';
+        var list = [];
+        if(title !== "Warning"){
+          var objectKeys =  Object.keys(errors);
+          objectKeys.forEach(x => {
+            list.push(errors[x]);
+          });
+        }
+        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;
       });
@@ -810,7 +843,7 @@ export class TicketComponent implements OnInit {
       this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
       this.service.swal(res.title,res.message,res.icon);
     }else{
-      this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
+      this.getDevices(this.ticket.id);
       this.service.swal(res.title,res.message,res.icon);
     }
     this.service.isLoading =false;

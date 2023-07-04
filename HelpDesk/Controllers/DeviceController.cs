@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
-using HelpDesk.Infrastructure.Data;
-using HelpDesk.Models;
+using HelpDesk.Core.Interfaces;
 using HelpDesk.Responses;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HelpDesk.Controllers
 {
@@ -15,233 +13,89 @@ namespace HelpDesk.Controllers
     [ApiController]
     public class DeviceController : ControllerBase
     {
-        private readonly HelpDeskDBContext context;
-        public DeviceController(HelpDeskDBContext _context)
+        private readonly IDeviceService _deviceService;
+        private readonly IMapper _mapper;
+        public DeviceController(IDeviceService deviceService, IMapper mapper)
         {
-            this.context = _context;
+            _deviceService = deviceService;
+            _mapper = mapper;
         }
-        // GET: api/Device
-        [HttpGet("{idSolicitud}/{idEmpresa}")]
-        public JsonResult Get(int idSolicitud, int idEmpresa)
+        // GET: api/Device/1
+        [HttpGet("{ticketId}")]
+        public IActionResult Get(int ticketId)
         {
-            List<Equipo> equipos = new List<Equipo>();
-            try
-            {
-                 equipos = context.Equipos.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
-            }
-            catch (Exception)
-            {
-
-            }
-            return new JsonResult(equipos);
+            var devices = _deviceService.GetDevicesByTicketId(ticketId);
+            var devicesDto = _mapper.Map<IEnumerable<EquipoDto>>(devices);
+            return Ok(devicesDto);
         }
-
-        //// GET: api/Device/5
-        //[HttpGet("{id}", Name = "Get")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
 
         // POST: api/Device
         [HttpPost("[action]")]
-        public JsonResult PostOne([FromBody]Equipo req)
+        public async Task<IActionResult> PostOne([FromBody] EquipoDto deviceDto)
         {
-            ObjectResponse res;
-            try
+            var device = _mapper.Map<Equipo>(deviceDto);
+            device = await _deviceService.AddDevice(device);
+            deviceDto = _mapper.Map<EquipoDto>(device);
+            var response = new ObjectResponse
             {
-                if (req.Marca == "" || req.Marca == null || req.Modelo == "" 
-                    || req.Modelo == null || req.NoSerial == "" || req.NoSerial == null
-                    || req.FallaReportada == null || req.FallaReportada == "")
-                {
-                    res = new ObjectResponse
-                    {
-                        code = "2",
-                        title = "Validation errors",
-                        icon = "warning",
-                        message = "Field(s) required!",
-                        data = null
-                    };
-                    return new JsonResult(res);
-                }
-                req.Habilitado = true;
-
-                context.Equipos.Add(req);
-                context.SaveChanges();
-
-                int idSolicitud = req.IdSolicitud;
-                int idEmpresa = req.IdEmpresa;
-                var data = context.Equipos.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
-                res = new ObjectResponse
-                {
-                    code = "1",
-                    title = "Saved",
-                    icon = "success",
-                    message = "created successfully",
-                    data = data
-                };
-
-            }
-            catch (Exception e)
-            {
-                res = new ObjectResponse
-                {
-                    code = "0",
-                    title = "Error",
-                    icon = "error",
-                    message = e.Message,
-                    data = null
-                };
-            }
-
-            return new JsonResult(res);
+                code = "1",
+                title = "Saved",
+                icon = "success",
+                message = "created successfully",
+                data = deviceDto
+            };
+            return Ok(response);
         }
 
         [HttpPost("[action]")]
-        public JsonResult PostArray([FromBody]List<Equipo> req)
+        public async Task<IActionResult> PostArray([FromBody] List<EquipoDto> devicesDto)
         {
-            ObjectResponse res;
-            try
-            {            
-                if (req.Where(e=> e.Marca =="" || e.Marca == null ||
-                e.Descripcion == "" || e.Descripcion == null || e.Modelo =="" || e.Modelo == null ||
-                e.NoSerial == "" || e.NoSerial == null || e.FallaReportada == null || e.FallaReportada == "").Count() > 0)
-                {
-                    res = new ObjectResponse
-                    {
-                        code = "2",
-                        title = "Validation errors",
-                        icon = "warning",
-                        message = "Field(s) required!",
-                        data = null
-                    };
-                    return new JsonResult(res);
-                }
-                req.ForEach(e => {
-                    e.Id = 0;
-                    e.Habilitado = true;
-                });
-                context.Equipos.AddRange(req);
-                context.SaveChanges();        
-
-                int idSolicitud = req[0].IdSolicitud;
-                int idEmpresa = req[0].IdEmpresa;
-                var data = context.Equipos.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
-                res = new ObjectResponse
-                {
-                    code = "1",
-                    title = "Saved",
-                    icon = "success",
-                    message = "created successfully",
-                    data = data
-                };
-
-            }
-            catch (Exception e)
+            var devices = _mapper.Map<List<Equipo>>(devicesDto);
+            devices = await _deviceService.AddRangeDevice(devices);
+            var deviceDtos = _mapper.Map<IEnumerable<EquipoDto>>(devices);
+            var response = new ObjectResponse
             {
-                res = new ObjectResponse
-                {
-                    code = "0",
-                    title = "Error",
-                    icon = "error",
-                    message = e.Message,
-                    data = null
-                };
-            }
-
-            return new JsonResult(res);
+                code = "1",
+                title = "Saved",
+                icon = "success",
+                message = "created successfully",
+                data = deviceDtos
+            };
+            return Ok(response);
         }
 
         // PUT: api/Device
-        //[HttpPut]
         [HttpPost("[action]")]
-        public JsonResult Put([FromBody] Equipo req)
+        public async Task<IActionResult> Put([FromBody] EquipoDto deviceDto)
         {
-            ObjectResponse res;
-            try
-            {
-                if (req.Marca == "" || req.Marca == null ||
-                req.Descripcion == "" || req.Descripcion == null || req.Modelo == "" || req.Modelo == null ||
-                req.NoSerial == "" || req.NoSerial == null || req.FallaReportada == null || req.FallaReportada == "")
-                {
-                    res = new ObjectResponse
-                    {
-                        code = "2",
-                        title = "Validation errors",
-                        icon = "warning",
-                        message = "Field(s) required!",
-                        data = null
-                    };
-                    return new JsonResult(res);
-                }
-                req.Habilitado = true;
-
-                context.Entry(req).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-                context.SaveChanges();
-
-                int idSolicitud = req.IdSolicitud;
-                int idEmpresa = req.IdEmpresa;
-                var data = context.Piezas.Where(e => e.IdSolicitud == idSolicitud && e.IdEmpresa == idEmpresa).ToList();
-                res = new ObjectResponse
-                {
-                    code = "1",
-                    title = "Saved",
-                    icon = "success",
-                    message = "modified successfully",
-                    data = data
-                };
-
-            }
-            catch (Exception e)
-            {
-                res = new ObjectResponse
-                {
-                    code = "0",
-                    title = "Error",
-                    icon = "error",
-                    message = e.Message,
-                    data = null
-                };
-            }
-
-            return new JsonResult(res);
+            var device = _mapper.Map<Equipo>(deviceDto);
+            device = await _deviceService.ModifyDevice(device);
+            deviceDto = _mapper.Map<EquipoDto>(device);
+            var response = new ObjectResponse
+             {
+                 code = "1",
+                 title = "Saved",
+                 icon = "success",
+                 message = "modified successfully",
+                 data = deviceDto
+            };
+            return Ok(response);
         }
 
-        // DELETE: api/ApiWithActions/5
-        //[HttpDelete("{id}")]
+        // DELETE: api/Delete/5
         [HttpPost("[action]/{id}")]
-        public JsonResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            ObjectResponse res;
-            try
+            var result = await _deviceService.DeleteDevide(id);
+            var response = new ObjectResponse
             {
-                var req = context.Equipos.Find(id);
-                context.Entry(req).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
-                context.SaveChanges();
-
-                res = new ObjectResponse
-                {
-                    code = "1",
-                    title = "Saved",
-                    icon = "success",
-                    message = "modified successfully",
-                    data = null
-                };
-
-            }
-            catch (Exception e)
-            {
-                res = new ObjectResponse
-                {
-                    code = "0",
-                    title = "Error",
-                    icon = "error",
-                    message = e.Message,
-                    data = null
-                };
-            }
-
-            return new JsonResult(res);
+                code = "1",
+                title = "Saved",
+                icon = "success",
+                message = "modified successfully",
+                data = result
+            };
+            return Ok(response);
         }
     }
 }

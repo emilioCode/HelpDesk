@@ -5,9 +5,11 @@ VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelpDesk", "HelpDesk\HelpDesk.csproj", "{817DD4EC-2074-4D09-AD84-FC90C7102495}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelpDesk.Core", "HelpDesk.Core\HelpDesk.Core.csproj", "{DA78C6DF-BEFE-43C1-BCC0-EA088FD81B9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelpDesk.Core", "HelpDesk.Core\HelpDesk.Core.csproj", "{DA78C6DF-BEFE-43C1-BCC0-EA088FD81B9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelpDesk.Infrastructure", "HelpDesk.Infrastructure\HelpDesk.Infrastructure.csproj", "{9E3FAEC6-524E-4095-965A-97C1B8E50350}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelpDesk.Infrastructure", "HelpDesk.Infrastructure\HelpDesk.Infrastructure.csproj", "{9E3FAEC6-524E-4095-965A-97C1B8E50350}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelpDesk.Tests", "HelpDesk.Tests\HelpDesk.Tests.csproj", "{C907C553-2452-46F3-A797-7C71EBA16C9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{9E3FAEC6-524E-4095-965A-97C1B8E50350}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E3FAEC6-524E-4095-965A-97C1B8E50350}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E3FAEC6-524E-4095-965A-97C1B8E50350}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C907C553-2452-46F3-A797-7C71EBA16C9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C907C553-2452-46F3-A797-7C71EBA16C9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C907C553-2452-46F3-A797-7C71EBA16C9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C907C553-2452-46F3-A797-7C71EBA16C9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,13 +1,11 @@
-﻿using System;
+﻿using HelpDesk.Core.Entities;
+using HelpDesk.Core.Interfaces;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using HelpDesk.Core.Entities;
-using HelpDesk.Infrastructure.Data;
-using HelpDesk.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace HelpDesk.Pages
 {
@@ -22,25 +20,32 @@ namespace HelpDesk.Pages
         public string soluciones { get; set; }
         public List<Piezas> piezas { get; set; }
 
-        private readonly HelpDeskDBContext context;
-
-        public OrderReportModel(HelpDeskDBContext _context)
+        private readonly IDeviceService _deviceService;
+        private readonly IBusinessService _businessService;
+        private readonly ICustomerService _customerService;
+        private readonly ITicketService _ticketService;
+        private readonly IPieceService _pieceService;
+        private readonly ITraceService _traceService;
+        public OrderReportModel(IDeviceService deviceService, IBusinessService businessService, ICustomerService customerService, ITicketService ticketService, IPieceService pieceService, ITraceService traceService)
         {
-            this.context = _context;
+            _deviceService = deviceService;
+            _businessService = businessService;
+            _customerService = customerService;
+            _ticketService = ticketService;
+            _pieceService = pieceService;
+            _traceService = traceService;
         }
-
-
-        public void OnGet(string value)
+        public async Task OnGetAsync(string value)
         {
             var noTicket = value.Split('-')[0];
             var idEmpresa = Convert.ToInt32(value.Split('-')[1]);
-            empresa = context.Empresas.Find(idEmpresa);
-            solicitud = context.Solicitudes.Where(e => e.NoSecuencia == noTicket).First();
-            cliente = context.Clientes.Where(e => e.IdEmpresa == idEmpresa && e.Id==solicitud.IdCliente).First();
-            equipos = context.Equipos.Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id).ToList();
-            piezas = context.Piezas.Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id).ToList();
-
-            seguimiento = context.Seguimientos.Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id && e.Etiquetado == true).ToList();
+            empresa = await _businessService.GetById(idEmpresa);
+            solicitud = _ticketService.GetTicketBySecuencialNumber(noTicket).First();
+            var listOfCustomer = await _customerService.GetCustomersByIdAndCondition(solicitud.IdCliente, "unique");
+            cliente = listOfCustomer.ToList().First();
+            equipos = _deviceService.GetDevicesByTicketId(solicitud.IdCliente).ToList();
+            piezas = _pieceService.GetPieces(solicitud.Id, idEmpresa).ToList();
+            seguimiento = _traceService.GetAllTraces().Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id && e.Etiquetado == true).ToList();
             soluciones = seguimiento.Select(x => x.Texto).Join(",");
 
             while (equipos.Count < 4)
