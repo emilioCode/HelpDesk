@@ -13,14 +13,14 @@ using System.Threading.Tasks;
 
 namespace HelpDesk.Tests.Controllers
 {
-    public class UserControllerTest
+    public class UserControllerTests
     {
         private readonly Mock<IUserService> _userServiceMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<ISecurityService> _securityServiceMock;
 
         private readonly UserController _userController;
-        public UserControllerTest()
+        public UserControllerTests()
         {
             _userServiceMock = new Mock<IUserService>();
             _mapperMock = new Mock<IMapper>();
@@ -159,6 +159,5 @@ namespace HelpDesk.Tests.Controllers
             // Assert
             Assert.IsTrue(expectedEncryptedPassword.Equals(result));
         }
-    
     }
 }

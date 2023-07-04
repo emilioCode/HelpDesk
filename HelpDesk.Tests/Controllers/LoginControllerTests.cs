@@ -57,7 +57,7 @@ namespace HelpDesk.Tests.Controllers
         }
 
         [Test]
-        public async Task Post_GetLoginByCredentialsWithObjectResponse()
+        public void Post_GetLoginByCredentialsWithObjectResponse()
         {
             // Arrange
             UserLogin userLogin = new UserLogin();
@@ -70,7 +70,7 @@ namespace HelpDesk.Tests.Controllers
             _userServiceMock.Setup(service => service.GetLoginByCredentials(user))
                 .Returns(userIdentity);
 
-            var result =  _loginController.Post(userLogin) as ObjectResult;
+            var result = _loginController.Post(userLogin) as ObjectResult;
 
             // Assert
             Assert.NotNull(result);
