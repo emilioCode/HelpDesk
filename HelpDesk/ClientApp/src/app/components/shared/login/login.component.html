@@ -1,35 +1,17 @@
-
-  <style>
-      .login-page {
-      overflow: hidden;
-      min-height: 100%;
-      background: #ffffff;
-    }
-
-    .login-box-body{
-      -webkit-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
-      -moz-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
-      box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
-    }
-    </style>
-
 <div class="hold-transition login-page">
     <div class="login-box">
       <div class="login-logo">
-        <!-- <a routerLink="/"><b>Admin</b>LTE</a> -->
         <span>{{ title }}</span>
-      </div>
-      <!-- /.login-logo -->
+      </div>      
       <div class="login-box-body">
         <p class="login-box-msg">Sign in to start your session</p>
-  
-        <div><!-- <form action="/" method="post"> -->
+        <form [formGroup]="form" (ngSubmit)="singIn()">
           <div class="form-group has-feedback">
-            <input type="text" class="form-control" placeholder="User" [(ngModel)]="user" (keyup.enter)="singIn()">
+            <input type="text" class="form-control" placeholder="User" formControlName="user" />
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
           </div>
           <div class="form-group has-feedback">
-            <input type="password" class="form-control" placeholder="Password"[(ngModel)]="pwd" (keyup.enter)="singIn()">
+            <input type="password" class="form-control" placeholder="Password" formControlName="pwd" autocomplete="off"/>
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>
           <div class="row">
@@ -42,14 +24,11 @@
             </div>
             <!-- /.col -->
             <div class="col-xs-4">
-              <button class="btn btn-primary btn-block btn-flat" (click)="singIn()" [disabled]="isLoading"><span [hidden]="isLoading">Sign In</span><span [hidden]="!isLoading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i> </span></button><!-- Loading... -->
+              <button type="submit" class="btn btn-primary btn-block btn-flat" [disabled]="form.invalid"><span [hidden]="isLoading">Sign In</span><span [hidden]="!isLoading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i> </span></button><!-- Loading... -->
             </div>
-            <!-- /.col -->
           </div>
-        </div>
-        <!-- </form> -->
+        </form>
       </div>
-      <!-- /.login-box-body -->
     </div>
   </div>
   

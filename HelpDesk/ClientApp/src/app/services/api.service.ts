@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import Swal from 'sweetalert2';
 
-
 @Injectable()
 export class ApiService {
   route;
@@ -13,19 +12,7 @@ export class ApiService {
   http;
   swal = Swal;
   isLoading:boolean;
-  
-  constructor(
-    private sessionSt: SessionStorageService,
-    private _route: Router,
-    @Inject('BASE_URL') _baseUrl: string,
-    private _http:HttpClient
-    ) {
-      this.route =_route;
-      this.baseUrl = _baseUrl; 
-      this.http =_http;    
-  }
-
-  //AplicationName
+  level;
   aplicationName = 'HelpDesk';
   aplicationNameMini1 = 'H';
   aplicationNameMini2 = 'D';
@@ -42,17 +29,24 @@ export class ApiService {
   user:any='';
   defaultPhoto = '../../../../assets/dist/img/photo_default.png';
 
+  constructor(
+    private sessionSt: SessionStorageService,
+    private _route: Router,
+    @Inject('BASE_URL') _baseUrl: string,
+    private _http:HttpClient
+    ) {
+      this.route =_route;
+      this.baseUrl = _baseUrl; 
+      this.http =_http;    
+  }
+
   setUser(user:any):void{
     this.sessionSt.store('user',user);
-    // sessionStorage.setItem('key', user);
-    // let data = sessionStorage.getItem('key');
-    // console.table(+data)
     this.route.navigateByUrl('/');
     window.location.reload();
   }
 
   closeSession(){
-    // console.log( this.sessionSt.retrieve('user') )
     while (this.sessionSt.retrieve('user')!=null) {
       this.sessionSt.clear('user');
       this.route.navigateByUrl('/');
@@ -73,7 +67,6 @@ export class ApiService {
     return array.filter(this.distinct)
   }
 
-
   levels = [
     { name: 'ROOT', value:4},
     { name: 'ADMINISTRADOR', value:3},
@@ -81,11 +74,8 @@ export class ApiService {
     { name: 'TECNICO', value:1}
   ];
 
-  level;
-  
   getLevel(acceso):number{
     this.level= this.levels.filter(x=>x.name==acceso)[0].value;
-    // console.log( this.level ) 
     return this.level;
   }
 
