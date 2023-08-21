@@ -46,7 +46,7 @@ namespace HelpDesk.Pages
             equipos = _deviceService.GetDevicesByTicketId(solicitud.IdCliente).ToList();
             piezas = _pieceService.GetPieces(solicitud.Id, idEmpresa).ToList();
             seguimiento = _traceService.GetAllTraces().Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id && e.Etiquetado == true).ToList();
-            soluciones = seguimiento.Select(x => x.Texto).Join(",");
+            soluciones = string.Join(',', seguimiento.Select(x => x.Texto));
 
             while (equipos.Count < 4)
             {
