@@ -20,7 +20,7 @@ namespace HelpDesk.Infrastructure.Repositories
 
         public IEnumerable<T> GetAll()
         {
-            return _entities.AsEnumerable();
+            return _entities.AsQueryable().AsNoTracking();
         }
 
         public async Task<T> GetById(int id)
