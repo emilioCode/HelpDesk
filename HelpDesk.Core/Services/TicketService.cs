@@ -1,6 +1,7 @@
 ﻿using HelpDesk.Core.CustomEntities;
 using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
+using HelpDesk.Core.Rules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace HelpDesk.Core.Services
 
             ticket.IdUsuario = ticket.IdUsuario < 1 ? 0 : ticket.IdUsuario;
             ticket.FechaCreacion = DateTime.Now.Date;
+            ValidateDates(ticket, ticket.FechaCreacion);
             ticket.Habilitado = true;
             ticket.NoSecuencia = business.Secuenciaticket == string.Empty ? "1" : business.Secuenciaticket;
             business.Secuenciaticket = (Convert.ToInt32(ticket.NoSecuencia) + 1).ToString();
@@ -198,6 +200,15 @@ namespace HelpDesk.Core.Services
             return containerTicket.AsEnumerable();
         }
 
+        private static void ValidateDates(Solicitud ticket, DateTime creationDate)
+        {
+            var error = TicketDateRules.Validate(creationDate, ticket.FechaInicio, ticket.HoraInicio, ticket.FechaTermino, ticket.HoraTermino);
+            if (error != null)
+            {
+                throw new Exception(error);
+            }
+        }
+
         public async Task<(Solicitud, EmailMessage)> UpdateTicket(Solicitud ticket, string action)
         {
             EmailMessage emailMessage = null;
@@ -209,6 +220,12 @@ namespace HelpDesk.Core.Services
             var business = await _unitOfWork.BusinessRepository.GetById(ticket.IdEmpresa);
             var user = await _unitOfWork.UserRepository.GetById(ticket.IdUsuario);
             var customer = await _unitOfWork.CustomerRepository.GetById(ticket.IdCliente);
+
+            if (action != "USUARIO" && action != "APROBAR" && action != "NOCHANGEPLEASE")
+            {
+                var creationDate = _unitOfWork.TicketRepository.GetAll().Where(x => x.Id == ticket.Id).Select(x => x.FechaCreacion).FirstOrDefault();
+                ValidateDates(ticket, creationDate);
+            }
 
             if (action is "ESTADO")
             {
