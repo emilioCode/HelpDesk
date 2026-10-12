@@ -6,6 +6,7 @@ using HelpDesk.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using HelpDesk.Core.Constants;
 
 namespace HelpDesk.Controllers
 {
@@ -37,14 +38,7 @@ namespace HelpDesk.Controllers
             var piece = _mapper.Map<Piezas>(pieceDto);
             piece = await _pieceService.AddPiece(piece);
             pieceDto = _mapper.Map<PiezasDto>(piece);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "created successfully",
-                data = pieceDto
-            };
+            var response = ObjectResponse.Saved(Messages.Created, pieceDto);
             return Ok(response);
         }
 
@@ -56,14 +50,7 @@ namespace HelpDesk.Controllers
             var piece = _mapper.Map<Piezas>(pieceDto);
             piece = await _pieceService.UpdatePiece(piece);
             pieceDto = _mapper.Map<PiezasDto>(piece);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "modified successfully",
-                data = pieceDto
-            };
+            var response = ObjectResponse.Saved(Messages.Modified, pieceDto);
             return Ok(response);
         }
 
@@ -72,14 +59,7 @@ namespace HelpDesk.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _pieceService.DeletePiece(id);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "modified successfully",
-                data = result
-            };
+            var response = ObjectResponse.Saved(Messages.Modified, result);
             return Ok(response);
         }
     }

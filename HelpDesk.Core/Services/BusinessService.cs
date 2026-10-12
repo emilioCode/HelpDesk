@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelpDesk.Core.Constants;
 
 namespace HelpDesk.Core.Services
 {
@@ -18,7 +19,7 @@ namespace HelpDesk.Core.Services
         {
             var user = await _unitOfWork.UserRepository.GetById(userId);
             var businesses = new List<Empresa>();
-            if (user.Acceso == "ROOT")
+            if (user.Acceso == Roles.Root)
             {
                 var result = _unitOfWork.BusinessRepository.GetAll().OrderByDescending(x => x.Id);
                 businesses.AddRange(result);
@@ -34,7 +35,7 @@ namespace HelpDesk.Core.Services
         public async Task<Empresa> CreateBusinness(int userId, Empresa business)
         {
             var user = await _unitOfWork.UserRepository.GetById(userId);
-            if(user.Acceso != "ROOT")
+            if(user.Acceso != Roles.Root)
             {
                 throw new Exception("this account isn't available to create a new business");
             }
@@ -51,9 +52,9 @@ namespace HelpDesk.Core.Services
                 throw new Exception("An userId valid is required to do the operation");
             }
             var user = await _unitOfWork.UserRepository.GetById(userId);
-            if (user.Acceso != "ROOT")
+            if (user.Acceso != Roles.Root)
             {
-                if (user.Acceso == "ADMINISTRADOR")
+                if (user.Acceso == Roles.Admin)
                 {
                     if(business.Id != user.IdEmpresa)
                     {

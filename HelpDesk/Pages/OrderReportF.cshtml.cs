@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelpDesk.Core.Constants;
 
 namespace HelpDesk.Pages
 {
@@ -62,7 +63,7 @@ namespace HelpDesk.Pages
                 var piezaTemp = new Piezas();
                 piezas.Add(piezaTemp);
             }
-            title = $"HelpDesk - Service Order No.{noTicket}";
+            title = Messages.ServiceOrderTitle(noTicket);
             return Page();
         }
     }

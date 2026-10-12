@@ -38,7 +38,7 @@
               <td>{{ item.tipoSolicitud }}</td>
               <td>{{ item.tipoServicio }}</td>
               <td>{{ item.cliente }}</td>
-              <td>{{ item.estado }} <i class="fa fa-check" *ngIf="item.estado=='Completado' && item.aprobadoPor !=null" style="color:green" title="Aprobado"></i> <i class="fa fa-warning" style="color:gold" *ngIf="item.estado=='Completado' && item.aprobadoPor ==null" title="Pendiente de aprobar"></i></td>
+              <td>{{ item.estado }} <i class="fa fa-check" *ngIf="item.estado==service.ticketStatuses.completed && item.aprobadoPor !=null" style="color:green" title="Aprobado"></i> <i class="fa fa-warning" style="color:gold" *ngIf="item.estado==service.ticketStatuses.completed && item.aprobadoPor ==null" title="Pendiente de aprobar"></i></td>
               <td >
                 <a class="btn-link" (click)="fillModal('edit',item)" *ngIf="service.getLevel(service.getUser().acceso) > 0" data-toggle="modal" data-target="#modal-default"><i class="fa fa-fw fa-edit"></i></a>
                 <!-- <a class="btn-link" (click)="fillModal('delete',item);delete()" *ngIf="service.getLevel(service.getUser().acceso) > 2"><i class="fa fa-fw fa-toggle-on" [hidden]="!item.habilitado"></i><i class="fa fa-fw fa-toggle-off" [hidden]="item.habilitado"></i></a> -->
@@ -78,7 +78,7 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" ><!--(click)='getTickets(service.getUser().id,"unique")'-->
           <span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">Orden No.<u>{{ ticket.noSecuencia }}</u> <a class="btn-link" *ngIf="ticket.tipoSolicitud =='Servicio a Domicilio' && option=='edit'" href="/OrderReport?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a>  <a class="btn-link" *ngIf="ticket.tipoSolicitud =='Servicio Taller' && ticket.aprobadoPor != null  && option=='edit'" href="/OrderReportF?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a> <a class="btn-link" *ngIf="ticket.tipoSolicitud =='Servicio Taller' && ticket.aprobadoPor == null  && option=='edit'" href="/OrderReport1?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a> </h4>
+          <h4 class="modal-title">Orden No.<u>{{ ticket.noSecuencia }}</u> <a class="btn-link" *ngIf="ticket.tipoSolicitud ==service.requestTypes.onSite && option=='edit'" href="/OrderReport?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a>  <a class="btn-link" *ngIf="ticket.tipoSolicitud ==service.requestTypes.workshop && ticket.aprobadoPor != null  && option=='edit'" href="/OrderReportF?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a> <a class="btn-link" *ngIf="ticket.tipoSolicitud ==service.requestTypes.workshop && ticket.aprobadoPor == null  && option=='edit'" href="/OrderReport1?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i></a> </h4>
         <!-- <h4 class="modal-title" *ngIf="option=='add'"><b>Nuevo Cliente</b></h4>
         <h4 class="modal-title" *ngIf="option=='edit'"><b>Cliente</b></h4>
         <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea deshabilitar este Cliente?</b></h4> -->
@@ -99,7 +99,7 @@
                   <div class="row">
                     <div class="form-group col-xs-6 col-sm-6">
                       <label>Solicitante:</label>
-                      <select class="form-control" [(ngModel)]="ticket.idCliente" [disabled]="option!='add' &&   2>service.getLevel(service.getUser().acceso )  || ticket.estado =='Completado'" (change)="editAsAdministrator()">
+                      <select class="form-control" [(ngModel)]="ticket.idCliente" [disabled]="option!='add' &&   2>service.getLevel(service.getUser().acceso )  || ticket.estado ==service.ticketStatuses.completed" (change)="editAsAdministrator()">
                         <option value="" selected [hidden]="ticket.idCliente!=''">Seleccione</option>
                         <option value="{{costumer.id}}" *ngFor="let costumer of costumers">{{ costumer.nombre }} | "{{ costumer.rnc }}"</option>
                       </select>                    
@@ -113,7 +113,7 @@
                     </div>
                     <div class="form-group col-xs-3 col-sm-3">
                       <label>Tipo de Servicio:</label>
-                      <select class="form-control" [(ngModel)]="ticket.tipoServicio" [disabled]="option!='add' &&   2>service.getLevel(service.getUser().acceso ) || ticket.estado =='Completado'" (change)="editAsAdministrator()">
+                      <select class="form-control" [(ngModel)]="ticket.tipoServicio" [disabled]="option!='add' &&   2>service.getLevel(service.getUser().acceso ) || ticket.estado ==service.ticketStatuses.completed" (change)="editAsAdministrator()">
                         <option value="" selected [hidden]="ticket.tipoServicio!=''">Tipo Servicio</option>
                         <option value="{{type.value}}" *ngFor="let type of service.getTypeOfServices()">{{ type.value }}</option>
                       </select>
@@ -130,7 +130,7 @@
                         <label>Fecha inicio:</label>
                         <div class="input-group">
                           <!-- <input type="date" class="form-control" [(ngModel)]="ticket.fechaInicio" disabled> -->
-                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaInicio" [attr.min]="ticket.fechaCreacion | date:'yyyy-MM-dd'" (change)="edit()" [disabled]="option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
+                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaInicio" [attr.min]="ticket.fechaCreacion | date:'yyyy-MM-dd'" (change)="edit()" [disabled]="option=='add' || (ticket.estado==service.ticketStatuses.completed && ticket.aprobadoPor!=null)">
                           <small class="text-muted" *ngIf="option!='add' && ticket.fechaCreacion">Desde el {{ ticket.fechaCreacion | date:'dd/MM/yyyy' }}</small>
                           
                         </div>
@@ -138,20 +138,20 @@
                       <div class="form-group col-xs-2 col-sm-2">
                         <label>Hora inicio:</label>
                         <div class="input-group">
-                          <input type="time" class="form-control timepicker" [(ngModel)]="ticket.horaInicio" (change)="edit()" [disabled]="option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
+                          <input type="time" class="form-control timepicker" [(ngModel)]="ticket.horaInicio" (change)="edit()" [disabled]="option=='add' || (ticket.estado==service.ticketStatuses.completed && ticket.aprobadoPor!=null)">
                         </div>
                       </div>
                       <div class="form-group col-xs-3 col-sm-3">
                         <label>Fecha fin:</label>
                         <div class="input-group">
-                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaTermino" [attr.min]="ticket.fechaInicio" (change)="edit()" [disabled]="option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
+                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaTermino" [attr.min]="ticket.fechaInicio" (change)="edit()" [disabled]="option=='add' || (ticket.estado==service.ticketStatuses.completed && ticket.aprobadoPor!=null)">
                           <small class="text-muted" *ngIf="option!='add' && ticket.fechaInicio">Desde el {{ ticket.fechaInicio | date:'dd/MM/yyyy' }}</small>
                         </div>
                       </div>
                       <div class="form-group col-xs-2 col-sm-2">
                         <label>Hora fin:</label>
                         <div class="input-group">
-                          <input type="time" class="form-control timepicker" [(ngModel)]="ticket.horaTermino" (change)="edit()" [disabled]="option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
+                          <input type="time" class="form-control timepicker" [(ngModel)]="ticket.horaTermino" (change)="edit()" [disabled]="option=='add' || (ticket.estado==service.ticketStatuses.completed && ticket.aprobadoPor!=null)">
                         </div>
                       </div>
                     </div>
@@ -166,8 +166,8 @@
                               <th scope="col" class="text-center">Marca</th>
                               <th scope="col" class="text-center">Modelo</th>
                               <th scope="col" class="text-center">Serial No.</th>
-                              <th scope="col" class="text-center" [hidden]="ticket.tipoSolicitud !='Servicio a Domicilio' || devices.length >= 4 || ticket.estado =='Completado'"><a class="btn-link" (click)="addDevice=true;device={}" [hidden]="addDevice || devices.length >= 4"><i class="fa fa-plus"></i></a></th>
-                              <th scope="col" class="text-center" *ngIf="ticket.tipoSolicitud !='Servicio a Domicilio' && 4>= devices.length && ticket.estado !='Completado' && service.getLevel(service.getUser().acceso)>1"><a class="btn-link" (click)="addDevice=true;device={}" [hidden]="addDevice || devices.length >= 4"><i class="fa fa-plus"></i></a></th>
+                              <th scope="col" class="text-center" [hidden]="ticket.tipoSolicitud !=service.requestTypes.onSite || devices.length >= 4 || ticket.estado ==service.ticketStatuses.completed"><a class="btn-link" (click)="addDevice=true;device={}" [hidden]="addDevice || devices.length >= 4"><i class="fa fa-plus"></i></a></th>
+                              <th scope="col" class="text-center" *ngIf="ticket.tipoSolicitud !=service.requestTypes.onSite && 4>= devices.length && ticket.estado !=service.ticketStatuses.completed && service.getLevel(service.getUser().acceso)>1"><a class="btn-link" (click)="addDevice=true;device={}" [hidden]="addDevice || devices.length >= 4"><i class="fa fa-plus"></i></a></th>
                             </tr>
                           </thead>
                           <tbody>
@@ -192,8 +192,8 @@
                               <td>{{e.modelo}}</td>
                               <td>{{e.noSerial}}
                                   <span style="float: right;" *ngIf="service.getLevel(this.service.getUser().acceso)>1">
-                                      <span data-toggle="modal" data-target="#modalclient5" *ngIf="ticket.estado != 'Completado'" class="btn-link" title="editar"  (click)="deviceChoosen(e)"><i class="fa fa-edit"></i></span> 
-                                      <span data-toggle="modal" data-target="#modalclient6" *ngIf="ticket.estado != 'Completado'" class="btn-link" title="eliminar"  (click)="deviceChoosen(e)"><i class="fa fa-remove"></i></span>
+                                      <span data-toggle="modal" data-target="#modalclient5" *ngIf="ticket.estado != service.ticketStatuses.completed" class="btn-link" title="editar"  (click)="deviceChoosen(e)"><i class="fa fa-edit"></i></span> 
+                                      <span data-toggle="modal" data-target="#modalclient6" *ngIf="ticket.estado != service.ticketStatuses.completed" class="btn-link" title="eliminar"  (click)="deviceChoosen(e)"><i class="fa fa-remove"></i></span>
                                   </span>
                               </td>
                               <!-- <td> -->
@@ -205,9 +205,9 @@
                       </div>
                     </div>
                     <div class="form-group col-xs-12 col-sm-12">
-                        <textarea *ngIf="ticket.tipoSolicitud =='Servicio Taller'" placeholder="Observaciones" class="form-control" rows="5" [(ngModel)]="ticket.descripcion" [disabled]="option!='add' &&   2>service.getLevel(service.getUser().acceso )  || ticket.estado =='Completado'" (change)="editAsAdministrator()"></textarea>
-                        <label *ngIf="ticket.tipoSolicitud !='Servicio Taller'">Falla Reportada por el cliente:</label>
-                        <input *ngIf="ticket.tipoSolicitud !='Servicio Taller'" class="form-control" placeholder="Falla Reportada" [(ngModel)]="ticket.descripcion" [disabled]="option!='add' &&   2>service.getLevel(service.getUser().acceso )  || ticket.estado =='Completado'" (change)="editAsAdministrator()"/>
+                        <textarea *ngIf="ticket.tipoSolicitud ==service.requestTypes.workshop" placeholder="Observaciones" class="form-control" rows="5" [(ngModel)]="ticket.descripcion" [disabled]="option!='add' &&   2>service.getLevel(service.getUser().acceso )  || ticket.estado ==service.ticketStatuses.completed" (change)="editAsAdministrator()"></textarea>
+                        <label *ngIf="ticket.tipoSolicitud !=service.requestTypes.workshop">Falla Reportada por el cliente:</label>
+                        <input *ngIf="ticket.tipoSolicitud !=service.requestTypes.workshop" class="form-control" placeholder="Falla Reportada" [(ngModel)]="ticket.descripcion" [disabled]="option!='add' &&   2>service.getLevel(service.getUser().acceso )  || ticket.estado ==service.ticketStatuses.completed" (change)="editAsAdministrator()"/>
                       </div>
                     <div class="form-group col-xs-4 col-sm-4">
                       <label>Estado: </label>
@@ -229,8 +229,8 @@
                     <div class="form-group col-xs-4 col-sm-4">
                       <label>Aprobador por:</label>
                       <br *ngIf="ticket.aprobadoPor==null"/>
-                      <span *ngIf="ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)==0 && ticket.estado =='Completado'">Pendiente de aprobación</span>
-                      <span *ngIf="ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)>1 && ticket.estado =='Completado'"><a class="btn-link" (click)="aprobar()">Aprobar</a></span>
+                      <span *ngIf="ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)==0 && ticket.estado ==service.ticketStatuses.completed">Pendiente de aprobación</span>
+                      <span *ngIf="ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)>1 && ticket.estado ==service.ticketStatuses.completed"><a class="btn-link" (click)="aprobar()">Aprobar</a></span>
                       <select class="form-control" [(ngModel)]="ticket.aprobadoPor" *ngIf="ticket.aprobadoPor!=null" disabled>
                         <option value="{{costumer.id}}" *ngFor="let costumer of costumerAPs">{{ costumer.nombre }}</option>
                       </select>
@@ -286,7 +286,7 @@
                             <img *ngIf="service.getUser() !=null && service.getUser().image !=null" [src]="'data:image/jpeg;base64,'+ service.getUser().image" class="img-responsive img-circle img-sm" alt="Alt Text">
                             <!-- .img-push is used to add margin to elements next to floating images -->
                             <div class="img-push input-group">
-                              <input type="text" class="form-control " [(ngModel)]="trace.texto" (keyup.enter)="addTrace()" placeholder="Press enter to post comment" [disabled]="ticket.estado=='Completado' && ticket.aprobadoPor!=null">
+                              <input type="text" class="form-control " [(ngModel)]="trace.texto" (keyup.enter)="addTrace()" placeholder="Press enter to post comment" [disabled]="ticket.estado==service.ticketStatuses.completed && ticket.aprobadoPor!=null">
                               <span class="input-group-btn">
                                 <button class="btn btn-primary btn-flat" (click)="addTrace()"  [disabled]="service.validateTrim( trace.texto )"><i class="fa fa-paper-plane" aria-hidden="true"></i> Colocar actividad</button>
                               </span>
@@ -314,7 +314,7 @@
                             <th scope="col" class="text-center">Cantidad</th>
                             <th scope="col" class="text-center">Serial No.</th>
                             <th scope="col" class="text-center">Descripci&oacute;n</th>
-                            <th scope="col" class="text-center" [hidden]="ticket.estado == 'Completado' || parts.length >= 3 || option =='add'"><a class="btn-link" (click)="addPart=true;part={}" [hidden]="addPart"><i class="fa fa-plus"></i></a></th>
+                            <th scope="col" class="text-center" [hidden]="ticket.estado == service.ticketStatuses.completed || parts.length >= 3 || option =='add'"><a class="btn-link" (click)="addPart=true;part={}" [hidden]="addPart"><i class="fa fa-plus"></i></a></th>
                           </tr>
                         </thead>
                         <tbody>
@@ -332,8 +332,8 @@
                             <td>{{e.noSerial}}</td>
                             <td>{{e.descripcion}}  
                                 <span style="float: right;" *ngIf="service.getLevel(this.service.getUser().acceso)>1">
-                                  <span data-toggle="modal" data-target="#modalclient3" *ngIf="ticket.estado != 'Completado'" class="btn-link" title="editar"  (click)="partChoosen(e)"><i class="fa fa-edit"></i></span> 
-                                  <span data-toggle="modal" data-target="#modalclient4" *ngIf="ticket.estado != 'Completado'" class="btn-link" title="eliminar"  (click)="partChoosen(e)"><i class="fa fa-remove"></i></span>
+                                  <span data-toggle="modal" data-target="#modalclient3" *ngIf="ticket.estado != service.ticketStatuses.completed" class="btn-link" title="editar"  (click)="partChoosen(e)"><i class="fa fa-edit"></i></span> 
+                                  <span data-toggle="modal" data-target="#modalclient4" *ngIf="ticket.estado != service.ticketStatuses.completed" class="btn-link" title="eliminar"  (click)="partChoosen(e)"><i class="fa fa-remove"></i></span>
                               </span>
                               </td>
                           </tr>

@@ -12,7 +12,7 @@ export class ReportComponent implements OnInit {
 
   constructor(private service: ApiService) {
     if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
-      alert("No tiene permisos para acceder");
+      alert(this.service.messages.noPermissionToAccess);
       this.service.route.navigateByUrl('/');
     }else{
       this.clear()
@@ -42,7 +42,7 @@ export class ReportComponent implements OnInit {
 
     if( component=='session' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id  ){
       if(idOther == 0 ){
-        alert('Su usuario ha sido deshabilitado, comuniquese con el administrador');
+        alert(this.service.messages.userDisabled);
         this.service.closeSession();
       }
 
@@ -57,12 +57,12 @@ export class ReportComponent implements OnInit {
 
     if(this.service.validateTrim(this.request.tipoSolicitud) && this.service.validateTrim(this.request.fechaInicio)
     && this.service.validateTrim(this.request.fechaTermino)){
-      this.service.swal('Campos requeridos','Favor suministrar los datos para proceder con la consulta.','info');
+      this.service.swal(this.service.messages.titleRequiredFields,'Favor suministrar los datos para proceder con la consulta.','info');
       return false;
     } 
     else if(this.service.validateTrim(this.request.tipoSolicitud)  && (this.service.validateTrim(this.request.fechaInicio)
     || this.service.validateTrim(this.request.fechaTermino)  ) ){
-      this.service.swal('Campos requeridos','Favor suministrar las fechas para proceder con la consulta.','warning');
+      this.service.swal(this.service.messages.titleRequiredFields,'Favor suministrar las fechas para proceder con la consulta.','warning');
       return false;
     }
 

@@ -38,7 +38,7 @@ export class CostumerComponent implements OnInit {
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
       console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
       // debugger
-      if( (component=='costumer' && idEmpresa == this.service.getUser().idEmpresa) || this.service.getUser().acceso =="ROOT" ){
+      if( (component=='costumer' && idEmpresa == this.service.getUser().idEmpresa) || this.service.getUser().acceso ==this.service.roles.root ){
         
         /* */
         this.service.http.get(this.service.baseUrl + 'api/Costumer/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
@@ -95,7 +95,7 @@ export class CostumerComponent implements OnInit {
 
   add(){
     if(this.service.getLevel(this.service.getUser().acceso) <= 1){
-      this.service.swal('Access denied','','error');
+      this.service.swal(this.service.messages.titleAccessDenied,'','error');
       return false;
     }
     this.service.isLoading = true;
@@ -116,7 +116,7 @@ export class CostumerComponent implements OnInit {
 
   edit(){
     if(this.service.getLevel(this.service.getUser().acceso) <= 1){
-      this.service.swal('Access denied','','error');
+      this.service.swal(this.service.messages.titleAccessDenied,'','error');
       return false;
     }
     this.service.isLoading = true;

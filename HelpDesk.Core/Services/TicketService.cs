@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelpDesk.Core.Constants;
 
 namespace HelpDesk.Core.Services
 {
@@ -39,7 +40,7 @@ namespace HelpDesk.Core.Services
             {
                 var subject = $"HelpDesk Notification - Orden No.{ticket.NoSecuencia}";
 
-                var discrepancia = ticket.TipoSolicitud == "Servicio Taller" ? "Observaciones" : "Falla";
+                var discrepancia = ticket.TipoSolicitud == RequestTypes.Workshop ? "Observaciones" : "Falla";
                 var body = $@"<div>
                                 {business.RazonSocial}<br>
                                 Orden de servicio técnico asignado: <b><i>{user.Nombre}</i></b><br>
@@ -68,15 +69,15 @@ namespace HelpDesk.Core.Services
             var user = await _unitOfWork.UserRepository.GetById(userId);
             var ticketsByUser = _unitOfWork.TicketRepository.GetTicketsByUserId(user.Id);
             var ticketsByBusiness = _unitOfWork.TicketRepository.GetAll().Where(x => x.IdEmpresa == user.IdEmpresa);
-            var abiertos = ticketsByUser.Where(e => e.Estado.ToUpper() == "ABIERTO").Count();
-            var enproceso = ticketsByUser.Where(e =>e.Estado.ToUpper() == "EN PROCESO").Count();
-            var completados = ticketsByUser.Where(e => e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor != null).Count();
+            var abiertos = ticketsByUser.Where(e => e.Estado.ToUpper() == TicketStatus.Upper.Open).Count();
+            var enproceso = ticketsByUser.Where(e =>e.Estado.ToUpper() == TicketStatus.Upper.InProgress).Count();
+            var completados = ticketsByUser.Where(e => e.Estado.ToUpper() == TicketStatus.Upper.Completed && e.AprobadoPor != null).Count();
             var costumers = _unitOfWork.CustomerRepository.GetByBusinessId(user.IdEmpresa, true).ToList().Count();
-            var waitingToAttend = user.Acceso == "TECNICO" ? 0 : ticketsByBusiness.Where(e => e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO").Count();
-            var waiting2ToAttend = user.Acceso == "TECNICO" ? 0 : ticketsByBusiness.Where(e => e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO" && e.TipoSolicitud == "Servicio Taller").Count();
-            var waiting3ToAttend = user.Acceso == "TECNICO" ? 0 : ticketsByBusiness.Where(e => e.IdUsuario < 1 && e.Estado.ToUpper() != "COMPLETADO" && e.TipoSolicitud == "Servicio a Domicilio").Count();
-            var finished = user.Acceso == "TECNICO" ? 0 : ticketsByBusiness.Where(e =>e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor != null).Count();
-            var finishedToAttend = user.Acceso == "TECNICO" ? 0 : ticketsByBusiness.Where(e => e.Estado.ToUpper() == "COMPLETADO" && e.AprobadoPor == null).Count();
+            var waitingToAttend = user.Acceso == Roles.Technician ? 0 : ticketsByBusiness.Where(e => e.IdUsuario < 1 && e.Estado.ToUpper() != TicketStatus.Upper.Completed).Count();
+            var waiting2ToAttend = user.Acceso == Roles.Technician ? 0 : ticketsByBusiness.Where(e => e.IdUsuario < 1 && e.Estado.ToUpper() != TicketStatus.Upper.Completed && e.TipoSolicitud == RequestTypes.Workshop).Count();
+            var waiting3ToAttend = user.Acceso == Roles.Technician ? 0 : ticketsByBusiness.Where(e => e.IdUsuario < 1 && e.Estado.ToUpper() != TicketStatus.Upper.Completed && e.TipoSolicitud == RequestTypes.OnSite).Count();
+            var finished = user.Acceso == Roles.Technician ? 0 : ticketsByBusiness.Where(e =>e.Estado.ToUpper() == TicketStatus.Upper.Completed && e.AprobadoPor != null).Count();
+            var finishedToAttend = user.Acceso == Roles.Technician ? 0 : ticketsByBusiness.Where(e => e.Estado.ToUpper() == TicketStatus.Upper.Completed && e.AprobadoPor == null).Count();
 
             var metrics = new Metric
             {
@@ -133,7 +134,7 @@ namespace HelpDesk.Core.Services
         {
             if (option is null)
             {
-                throw new Exception("the option is required");
+                throw new Exception(Messages.OptionRequired);
             }
             option = option.ToLower();
             var container = new List<Solicitud>();
@@ -148,13 +149,13 @@ namespace HelpDesk.Core.Services
                 var user = await _unitOfWork.UserRepository.GetById(id);
                 switch (user.Acceso)
                 {
-                    case "ROOT":
-                    case "ADMINISTRADOR":
-                    case "MODERADOR":
+                    case Roles.Root:
+                    case Roles.Admin:
+                    case Roles.Moderator:
                         var list = _unitOfWork.TicketRepository.GetAll().Where(u => u.IdEmpresa == user.IdEmpresa).OrderByDescending(x => x.Id);
                         container.AddRange(list);
                         break;
-                    case "TECNICO":
+                    case Roles.Technician:
                     default:
                         break;
                 }
@@ -234,18 +235,18 @@ namespace HelpDesk.Core.Services
                 ticket.Estado = ticket.Estado;
                 switch (ticket.Estado.ToUpper())
                 {
-                    case "ABIERTO":
+                    case TicketStatus.Upper.Open:
                         ticket.AprobadoPor = null;
                         break;
-                    case "EN PROCESO":
+                    case TicketStatus.Upper.InProgress:
                         ticket.AprobadoPor = null;
                         break;
-                    case "COMPLETADO":
+                    case TicketStatus.Upper.Completed:
                         if (ticket.FechaInicio is null || ticket.HoraInicio is null
                             || ticket.FechaTermino is null || ticket.HoraTermino is null)
                         {
                             action = "NOCHANGEPLEASE";
-                            throw new Exception("Favor completar los campos correspondientes a las fechas y horas");
+                            throw new Exception(TicketDateRules.DatesRequired);
                             //res = new ObjectResponse
                             //{
                             //    code = "5",
@@ -260,7 +261,7 @@ namespace HelpDesk.Core.Services
                         (ticket.FechaInicio == ticket.FechaTermino && ticket.HoraInicio > ticket.HoraTermino))
                         {
                             action = "NOCHANGEPLEASE";
-                            throw new Exception("Favor verificar la fecha y hora de inicio con la fecha y hora de termino. Este ultimo debe ser posterior a la fecha de inicio.");
+                            throw new Exception(TicketDateRules.EndBeforeStart);
                             //res = new ObjectResponse
                             //{
                             //    code = "5",
@@ -282,7 +283,7 @@ namespace HelpDesk.Core.Services
                 //ticket.IdUsuario = ticket.IdUsuario;
 
                 var subject = $"Orden asignada No.{ticket.NoSecuencia}";
-                var discrepancia = ticket.TipoSolicitud == "Servicio Taller" ? "Observaciones" : "Falla";
+                var discrepancia = ticket.TipoSolicitud == RequestTypes.Workshop ? "Observaciones" : "Falla";
                 var body = $@"<div>
                                 {business.RazonSocial}<br>
                                 Orden de servicio técnico asignado: <b><i>{user.Nombre}</i></b><br>
@@ -422,7 +423,7 @@ namespace HelpDesk.Core.Services
             //    code = "1",
             //    title = "Saved",
             //    icon = "success",
-            //    message = "has been updated successfully",
+            //    message = Messages.Updated,
             //    data = ticket_res
             //};
 
