@@ -134,7 +134,7 @@ namespace HelpDesk.Core.Services
         {
             if (option is null)
             {
-                throw new Exception("the option is required");
+                throw new Exception(Messages.OptionRequired);
             }
             option = option.ToLower();
             var container = new List<Solicitud>();
@@ -246,7 +246,7 @@ namespace HelpDesk.Core.Services
                             || ticket.FechaTermino is null || ticket.HoraTermino is null)
                         {
                             action = "NOCHANGEPLEASE";
-                            throw new Exception("Favor completar los campos correspondientes a las fechas y horas");
+                            throw new Exception(TicketDateRules.DatesRequired);
                             //res = new ObjectResponse
                             //{
                             //    code = "5",
@@ -261,7 +261,7 @@ namespace HelpDesk.Core.Services
                         (ticket.FechaInicio == ticket.FechaTermino && ticket.HoraInicio > ticket.HoraTermino))
                         {
                             action = "NOCHANGEPLEASE";
-                            throw new Exception("Favor verificar la fecha y hora de inicio con la fecha y hora de termino. Este ultimo debe ser posterior a la fecha de inicio.");
+                            throw new Exception(TicketDateRules.EndBeforeStart);
                             //res = new ObjectResponse
                             //{
                             //    code = "5",
@@ -423,7 +423,7 @@ namespace HelpDesk.Core.Services
             //    code = "1",
             //    title = "Saved",
             //    icon = "success",
-            //    message = "has been updated successfully",
+            //    message = Messages.Updated,
             //    data = ticket_res
             //};
 

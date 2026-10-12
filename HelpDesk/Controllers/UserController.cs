@@ -7,6 +7,7 @@ using HelpDesk.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using HelpDesk.Core.Constants;
 
 namespace HelpDesk.Controllers
 {
@@ -40,7 +41,7 @@ namespace HelpDesk.Controllers
         {
             var user = _mapper.Map<Usuario>(usuarioDto);
             user = await _userService.InsertUSer(user);
-            var response = ObjectResponse.Saved("has been saved successfully", user);
+            var response = ObjectResponse.Saved(Messages.Saved, user);
             return Ok(response);
         }
 
@@ -50,7 +51,7 @@ namespace HelpDesk.Controllers
         {
             var user = _mapper.Map<Usuario>(usuarioDto);
             var result = await _userService.UpdateUSer(user, idUserReq);
-            var response = ObjectResponse.Saved("has been saved successfully", result);
+            var response = ObjectResponse.Saved(Messages.Saved, result);
             return Ok(response);
         }
 

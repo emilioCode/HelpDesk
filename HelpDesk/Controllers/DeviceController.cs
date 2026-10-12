@@ -6,6 +6,7 @@ using HelpDesk.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using HelpDesk.Core.Constants;
 
 namespace HelpDesk.Controllers
 {
@@ -36,7 +37,7 @@ namespace HelpDesk.Controllers
             var device = _mapper.Map<Equipo>(deviceDto);
             device = await _deviceService.AddDevice(device);
             deviceDto = _mapper.Map<EquipoDto>(device);
-            var response = ObjectResponse.Saved("created successfully", deviceDto);
+            var response = ObjectResponse.Saved(Messages.Created, deviceDto);
             return Ok(response);
         }
 
@@ -46,7 +47,7 @@ namespace HelpDesk.Controllers
             var devices = _mapper.Map<List<Equipo>>(devicesDto);
             devices = await _deviceService.AddRangeDevice(devices);
             var deviceDtos = _mapper.Map<IEnumerable<EquipoDto>>(devices);
-            var response = ObjectResponse.Saved("created successfully", deviceDtos);
+            var response = ObjectResponse.Saved(Messages.Created, deviceDtos);
             return Ok(response);
         }
 
@@ -57,7 +58,7 @@ namespace HelpDesk.Controllers
             var device = _mapper.Map<Equipo>(deviceDto);
             device = await _deviceService.ModifyDevice(device);
             deviceDto = _mapper.Map<EquipoDto>(device);
-            var response = ObjectResponse.Saved("modified successfully", deviceDto);
+            var response = ObjectResponse.Saved(Messages.Modified, deviceDto);
             return Ok(response);
         }
 
@@ -66,7 +67,7 @@ namespace HelpDesk.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _deviceService.DeleteDevide(id);
-            var response = ObjectResponse.Saved("modified successfully", result);
+            var response = ObjectResponse.Saved(Messages.Modified, result);
             return Ok(response);
         }
     }

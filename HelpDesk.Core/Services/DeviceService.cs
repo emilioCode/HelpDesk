@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelpDesk.Core.Constants;
 
 namespace HelpDesk.Core.Services
 {
@@ -29,7 +30,7 @@ namespace HelpDesk.Core.Services
                 e.Descripcion == "" || e.Descripcion == null || e.Modelo == "" || e.Modelo == null ||
                 e.NoSerial == "" || e.NoSerial == null || e.FallaReportada == null || e.FallaReportada == "").Count() > 0)
             {
-                throw new Exception("Field(s) required!");
+                throw new Exception(Messages.FieldsRequired);
             }
             devices.ForEach(async x =>
             {
@@ -59,7 +60,7 @@ namespace HelpDesk.Core.Services
               device.Descripcion == "" || device.Descripcion == null || device.Modelo == "" || device.Modelo == null ||
               device.NoSerial == "" || device.NoSerial == null || device.FallaReportada == null || device.FallaReportada == "")
             {
-                throw new Exception("Field(s) required!");
+                throw new Exception(Messages.FieldsRequired);
             }
             device.Habilitado = true;
             _unitOfWork.DeviceRepository.Update(device);

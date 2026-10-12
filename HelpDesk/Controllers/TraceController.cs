@@ -5,6 +5,7 @@ using HelpDesk.Core.Interfaces;
 using HelpDesk.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using HelpDesk.Core.Constants;
 
 namespace HelpDesk.Controllers
 {
@@ -24,7 +25,7 @@ namespace HelpDesk.Controllers
         public IActionResult Get(int ticketId, int businnesId)
         {
             var customTraces = _traceService.GetTracesById(ticketId, businnesId);
-            var response = ObjectResponse.Saved("has been saved successfully", customTraces);
+            var response = ObjectResponse.Saved(Messages.Saved, customTraces);
             return Ok(response);
         }
 
@@ -34,7 +35,7 @@ namespace HelpDesk.Controllers
             var trace = _mapper.Map<Seguimiento>(traceDto);
             trace = await _traceService.AddTrace(trace);
             traceDto = _mapper.Map<SeguimientoDto>(trace);
-            var response = ObjectResponse.Saved("has been saved successfully", traceDto);
+            var response = ObjectResponse.Saved(Messages.Saved, traceDto);
             return Ok(response);
         }
 
@@ -45,7 +46,7 @@ namespace HelpDesk.Controllers
             var trace = _mapper.Map<Seguimiento>(traceDto);
             trace = await _traceService.UpdateTrace(trace);
             traceDto = _mapper.Map<SeguimientoDto>(trace);
-            var response = ObjectResponse.Saved("has been updated successfully", traceDto);
+            var response = ObjectResponse.Saved(Messages.Updated, traceDto);
             return Ok(response);
         }
     }

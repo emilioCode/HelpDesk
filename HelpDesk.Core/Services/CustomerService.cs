@@ -28,7 +28,7 @@ namespace HelpDesk.Core.Services
         {
             if(option is null)
             {
-                throw new Exception("the option is required");
+                throw new Exception(Messages.OptionRequired);
             }
             option = option.ToLower();
             var customers = new List<Cliente>();

@@ -42,7 +42,7 @@ namespace HelpDesk.Core.Services
             {
                 if (e.CuentaUsuario.Equals(user.CuentaUsuario))
                 {
-                    throw new Exception($"the userAccount <b>{user.CuentaUsuario}</b> already exists");
+                    throw new Exception(Messages.AccountExists(user.CuentaUsuario));
                 }
             });
 
@@ -61,7 +61,7 @@ namespace HelpDesk.Core.Services
 
             if (userAccountRepeated)
             {
-                throw new Exception($"the userAccount <b>{user.CuentaUsuario}</b> already exists");
+                throw new Exception(Messages.AccountExists(user.CuentaUsuario));
             }
 
             var userCreator = await _unitOfWork.UserRepository.GetById(userCreatorId);
