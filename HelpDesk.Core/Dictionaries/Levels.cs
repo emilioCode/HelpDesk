@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using HelpDesk.Core.Constants;
 
 namespace HelpDesk.Core.Dictionaries
 {
@@ -6,10 +7,10 @@ namespace HelpDesk.Core.Dictionaries
     {
         public static Dictionary<string, int> AccessLevel = new Dictionary<string, int>()
         {
-            { "ROOT", 4 },
-            { "ADMINISTRADOR", 3 },
-            { "MODERADOR", 2 },
-            { "TECNICO", 1 }
+            { Roles.Root, 4 },
+            { Roles.Admin, 3 },
+            { Roles.Moderator, 2 },
+            { Roles.Technician, 1 }
         };
     }
 }

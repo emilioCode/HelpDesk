@@ -12,7 +12,7 @@ export class Waiting4Component implements OnInit {
 
   constructor(private service: ApiService) { 
     if(this.service.getLevel(this.service.getUser().acceso) < 2 ){
-      alert("No tiene permisos para acceder");
+      alert(this.service.messages.noPermissionToAccess);
       this.service.route.navigateByUrl('/');
     }else{
       this.getTickets(this.service.getUser().id,"*")
@@ -50,13 +50,13 @@ export class Waiting4Component implements OnInit {
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {//debugger;
       // console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
       // debugger
-      if( (component=='ticket' && idEmpresa == this.service.getUser().idEmpresa) || this.service.getUser().acceso =="ROOT" ){
+      if( (component=='ticket' && idEmpresa == this.service.getUser().idEmpresa) || this.service.getUser().acceso ==this.service.roles.root ){
         
         /* */
         // this.service.isLoading = true;
         this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
           .subscribe(res=>{
-            this.tickets = res.filter(x=>/*x.idUsuario ==0  &&*/ x.estado == "Completado" && x.aprobadoPor==null);
+            this.tickets = res.filter(x=>/*x.idUsuario ==0  &&*/ x.estado == this.service.ticketStatuses.completed && x.aprobadoPor==null);
             var id = this.ticket.id===null?0:this.ticket.id;
             if(/*idUsuario >0 &&*/  id== idOther){
               
@@ -77,7 +77,7 @@ export class Waiting4Component implements OnInit {
 
             this.service.isLoading = false;
           },error => {
-            console.error(error);
+            this.service.handleHttpError(error);
             this.service.isLoading = false;
           });
         /* */
@@ -86,7 +86,7 @@ export class Waiting4Component implements OnInit {
       
       if( component=='session' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id  ){
         if(idOther == 0 ){
-          alert('Su usuario ha sido deshabilitado, comuniquese con el administrador');
+          alert(this.service.messages.userDisabled);
           this.service.closeSession();
         }
       }
@@ -94,6 +94,8 @@ export class Waiting4Component implements OnInit {
 
     this.hubConnection.start().catch(err => console.error(err.toString()));
   }
+
+  savedDates: any;
 
   fillModal(option='add',object,doProcess=true){
     this.addDevice=false;
@@ -130,6 +132,7 @@ export class Waiting4Component implements OnInit {
     
         if(this.ticket.fechaInicio!=null)this.ticket.fechaInicio = new Date(this.ticket.fechaInicio).toISOString().split('T')[0];
         if(this.ticket.fechaTermino!=null)this.ticket.fechaTermino = new Date(this.ticket.fechaTermino).toISOString().split('T')[0];
+        this.savedDates = { fechaInicio: this.ticket.fechaInicio, horaInicio: this.ticket.horaInicio, fechaTermino: this.ticket.fechaTermino, horaTermino: this.ticket.horaTermino };
       
     }
 
@@ -165,7 +168,7 @@ export class Waiting4Component implements OnInit {
         this.costumers = res;
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -177,7 +180,7 @@ export class Waiting4Component implements OnInit {
         this.users = res;
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -186,7 +189,7 @@ export class Waiting4Component implements OnInit {
   addDeviceList(item){
     if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
     ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
-      this.service.swal('Campos requeridos','Es necesario suministrar los datos del disposivo','info');
+      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.deviceDataRequired,'info');
       return false;
     }
     item.id =  this.i++;
@@ -210,7 +213,7 @@ export class Waiting4Component implements OnInit {
     this.service.isLoading = true;
     this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
       .subscribe(res=>{
-        this.tickets = res.filter(x=>/*x.idUsuario ==0  &&*/ x.estado == "Completado" && x.aprobadoPor==null);
+        this.tickets = res.filter(x=>/*x.idUsuario ==0  &&*/ x.estado == this.service.ticketStatuses.completed && x.aprobadoPor==null);
         // console.log(  this.tickets )
         this.tickets.forEach(element => {
           if(element.horaInicio != null)element.horaInicio = element.horaInicio; //this.service.fillZeroWithNumber(element.horaInicio.value.hours) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.minutes) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.seconds); 
@@ -218,7 +221,7 @@ export class Waiting4Component implements OnInit {
         });
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -227,21 +230,21 @@ export class Waiting4Component implements OnInit {
     if(this.service.validate(this.ticket.tipoSolicitud)
     || this.service.validate(this.ticket.tipoServicio) || this.service.validate(this.ticket.estado)
     || this.service.validate(this.ticket.idCliente) /*|| this.service.validate(this.ticket.idUsuario)*/ ){
-      this.service.swal('Campos requeridos','Asegurese de completar los datos minimos necesarios para crear la orden','warning');
+      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.completeMinimumOrderData,'warning');
       return false;
     }
-    if(this.ticket.tipoSolicitud == 'Servicio a Domicilio' && this.service.validate(this.ticket.descripcion)){
-      this.service.swal('Campos requerido','Favor digite falla reportada','warning');
+    if(this.ticket.tipoSolicitud == this.service.requestTypes.onSite && this.service.validate(this.ticket.descripcion)){
+      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.enterReportedFailure,'warning');
       return false;
     }
 
     if(this.service.getLevel(this.service.getUser().acceso) <= 1){
-      this.service.swal('Access denied','','error');
+      this.service.swal(this.service.messages.titleAccessDenied,'','error');
       return false;
     }
 
-    if(this.devices.lentgh == 0 && this.ticket.tipoSolicitud =='Servicio Taller'){
-      this.service.swal('Must have a device as well','','warning');
+    if(this.devices.lentgh == 0 && this.ticket.tipoSolicitud ==this.service.requestTypes.workshop){
+      this.service.swal(this.service.messages.mustHaveDevice,'','warning');
       return false;
     }
     this.ticket.idUsuario = parseInt(this.ticket.idUsuario);
@@ -265,14 +268,14 @@ export class Waiting4Component implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading =false;
       });
   }
 
   addDevices(idSolicitud){
     if(this.devices.lentgh == 0){
-      this.service.swal('Must have a device as well','','warning');
+      this.service.swal(this.service.messages.mustHaveDevice,'','warning');
       return false;
     }
     this.service.isLoading = true;
@@ -300,7 +303,7 @@ export class Waiting4Component implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading =false;
       });
   }
@@ -313,13 +316,13 @@ export class Waiting4Component implements OnInit {
         // console.log(  this.devices )
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
 
   clearDevicesIf(){
-    if(this.ticket.tipoSolicitud =='Servicio a Domicilio')this.devices = [];
+    if(this.ticket.tipoSolicitud ==this.service.requestTypes.onSite)this.devices = [];
     this.ticket.descripcion = '';
   }
 
@@ -332,7 +335,7 @@ export class Waiting4Component implements OnInit {
 
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -353,7 +356,7 @@ export class Waiting4Component implements OnInit {
 
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -377,7 +380,7 @@ export class Waiting4Component implements OnInit {
 
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -389,14 +392,14 @@ export class Waiting4Component implements OnInit {
     if(option =='ESTADO'){
       var variable = this.ticket.estado.toUpperCase();
       if(this.ticket.idUsuario == '0'){
-        alert('Esta orden no tiene tecnico asignado.\nNecesita primero asignar un tecnico para trabajarla.');
+        alert(this.service.messages.ticketWithoutTechnician);
         variable = '';
       }
       switch (variable) {
 
-        case "ABIERTO":
+        case this.service.ticketStatuses.open.toUpperCase():
         var temp = this.ticket.estado;
-        var response = confirm('Seguro que desea reabrir esta ticket?');
+        var response = confirm(this.service.messages.confirmReopenTicket);
         if(!response){
     
           // this.getTickets(this.service.getUser().id,"*")
@@ -404,8 +407,8 @@ export class Waiting4Component implements OnInit {
           option = "NOCHANGEPLEASE";
          
         }
-        case "EN PROCESO":
-          // var response = confirm('Seguro que desea reabrir esta ticket?');
+        case this.service.ticketStatuses.inProgress.toUpperCase():
+          // var response = confirm(this.service.messages.confirmReopenTicket);
           // if(!response){
       
           //   // this.getTickets(this.service.getUser().id,"*")
@@ -414,7 +417,7 @@ export class Waiting4Component implements OnInit {
           
           // }
           break;
-        case "COMPLETADO":
+        case this.service.ticketStatuses.completed.toUpperCase():
         
         // var response = confirm('Utilizó partes o repuestos?\nDesea cerrar la orden?');
         // if(!response){
@@ -427,7 +430,7 @@ export class Waiting4Component implements OnInit {
           break;
       }
     }else if(option =='USUARIO'){
-      var response = confirm('Seguro que desea asignar este ticket a este usuario?');
+      var response = confirm(this.service.messages.confirmAssignTicket);
       if(!response){
   
         // this.getTickets(this.service.getUser().id,"*")
@@ -438,7 +441,7 @@ export class Waiting4Component implements OnInit {
     }else if(option =='EDITAR'){
 
     }else if(option =='APROBAR'){
-      var response = confirm('Seguro que desea confirmar como completado?');
+      var response = confirm(this.service.messages.confirmCompleteTicket);
       // option ='EDITAR';
       if(!response){
         
@@ -450,7 +453,7 @@ export class Waiting4Component implements OnInit {
         this.ticket.aprobadoPor = this.service.getUser().id;
       }
     }else{
-      this.service.swal('an option is required','','error');
+      this.service.swal(this.service.messages.optionRequired,'','error');
       option = "NOCHANGEPLEASE";
     }
     this.service.isLoading = true;
@@ -478,7 +481,14 @@ export class Waiting4Component implements OnInit {
 
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
+        this.ticket.estado = temp;
+        if (this.savedDates) {
+          this.ticket.fechaInicio = this.savedDates.fechaInicio;
+          this.ticket.horaInicio = this.savedDates.horaInicio;
+          this.ticket.fechaTermino = this.savedDates.fechaTermino;
+          this.ticket.horaTermino = this.savedDates.horaTermino;
+        }
         this.service.isLoading = false;
       });
   }
@@ -499,8 +509,8 @@ export class Waiting4Component implements OnInit {
   }
 
   setEstatus(){
-    if(this.ticket.estado.toUpperCase() == 'COMPLETADO' && this.traces.length == 0){
-      this.service.swal("Actividades requeridas","Se necesita al menos una actividad realizada",'warning');
+    if(this.ticket.estado.toUpperCase() == this.service.ticketStatuses.completed.toUpperCase() && this.traces.length == 0){
+      this.service.swal(this.service.messages.titleRequiredActivities,this.service.messages.activityRequired,'warning');
       this.ticket.estado = "NOCHANGEPLEASE";
       this.putTicket('ESTADO');
       document.getElementById("li_activity").classList.remove('active');
@@ -508,16 +518,16 @@ export class Waiting4Component implements OnInit {
       
       document.getElementById("activity").classList.remove('active');
       document.getElementById("timeline").classList.add('active');
-    } else if(this.ticket.estado.toUpperCase() == 'COMPLETADO'){
+    } else if(this.ticket.estado.toUpperCase() == this.service.ticketStatuses.completed.toUpperCase()){
       this.service.swal({
-        title: 'Utilizó partes o repuestos?',
-        text: "Desea adicionar algún repuesto?",
+        title: this.service.messages.usedPartsQuestion,
+        text: this.service.messages.addPartQuestion,
         type: 'question',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Si',
-        cancelButtonText:'No, ya está completo'
+        confirmButtonText: this.service.messages.yes,
+        cancelButtonText:this.service.messages.noOrderIsComplete
       }).then((result) => {
         // debugger;
         var res = String(result.dismiss);
@@ -569,7 +579,7 @@ export class Waiting4Component implements OnInit {
         // console.log( this.costumerAPs )
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -582,7 +592,7 @@ export class Waiting4Component implements OnInit {
         // console.log(  this.parts )
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -590,7 +600,7 @@ export class Waiting4Component implements OnInit {
   addPartOne(part){
     if(part.cantidad <1 || this.service.isNullorEmpty(part.noSerial) || this.service.isNullorEmpty(part.descripcion)
     || this.service.isNullorEmpty(part.cantidad) ){
-      this.service.swal('Campos requeridos','Favor completar campos.','warning');
+      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.fillRequiredFields,'warning');
       return false;
     }
     this.service.isLoading = true;
@@ -614,7 +624,7 @@ export class Waiting4Component implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading =false;
       });
   }

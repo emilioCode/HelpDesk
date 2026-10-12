@@ -35,7 +35,7 @@ export class ProfileComponent implements OnInit {
 
     if( component=='session' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id  ){
       if(idOther == 0 ){
-        alert('Su usuario ha sido deshabilitado, comuniquese con el administrador');
+        alert(this.service.messages.userDisabled);
         this.service.closeSession();
       }
 
@@ -61,7 +61,7 @@ export class ProfileComponent implements OnInit {
         this.service.isLoading = false;
 
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -79,7 +79,7 @@ export class ProfileComponent implements OnInit {
         this.service.updateSession(this.users);
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -88,7 +88,7 @@ export class ProfileComponent implements OnInit {
     if(this.pwdValidation == '' || this.pwdValidation == null
     || this.userT.contrasena == '' || this.userT.contrasena == null
     ){
-      this.service.swal('Campos requeridos','Se necesita rellenar los campo para optar por el cambio de contraseña','info');
+      this.service.swal(this.service.messages.titleRequiredFields,'Se necesita rellenar los campo para optar por el cambio de contraseña','info');
       // return false;
     }else if(this.pwdValidation !== this.userT.contrasena){
       this.service.swal('Contraseñas no coinciden','La contraseña no coincide con su confirmación.\n Favor intentar nuevamente.','warning');
@@ -104,7 +104,7 @@ export class ProfileComponent implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading =false;
       });
     }
@@ -118,7 +118,7 @@ export class ProfileComponent implements OnInit {
         // console.log( this.numbers );
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }

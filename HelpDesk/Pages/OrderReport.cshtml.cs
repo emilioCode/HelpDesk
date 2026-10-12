@@ -1,11 +1,13 @@
 ﻿using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelpDesk.Core.Constants;
 
 namespace HelpDesk.Pages
 {
@@ -35,15 +37,17 @@ namespace HelpDesk.Pages
             _pieceService = pieceService;
             _traceService = traceService;
         }
-        public async Task OnGetAsync(string value)
+        public async Task<IActionResult> OnGetAsync(string value)
         {
-            var noTicket = value.Split('-')[0];
-            var idEmpresa = Convert.ToInt32(value.Split('-')[1]);
+            var parts = value?.Split('-');
+            if (parts == null || parts.Length != 2 || !int.TryParse(parts[1], out var idEmpresa)) return NotFound();
+            var noTicket = parts[0];
             empresa = await _businessService.GetById(idEmpresa);
-            solicitud = _ticketService.GetTicketBySecuencialNumber(noTicket).First();
+            solicitud = _ticketService.GetTicketBySecuencialNumber(noTicket).FirstOrDefault(x => x.IdEmpresa == idEmpresa);
+            if (empresa == null || solicitud == null) return NotFound();
             var listOfCustomer = await _customerService.GetCustomersByIdAndCondition(solicitud.IdCliente, "unique");
             cliente = listOfCustomer.ToList().First();
-            equipos = _deviceService.GetDevicesByTicketId(solicitud.IdCliente).ToList();
+            equipos = _deviceService.GetDevicesByTicketId(solicitud.Id).Where(e => e.IdEmpresa == idEmpresa).ToList();
             piezas = _pieceService.GetPieces(solicitud.Id, idEmpresa).ToList();
             seguimiento = _traceService.GetAllTraces().Where(e => e.IdEmpresa == idEmpresa && e.IdSolicitud == solicitud.Id && e.Etiquetado == true).ToList();
             soluciones = string.Join(',', seguimiento.Select(x => x.Texto));
@@ -58,8 +62,8 @@ namespace HelpDesk.Pages
                 var piezaTemp = new Piezas();
                 piezas.Add(piezaTemp);
             }
-            title = $"HelpDesk - Service Order No.{noTicket}";
-
+            title = Messages.ServiceOrderTitle(noTicket);
+            return Page();
         }
     }
 }

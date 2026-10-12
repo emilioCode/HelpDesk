@@ -13,7 +13,7 @@ export class UserComponent implements OnInit {
   
   constructor(private service:ApiService) {
     if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
-      alert("No tiene permisos para acceder");
+      alert(this.service.messages.noPermissionToAccess);
       this.service.route.navigateByUrl('/');
     }else{
       this.getUsers(this.service.getUser().id,"*");
@@ -53,13 +53,13 @@ export class UserComponent implements OnInit {
             this.users = res;
             this.service.updateSession(this.users);
             if(!this.service.getUser().habilitado){
-              alert('Su usuario ha sido deshabilitado, comuniquese con el administrador');
+              alert(this.service.messages.userDisabled);
               this.service.closeSession();
             }
           
             this.service.isLoading = false;
           },error => {
-            console.error(error);
+            this.service.handleHttpError(error);
             this.service.isLoading = false;
           });
         /* */
@@ -84,7 +84,7 @@ export class UserComponent implements OnInit {
         this.service.updateSession(this.users);
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -127,7 +127,7 @@ export class UserComponent implements OnInit {
         this.empresas = res;
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -201,7 +201,7 @@ export class UserComponent implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading =false;
       });
 

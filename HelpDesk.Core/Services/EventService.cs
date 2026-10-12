@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelpDesk.Core.Constants;
 
 namespace HelpDesk.Core.Services
 {
@@ -21,7 +22,7 @@ namespace HelpDesk.Core.Services
             var users = _unitOfWork.UserRepository.GetAll().ToList();
             var events = new List<Event>();
             var resquests = _unitOfWork.TicketRepository.GetAll().ToList().Where(rq => rq.IdEmpresa == user.IdEmpresa);
-            if (Levels.AccessLevel[user.Acceso] < Levels.AccessLevel["MODERADOR"]) resquests = resquests.Where(rq => rq.IdUsuario == user.Id);
+            if (Levels.AccessLevel[user.Acceso] < Levels.AccessLevel[Roles.Moderator]) resquests = resquests.Where(rq => rq.IdUsuario == user.Id);
             resquests.ToList().ForEach(rq =>
             {
                 int HH = 0;

@@ -111,13 +111,13 @@ export class CalendarComponent implements OnInit {
           var color = "";
           
           switch (e.ticket.estado) {
-            case "Abierto":
+            case this.service.ticketStatuses.open:
               color = "#f56954"; // blue
               break;
-            case "en Proceso":
+            case this.service.ticketStatuses.inProgress:
               color = "#f39c12"; // yellow
               break;
-            case "Completado":
+            case this.service.ticketStatuses.completed:
               if(e.ticket.aprobadoPor){
                 color = "#00a65a"; // green
               }else{
@@ -127,7 +127,7 @@ export class CalendarComponent implements OnInit {
             default:
               break;
           }
-          if(e.ticket.tipoSolicitud == "Servicio Taller"){
+          if(e.ticket.tipoSolicitud == this.service.requestTypes.workshop){
             if(!e.ticket.aprobadoPor){
               url = this.service.baseUrl + 'OrderReport1?value=' + e.ticket.noSecuencia + "-" + e.ticket.idEmpresa;
             }else{
@@ -164,7 +164,7 @@ export class CalendarComponent implements OnInit {
         
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }

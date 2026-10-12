@@ -61,3 +61,8 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+# Container files must keep LF endings on every OS
+*.sh text eol=lf
+Dockerfile text eol=lf
+docker/**/*.sql text eol=lf
