@@ -37,14 +37,7 @@ namespace HelpDesk.Controllers
         {
             var customer = _mapper.Map<Cliente>(customerDto);
             customer = await _customerService.CreateCustomer(customer);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "has been saved successfully",
-                data = customer
-            };
+            var response = ObjectResponse.Saved("has been saved successfully", customer);
             return Ok(response);
         }
 
@@ -54,14 +47,7 @@ namespace HelpDesk.Controllers
         {
             var customer = _mapper.Map<Cliente>(customerDto);
             var result = await _customerService.UpdateCustomer(customer, userId);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "has been saved successfully",
-                data = result
-            };
+            var response = ObjectResponse.Saved("has been saved successfully", result);
             return Ok(response);
         }
     }

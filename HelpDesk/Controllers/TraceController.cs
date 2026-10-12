@@ -24,14 +24,7 @@ namespace HelpDesk.Controllers
         public IActionResult Get(int ticketId, int businnesId)
         {
             var customTraces = _traceService.GetTracesById(ticketId, businnesId);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "has been saved successfully",
-                data = customTraces
-            };
+            var response = ObjectResponse.Saved("has been saved successfully", customTraces);
             return Ok(response);
         }
 
@@ -41,14 +34,7 @@ namespace HelpDesk.Controllers
             var trace = _mapper.Map<Seguimiento>(traceDto);
             trace = await _traceService.AddTrace(trace);
             traceDto = _mapper.Map<SeguimientoDto>(trace);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "has been saved successfully",
-                data = traceDto
-            };
+            var response = ObjectResponse.Saved("has been saved successfully", traceDto);
             return Ok(response);
         }
 
@@ -59,14 +45,7 @@ namespace HelpDesk.Controllers
             var trace = _mapper.Map<Seguimiento>(traceDto);
             trace = await _traceService.UpdateTrace(trace);
             traceDto = _mapper.Map<SeguimientoDto>(trace);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "has been updated successfully",
-                data = traceDto
-            };
+            var response = ObjectResponse.Saved("has been updated successfully", traceDto);
             return Ok(response);
         }
     }

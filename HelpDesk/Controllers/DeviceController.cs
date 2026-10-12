@@ -36,14 +36,7 @@ namespace HelpDesk.Controllers
             var device = _mapper.Map<Equipo>(deviceDto);
             device = await _deviceService.AddDevice(device);
             deviceDto = _mapper.Map<EquipoDto>(device);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "created successfully",
-                data = deviceDto
-            };
+            var response = ObjectResponse.Saved("created successfully", deviceDto);
             return Ok(response);
         }
 
@@ -53,14 +46,7 @@ namespace HelpDesk.Controllers
             var devices = _mapper.Map<List<Equipo>>(devicesDto);
             devices = await _deviceService.AddRangeDevice(devices);
             var deviceDtos = _mapper.Map<IEnumerable<EquipoDto>>(devices);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "created successfully",
-                data = deviceDtos
-            };
+            var response = ObjectResponse.Saved("created successfully", deviceDtos);
             return Ok(response);
         }
 
@@ -71,14 +57,7 @@ namespace HelpDesk.Controllers
             var device = _mapper.Map<Equipo>(deviceDto);
             device = await _deviceService.ModifyDevice(device);
             deviceDto = _mapper.Map<EquipoDto>(device);
-            var response = new ObjectResponse
-             {
-                 code = "1",
-                 title = "Saved",
-                 icon = "success",
-                 message = "modified successfully",
-                 data = deviceDto
-            };
+            var response = ObjectResponse.Saved("modified successfully", deviceDto);
             return Ok(response);
         }
 
@@ -87,14 +66,7 @@ namespace HelpDesk.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _deviceService.DeleteDevide(id);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "modified successfully",
-                data = result
-            };
+            var response = ObjectResponse.Saved("modified successfully", result);
             return Ok(response);
         }
     }

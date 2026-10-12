@@ -40,14 +40,7 @@ namespace HelpDesk.Controllers
         {
             var user = _mapper.Map<Usuario>(usuarioDto);
             user = await _userService.InsertUSer(user);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "has been saved successfully",
-                data = user
-            };
+            var response = ObjectResponse.Saved("has been saved successfully", user);
             return Ok(response);
         }
 
@@ -57,14 +50,7 @@ namespace HelpDesk.Controllers
         {
             var user = _mapper.Map<Usuario>(usuarioDto);
             var result = await _userService.UpdateUSer(user, idUserReq);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "has been saved successfully",
-                data = result
-            };
+            var response = ObjectResponse.Saved("has been saved successfully", result);
             return Ok(response);
         }
 

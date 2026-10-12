@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelpDesk.Core.Constants;
 
 namespace HelpDesk.Core.Services
 {
@@ -43,11 +44,11 @@ namespace HelpDesk.Core.Services
                 var statusClient = false;
                 switch (user.Acceso)
                 {
-                    case "ROOT":
-                    case "ADMINISTRADOR":
+                    case Roles.Root:
+                    case Roles.Admin:
                         break;
-                    case "MODERADOR":
-                    case "TECNICO":
+                    case Roles.Moderator:
+                    case Roles.Technician:
                     default:
                         statusClient = true;
                         break;

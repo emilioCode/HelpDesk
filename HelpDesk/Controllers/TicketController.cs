@@ -43,14 +43,7 @@ namespace HelpDesk.Controllers
                 var resp = _mailService.Send(result.Item2.Host, result.Item2.Port, System.Net.Mail.SmtpDeliveryMethod.Network, false,
                 true, result.Item2.EmisorEmail, result.Item2.PasswordEmail, result.Item2.ReceptorEmail, result.Item2.Subject, result.Item2.Body, true);
             }
-            var res = new ObjectResponse
-                {
-                code = "1",
-                    title = "Saved",
-                    icon = "success",
-                    message = "created successfully",
-                    data = ticket
-            };
+            var res = ObjectResponse.Saved("created successfully", ticket);
             return Ok(res);
         }
 
@@ -60,14 +53,7 @@ namespace HelpDesk.Controllers
         {
             var ticket = _mapper.Map<Solicitud>(ticketDto);
             var results = await _ticketService.UpdateTicket(ticket, toDo);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "has been updated successfully",
-                data = results.Item1
-            };
+            var response = ObjectResponse.Saved("has been updated successfully", results.Item1);
             if (results.Item2 != null)
             {
                 var resp = _mailService.Send(results.Item2.Host, results.Item2.Port, System.Net.Mail.SmtpDeliveryMethod.Network, false,

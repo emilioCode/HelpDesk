@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelpDesk.Core.Constants;
 
 namespace HelpDesk.Core.Services
 {
@@ -67,7 +68,7 @@ namespace HelpDesk.Core.Services
             var usuario = await _unitOfWork.UserRepository.GetById(user.Id);
             usuario.Nombre = user.Nombre == "" ? null : user.Nombre;
             usuario.NumDocumento = user.NumDocumento == "" ? null : user.NumDocumento;
-            if (userCreator.Acceso == "ROOT" && user.CuentaUsuario != null && user.CuentaUsuario != "") usuario.CuentaUsuario = user.CuentaUsuario;
+            if (userCreator.Acceso == Roles.Root && user.CuentaUsuario != null && user.CuentaUsuario != "") usuario.CuentaUsuario = user.CuentaUsuario;
             usuario.Contrasena = user.Contrasena == "" ? null : user.Contrasena;
             usuario.Acceso = user.Acceso == "" ? null : user.Acceso;
             usuario.Correo = user.Correo == "" ? null : user.Correo;
@@ -91,7 +92,7 @@ namespace HelpDesk.Core.Services
             List <Usuario> result = new List<Usuario>();
             var user = await GetUserById(id);
             condition = condition.ToLower();
-            var users = _unitOfWork.UserRepository.GetByBusinessId(user.IdEmpresa).Where(x => x.Acceso != "ROOT");
+            var users = _unitOfWork.UserRepository.GetByBusinessId(user.IdEmpresa).Where(x => x.Acceso != Roles.Root);
             if (condition == "unique")
             {
                 result.Add(user);
@@ -107,15 +108,15 @@ namespace HelpDesk.Core.Services
             {
                 switch (user.Acceso)
                 {
-                    case "ROOT":
+                    case Roles.Root:
                         var list = _unitOfWork.UserRepository.GetAll();
                         result.AddRange(list);
                         break;
-                    case "MODERADOR":
-                    case "ADMINISTRADOR":
+                    case Roles.Moderator:
+                    case Roles.Admin:
                         result.AddRange(users);
                         break;
-                    case "TECNICO":
+                    case Roles.Technician:
                     default:
                         result = null;
                         break;
@@ -133,7 +134,7 @@ namespace HelpDesk.Core.Services
                        join empresa in businesses on usuario.IdEmpresa equals empresa.Id
                        where usuario.CuentaUsuario == login.CuentaUsuario
                        && usuario.Contrasena == login.Contrasena
-                       && empresa.Id == usuario.IdEmpresa && usuario.Habilitado == true && (empresa.Habilitado == true || usuario.Acceso == "ROOT")
+                       && empresa.Id == usuario.IdEmpresa && usuario.Habilitado == true && (empresa.Habilitado == true || usuario.Acceso == Roles.Root)
                        select new UserIdentity
                        {
                            Id = usuario.Id,

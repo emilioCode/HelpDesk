@@ -37,14 +37,7 @@ namespace HelpDesk.Controllers
         {
             var business = _mapper.Map<Empresa>(businessDto);
             business = await _businessService.CreateBusinness(userId, business);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "has been saved successfully",
-                data = business
-            };
+            var response = ObjectResponse.Saved("has been saved successfully", business);
             return Ok(response);
         }
 
@@ -55,14 +48,7 @@ namespace HelpDesk.Controllers
         {
             var business = _mapper.Map<Empresa>(businessDto);
             var result = await _businessService.UpdateBusiness(userId, business);
-            var response = new ObjectResponse
-            {
-                code = "1",
-                title = "Saved",
-                icon = "success",
-                message = "has been updated successfully",
-                data = result
-            };
+            var response = ObjectResponse.Saved("has been updated successfully", result);
             return Ok(response);
         }
     }
