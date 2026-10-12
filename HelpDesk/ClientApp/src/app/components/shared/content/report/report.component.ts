@@ -77,7 +77,7 @@ export class ReportComponent implements OnInit {
         });
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
