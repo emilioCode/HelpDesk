@@ -129,8 +129,8 @@
                       <div class="form-group col-xs-3 col-sm-3">
                         <label>Fecha inicio:</label>
                         <div class="input-group">
-                          <!-- <input type="date" class="form-control" [(ngModel)]="ticket.fechaInicio" [attr.min]="ticket.fechaCreacion | date:'yyyy-MM-dd'" disabled> -->
-                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaInicio" [attr.min]="ticket.fechaCreacion | date:'yyyy-MM-dd'" (change)="edit()" [disabled]="option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
+                          <!-- <input type="date" class="form-control" [(ngModel)]="ticket.fechaInicio" disabled> -->
+                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaInicio" (change)="edit()" [disabled]="option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
                           
                         </div>
                       </div>
@@ -143,7 +143,7 @@
                       <div class="form-group col-xs-3 col-sm-3">
                         <label>Fecha fin:</label>
                         <div class="input-group">
-                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaTermino" [attr.min]="ticket.fechaInicio" (change)="edit()" [disabled]="option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
+                          <input type="date" class="form-control" [(ngModel)]="ticket.fechaTermino" (change)="edit()" [disabled]="option=='add' || (ticket.estado=='Completado' && ticket.aprobadoPor!=null)">
                         </div>
                       </div>
                       <div class="form-group col-xs-2 col-sm-2">
