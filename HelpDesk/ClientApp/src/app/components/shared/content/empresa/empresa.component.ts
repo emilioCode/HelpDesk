@@ -39,7 +39,7 @@ export class EmpresaComponent implements OnInit {
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
       // console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
       // debugger
-      if( (component=='empresa' && idEmpresa == this.service.getUser().idEmpresa) || this.service.getUser().acceso =="ROOT" ){
+      if( (component=='empresa' && idEmpresa == this.service.getUser().idEmpresa) || this.service.getUser().acceso ==this.service.roles.root ){
         
         /* */
         // this.service.isLoading = true;

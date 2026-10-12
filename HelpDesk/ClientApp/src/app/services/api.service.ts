@@ -12,6 +12,33 @@ export class ApiService {
   http;
   swal = Swal;
 
+  // Fixed values shared by the screens. Use these instead of writing the text in components or templates.
+  readonly roles = {
+    root: 'ROOT',
+    admin: 'ADMINISTRADOR',
+    moderator: 'MODERADOR',
+    technician: 'TECNICO'
+  };
+  readonly ticketStatuses = {
+    open: 'Abierto',
+    inProgress: 'en Proceso',
+    completed: 'Completado'
+  };
+  // Values of ticket.tipoSolicitud
+  readonly requestTypes = {
+    workshop: 'Servicio Taller',
+    onSite: 'Servicio a Domicilio'
+  };
+  // Values of ticket.tipoServicio
+  readonly serviceTypes = {
+    warranty: 'Garantía',
+    contract: 'Contrato',
+    billable: 'Facturable',
+    rental: 'Renta',
+    loan: 'Préstamo',
+    internal: 'Interno'
+  };
+
   // Shows the validation message returned by the API (HTTP 400) and stops the loading indicator.
   handleHttpError(error: any): void {
     console.error(error);
@@ -87,10 +114,10 @@ export class ApiService {
   }
 
   levels = [
-    { name: 'ROOT', value:4},
-    { name: 'ADMINISTRADOR', value:3},
-    { name: 'MODERADOR', value:2},
-    { name: 'TECNICO', value:1}
+    { name: this.roles.root, value:4},
+    { name: this.roles.admin, value:3},
+    { name: this.roles.moderator, value:2},
+    { name: this.roles.technician, value:1}
   ];
 
   getLevel(acceso):number{
@@ -107,36 +134,38 @@ export class ApiService {
     return (value=='' || value==null)?true:false;
   }
 
-  private ticketStatus = [
-    { name: 'Abierto', value:'Abierto' },
-    { name: 'en Proceso', value:'en Proceso' },
-    { name: 'Completado', value:'Completado' }
+  private ticketStatusList = [
+    { name: this.ticketStatuses.open, value: this.ticketStatuses.open },
+    { name: this.ticketStatuses.inProgress, value: this.ticketStatuses.inProgress },
+    { name: this.ticketStatuses.completed, value: this.ticketStatuses.completed }
   ];
 
   getStatuses(){
-    return this.ticketStatus;
+    return this.ticketStatusList;
   }
 
-  private  typeOfRequests=[
-    { name: 'Garantía', value:'Garantía' },
-    { name: 'Contrato', value:'Contrato' },
-    { name: 'Facturable', value:'Facturable' },
-    { name: 'Renta', value:'Renta' },
-    { name: 'Préstamo', value:'Préstamo' },
-    { name: 'Interno', value:'Interno' }
+  private requestTypeList = [
+    { name: this.requestTypes.workshop, value: this.requestTypes.workshop },
+    { name: this.requestTypes.onSite, value: this.requestTypes.onSite }
   ];
 
-  private typeOfServices  =[
-    { name: 'Servicio Taller', value:'Servicio Taller' },
-    { name: 'Servicio a Domicilio', value:'Servicio a Domicilio' }
+  private serviceTypeList = [
+    { name: this.serviceTypes.warranty, value: this.serviceTypes.warranty },
+    { name: this.serviceTypes.contract, value: this.serviceTypes.contract },
+    { name: this.serviceTypes.billable, value: this.serviceTypes.billable },
+    { name: this.serviceTypes.rental, value: this.serviceTypes.rental },
+    { name: this.serviceTypes.loan, value: this.serviceTypes.loan },
+    { name: this.serviceTypes.internal, value: this.serviceTypes.internal }
   ];
 
+  // Options for ticket.tipoServicio
   getTypeOfServices(){
-    return this.typeOfRequests;
+    return this.serviceTypeList;
   }
 
+  // Options for ticket.tipoSolicitud
   getTypeOfRequests(){
-    return this.typeOfServices;
+    return this.requestTypeList;
   }
 
   validate(value): Boolean{

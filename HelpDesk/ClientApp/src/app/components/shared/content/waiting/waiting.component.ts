@@ -49,7 +49,7 @@ export class WaitingComponent implements OnInit {
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
       // console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
       // debugger
-      if( (component=='ticket' && idEmpresa == this.service.getUser().idEmpresa) || this.service.getUser().acceso =="ROOT" ){
+      if( (component=='ticket' && idEmpresa == this.service.getUser().idEmpresa) || this.service.getUser().acceso ==this.service.roles.root ){
         
         /* */
         // this.service.isLoading = true;
@@ -232,7 +232,7 @@ export class WaitingComponent implements OnInit {
       this.service.swal('Campos requeridos','Asegurese de completar los datos minimos necesarios para crear la orden','warning');
       return false;
     }
-    if(this.ticket.tipoSolicitud == 'Servicio a Domicilio' && this.service.validate(this.ticket.descripcion)){
+    if(this.ticket.tipoSolicitud == this.service.requestTypes.onSite && this.service.validate(this.ticket.descripcion)){
       this.service.swal('Campos requerido','Favor digite falla reportada','warning');
       return false;
     }
@@ -242,7 +242,7 @@ export class WaitingComponent implements OnInit {
       return false;
     }
 
-    if(this.devices.lentgh == 0 && this.ticket.tipoSolicitud =='Servicio Taller'){
+    if(this.devices.lentgh == 0 && this.ticket.tipoSolicitud ==this.service.requestTypes.workshop){
       this.service.swal('Must have a device as well','','warning');
       return false;
     }
@@ -321,7 +321,7 @@ export class WaitingComponent implements OnInit {
   }
 
   clearDevicesIf(){
-    if(this.ticket.tipoSolicitud =='Servicio a Domicilio')this.devices = [];
+    if(this.ticket.tipoSolicitud ==this.service.requestTypes.onSite)this.devices = [];
     this.ticket.descripcion = '';
   }
 
@@ -396,7 +396,7 @@ export class WaitingComponent implements OnInit {
       }
       switch (variable) {
 
-        case "ABIERTO":
+        case this.service.ticketStatuses.open.toUpperCase():
         var temp = this.ticket.estado;
         var response = confirm('Seguro que desea reabrir esta ticket?');
         if(!response){
@@ -406,7 +406,7 @@ export class WaitingComponent implements OnInit {
           option = "NOCHANGEPLEASE";
          
         }
-        case "EN PROCESO":
+        case this.service.ticketStatuses.inProgress.toUpperCase():
           // var response = confirm('Seguro que desea reabrir esta ticket?');
           // if(!response){
       
@@ -416,7 +416,7 @@ export class WaitingComponent implements OnInit {
           
           // }
           break;
-        case "COMPLETADO":
+        case this.service.ticketStatuses.completed.toUpperCase():
         
         // var response = confirm('Utilizó partes o repuestos?\nDesea cerrar la orden?');
         // if(!response){
@@ -505,7 +505,7 @@ export class WaitingComponent implements OnInit {
 
   editAsAdministrator(){
     var todo='EDITAR';
-    if(this.option =='edit' && this.ticket.estado.toUpperCase() == 'COMPLETADO'){
+    if(this.option =='edit' && this.ticket.estado.toUpperCase() == this.service.ticketStatuses.completed.toUpperCase()){
       this.service.swal('Orden Cerrada','No se pudo aplicar ajusto debido a que la orden se encuentra cerrada.', 'warning');
       this.ticket.estado = "NOCHANGEPLEASE";
       todo = 'ESTADO';
@@ -525,7 +525,7 @@ export class WaitingComponent implements OnInit {
   }
 
   setEstatus(){
-    if(this.ticket.estado.toUpperCase() == 'COMPLETADO' && this.traces.length == 0){
+    if(this.ticket.estado.toUpperCase() == this.service.ticketStatuses.completed.toUpperCase() && this.traces.length == 0){
       this.service.swal("Actividades requeridas","Se necesita al menos una actividad realizada",'warning');
       this.ticket.estado = "NOCHANGEPLEASE";
       this.putTicket('ESTADO');
@@ -534,7 +534,7 @@ export class WaitingComponent implements OnInit {
       
       document.getElementById("activity").classList.remove('active');
       document.getElementById("timeline").classList.add('active');
-    } else if(this.ticket.estado.toUpperCase() == 'COMPLETADO'){
+    } else if(this.ticket.estado.toUpperCase() == this.service.ticketStatuses.completed.toUpperCase()){
       this.service.swal({
         title: 'Utilizó partes o repuestos?',
         text: "Desea adicionar algún repuesto?",

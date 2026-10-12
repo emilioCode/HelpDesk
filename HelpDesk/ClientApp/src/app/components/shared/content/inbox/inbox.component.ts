@@ -44,7 +44,7 @@ export class InboxComponent implements OnInit {
     this.hubConnection.on('refresh', (component, idEmpresa,idUsuario,idOther) => {
       // console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
       // debugger
-      if( (component=='ticket' && idEmpresa == this.service.getUser().idEmpresa )  || this.service.getUser().acceso =="ROOT" ){
+      if( (component=='ticket' && idEmpresa == this.service.getUser().idEmpresa )  || this.service.getUser().acceso ==this.service.roles.root ){
         
         /* */
         // this.service.isLoading = true;
@@ -315,7 +315,7 @@ export class InboxComponent implements OnInit {
       }
       switch (variable) {
 
-        case "ABIERTO":
+        case this.service.ticketStatuses.open.toUpperCase():
         var temp = this.ticket.estado;
         var response = confirm('Seguro que desea reabrir esta ticket?');
         if(!response){
@@ -325,7 +325,7 @@ export class InboxComponent implements OnInit {
           option = "NOCHANGEPLEASE";
          
         }
-        case "EN PROCESO":
+        case this.service.ticketStatuses.inProgress.toUpperCase():
           // var response = confirm('Seguro que desea reabrir esta ticket?');
           // if(!response){
       
@@ -335,7 +335,7 @@ export class InboxComponent implements OnInit {
           
           // }
           break;
-        case "COMPLETADO":
+        case this.service.ticketStatuses.completed.toUpperCase():
         
         // var response = confirm('Utilizó partes o repuestos?\nDesea cerrar la orden?');
         // if(!response){
@@ -420,7 +420,7 @@ export class InboxComponent implements OnInit {
 
   editAsAdministrator(){
     var todo='EDITAR';
-    if(this.option =='edit' && this.ticket.estado.toUpperCase() == 'COMPLETADO'){
+    if(this.option =='edit' && this.ticket.estado.toUpperCase() == this.service.ticketStatuses.completed.toUpperCase()){
       this.service.swal('Orden Cerrada','No se pudo aplicar ajusto debido a que la orden se encuentra cerrada.', 'warning');
       this.ticket.estado = "NOCHANGEPLEASE";
       todo = 'ESTADO';
@@ -440,7 +440,7 @@ export class InboxComponent implements OnInit {
   }
 
   setEstatus(){
-    if(this.ticket.estado.toUpperCase() == 'COMPLETADO' && this.traces.length == 0){
+    if(this.ticket.estado.toUpperCase() == this.service.ticketStatuses.completed.toUpperCase() && this.traces.length == 0){
       this.service.swal("Actividades requeridas","Se necesita al menos una actividad realizada",'warning');
       this.ticket.estado = "NOCHANGEPLEASE";
       this.putTicket('ESTADO');
@@ -450,7 +450,7 @@ export class InboxComponent implements OnInit {
       document.getElementById("activity").classList.remove('active');
       document.getElementById("timeline").classList.add('active');
       
-    } else if(this.ticket.estado.toUpperCase() == 'COMPLETADO'){
+    } else if(this.ticket.estado.toUpperCase() == this.service.ticketStatuses.completed.toUpperCase()){
       this.service.swal({
         title: 'Utilizó partes o repuestos?',
         text: "Desea adicionar algún repuesto?",
