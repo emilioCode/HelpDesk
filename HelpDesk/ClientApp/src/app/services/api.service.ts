@@ -39,6 +39,37 @@ export class ApiService {
     internal: 'Interno'
   };
 
+  // Texts shown to the user by more than one screen.
+  readonly messages = {
+    // Titles
+    titleRequiredFields: 'Campos requeridos',
+    titleAccessDenied: 'Access denied',
+    titleClosedOrder: 'Orden Cerrada',
+    titleAdjustmentNotApplied: 'Ajuste no aplicado',
+    titleRequiredActivities: 'Actividades requeridas',
+    // Validation and permission notices
+    fillRequiredFields: 'Favor completar campos.',
+    enterReportedFailure: 'Favor digite falla reportada',
+    completeMinimumOrderData: 'Asegúrese de completar los datos mínimos necesarios para crear la orden',
+    deviceDataRequired: 'Es necesario suministrar los datos del dispositivo',
+    mustHaveDevice: 'Must have a device as well',
+    optionRequired: 'an option is required',
+    activityRequired: 'Se necesita al menos una actividad realizada',
+    noPermissionToAccess: 'No tiene permisos para acceder',
+    noAdminPermissionToAdjust: 'No cuenta con los permisos de Administrador para realizar el ajuste',
+    userDisabled: 'Su usuario ha sido deshabilitado, comuníquese con el administrador',
+    ticketWithoutTechnician: 'Esta orden no tiene técnico asignado.\nNecesita primero asignar un técnico para trabajarla.',
+    closedOrderAdjustment: 'No se pudo aplicar ajuste debido a que la orden se encuentra cerrada.',
+    // Confirmations
+    confirmReopenTicket: 'Seguro que desea reabrir este ticket?',
+    confirmCompleteTicket: 'Seguro que desea confirmar como completado?',
+    confirmAssignTicket: 'Seguro que desea asignar este ticket a este usuario?',
+    usedPartsQuestion: 'Utilizó partes o repuestos?',
+    addPartQuestion: 'Desea adicionar algún repuesto?',
+    yes: 'Si',
+    noOrderIsComplete: 'No, ya está completo'
+  };
+
   // Shows the validation message returned by the API (HTTP 400) and stops the loading indicator.
   handleHttpError(error: any): void {
     console.error(error);

@@ -79,7 +79,7 @@ export class InboxComponent implements OnInit {
       
       if( component=='session' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id  ){
         if(idOther == 0 ){
-          alert('Su usuario ha sido deshabilitado, comuniquese con el administrador');
+          alert(this.service.messages.userDisabled);
           this.service.closeSession();
         }
       }
@@ -232,7 +232,7 @@ export class InboxComponent implements OnInit {
   addDeviceOne(item){
     if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
     ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
-      this.service.swal('Campos requeridos','Es necesario suministrar los datos del disposivo','info');
+      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.deviceDataRequired,'info');
       return false;
     }
     item.id = 0;
@@ -310,14 +310,14 @@ export class InboxComponent implements OnInit {
     if(option =='ESTADO'){
       var variable = this.ticket.estado.toUpperCase();
       if(this.ticket.idUsuario == '0'){
-        alert('Esta orden no tiene tecnico asignado.\nNecesita primero asignar un tecnico para trabajarla.');
+        alert(this.service.messages.ticketWithoutTechnician);
         variable = '';
       }
       switch (variable) {
 
         case this.service.ticketStatuses.open.toUpperCase():
         var temp = this.ticket.estado;
-        var response = confirm('Seguro que desea reabrir esta ticket?');
+        var response = confirm(this.service.messages.confirmReopenTicket);
         if(!response){
     
           // this.getTickets(this.service.getUser().id,"*")
@@ -326,7 +326,7 @@ export class InboxComponent implements OnInit {
          
         }
         case this.service.ticketStatuses.inProgress.toUpperCase():
-          // var response = confirm('Seguro que desea reabrir esta ticket?');
+          // var response = confirm(this.service.messages.confirmReopenTicket);
           // if(!response){
       
           //   // this.getTickets(this.service.getUser().id,"*")
@@ -351,7 +351,7 @@ export class InboxComponent implements OnInit {
           break;
       }
     }else if(option =='USUARIO'){
-      var response = confirm('Seguro que desea asignar este ticket a este usuario?');
+      var response = confirm(this.service.messages.confirmAssignTicket);
       if(!response){
   
         // this.getTickets(this.service.getUser().id,"*")
@@ -362,7 +362,7 @@ export class InboxComponent implements OnInit {
     }else if(option =='EDITAR'){
 
     }else if(option =='APROBAR'){
-      var response = confirm('Seguro que desea confirmar como completado?');
+      var response = confirm(this.service.messages.confirmCompleteTicket);
       // option ='EDITAR';
       if(!response){
         
@@ -374,7 +374,7 @@ export class InboxComponent implements OnInit {
         this.ticket.aprobadoPor = this.service.getUser().id;
       }
     }else{
-      this.service.swal('an option is required','','error');
+      this.service.swal(this.service.messages.optionRequired,'','error');
       option = "NOCHANGEPLEASE";
     }
     this.service.isLoading = true;
@@ -421,12 +421,12 @@ export class InboxComponent implements OnInit {
   editAsAdministrator(){
     var todo='EDITAR';
     if(this.option =='edit' && this.ticket.estado.toUpperCase() == this.service.ticketStatuses.completed.toUpperCase()){
-      this.service.swal('Orden Cerrada','No se pudo aplicar ajusto debido a que la orden se encuentra cerrada.', 'warning');
+      this.service.swal(this.service.messages.titleClosedOrder,this.service.messages.closedOrderAdjustment, 'warning');
       this.ticket.estado = "NOCHANGEPLEASE";
       todo = 'ESTADO';
     }else if(this.option =='edit'){
       if( !(this.service.getLevel(this.service.getUser().acceso)>1) ){
-        this.service.swal('Ajuste no aplicado','No cuenta con los permisos de Administrador para realizar el ajuste', 'error');
+        this.service.swal(this.service.messages.titleAdjustmentNotApplied,this.service.messages.noAdminPermissionToAdjust, 'error');
         this.ticket.estado = "NOCHANGEPLEASE";
         todo = 'ESTADO';
       }
@@ -441,7 +441,7 @@ export class InboxComponent implements OnInit {
 
   setEstatus(){
     if(this.ticket.estado.toUpperCase() == this.service.ticketStatuses.completed.toUpperCase() && this.traces.length == 0){
-      this.service.swal("Actividades requeridas","Se necesita al menos una actividad realizada",'warning');
+      this.service.swal(this.service.messages.titleRequiredActivities,this.service.messages.activityRequired,'warning');
       this.ticket.estado = "NOCHANGEPLEASE";
       this.putTicket('ESTADO');
       document.getElementById("li_activity").classList.remove('active');
@@ -452,14 +452,14 @@ export class InboxComponent implements OnInit {
       
     } else if(this.ticket.estado.toUpperCase() == this.service.ticketStatuses.completed.toUpperCase()){
       this.service.swal({
-        title: 'Utilizó partes o repuestos?',
-        text: "Desea adicionar algún repuesto?",
+        title: this.service.messages.usedPartsQuestion,
+        text: this.service.messages.addPartQuestion,
         type: 'question',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Si',
-        cancelButtonText:'No, ya está completo'
+        confirmButtonText: this.service.messages.yes,
+        cancelButtonText:this.service.messages.noOrderIsComplete
       }).then((result) => {
         // debugger;
         var res = String(result.dismiss);
@@ -555,7 +555,7 @@ export class InboxComponent implements OnInit {
   addPartOne(part){
     if(part.cantidad <1 || this.service.isNullorEmpty(part.noSerial) || this.service.isNullorEmpty(part.descripcion)
     || this.service.isNullorEmpty(part.cantidad) ){
-      this.service.swal('Campos requeridos','Favor completar campos.','warning');
+      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.fillRequiredFields,'warning');
       return false;
     }
     this.service.isLoading = true;
@@ -593,7 +593,7 @@ export class InboxComponent implements OnInit {
   editPartUsed(part){
     if(part.cantidad <1 || this.service.isNullorEmpty(part.noSerial) || this.service.isNullorEmpty(part.descripcion)
     || this.service.isNullorEmpty(part.cantidad) ){
-      this.service.swal('Campos requeridos','Favor completar campos.','warning');
+      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.fillRequiredFields,'warning');
       return false;
     }
     this.service.isLoading = true;
@@ -676,7 +676,7 @@ export class InboxComponent implements OnInit {
   editDevice(part){
     if(this.service.validateTrim(part.marca) || this.service.validateTrim(part.fallaReportada)
     ||this.service.validateTrim(part.modelo) ||this.service.validateTrim(part.noSerial)){
-      this.service.swal('Campos requeridos','Es necesario suministrar los datos del dispositivo','info');
+      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.deviceDataRequired,'info');
       return false;
     }
     this.service.isLoading = true;

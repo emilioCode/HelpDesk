@@ -95,7 +95,7 @@ export class CostumerComponent implements OnInit {
 
   add(){
     if(this.service.getLevel(this.service.getUser().acceso) <= 1){
-      this.service.swal('Access denied','','error');
+      this.service.swal(this.service.messages.titleAccessDenied,'','error');
       return false;
     }
     this.service.isLoading = true;
@@ -116,7 +116,7 @@ export class CostumerComponent implements OnInit {
 
   edit(){
     if(this.service.getLevel(this.service.getUser().acceso) <= 1){
-      this.service.swal('Access denied','','error');
+      this.service.swal(this.service.messages.titleAccessDenied,'','error');
       return false;
     }
     this.service.isLoading = true;

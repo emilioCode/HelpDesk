@@ -12,7 +12,7 @@ export class Waiting4Component implements OnInit {
 
   constructor(private service: ApiService) { 
     if(this.service.getLevel(this.service.getUser().acceso) < 2 ){
-      alert("No tiene permisos para acceder");
+      alert(this.service.messages.noPermissionToAccess);
       this.service.route.navigateByUrl('/');
     }else{
       this.getTickets(this.service.getUser().id,"*")
@@ -86,7 +86,7 @@ export class Waiting4Component implements OnInit {
       
       if( component=='session' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id  ){
         if(idOther == 0 ){
-          alert('Su usuario ha sido deshabilitado, comuniquese con el administrador');
+          alert(this.service.messages.userDisabled);
           this.service.closeSession();
         }
       }
@@ -189,7 +189,7 @@ export class Waiting4Component implements OnInit {
   addDeviceList(item){
     if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
     ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
-      this.service.swal('Campos requeridos','Es necesario suministrar los datos del disposivo','info');
+      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.deviceDataRequired,'info');
       return false;
     }
     item.id =  this.i++;
@@ -230,21 +230,21 @@ export class Waiting4Component implements OnInit {
     if(this.service.validate(this.ticket.tipoSolicitud)
     || this.service.validate(this.ticket.tipoServicio) || this.service.validate(this.ticket.estado)
     || this.service.validate(this.ticket.idCliente) /*|| this.service.validate(this.ticket.idUsuario)*/ ){
-      this.service.swal('Campos requeridos','Asegurese de completar los datos minimos necesarios para crear la orden','warning');
+      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.completeMinimumOrderData,'warning');
       return false;
     }
     if(this.ticket.tipoSolicitud == this.service.requestTypes.onSite && this.service.validate(this.ticket.descripcion)){
-      this.service.swal('Campos requerido','Favor digite falla reportada','warning');
+      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.enterReportedFailure,'warning');
       return false;
     }
 
     if(this.service.getLevel(this.service.getUser().acceso) <= 1){
-      this.service.swal('Access denied','','error');
+      this.service.swal(this.service.messages.titleAccessDenied,'','error');
       return false;
     }
 
     if(this.devices.lentgh == 0 && this.ticket.tipoSolicitud ==this.service.requestTypes.workshop){
-      this.service.swal('Must have a device as well','','warning');
+      this.service.swal(this.service.messages.mustHaveDevice,'','warning');
       return false;
     }
     this.ticket.idUsuario = parseInt(this.ticket.idUsuario);
@@ -275,7 +275,7 @@ export class Waiting4Component implements OnInit {
 
   addDevices(idSolicitud){
     if(this.devices.lentgh == 0){
-      this.service.swal('Must have a device as well','','warning');
+      this.service.swal(this.service.messages.mustHaveDevice,'','warning');
       return false;
     }
     this.service.isLoading = true;
@@ -392,14 +392,14 @@ export class Waiting4Component implements OnInit {
     if(option =='ESTADO'){
       var variable = this.ticket.estado.toUpperCase();
       if(this.ticket.idUsuario == '0'){
-        alert('Esta orden no tiene tecnico asignado.\nNecesita primero asignar un tecnico para trabajarla.');
+        alert(this.service.messages.ticketWithoutTechnician);
         variable = '';
       }
       switch (variable) {
 
         case this.service.ticketStatuses.open.toUpperCase():
         var temp = this.ticket.estado;
-        var response = confirm('Seguro que desea reabrir esta ticket?');
+        var response = confirm(this.service.messages.confirmReopenTicket);
         if(!response){
     
           // this.getTickets(this.service.getUser().id,"*")
@@ -408,7 +408,7 @@ export class Waiting4Component implements OnInit {
          
         }
         case this.service.ticketStatuses.inProgress.toUpperCase():
-          // var response = confirm('Seguro que desea reabrir esta ticket?');
+          // var response = confirm(this.service.messages.confirmReopenTicket);
           // if(!response){
       
           //   // this.getTickets(this.service.getUser().id,"*")
@@ -430,7 +430,7 @@ export class Waiting4Component implements OnInit {
           break;
       }
     }else if(option =='USUARIO'){
-      var response = confirm('Seguro que desea asignar este ticket a este usuario?');
+      var response = confirm(this.service.messages.confirmAssignTicket);
       if(!response){
   
         // this.getTickets(this.service.getUser().id,"*")
@@ -441,7 +441,7 @@ export class Waiting4Component implements OnInit {
     }else if(option =='EDITAR'){
 
     }else if(option =='APROBAR'){
-      var response = confirm('Seguro que desea confirmar como completado?');
+      var response = confirm(this.service.messages.confirmCompleteTicket);
       // option ='EDITAR';
       if(!response){
         
@@ -453,7 +453,7 @@ export class Waiting4Component implements OnInit {
         this.ticket.aprobadoPor = this.service.getUser().id;
       }
     }else{
-      this.service.swal('an option is required','','error');
+      this.service.swal(this.service.messages.optionRequired,'','error');
       option = "NOCHANGEPLEASE";
     }
     this.service.isLoading = true;
@@ -510,7 +510,7 @@ export class Waiting4Component implements OnInit {
 
   setEstatus(){
     if(this.ticket.estado.toUpperCase() == this.service.ticketStatuses.completed.toUpperCase() && this.traces.length == 0){
-      this.service.swal("Actividades requeridas","Se necesita al menos una actividad realizada",'warning');
+      this.service.swal(this.service.messages.titleRequiredActivities,this.service.messages.activityRequired,'warning');
       this.ticket.estado = "NOCHANGEPLEASE";
       this.putTicket('ESTADO');
       document.getElementById("li_activity").classList.remove('active');
@@ -520,14 +520,14 @@ export class Waiting4Component implements OnInit {
       document.getElementById("timeline").classList.add('active');
     } else if(this.ticket.estado.toUpperCase() == this.service.ticketStatuses.completed.toUpperCase()){
       this.service.swal({
-        title: 'Utilizó partes o repuestos?',
-        text: "Desea adicionar algún repuesto?",
+        title: this.service.messages.usedPartsQuestion,
+        text: this.service.messages.addPartQuestion,
         type: 'question',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Si',
-        cancelButtonText:'No, ya está completo'
+        confirmButtonText: this.service.messages.yes,
+        cancelButtonText:this.service.messages.noOrderIsComplete
       }).then((result) => {
         // debugger;
         var res = String(result.dismiss);
@@ -600,7 +600,7 @@ export class Waiting4Component implements OnInit {
   addPartOne(part){
     if(part.cantidad <1 || this.service.isNullorEmpty(part.noSerial) || this.service.isNullorEmpty(part.descripcion)
     || this.service.isNullorEmpty(part.cantidad) ){
-      this.service.swal('Campos requeridos','Favor completar campos.','warning');
+      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.fillRequiredFields,'warning');
       return false;
     }
     this.service.isLoading = true;

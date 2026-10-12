@@ -12,7 +12,7 @@ export class EmpresaComponent implements OnInit {
 
   constructor(private service: ApiService) { 
     if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
-      alert("No tiene permisos para acceder");
+      alert(this.service.messages.noPermissionToAccess);
       this.service.route.navigateByUrl('/');
     }
     this.getBusiness(this.service.getUser().id);
@@ -63,7 +63,7 @@ export class EmpresaComponent implements OnInit {
       
       if( component=='session' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id  ){
         if(idOther == 0 ){
-          alert('Su usuario ha sido deshabilitado, comuniquese con el administrador');
+          alert(this.service.messages.userDisabled);
           this.service.closeSession();
         }
       }
