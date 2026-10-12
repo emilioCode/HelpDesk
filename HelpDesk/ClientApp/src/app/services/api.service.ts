@@ -11,6 +11,25 @@ export class ApiService {
   headers = new HttpHeaders().set("content-type", "application/json");
   http;
   swal = Swal;
+
+  // Shows the validation message returned by the API (HTTP 400) and stops the loading indicator.
+  handleHttpError(error: any): void {
+    console.error(error);
+    this.isLoading = false;
+    const body = error && error.error;
+    const errors = body && body.errors;
+    let title = 'Warning';
+    let message = '';
+    if (Array.isArray(errors) && errors.length > 0 && errors[0].detail) {
+      message = errors[0].detail;
+    } else if (errors && typeof errors === 'object') {
+      message = Object.keys(errors).map(k => errors[k]).join(', ');
+      title = body.title || title;
+    }
+    if (message) {
+      this.swal(title, message, 'warning');
+    }
+  }
   isLoading:boolean;
   level;
   aplicationName = 'HelpDesk';

@@ -61,7 +61,7 @@ export class ProfileComponent implements OnInit {
         this.service.isLoading = false;
 
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -79,7 +79,7 @@ export class ProfileComponent implements OnInit {
         this.service.updateSession(this.users);
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -104,7 +104,7 @@ export class ProfileComponent implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading =false;
       });
     }
@@ -118,7 +118,7 @@ export class ProfileComponent implements OnInit {
         // console.log( this.numbers );
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }

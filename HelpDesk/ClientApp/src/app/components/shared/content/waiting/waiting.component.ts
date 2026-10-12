@@ -76,7 +76,7 @@ export class WaitingComponent implements OnInit {
 
             this.service.isLoading = false;
           },error => {
-            console.error(error);
+            this.service.handleHttpError(error);
             this.service.isLoading = false;
           });
         /* */
@@ -93,6 +93,8 @@ export class WaitingComponent implements OnInit {
 
     this.hubConnection.start().catch(err => console.error(err.toString()));
   }
+
+  savedDates: any;
 
   fillModal(option='add',object,doProcess=true){
     this.addDevice=false;
@@ -129,6 +131,7 @@ export class WaitingComponent implements OnInit {
     
         if(this.ticket.fechaInicio!=null)this.ticket.fechaInicio = new Date(this.ticket.fechaInicio).toISOString().split('T')[0];
         if(this.ticket.fechaTermino!=null)this.ticket.fechaTermino = new Date(this.ticket.fechaTermino).toISOString().split('T')[0];
+        this.savedDates = { fechaInicio: this.ticket.fechaInicio, horaInicio: this.ticket.horaInicio, fechaTermino: this.ticket.fechaTermino, horaTermino: this.ticket.horaTermino };
       
     }
 
@@ -164,7 +167,7 @@ export class WaitingComponent implements OnInit {
         this.costumers = res;
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -176,7 +179,7 @@ export class WaitingComponent implements OnInit {
         this.users = res;
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -217,7 +220,7 @@ export class WaitingComponent implements OnInit {
         });
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -264,7 +267,7 @@ export class WaitingComponent implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading =false;
       });
   }
@@ -299,7 +302,7 @@ export class WaitingComponent implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading =false;
       });
   }
@@ -312,7 +315,7 @@ export class WaitingComponent implements OnInit {
         // console.log(  this.devices )
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -331,7 +334,7 @@ export class WaitingComponent implements OnInit {
 
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -352,7 +355,7 @@ export class WaitingComponent implements OnInit {
 
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -376,7 +379,7 @@ export class WaitingComponent implements OnInit {
 
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -477,7 +480,14 @@ export class WaitingComponent implements OnInit {
 
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
+        this.ticket.estado = temp;
+        if (this.savedDates) {
+          this.ticket.fechaInicio = this.savedDates.fechaInicio;
+          this.ticket.horaInicio = this.savedDates.horaInicio;
+          this.ticket.fechaTermino = this.savedDates.fechaTermino;
+          this.ticket.horaTermino = this.savedDates.horaTermino;
+        }
         this.service.isLoading = false;
       });
   }
@@ -585,7 +595,7 @@ export class WaitingComponent implements OnInit {
         // console.log( this.costumerAPs )
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -598,7 +608,7 @@ export class WaitingComponent implements OnInit {
         // console.log(  this.parts )
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -630,7 +640,7 @@ export class WaitingComponent implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading =false;
       });
   }
@@ -653,7 +663,7 @@ export class WaitingComponent implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading =false;
       });
   }
@@ -702,7 +712,7 @@ export class WaitingComponent implements OnInit {
     }
     this.service.isLoading =false;
     },error => {
-      console.error(error);
+      this.service.handleHttpError(error);
       this.service.isLoading =false;
     });
   }
@@ -726,7 +736,7 @@ export class WaitingComponent implements OnInit {
     }
     this.service.isLoading =false;
     },error => {
-      console.error(error);
+      this.service.handleHttpError(error);
       this.service.isLoading =false;
     });
   }
@@ -756,7 +766,7 @@ export class WaitingComponent implements OnInit {
     }
     this.service.isLoading =false;
     },error => {
-      console.error(error);
+      this.service.handleHttpError(error);
       this.service.isLoading =false;
     });
   }
@@ -785,7 +795,7 @@ export class WaitingComponent implements OnInit {
     }
     this.service.isLoading =false;
     },error => {
-      console.error(error);
+      this.service.handleHttpError(error);
       this.service.isLoading =false;
     });
   }

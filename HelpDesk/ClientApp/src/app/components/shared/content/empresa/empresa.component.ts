@@ -54,7 +54,7 @@ export class EmpresaComponent implements OnInit {
             }
             this.service.isLoading = false;
           },error => {
-            console.error(error);
+            this.service.handleHttpError(error);
             this.service.isLoading = false;
           });
         /* */
@@ -79,7 +79,7 @@ export class EmpresaComponent implements OnInit {
         this.empresas = res;
         this.service.isLoading = false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading = false;
       });
   }
@@ -174,7 +174,7 @@ export class EmpresaComponent implements OnInit {
       }
       this.service.isLoading =false;
       },error => {
-        console.error(error);
+        this.service.handleHttpError(error);
         this.service.isLoading =false;
       });
 
