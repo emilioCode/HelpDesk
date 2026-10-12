@@ -1,0 +1,9 @@
+**/bin
+**/obj
+**/node_modules
+HelpDesk/ClientApp/dist
+.git
+.vs
+.claude
+.env
+.DS_Store

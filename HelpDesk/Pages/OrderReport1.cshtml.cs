@@ -1,9 +1,11 @@
 ﻿using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HelpDesk.Pages
 {
@@ -26,21 +28,24 @@ namespace HelpDesk.Pages
             _customerService = customerService;
             _ticketService = ticketService;
         }
-        public async void OnGet(string value)
+        public async Task<IActionResult> OnGetAsync(string value)
         {
-            var noTicket = value.Split('-')[0];
-            var idEmpresa = Convert.ToInt32(value.Split('-')[1]);
+            var parts = value?.Split('-');
+            if (parts == null || parts.Length != 2 || !int.TryParse(parts[1], out var idEmpresa)) return NotFound();
+            var noTicket = parts[0];
             empresa = await _businessService.GetById(idEmpresa);
-            solicitud = _ticketService.GetTicketBySecuencialNumber(noTicket).First();
+            solicitud = _ticketService.GetTicketBySecuencialNumber(noTicket).FirstOrDefault(x => x.IdEmpresa == idEmpresa);
+            if (empresa == null || solicitud == null) return NotFound();
             var listOfCustomer = await _customerService.GetCustomersByIdAndCondition(solicitud.IdCliente, "unique");
             cliente = listOfCustomer.ToList().First();
-            equipos = _deviceService.GetDevicesByTicketId(solicitud.IdCliente).ToList();
+            equipos = _deviceService.GetDevicesByTicketId(solicitud.Id).Where(e => e.IdEmpresa == idEmpresa).ToList();
             while (equipos.Count < 4)
             {
                 var equipoTemp = new Equipo();
                 equipos.Add(equipoTemp);
             }
             title = $"HelpDesk - Service Order No.{noTicket}";
+            return Page();
         }
     }
 }
