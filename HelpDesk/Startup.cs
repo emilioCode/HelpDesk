@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Linq;
 
 namespace HelpDesk
 {
@@ -22,10 +23,16 @@ namespace HelpDesk
 
         public IConfiguration Configuration { get; }
 
+        // Dynamic assemblies (for example the ones a mocking library generates in tests) cannot be scanned.
+        private static System.Reflection.Assembly[] ScannableAssemblies()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic).ToArray();
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {     
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddAutoMapper(ScannableAssemblies());
             services.AddDbContexts(Configuration);
             services.AddSecurityServices(Configuration);
             services.AddHelpDeskAuthentication(Configuration);
@@ -54,7 +61,7 @@ namespace HelpDesk
                 })
                 .AddFluentValidation(options =>
                 {
-                    options.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+                    options.RegisterValidatorsFromAssemblies(ScannableAssemblies());
                 });
 
             services.AddServices();

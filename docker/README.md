@@ -3,7 +3,7 @@
 Works the same on Windows, macOS and Linux. The only requirement is Docker with Compose v2.
 
 ```sh
-cp .env.example .env      # set MSSQL_SA_PASSWORD (and HELPDESK_PORT if 8080 is taken)
+cp .env.example .env      # set MSSQL_SA_PASSWORD, JWT_KEY and SECRETS_KEY (and HELPDESK_PORT if 8080 is taken)
 docker compose up --build
 ```
 
@@ -30,6 +30,23 @@ docker compose down -v          # stop and delete the database
 
 The app reads its connection string from `ConnectionStrings__HelpDesk`, set in `docker-compose.yml`.
 For another environment (cloud, managed SQL), override that variable; no code change is needed.
+
+### Security settings
+
+| Variable | Purpose |
+|----------|---------|
+| `JWT_KEY` (`Jwt__Key`) | Signs the access tokens. Required, at least 32 characters, keep it secret. |
+| `SECRETS_KEY` (`Secrets__Key`) | Encrypts the companies' mail password in the database. Required, at least 32 characters. Changing it makes the stored mail passwords unreadable. |
+| `AUTH_ENFORCE` (`Auth__Enforce`) | `false` (default) keeps anonymous requests working so the current front end runs until it sends the token. `true` rejects requests without a valid token. |
+| `Jwt__ExpiresMinutes` | Token lifetime, 480 (8 hours) by default. |
+| `Auth__MaxFailedAttempts`, `Auth__LockoutMinutes` | Sign-in lockout, 5 attempts and 15 minutes by default. |
+| `Cors__AllowedOrigins` | Comma separated origins allowed to call the API from another site. Empty by default because the front end is served by the API itself. |
+
+The app does not start without `Jwt__Key` and `Secrets__Key`. Never reuse the example values.
+
+### Existing databases
+
+The company mail password is stored encrypted and needs a wider column. Databases created before this change must run `db/migrations/001-widen-company-mail-password.sql` once. Plain-text user passwords are converted to hashes the first time each user signs in; a stored mail password is encrypted the next time its company is saved.
 
 ## Notes
 
