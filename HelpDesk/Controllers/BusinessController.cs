@@ -29,6 +29,11 @@ namespace HelpDesk.Controllers
         {
             var businesses = await _businessService.GetBusinessesByUserAccess(userId);
             var businessDtos = _mapper.Map<IEnumerable<EmpresaDto>>(businesses);
+            if (businessDtos != null)
+            {
+                // The mail password is never sent back to the client.
+                foreach (var businessDto in businessDtos) businessDto.Contrasena = null;
+            }
             return Ok(businessDtos);
         }
 
@@ -38,7 +43,9 @@ namespace HelpDesk.Controllers
         {
             var business = _mapper.Map<Empresa>(businessDto);
             business = await _businessService.CreateBusinness(userId, business);
-            var response = ObjectResponse.Saved(Messages.Saved, business);
+            var created = _mapper.Map<EmpresaDto>(business);
+            if (created != null) created.Contrasena = null;
+            var response = ObjectResponse.Saved(Messages.Saved, created);
             return Ok(response);
         }
 

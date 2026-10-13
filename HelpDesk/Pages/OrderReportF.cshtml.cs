@@ -22,6 +22,7 @@ namespace HelpDesk.Pages
         public string soluciones { get; set; }
         public List<Piezas> piezas { get; set; }
 
+        private readonly ICurrentUser _currentUser;
         private readonly IDeviceService _deviceService;
         private readonly IBusinessService _businessService;
         private readonly ICustomerService _customerService;
@@ -29,8 +30,9 @@ namespace HelpDesk.Pages
         private readonly IPieceService _pieceService;
         private readonly ITraceService _traceService;
 
-        public OrderReportFModel(IDeviceService deviceService, IBusinessService businessService, ICustomerService customerService, ITicketService ticketService, IPieceService pieceService, ITraceService traceService)
+        public OrderReportFModel(ICurrentUser currentUser, IDeviceService deviceService, IBusinessService businessService, ICustomerService customerService, ITicketService ticketService, IPieceService pieceService, ITraceService traceService)
         {
+            _currentUser = currentUser;
             _deviceService = deviceService;
             _businessService = businessService;
             _customerService = customerService;
@@ -44,6 +46,7 @@ namespace HelpDesk.Pages
             var parts = value?.Split('-');
             if (parts == null || parts.Length != 2 || !int.TryParse(parts[1], out var idEmpresa)) return NotFound();
             var noTicket = parts[0];
+            if (_currentUser.IsAuthenticated && idEmpresa != _currentUser.CompanyId) return Forbid();
             empresa = await _businessService.GetById(idEmpresa);
             solicitud = _ticketService.GetTicketBySecuencialNumber(noTicket).FirstOrDefault(x => x.IdEmpresa == idEmpresa);
             if (empresa == null || solicitud == null) return NotFound();

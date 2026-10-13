@@ -13,7 +13,7 @@ namespace HelpDesk.Core.Interfaces
         Task<bool> UpdateUSer(Usuario user, int userCreatorId);
         Task<bool> Delete(int id);
         Task<IEnumerable<Usuario>> GetUsersByIdAndCondition(int id, string condition);
-        UserIdentity GetLoginByCredentials(Usuario login);
+        Task<UserIdentity> LoginAsync(string account, string password);
         Task<bool> ValidateUserAccount (int idEmpresa, string userAccount);
     }
 }

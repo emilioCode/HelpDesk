@@ -1,38 +1,37 @@
-﻿using AutoMapper;
 using HelpDesk.Controllers;
 using HelpDesk.Core.CustomEntities;
-using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
+using HelpDesk.Security;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Threading.Tasks;
 
 namespace HelpDesk.Tests.Controllers
 {
     public class LoginControllerTests
     {
-        private readonly Mock<IUserService> _userServiceMock;
-        private readonly Mock<IMapper> _mapperMock;
+        private Mock<IUserService> _userServiceMock;
+        private Mock<ITokenService> _tokenServiceMock;
+        private LoginController _loginController;
 
-        private readonly LoginController _loginController;
-
-        public LoginControllerTests()
+        [SetUp]
+        public void SetUp()
         {
             _userServiceMock = new Mock<IUserService>();
-            _mapperMock = new Mock<IMapper>();  
+            _tokenServiceMock = new Mock<ITokenService>();
 
-            _loginController = new LoginController(_userServiceMock.Object, _mapperMock.Object);
+            _loginController = new LoginController(_userServiceMock.Object, _tokenServiceMock.Object)
+            {
+                ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
+            };
         }
 
         [Test]
         public void LoginController_Constructor_InitializesDependencies()
         {
-            // Arrange
-
-            // Act
-
-            // Assert
             Assert.NotNull(_loginController);
         }
 
@@ -57,25 +56,70 @@ namespace HelpDesk.Tests.Controllers
         }
 
         [Test]
-        public void Post_GetLoginByCredentialsWithObjectResponse()
+        public async Task Post_ValidCredentials_ReturnsTheUserWithTheToken()
         {
             // Arrange
-            UserLogin userLogin = new UserLogin();
-            Usuario user = new Usuario();
-            UserIdentity userIdentity = new UserIdentity();
+            var userLogin = new UserLogin { CuentaUsuario = "ana", Contrasena = "secret1" };
+            var userIdentity = new UserIdentity { Id = 2, UserName = "ana" };
+            var expires = DateTime.UtcNow.AddHours(8);
+            _userServiceMock.Setup(service => service.LoginAsync("ana", "secret1")).ReturnsAsync(userIdentity);
+            _tokenServiceMock.Setup(service => service.Create(userIdentity)).Returns(("the-token", expires));
 
             // Act
-            _mapperMock.Setup(service => service.Map<Usuario>(userLogin))
-                .Returns(user);
-            _userServiceMock.Setup(service => service.GetLoginByCredentials(user))
-                .Returns(userIdentity);
-
-            var result = _loginController.Post(userLogin) as ObjectResult;
+            var result = await _loginController.Post(userLogin) as ObjectResult;
 
             // Assert
             Assert.NotNull(result);
-            Assert.IsTrue(result.StatusCode.Equals(200));
-            Assert.IsTrue(userIdentity.Equals(result.Value));
+            Assert.AreEqual(200, result.StatusCode);
+            var returned = result.Value as UserIdentity;
+            Assert.AreEqual("the-token", returned.Token);
+            Assert.AreEqual(expires, returned.ExpiresAt);
+        }
+
+        [Test]
+        public async Task Post_ValidCredentials_SetsAnHttpOnlyCookieForTheReports()
+        {
+            // Arrange
+            var userLogin = new UserLogin { CuentaUsuario = "ana", Contrasena = "secret1" };
+            var userIdentity = new UserIdentity { Id = 2 };
+            _userServiceMock.Setup(service => service.LoginAsync("ana", "secret1")).ReturnsAsync(userIdentity);
+            _tokenServiceMock.Setup(service => service.Create(userIdentity)).Returns(("the-token", DateTime.UtcNow.AddHours(8)));
+
+            // Act
+            await _loginController.Post(userLogin);
+
+            // Assert
+            var setCookie = _loginController.Response.Headers["Set-Cookie"].ToString();
+            StringAssert.Contains("hd_token=the-token", setCookie);
+            StringAssert.Contains("httponly", setCookie.ToLowerInvariant());
+            StringAssert.Contains("samesite=strict", setCookie.ToLowerInvariant());
+        }
+
+        [Test]
+        public async Task Post_InvalidCredentials_ReturnsNoUserAndNoToken()
+        {
+            // Arrange
+            var userLogin = new UserLogin { CuentaUsuario = "ana", Contrasena = "wrong" };
+            _userServiceMock.Setup(service => service.LoginAsync("ana", "wrong")).ReturnsAsync((UserIdentity)null);
+
+            // Act
+            var result = await _loginController.Post(userLogin) as ObjectResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.IsNull(result.Value);
+            _tokenServiceMock.Verify(service => service.Create(It.IsAny<UserIdentity>()), Times.Never);
+            Assert.IsFalse(_loginController.Response.Headers.ContainsKey("Set-Cookie"));
+        }
+
+        [Test]
+        public void Logout_ClearsTheReportCookie()
+        {
+            // Act
+            _loginController.Logout();
+
+            // Assert
+            StringAssert.Contains("hd_token=;", _loginController.Response.Headers["Set-Cookie"].ToString());
         }
     }
 }

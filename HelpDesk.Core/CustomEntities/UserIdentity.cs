@@ -1,4 +1,6 @@
-﻿namespace HelpDesk.Core.CustomEntities
+﻿using System;
+
+namespace HelpDesk.Core.CustomEntities
 {
     public class UserIdentity
     {
@@ -10,5 +12,9 @@
         public string UserName { get; set; }
         public byte[] Image { get; set; }
         public byte[] Logo { get; set; }
+
+        // Filled in by the login: the access token and when it expires.
+        public string Token { get; set; }
+        public DateTime? ExpiresAt { get; set; }
     }
 }

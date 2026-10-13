@@ -216,7 +216,7 @@ CREATE TABLE [dbo].[EMPRESA](
 	[rnc] [varchar](50) NULL,
 	[telefono] [varchar](50) NULL,
 	[correo] [varchar](50) NULL,
-	[contrasena] [varchar](30) NULL,
+	[contrasena] [varchar](500) NULL,
 	[url] [varchar](80) NULL,
 	[host] [varchar](30) NULL,
 	[port] [int] NULL,
