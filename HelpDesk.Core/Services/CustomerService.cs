@@ -1,5 +1,7 @@
 ﻿using HelpDesk.Core.Entities;
+using HelpDesk.Core.Exceptions;
 using HelpDesk.Core.Interfaces;
+using HelpDesk.Core.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +13,16 @@ namespace HelpDesk.Core.Services
     public class CustomerService : ICustomerService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CustomerService(IUnitOfWork unitOfWork)
+        private readonly ICurrentUser _currentUser;
+        public CustomerService(IUnitOfWork unitOfWork, ICurrentUser currentUser)
         {
             _unitOfWork = unitOfWork;
+            _currentUser = currentUser;
         }
 
         public async Task<Cliente> CreateCustomer(Cliente customer)
         {
+            if (_currentUser.IsAuthenticated) customer.IdEmpresa = _currentUser.CompanyId;
             customer.Habilitado = true;
             await _unitOfWork.CustomerRepository.Add(customer);
             await _unitOfWork.SaveChangeAsync();
@@ -36,11 +41,12 @@ namespace HelpDesk.Core.Services
             if (option == "unique")
             {
                 var customer = await _unitOfWork.CustomerRepository.GetById(id);
+                if (customer != null) _currentUser.RequireCompany(customer.IdEmpresa);
                 customers.Add(customer);
             }
             else if (option == "*" || option == "all")
             {
-                var user = await _unitOfWork.UserRepository.GetById(id);
+                var user = await _unitOfWork.UserRepository.GetById(_currentUser.ResolveUserId(id));
                 var statusClient = false;
                 switch (user.Acceso)
                 {
@@ -63,11 +69,20 @@ namespace HelpDesk.Core.Services
 
         public async Task<bool> UpdateCustomer(Cliente customer, int userId)
         {
-            var user = await _unitOfWork.UserRepository.GetById(userId);
+            var user = await _unitOfWork.UserRepository.GetById(_currentUser.ResolveUserId(userId));
 
             if (user is null)
             {
                 throw new Exception($"the user is required");
+            }
+
+            if (_currentUser.IsAuthenticated)
+            {
+                var existing = _unitOfWork.CustomerRepository.GetAll().FirstOrDefault(x => x.Id == customer.Id);
+                if (existing == null) throw new AccessDeniedException();
+                _currentUser.RequireCompany(existing.IdEmpresa);
+                // Enabling or disabling a customer is an administrator action.
+                if (existing.Habilitado != customer.Habilitado) _currentUser.RequireLevel(RoleLevel.Admin);
             }
 
             customer.IdEmpresa = user.IdEmpresa;

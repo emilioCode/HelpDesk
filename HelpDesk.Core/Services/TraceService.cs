@@ -1,6 +1,8 @@
 ﻿using HelpDesk.Core.CustomEntities;
 using HelpDesk.Core.Entities;
+using HelpDesk.Core.Exceptions;
 using HelpDesk.Core.Interfaces;
+using HelpDesk.Core.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +12,18 @@ namespace HelpDesk.Core.Services
 {
     public class TraceService : ITraceService
     {
-        private IUnitOfWork _unitOfWork;    
-        public TraceService(IUnitOfWork unitOfWork)
+        private IUnitOfWork _unitOfWork;
+        private readonly ICurrentUser _currentUser;
+        public TraceService(IUnitOfWork unitOfWork, ICurrentUser currentUser)
         {
             _unitOfWork = unitOfWork;
+            _currentUser = currentUser;
         }
 
         public IEnumerable<CustomTrace> GetTracesById(int ticketId, int businessId)
         {
+            _currentUser.EnsureTicketInCompany(_unitOfWork, ticketId);
+            if (_currentUser.IsAuthenticated) businessId = _currentUser.CompanyId;
             var tickets = _unitOfWork.TicketRepository.GetAll().ToList();
             var traces = _unitOfWork.TraceRepository.GetAll().ToList();
             var users = _unitOfWork.UserRepository.GetAll().ToList();
@@ -45,6 +51,12 @@ namespace HelpDesk.Core.Services
 
         public async Task<Seguimiento> AddTrace(Seguimiento trace)
         {
+            _currentUser.EnsureTicketInCompany(_unitOfWork, trace.IdSolicitud);
+            if (_currentUser.IsAuthenticated)
+            {
+                trace.IdEmpresa = _currentUser.CompanyId;
+                trace.IdUsuario = _currentUser.Id;
+            }
             trace.Fecha = DateTime.Now.Date;
             trace.Hora = DateTime.Now.TimeOfDay;
             trace.Favorito = false;
@@ -57,6 +69,15 @@ namespace HelpDesk.Core.Services
 
         public async Task<Seguimiento> UpdateTrace(Seguimiento trace)
         {
+            if (_currentUser.IsAuthenticated)
+            {
+                var persisted = _unitOfWork.TraceRepository.GetAll().FirstOrDefault(x => x.Id == trace.Id);
+                if (persisted == null) throw new AccessDeniedException();
+                _currentUser.RequireCompany(persisted.IdEmpresa);
+                trace.IdEmpresa = persisted.IdEmpresa;
+                trace.IdSolicitud = persisted.IdSolicitud;
+                trace.IdUsuario = persisted.IdUsuario;
+            }
             _unitOfWork.TraceRepository.Update(trace);
             await _unitOfWork.SaveChangeAsync();
             return trace;

@@ -2,6 +2,7 @@ using AutoMapper;
 using FluentValidation.AspNetCore;
 using HelpDesk.Infrastructure.Extensions;
 using HelpDesk.Infrastructure.Filters;
+using HelpDesk.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
@@ -26,6 +27,8 @@ namespace HelpDesk
         {     
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddDbContexts(Configuration);
+            services.AddSecurityServices(Configuration);
+            services.AddHelpDeskAuthentication(Configuration);
 
             services.AddSignalR();
             services.AddRazorPages();
@@ -80,12 +83,6 @@ namespace HelpDesk
             app.UseDefaultFiles();
             app.UseSpaStaticFiles();
 
-            app.UseCors(options =>
-            {
-                options.AllowAnyOrigin();
-                options.AllowAnyHeader();
-                options.AllowAnyMethod();
-            });
             //app.UseSignalR(x =>
             //{
             //    x.MapHub<Hubs.hub>("/hub");
@@ -97,6 +94,20 @@ namespace HelpDesk
             //        template: "{controller}/{action=Index}/{id?}");
             //});
             app.UseRouting();
+            // The SPA is served by this same application, so CORS is only needed when other origins are configured.
+            var allowedOrigins = (Configuration["Cors:AllowedOrigins"] ?? string.Empty)
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            if (allowedOrigins.Length > 0)
+            {
+                app.UseCors(options =>
+                {
+                    options.WithOrigins(allowedOrigins);
+                    options.AllowAnyHeader();
+                    options.AllowAnyMethod();
+                });
+            }
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
