@@ -52,6 +52,16 @@ namespace HelpDesk.Tests.Integration
             Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
+        [TestCase("/")]
+        [TestCase("/ticket")]
+        [TestCase("/user")]
+        [TestCase("/main.js")]
+        public async Task TheSinglePageApp_CanBeLoadedWithoutASession(string url)
+        {
+            var response = await _api.CreateClient().GetAsync(url);
+            Assert.AreNotEqual(HttpStatusCode.Unauthorized, response.StatusCode, "the sign-in screen has to load: " + url);
+        }
+
         [Test]
         public async Task Login_WithTheRightPassword_ReturnsTheUserAndAToken()
         {

@@ -28,10 +28,11 @@ namespace HelpDesk.Tests.Integration
         public const string JwtKey = "integration-test-jwt-key-with-more-than-32-chars";
         public const string SecretsKey = "integration-test-secrets-key-with-more-than-32-chars";
 
-        private readonly bool _enforce;
+        private readonly bool? _enforce;
         private readonly string _databaseName = Guid.NewGuid().ToString();
 
-        public ApiFactory(bool enforce = true)
+        // enforce = null leaves Auth:Enforce unset, to check the default.
+        public ApiFactory(bool? enforce = true)
         {
             _enforce = enforce;
         }
@@ -41,15 +42,22 @@ namespace HelpDesk.Tests.Integration
             builder.UseEnvironment("Testing");
             builder.ConfigureAppConfiguration((context, config) =>
             {
-                // The single page app is not built in tests; an empty folder keeps the static files setup happy.
-                Directory.CreateDirectory(Path.Combine(context.HostingEnvironment.ContentRootPath, "ClientApp", "dist"));
+                // The single page app is not built in tests; a few stand-in files let the static file rules be checked.
+                var dist = Path.Combine(context.HostingEnvironment.ContentRootPath, "ClientApp", "dist");
+                Directory.CreateDirectory(dist);
+                File.WriteAllText(Path.Combine(dist, "index.html"), "<html><body>HelpDesk</body></html>");
+                File.WriteAllText(Path.Combine(dist, "runtime.js"), "// unhashed bundle");
+                File.WriteAllText(Path.Combine(dist, "main.0123456789abcdef0123.js"), "// hashed bundle");
                 config.AddInMemoryCollection(new Dictionary<string, string>
                 {
                     ["Jwt:Key"] = JwtKey,
                     ["Secrets:Key"] = SecretsKey,
-                    ["Auth:Enforce"] = _enforce ? "true" : "false",
                     ["ConnectionStrings:HelpDesk"] = "unused"
                 });
+                if (_enforce.HasValue)
+                {
+                    config.AddInMemoryCollection(new Dictionary<string, string> { ["Auth:Enforce"] = _enforce.Value ? "true" : "false" });
+                }
             });
             builder.ConfigureTestServices(services =>
             {
@@ -83,7 +91,9 @@ namespace HelpDesk.Tests.Integration
                 User(8, "lockme", "TECNICO", 1, hash),
                 User(9, "tech3", "TECNICO", 1, hash),
                 User(10, "pwuser", "TECNICO", 1, hash),                  // changes their password
-                User(11, "adminc", "ADMINISTRADOR", 3, hash));            // the company whose settings are edited
+                User(11, "adminc", "ADMINISTRADOR", 3, hash),
+                User(12, "renewrole", "TECNICO", 1, hash),                // gets promoted after signing in
+                User(13, "renewoff", "TECNICO", 1, hash));                 // gets disabled after signing in
 
             db.Clientes.AddRange(
                 new Cliente { Id = 1, Nombre = "Customer A", Correo = "ca@test.local", IdEmpresa = 1, Habilitado = true },

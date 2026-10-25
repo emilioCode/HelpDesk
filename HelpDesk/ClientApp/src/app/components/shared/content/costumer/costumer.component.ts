@@ -26,7 +26,7 @@ export class CostumerComponent implements OnInit {
 
   ngOnInit() {
     this.hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl(this.service.baseUrl+'hub')
+    .withUrl(this.service.baseUrl+'hub', { accessTokenFactory: () => this.service.getToken() })
     //.withUrl('/hub'//this.service.baseUrl+'/hub'
     // ,{
     //   skipNegotiation: true,

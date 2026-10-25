@@ -18,8 +18,9 @@ namespace HelpDesk.Security
                 Key = configuration["Jwt:Key"],
                 Issuer = configuration["Jwt:Issuer"] ?? "HelpDesk",
                 Audience = configuration["Jwt:Audience"] ?? "HelpDesk",
-                ExpiresMinutes = int.TryParse(configuration["Jwt:ExpiresMinutes"], out var minutes) && minutes > 0 ? minutes : 480,
-                Enforce = string.Equals(configuration["Auth:Enforce"], "true", StringComparison.OrdinalIgnoreCase)
+                ExpiresMinutes = int.TryParse(configuration["Jwt:ExpiresMinutes"], out var minutes) && minutes > 0 ? minutes : AuthOptions.DefaultExpiresMinutes,
+                // Safe by default: requests need a token unless Auth:Enforce is explicitly set to false.
+                Enforce = !string.Equals(configuration["Auth:Enforce"], "false", StringComparison.OrdinalIgnoreCase)
             };
 
             if (string.IsNullOrEmpty(options.Key) || options.Key.Length < AuthOptions.MinimumKeyLength)

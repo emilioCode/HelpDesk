@@ -67,7 +67,17 @@ export class ApiService {
     usedPartsQuestion: 'Utilizó partes o repuestos?',
     addPartQuestion: 'Desea adicionar algún repuesto?',
     yes: 'Si',
-    noOrderIsComplete: 'No, ya está completo'
+    noOrderIsComplete: 'No, ya está completo',
+    // Session
+    titleSessionExpired: 'Sesión expirada',
+    sessionExpired: 'Su sesión expiró. Inicie sesión de nuevo.',
+    titleSessionExpiring: 'Su sesión está por expirar',
+    sessionExpiring: 'Por seguridad, su sesión se cerrará pronto. ¿Desea continuar?',
+    continueSession: 'Continuar',
+    // Errors without a message from the server
+    titleError: 'Error',
+    noConnection: 'No se pudo conectar con el servidor. Verifique su conexión e intente de nuevo.',
+    unexpectedError: 'Ocurrió un error inesperado. Intente de nuevo; si continúa, comuníquese con soporte.'
   };
 
   // Shows the validation message returned by the API (HTTP 400) and stops the loading indicator.
@@ -86,6 +96,22 @@ export class ApiService {
     }
     if (message) {
       this.swal(title, message, 'warning');
+      return;
+    }
+
+    // The answer carried no message. Say something for the failures the user would otherwise never notice.
+    // A 401 is handled by the interceptor, and nothing is added over a popup that is already open.
+    const status = error && error.status;
+    const alreadyOpen = this.swal.isVisible && this.swal.isVisible();
+    if (alreadyOpen || status === 401) {
+      return;
+    }
+    if (status === 0) {
+      this.swal(this.messages.titleError, this.messages.noConnection, 'error');
+    } else if (status === 403) {
+      this.swal(this.messages.titleAccessDenied, this.messages.noPermissionToAccess, 'warning');
+    } else if (status >= 500) {
+      this.swal(this.messages.titleError, this.messages.unexpectedError, 'error');
     }
   }
   isLoading:boolean;
@@ -118,21 +144,62 @@ export class ApiService {
   }
 
   setUser(user:any):void{
+    // The access token comes with the user. Its lifetime is kept so the renewal can be scheduled.
+    if (user && user.expiresAt) {
+      user.tokenLifetimeMs = new Date(user.expiresAt).getTime() - Date.now();
+    }
     this.sessionSt.store('user',user);
     this.route.navigateByUrl('/');
     window.location.reload();
   }
 
   closeSession(){
+    // Also clears the cookie the printable reports use. If it fails the cookie expires with the token.
+    this.http.post(this.baseUrl + 'api/Login/Logout', {}).subscribe(() => {}, () => {});
     while (this.sessionSt.retrieve('user')!=null) {
       this.sessionSt.clear('user');
       this.route.navigateByUrl('/');
     }
-    
+
   }
 
   getUser(){
     return this.sessionSt.retrieve('user');
+  }
+
+  getToken(): string {
+    const user = this.getUser();
+    return user && user.token ? user.token : null;
+  }
+
+  getTokenExpiry(): Date {
+    const user = this.getUser();
+    return user && user.expiresAt ? new Date(user.expiresAt) : null;
+  }
+
+  // Stores a renewed token and how long it lasts.
+  setToken(token: string, expiresAt: string): void {
+    const user = this.getUser();
+    if (!user) {
+      return;
+    }
+    user.token = token;
+    user.expiresAt = expiresAt;
+    user.tokenLifetimeMs = new Date(expiresAt).getTime() - Date.now();
+    this.sessionSt.store('user', user);
+  }
+
+  // The API said the token is no longer valid: end the session once, however many calls fail at the same time.
+  private sessionEnding = false;
+  expireSession(): void {
+    if (!this.getUser() || this.sessionEnding) {
+      return;
+    }
+    this.sessionEnding = true;
+    this.isLoading = false;
+    this.closeSession();
+    this.swal(this.messages.titleSessionExpired, this.messages.sessionExpired, 'info');
+    this.sessionEnding = false;
   }
 
   //the Distinct from a List
@@ -158,7 +225,8 @@ export class ApiService {
 
   updateSession(users:any):void{
     var session = users.filter(u=>u.id == this.getUser().id)[0];
-    this.sessionSt.store('user',session);
+    // Keep what the sign-in gave (the token and its expiry) when the profile data is refreshed.
+    this.sessionSt.store('user', Object.assign({}, this.getUser(), session));
   }
 
   isNullorEmpty(value:any):boolean{

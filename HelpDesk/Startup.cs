@@ -5,6 +5,10 @@ using HelpDesk.Infrastructure.Filters;
 using HelpDesk.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Net.Http.Headers;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +26,14 @@ namespace HelpDesk
         }
 
         public IConfiguration Configuration { get; }
+
+        // index.html is checked with the server on every load, so a new deployment is picked up at once. The bundles carry a
+        // hash of their content in the file name, so they can be kept for a year without ever being out of date.
+        private static void SetSpaCacheHeaders(StaticFileResponseContext context)
+        {
+            var hashed = Regex.IsMatch(context.File.Name, @"\.[0-9a-f]{20}\.(js|css)$");
+            context.Context.Response.Headers[HeaderNames.CacheControl] = hashed ? "public,max-age=31536000,immutable" : "no-cache";
+        }
 
         // Dynamic assemblies (for example the ones a mocking library generates in tests) cannot be scanned.
         private static System.Reflection.Assembly[] ScannableAssemblies()
@@ -88,7 +100,7 @@ namespace HelpDesk
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseDefaultFiles();
-            app.UseSpaStaticFiles();
+            app.UseSpaStaticFiles(new StaticFileOptions { OnPrepareResponse = SetSpaCacheHeaders });
 
             //app.UseSignalR(x =>
             //{
@@ -132,6 +144,7 @@ namespace HelpDesk
                 // see https://go.microsoft.com/fwlink/?linkid=864501
 
                 spa.Options.SourcePath = "ClientApp";
+                spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions { OnPrepareResponse = SetSpaCacheHeaders };
 
                 if (env.IsDevelopment())
                 {

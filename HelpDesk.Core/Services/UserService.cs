@@ -230,6 +230,31 @@ namespace HelpDesk.Core.Services
             return null;
         }
 
+        public async Task<UserIdentity> GetActiveIdentityAsync(int userId)
+        {
+            var usuario = _unitOfWork.UserRepository.GetAll().FirstOrDefault(u => u.Id == userId);
+            if (usuario == null || usuario.Habilitado != true)
+            {
+                return null;
+            }
+            var empresa = _unitOfWork.BusinessRepository.GetAll().FirstOrDefault(b => b.Id == usuario.IdEmpresa);
+            if (empresa == null || !(empresa.Habilitado == true || usuario.Acceso == Roles.Root))
+            {
+                return null;
+            }
+            return await Task.FromResult(new UserIdentity
+            {
+                Id = usuario.Id,
+                Nombre = usuario.Nombre,
+                Acceso = usuario.Acceso,
+                IdEmpresa = usuario.IdEmpresa,
+                Empresa = empresa.RazonSocial,
+                UserName = usuario.CuentaUsuario,
+                Image = usuario.Image,
+                Logo = empresa.Image
+            });
+        }
+
         public async Task<bool> ValidateUserAccount(int IdEmpresa, string CuentaUsuario)
         {
             _currentUser.RequireLevel(RoleLevel.Admin);

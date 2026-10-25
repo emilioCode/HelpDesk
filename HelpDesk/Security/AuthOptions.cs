@@ -7,11 +7,13 @@ namespace HelpDesk.Security
         public string Key { get; set; }
         public string Issuer { get; set; } = "HelpDesk";
         public string Audience { get; set; } = "HelpDesk";
-        public int ExpiresMinutes { get; set; } = 480;
+        public const int DefaultExpiresMinutes = 60;
 
-        // Transition switch: when false the API still issues and validates tokens but does not require them,
-        // so the front end can be updated separately.
-        public bool Enforce { get; set; }
+        public int ExpiresMinutes { get; set; } = DefaultExpiresMinutes;
+
+        // When false the API still issues and validates tokens but does not require them (transition mode).
+        // It is on unless Auth:Enforce is explicitly set to false.
+        public bool Enforce { get; set; } = true;
 
         public const string ReportCookie = "hd_token";
     }
