@@ -38,7 +38,7 @@ export class Waiting4Component implements OnInit {
   ngOnInit() {
     console.log("hub:" + this.service.baseUrl+'hub')
     this.hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl(this.service.baseUrl+'hub')
+    .withUrl(this.service.baseUrl+'hub', { accessTokenFactory: () => this.service.getToken() })
     //.withUrl('/hub'//this.service.baseUrl+'/hub'
     // ,{
     //   skipNegotiation: true,

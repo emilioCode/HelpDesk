@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
@@ -17,6 +17,9 @@ import { MenuComponent } from './components/shared/menu/menu.component';
 import { LoginComponent } from './components/shared/login/login.component';
 
 import { ApiService } from './services/api.service';
+import { AuthGuard } from './services/auth.guard';
+import { AuthInterceptor } from './services/auth.interceptor';
+import { SessionService } from './services/session.service';
 import { Ng2Webstorage } from 'ngx-webstorage';
 import { EmpresaComponent } from './components/shared/content/empresa/empresa.component';
 import { UserComponent } from './components/shared/content/user/user.component';
@@ -65,26 +68,32 @@ import { CalendarComponent } from './components/shared/content/calendar/calendar
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
-      { path: 'business', component: EmpresaComponent },
-      { path: 'user', component: UserComponent },
-      { path: 'profile', component: ProfileComponent },
-      { path: 'costumer', component: CostumerComponent },
-      { path: 'ticket', component: TicketComponent },
-      { path: 'inbox', component: InboxComponent },
-      { path: 'report', component: ReportComponent },
-      { path: 'waiting', component: WaitingComponent },
-      { path: 'waiting2', component: Waiting2Component },
-      { path: 'waiting3', component: Waiting3Component },
-      { path: 'finished', component:Waiting4Component},
-      { path: 'calendar', component: CalendarComponent }
+      // minLevel is the lowest role that may open the screen: TECNICO 1, MODERADOR 2, ADMINISTRADOR 3, ROOT 4.
+      { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard], data: { minLevel: 1 } },
+      { path: 'counter', component: CounterComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
+      { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
+      { path: 'business', component: EmpresaComponent, canActivate: [AuthGuard], data: { minLevel: 3 } },
+      { path: 'user', component: UserComponent, canActivate: [AuthGuard], data: { minLevel: 3 } },
+      { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
+      { path: 'costumer', component: CostumerComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
+      { path: 'ticket', component: TicketComponent, canActivate: [AuthGuard], data: { minLevel: 2 } },
+      { path: 'inbox', component: InboxComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
+      { path: 'report', component: ReportComponent, canActivate: [AuthGuard], data: { minLevel: 3 } },
+      { path: 'waiting', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2 } },
+      { path: 'waiting2', component: Waiting2Component, canActivate: [AuthGuard], data: { minLevel: 2 } },
+      { path: 'waiting3', component: Waiting3Component, canActivate: [AuthGuard], data: { minLevel: 2 } },
+      { path: 'finished', component: Waiting4Component, canActivate: [AuthGuard], data: { minLevel: 2 } },
+      { path: 'calendar', component: CalendarComponent, canActivate: [AuthGuard], data: { minLevel: 1 } }
     ]),
     ReactiveFormsModule,
     Ng2Webstorage
   ],
-  providers: [ApiService],
+  providers: [
+    ApiService,
+    AuthGuard,
+    SessionService,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
