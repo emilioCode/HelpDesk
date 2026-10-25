@@ -1,6 +1,7 @@
 using HelpDesk.Core.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -20,6 +21,7 @@ namespace HelpDesk.Security
                 Audience = configuration["Jwt:Audience"] ?? "HelpDesk",
                 ExpiresMinutes = int.TryParse(configuration["Jwt:ExpiresMinutes"], out var minutes) && minutes > 0 ? minutes : AuthOptions.DefaultExpiresMinutes,
                 // Safe by default: requests need a token unless Auth:Enforce is explicitly set to false.
+                ActiveCheckSeconds = int.TryParse(configuration["Jwt:ActiveCheckSeconds"], out var seconds) && seconds >= 0 ? seconds : AuthOptions.DefaultActiveCheckSeconds,
                 Enforce = !string.Equals(configuration["Auth:Enforce"], "false", StringComparison.OrdinalIgnoreCase)
             };
 
@@ -32,6 +34,7 @@ namespace HelpDesk.Security
             services.AddSingleton(Microsoft.Extensions.Options.Options.Create(options));
             services.AddSingleton<ITokenService, JwtTokenService>();
             services.AddHttpContextAccessor();
+            services.AddMemoryCache();
             services.AddScoped<ICurrentUser, CurrentUser>();
 
             services
@@ -51,6 +54,38 @@ namespace HelpDesk.Security
                     };
                     bearer.Events = new JwtBearerEvents
                     {
+                        OnTokenValidated = async context =>
+                        {
+                            // A token stays valid until it expires, so a user disabled meanwhile is refused here.
+                            if (!int.TryParse(context.Principal?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var userId))
+                            {
+                                context.Fail("The token has no user.");
+                                return;
+                            }
+                            var cache = context.HttpContext.RequestServices.GetRequiredService<IMemoryCache>();
+                            var key = "active-user:" + userId;
+                            if (!cache.TryGetValue(key, out bool active))
+                            {
+                                try
+                                {
+                                    var users = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
+                                    active = await users.GetActiveIdentityAsync(userId) != null;
+                                }
+                                catch
+                                {
+                                    // If the user cannot be checked, the request is refused rather than let through.
+                                    active = false;
+                                }
+                                if (options.ActiveCheckSeconds > 0)
+                                {
+                                    cache.Set(key, active, TimeSpan.FromSeconds(options.ActiveCheckSeconds));
+                                }
+                            }
+                            if (!active)
+                            {
+                                context.Fail("The user is no longer active.");
+                            }
+                        },
                         OnMessageReceived = context =>
                         {
                             if (!string.IsNullOrEmpty(context.Token))

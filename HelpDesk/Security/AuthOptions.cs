@@ -15,6 +15,12 @@ namespace HelpDesk.Security
         // It is on unless Auth:Enforce is explicitly set to false.
         public bool Enforce { get; set; } = true;
 
+        // A valid token is also checked against the database, so a user who was disabled stops working before the
+        // token expires. The answer is remembered this many seconds per user (0 checks on every request).
+        public const int DefaultActiveCheckSeconds = 30;
+
+        public int ActiveCheckSeconds { get; set; } = DefaultActiveCheckSeconds;
+
         public const string ReportCookie = "hd_token";
     }
 }

@@ -29,12 +29,14 @@ namespace HelpDesk.Tests.Integration
         public const string SecretsKey = "integration-test-secrets-key-with-more-than-32-chars";
 
         private readonly bool? _enforce;
+        private readonly int _activeCheckSeconds;
         private readonly string _databaseName = Guid.NewGuid().ToString();
 
         // enforce = null leaves Auth:Enforce unset, to check the default.
-        public ApiFactory(bool? enforce = true)
+        public ApiFactory(bool? enforce = true, int activeCheckSeconds = 0)
         {
             _enforce = enforce;
+            _activeCheckSeconds = activeCheckSeconds;
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -52,7 +54,8 @@ namespace HelpDesk.Tests.Integration
                 {
                     ["Jwt:Key"] = JwtKey,
                     ["Secrets:Key"] = SecretsKey,
-                    ["ConnectionStrings:HelpDesk"] = "unused"
+                    ["ConnectionStrings:HelpDesk"] = "unused",
+                    ["Jwt:ActiveCheckSeconds"] = _activeCheckSeconds.ToString()
                 });
                 if (_enforce.HasValue)
                 {
@@ -93,7 +96,10 @@ namespace HelpDesk.Tests.Integration
                 User(10, "pwuser", "TECNICO", 1, hash),                  // changes their password
                 User(11, "adminc", "ADMINISTRADOR", 3, hash),
                 User(12, "renewrole", "TECNICO", 1, hash),                // gets promoted after signing in
-                User(13, "renewoff", "TECNICO", 1, hash));                 // gets disabled after signing in
+                User(13, "renewoff", "TECNICO", 1, hash),                // gets disabled after signing in
+                User(14, "revokeoff", "TECNICO", 1, hash),               // gets disabled while holding a valid token
+                User(15, "revokedel", "TECNICO", 1, hash),               // gets deleted while holding a valid token
+                User(16, "revokecache", "TECNICO", 1, hash));            // gets disabled inside the cache window
 
             db.Clientes.AddRange(
                 new Cliente { Id = 1, Nombre = "Customer A", Correo = "ca@test.local", IdEmpresa = 1, Habilitado = true },
