@@ -42,8 +42,12 @@ namespace HelpDesk.Tests.Integration
             builder.UseEnvironment("Testing");
             builder.ConfigureAppConfiguration((context, config) =>
             {
-                // The single page app is not built in tests; an empty folder keeps the static files setup happy.
-                Directory.CreateDirectory(Path.Combine(context.HostingEnvironment.ContentRootPath, "ClientApp", "dist"));
+                // The single page app is not built in tests; a few stand-in files let the static file rules be checked.
+                var dist = Path.Combine(context.HostingEnvironment.ContentRootPath, "ClientApp", "dist");
+                Directory.CreateDirectory(dist);
+                File.WriteAllText(Path.Combine(dist, "index.html"), "<html><body>HelpDesk</body></html>");
+                File.WriteAllText(Path.Combine(dist, "runtime.js"), "// unhashed bundle");
+                File.WriteAllText(Path.Combine(dist, "main.0123456789abcdef0123.js"), "// hashed bundle");
                 config.AddInMemoryCollection(new Dictionary<string, string>
                 {
                     ["Jwt:Key"] = JwtKey,

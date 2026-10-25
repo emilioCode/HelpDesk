@@ -73,7 +73,11 @@ export class ApiService {
     sessionExpired: 'Su sesión expiró. Inicie sesión de nuevo.',
     titleSessionExpiring: 'Su sesión está por expirar',
     sessionExpiring: 'Por seguridad, su sesión se cerrará pronto. ¿Desea continuar?',
-    continueSession: 'Continuar'
+    continueSession: 'Continuar',
+    // Errors without a message from the server
+    titleError: 'Error',
+    noConnection: 'No se pudo conectar con el servidor. Verifique su conexión e intente de nuevo.',
+    unexpectedError: 'Ocurrió un error inesperado. Intente de nuevo; si continúa, comuníquese con soporte.'
   };
 
   // Shows the validation message returned by the API (HTTP 400) and stops the loading indicator.
@@ -92,6 +96,22 @@ export class ApiService {
     }
     if (message) {
       this.swal(title, message, 'warning');
+      return;
+    }
+
+    // The answer carried no message. Say something for the failures the user would otherwise never notice.
+    // A 401 is handled by the interceptor, and nothing is added over a popup that is already open.
+    const status = error && error.status;
+    const alreadyOpen = this.swal.isVisible && this.swal.isVisible();
+    if (alreadyOpen || status === 401) {
+      return;
+    }
+    if (status === 0) {
+      this.swal(this.messages.titleError, this.messages.noConnection, 'error');
+    } else if (status === 403) {
+      this.swal(this.messages.titleAccessDenied, this.messages.noPermissionToAccess, 'warning');
+    } else if (status >= 500) {
+      this.swal(this.messages.titleError, this.messages.unexpectedError, 'error');
     }
   }
   isLoading:boolean;
