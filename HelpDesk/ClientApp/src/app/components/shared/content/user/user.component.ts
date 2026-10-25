@@ -1,4 +1,4 @@
-import { Component, OnInit, Pipe } from '@angular/core';
+import { Component, OnDestroy, OnInit, Pipe } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 import { FilterPipe } from '../../../../pipes/filter.pipe';
 // import * as signalR from '@aspnet/signalr';
@@ -9,7 +9,7 @@ import * as signalR from '@microsoft/signalr';
   styles: []
 })
 @Pipe({name:'FilterPipe'})
-export class UserComponent implements OnInit {
+export class UserComponent implements OnInit, OnDestroy {
   
   constructor(private service:ApiService) {
     if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
@@ -29,6 +29,11 @@ export class UserComponent implements OnInit {
   imageUrl;
   levels:any;
   hubConnection: signalR.HubConnection;
+
+  // Each screen opens its own real-time connection, so it closes it when the screen goes away.
+  ngOnDestroy() {
+    this.hubConnection.stop().catch(() => {});
+  }
 
   ngOnInit() {
     this.hubConnection = new signalR.HubConnectionBuilder()

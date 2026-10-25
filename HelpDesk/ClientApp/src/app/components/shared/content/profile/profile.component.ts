@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 // import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
@@ -8,7 +8,7 @@ import * as signalR from '@microsoft/signalr';
   templateUrl: './profile.component.html',
   styles: []
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
 
   userT:any={};
   users;
@@ -17,6 +17,11 @@ export class ProfileComponent implements OnInit {
   imageBusiness;
   numbers:any={};
   hubConnection: signalR.HubConnection;
+
+  // Each screen opens its own real-time connection, so it closes it when the screen goes away.
+  ngOnDestroy() {
+    this.hubConnection.stop().catch(() => {});
+  }
 
   ngOnInit() {
     this.hubConnection = new signalR.HubConnectionBuilder()

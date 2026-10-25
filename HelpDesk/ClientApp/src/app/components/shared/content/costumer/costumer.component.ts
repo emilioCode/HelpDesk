@@ -1,4 +1,4 @@
-import { Component, OnInit, Pipe } from '@angular/core';
+import { Component, OnDestroy, OnInit, Pipe } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 // import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
@@ -9,7 +9,7 @@ import * as signalR from '@microsoft/signalr';
   styleUrls: []
 })
 @Pipe({name:'FilterPipe'})
-export class CostumerComponent implements OnInit {
+export class CostumerComponent implements OnInit, OnDestroy {
 
   constructor(private service: ApiService) { 
     this.getCostumers(this.service.getUser().id,"*")
@@ -23,6 +23,11 @@ export class CostumerComponent implements OnInit {
   imageUrl;
   levels:any;
   hubConnection: signalR.HubConnection;
+
+  // Each screen opens its own real-time connection, so it closes it when the screen goes away.
+  ngOnDestroy() {
+    this.hubConnection.stop().catch(() => {});
+  }
 
   ngOnInit() {
     this.hubConnection = new signalR.HubConnectionBuilder()
