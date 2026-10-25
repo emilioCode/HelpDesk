@@ -1,4 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
+import * as signalR from '@microsoft/signalr';
 import { ApiService } from './api.service';
 
 // Keeps the session alive while the user works, and warns them before it ends if they stop.
@@ -10,6 +11,7 @@ export class SessionService {
   private lastActivity = Date.now();
   private warned = false;
   private refreshing = false;
+  private notices: signalR.HubConnection;
 
   constructor(private service: ApiService, private zone: NgZone) { }
 
@@ -21,9 +23,41 @@ export class SessionService {
       document.addEventListener('visibilitychange', () => { if (!document.hidden) { this.check(); } });
       setInterval(() => this.check(), 15000);
     });
+    this.syncNotices();
+  }
+
+  // One connection for the whole session, whatever screen is open, to receive the notice that the user was disabled.
+  // It exists only while someone is signed in.
+  private syncNotices(): void {
+    const signedIn = !!this.service.getToken();
+    if (signedIn && !this.notices) {
+      this.notices = new signalR.HubConnectionBuilder()
+        .withUrl(this.service.baseUrl + 'hub', { accessTokenFactory: () => this.service.getToken() })
+        .build();
+      this.notices.on('refresh', (component, idEmpresa, idUsuario, idOther) => {
+        const user = this.service.getUser();
+        if (component === 'session' && user && idEmpresa == user.idEmpresa && idUsuario == user.id && idOther == 0) {
+          // Screens that handle this notice themselves act first; this covers the ones that do not.
+          setTimeout(() => this.zone.run(() => this.endDisabledSession()), 1000);
+        }
+      });
+      this.notices.start().catch(err => console.error(err.toString()));
+    } else if (!signedIn && this.notices) {
+      this.notices.stop().catch(() => {});
+      this.notices = null;
+    }
+  }
+
+  private endDisabledSession(): void {
+    if (!this.service.getUser()) {
+      return;
+    }
+    this.service.closeSession();
+    this.service.swal(this.service.messages.titleSessionExpired, this.service.messages.userDisabled, 'info');
   }
 
   check(): void {
+    this.syncNotices();
     const user = this.service.getUser();
     const expiry = this.service.getTokenExpiry();
     if (!user || !user.token || !expiry) {
