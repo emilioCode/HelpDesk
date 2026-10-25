@@ -37,7 +37,8 @@ services:
       ConnectionStrings__HelpDesk: "Server=db;Database=HelpDeskDB;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;"
       Jwt__Key: "${JWT_KEY:?Set JWT_KEY in .env (at least 32 characters)}"
       Secrets__Key: "${SECRETS_KEY:?Set SECRETS_KEY in .env (at least 32 characters)}"
-      Auth__Enforce: "${AUTH_ENFORCE:-false}"
+      Auth__Enforce: "${AUTH_ENFORCE:-true}"
+      Jwt__ExpiresMinutes: "${JWT_EXPIRES_MINUTES:-60}"
     ports:
       - "${HELPDESK_PORT:-8080}:8080"
 

@@ -15,6 +15,7 @@ namespace HelpDesk.Tests.Controllers
     {
         private Mock<IUserService> _userServiceMock;
         private Mock<ITokenService> _tokenServiceMock;
+        private Mock<ICurrentUser> _currentUserMock;
         private LoginController _loginController;
 
         [SetUp]
@@ -22,8 +23,9 @@ namespace HelpDesk.Tests.Controllers
         {
             _userServiceMock = new Mock<IUserService>();
             _tokenServiceMock = new Mock<ITokenService>();
+            _currentUserMock = new Mock<ICurrentUser>();
 
-            _loginController = new LoginController(_userServiceMock.Object, _tokenServiceMock.Object)
+            _loginController = new LoginController(_userServiceMock.Object, _tokenServiceMock.Object, _currentUserMock.Object)
             {
                 ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
             };
@@ -110,6 +112,50 @@ namespace HelpDesk.Tests.Controllers
             Assert.IsNull(result.Value);
             _tokenServiceMock.Verify(service => service.Create(It.IsAny<UserIdentity>()), Times.Never);
             Assert.IsFalse(_loginController.Response.Headers.ContainsKey("Set-Cookie"));
+        }
+
+        [Test]
+        public async Task Refresh_WhenSignedIn_ReturnsANewTokenAndCookie()
+        {
+            _currentUserMock.Setup(u => u.IsAuthenticated).Returns(true);
+            _currentUserMock.Setup(u => u.Id).Returns(4);
+            var identity = new UserIdentity { Id = 4, Acceso = "TECNICO" };
+            var expires = DateTime.UtcNow.AddMinutes(60);
+            _userServiceMock.Setup(s => s.GetActiveIdentityAsync(4)).ReturnsAsync(identity);
+            _tokenServiceMock.Setup(s => s.Create(identity)).Returns(("renewed-token", expires));
+
+            var result = await _loginController.Refresh() as ObjectResult;
+
+            Assert.AreEqual(200, result.StatusCode);
+            var returned = result.Value as UserIdentity;
+            Assert.AreEqual("renewed-token", returned.Token);
+            Assert.AreEqual(expires, returned.ExpiresAt);
+            StringAssert.Contains("hd_token=renewed-token", _loginController.Response.Headers["Set-Cookie"].ToString());
+        }
+
+        [Test]
+        public async Task Refresh_WithoutASession_ReturnsUnauthorized()
+        {
+            _currentUserMock.Setup(u => u.IsAuthenticated).Returns(false);
+
+            var result = await _loginController.Refresh();
+
+            Assert.IsInstanceOf<UnauthorizedResult>(result);
+            _userServiceMock.Verify(s => s.GetActiveIdentityAsync(It.IsAny<int>()), Times.Never);
+        }
+
+        [Test]
+        public async Task Refresh_ForAUserWhoCannotSignInAnymore_ReturnsUnauthorizedAndClearsTheCookie()
+        {
+            _currentUserMock.Setup(u => u.IsAuthenticated).Returns(true);
+            _currentUserMock.Setup(u => u.Id).Returns(4);
+            _userServiceMock.Setup(s => s.GetActiveIdentityAsync(4)).ReturnsAsync((UserIdentity)null);
+
+            var result = await _loginController.Refresh();
+
+            Assert.IsInstanceOf<UnauthorizedResult>(result);
+            StringAssert.Contains("hd_token=;", _loginController.Response.Headers["Set-Cookie"].ToString());
+            _tokenServiceMock.Verify(s => s.Create(It.IsAny<UserIdentity>()), Times.Never);
         }
 
         [Test]

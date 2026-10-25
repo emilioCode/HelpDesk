@@ -37,8 +37,8 @@ For another environment (cloud, managed SQL), override that variable; no code ch
 |----------|---------|
 | `JWT_KEY` (`Jwt__Key`) | Signs the access tokens. Required, at least 32 characters, keep it secret. |
 | `SECRETS_KEY` (`Secrets__Key`) | Encrypts the companies' mail password in the database. Required, at least 32 characters. Changing it makes the stored mail passwords unreadable. |
-| `AUTH_ENFORCE` (`Auth__Enforce`) | `false` (default) keeps anonymous requests working so the current front end runs until it sends the token. `true` rejects requests without a valid token. |
-| `Jwt__ExpiresMinutes` | Token lifetime, 480 (8 hours) by default. |
+| `AUTH_ENFORCE` (`Auth__Enforce`) | `true` (default) rejects requests without a valid token. `false` is a transition mode that lets anonymous requests through; use it only for testing. |
+| `JWT_EXPIRES_MINUTES` (`Jwt__ExpiresMinutes`) | Token lifetime, 60 minutes by default. The front end asks for a new token while the user is active. |
 | `Auth__MaxFailedAttempts`, `Auth__LockoutMinutes` | Sign-in lockout, 5 attempts and 15 minutes by default. |
 | `Cors__AllowedOrigins` | Comma separated origins allowed to call the API from another site. Empty by default because the front end is served by the API itself. |
 

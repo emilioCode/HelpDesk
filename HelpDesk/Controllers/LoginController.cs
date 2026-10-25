@@ -15,11 +15,13 @@ namespace HelpDesk.Controllers
     {
         private readonly IUserService _userService;
         private readonly ITokenService _tokenService;
+        private readonly ICurrentUser _currentUser;
 
-        public LoginController(IUserService userService, ITokenService tokenService)
+        public LoginController(IUserService userService, ITokenService tokenService, ICurrentUser currentUser)
         {
             _userService = userService;
             _tokenService = tokenService;
+            _currentUser = currentUser;
         }
 
         // GET: api/Login/1/user01
@@ -42,6 +44,41 @@ namespace HelpDesk.Controllers
                 return Ok(null);
             }
 
+            return Ok(IssueToken(userIdentity));
+        }
+
+        // POST: api/Login/Refresh
+        // Exchanges a token that is still valid for a new one. The user is read again from the database, so a
+        // user who was disabled, or whose role changed, does not keep the old access.
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Refresh()
+        {
+            if (!_currentUser.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+
+            var userIdentity = await _userService.GetActiveIdentityAsync(_currentUser.Id);
+            if (userIdentity == null)
+            {
+                Response.Cookies.Delete(AuthOptions.ReportCookie, new CookieOptions { Path = "/" });
+                return Unauthorized();
+            }
+
+            return Ok(IssueToken(userIdentity));
+        }
+
+        // POST: api/Login/Logout
+        [HttpPost("[action]")]
+        [AllowAnonymous]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete(AuthOptions.ReportCookie, new CookieOptions { Path = "/" });
+            return Ok();
+        }
+
+        private UserIdentity IssueToken(UserIdentity userIdentity)
+        {
             var token = _tokenService.Create(userIdentity);
             userIdentity.Token = token.Token;
             userIdentity.ExpiresAt = token.ExpiresAt;
@@ -55,16 +92,7 @@ namespace HelpDesk.Controllers
                 Expires = token.ExpiresAt,
                 Path = "/"
             });
-            return Ok(userIdentity);
-        }
-
-        // POST: api/Login/Logout
-        [HttpPost("[action]")]
-        [AllowAnonymous]
-        public IActionResult Logout()
-        {
-            Response.Cookies.Delete(AuthOptions.ReportCookie, new CookieOptions { Path = "/" });
-            return Ok();
+            return userIdentity;
         }
     }
 }

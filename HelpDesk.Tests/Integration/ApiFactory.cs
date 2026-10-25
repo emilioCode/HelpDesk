@@ -28,10 +28,11 @@ namespace HelpDesk.Tests.Integration
         public const string JwtKey = "integration-test-jwt-key-with-more-than-32-chars";
         public const string SecretsKey = "integration-test-secrets-key-with-more-than-32-chars";
 
-        private readonly bool _enforce;
+        private readonly bool? _enforce;
         private readonly string _databaseName = Guid.NewGuid().ToString();
 
-        public ApiFactory(bool enforce = true)
+        // enforce = null leaves Auth:Enforce unset, to check the default.
+        public ApiFactory(bool? enforce = true)
         {
             _enforce = enforce;
         }
@@ -47,9 +48,12 @@ namespace HelpDesk.Tests.Integration
                 {
                     ["Jwt:Key"] = JwtKey,
                     ["Secrets:Key"] = SecretsKey,
-                    ["Auth:Enforce"] = _enforce ? "true" : "false",
                     ["ConnectionStrings:HelpDesk"] = "unused"
                 });
+                if (_enforce.HasValue)
+                {
+                    config.AddInMemoryCollection(new Dictionary<string, string> { ["Auth:Enforce"] = _enforce.Value ? "true" : "false" });
+                }
             });
             builder.ConfigureTestServices(services =>
             {
@@ -83,7 +87,9 @@ namespace HelpDesk.Tests.Integration
                 User(8, "lockme", "TECNICO", 1, hash),
                 User(9, "tech3", "TECNICO", 1, hash),
                 User(10, "pwuser", "TECNICO", 1, hash),                  // changes their password
-                User(11, "adminc", "ADMINISTRADOR", 3, hash));            // the company whose settings are edited
+                User(11, "adminc", "ADMINISTRADOR", 3, hash),
+                User(12, "renewrole", "TECNICO", 1, hash),                // gets promoted after signing in
+                User(13, "renewoff", "TECNICO", 1, hash));                 // gets disabled after signing in
 
             db.Clientes.AddRange(
                 new Cliente { Id = 1, Nombre = "Customer A", Correo = "ca@test.local", IdEmpresa = 1, Habilitado = true },
