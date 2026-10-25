@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 // import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
@@ -8,7 +8,7 @@ import * as signalR from '@microsoft/signalr';
   templateUrl: './waiting3.component.html',
   styles: []
 })
-export class Waiting3Component implements OnInit {
+export class Waiting3Component implements OnInit, OnDestroy {
 
   constructor(private service: ApiService) { 
     if(this.service.getLevel(this.service.getUser().acceso) < 2 ){
@@ -34,6 +34,11 @@ export class Waiting3Component implements OnInit {
   part:any={};
   addPart=false;
   hubConnection: signalR.HubConnection;
+
+  // Each screen opens its own real-time connection, so it closes it when the screen goes away.
+  ngOnDestroy() {
+    this.hubConnection.stop().catch(() => {});
+  }
 
   ngOnInit() {
     this.hubConnection = new signalR.HubConnectionBuilder()
