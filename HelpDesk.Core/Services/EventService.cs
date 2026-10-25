@@ -1,6 +1,7 @@
 ﻿using HelpDesk.Core.CustomEntities;
 using HelpDesk.Core.Dictionaries;
 using HelpDesk.Core.Interfaces;
+using HelpDesk.Core.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +13,15 @@ namespace HelpDesk.Core.Services
     public class EventService : IEventService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public EventService(IUnitOfWork unitOfWork)
+        private readonly ICurrentUser _currentUser;
+        public EventService(IUnitOfWork unitOfWork, ICurrentUser currentUser)
         {
             _unitOfWork = unitOfWork;
+            _currentUser = currentUser;
         }
         public async Task<IEnumerable<Event>> GetEvent(int userId)
         {
+            userId = _currentUser.ResolveUserId(userId);
             var user = await _unitOfWork.UserRepository.GetById(userId);
             var users = _unitOfWork.UserRepository.GetAll().ToList();
             var events = new List<Event>();

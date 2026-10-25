@@ -52,10 +52,13 @@ namespace HelpDesk.Tests.Controllers
             // Arrange
             int userId = 0;
             var businessDto = new EmpresaDto();
-            var business = new Empresa();
+            var business = new Empresa { Contrasena = "enc:v1:secret" };
+            var createdDto = new EmpresaDto { Contrasena = "enc:v1:secret" };
             // Act
             _mapperMock.Setup(x =>x.Map<Empresa>(businessDto))
                 .Returns(() => business);
+            _mapperMock.Setup(x => x.Map<EmpresaDto>(business))
+                .Returns(createdDto);
             _businessService.Setup(service => service.CreateBusinness(userId, business))
                 .ReturnsAsync(business);
             var result = await _businessController.Post(userId, businessDto) as OkObjectResult;
@@ -63,8 +66,9 @@ namespace HelpDesk.Tests.Controllers
             // Assert
             Assert.IsNotNull(result);
             Assert.IsTrue(result.StatusCode.Equals(200));
-            Assert.IsAssignableFrom<Empresa>(response.data);
-            Assert.IsTrue(business.Equals(response.data));
+            Assert.IsAssignableFrom<EmpresaDto>(response.data);
+            Assert.IsTrue(createdDto.Equals(response.data));
+            Assert.IsNull(createdDto.Contrasena, "the mail password is never returned");
         }
 
         [Test]

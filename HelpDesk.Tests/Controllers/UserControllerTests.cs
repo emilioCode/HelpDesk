@@ -3,7 +3,6 @@ using HelpDesk.Controllers;
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
-using HelpDesk.Infrastructure.Interfaces;
 using HelpDesk.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -17,16 +16,14 @@ namespace HelpDesk.Tests.Controllers
     {
         private readonly Mock<IUserService> _userServiceMock;
         private readonly Mock<IMapper> _mapperMock;
-        private readonly Mock<ISecurityService> _securityServiceMock;
 
         private readonly UserController _userController;
         public UserControllerTests()
         {
             _userServiceMock = new Mock<IUserService>();
             _mapperMock = new Mock<IMapper>();
-            _securityServiceMock = new Mock<ISecurityService>();
 
-            _userController = new UserController(_userServiceMock.Object, _mapperMock.Object, _securityServiceMock.Object);
+            _userController = new UserController(_userServiceMock.Object, _mapperMock.Object);
         }
 
         [Test]
@@ -76,6 +73,7 @@ namespace HelpDesk.Tests.Controllers
         {
             // Arrange
             var usuarioDto = new UsuarioDto { Nombre = "John" };
+            var savedDto = new UsuarioDto { Nombre = "John", Contrasena = "$2a$11$hash" };
             var user = new Usuario { Nombre = "John" };
             var expectedResponse = new ObjectResponse
             {
@@ -83,11 +81,13 @@ namespace HelpDesk.Tests.Controllers
                 title = "Saved",
                 icon = "success",
                 message = "has been saved successfully",
-                data = user
+                data = savedDto
             };
 
             _mapperMock.Setup(mapper => mapper.Map<Usuario>(usuarioDto))
                        .Returns(user);
+            _mapperMock.Setup(mapper => mapper.Map<UsuarioDto>(user))
+                       .Returns(savedDto);
 
             _userServiceMock.Setup(service => service.InsertUSer(user))
                             .ReturnsAsync(user);
@@ -145,19 +145,39 @@ namespace HelpDesk.Tests.Controllers
         }
 
         [Test]
-        public void Patch_ReturnsEncryptedPassword()
+        public async Task Post_DoesNotReturnThePassword()
         {
             // Arrange
-            string password = "password123";
-            string expectedEncryptedPassword = "encryptedPassword";
+            var usuarioDto = new UsuarioDto { Nombre = "John", Contrasena = "secret1" };
+            var user = new Usuario { Nombre = "John", Contrasena = "$2a$11$hash" };
+            var savedDto = new UsuarioDto { Nombre = "John", Contrasena = "$2a$11$hash" };
+            _mapperMock.Setup(mapper => mapper.Map<Usuario>(usuarioDto)).Returns(user);
+            _mapperMock.Setup(mapper => mapper.Map<UsuarioDto>(user)).Returns(savedDto);
+            _userServiceMock.Setup(service => service.InsertUSer(user)).ReturnsAsync(user);
 
             // Act
-            _securityServiceMock.Setup(x=> x.Encripting(password))
-                .Returns(() => expectedEncryptedPassword);
-            var result = _userController.Patch(password);
+            var result = await _userController.Post(usuarioDto) as OkObjectResult;
+            var data = (result.Value as ObjectResponse).data as UsuarioDto;
 
             // Assert
-            Assert.IsTrue(expectedEncryptedPassword.Equals(result));
+            Assert.IsNull(data.Contrasena);
+        }
+
+        [Test]
+        public async Task Get_DoesNotReturnPasswords()
+        {
+            // Arrange
+            var users = new List<Usuario> { new Usuario { Id = 1, Contrasena = "plain" } };
+            var userDtos = new List<UsuarioDto> { new UsuarioDto { Id = 1, Contrasena = "plain" } };
+            _userServiceMock.Setup(x => x.GetUsersByIdAndCondition(1, "*")).ReturnsAsync(users);
+            _mapperMock.Setup(x => x.Map<IEnumerable<UsuarioDto>>(users)).Returns(userDtos);
+
+            // Act
+            var result = await _userController.Get(1, "*") as OkObjectResult;
+            var returned = result.Value as List<UsuarioDto>;
+
+            // Assert
+            Assert.IsTrue(returned.TrueForAll(u => u.Contrasena == null));
         }
     }
 }
