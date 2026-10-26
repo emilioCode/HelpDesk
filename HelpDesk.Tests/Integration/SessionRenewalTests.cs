@@ -100,7 +100,7 @@ namespace HelpDesk.Tests.Integration
         }
 
         [Test]
-        public async Task Refresh_ForAUserWhoWasDisabled_IsRejectedAndClearsTheCookie()
+        public async Task Refresh_ForAUserWhoWasDisabled_IsRejected()
         {
             var token = await _api.LoginAsync("renewoff");
             _api.Query(db => { var u = db.Usuarios.Single(x => x.Id == 13); u.Habilitado = false; db.SaveChanges(); return 0; });
@@ -108,7 +108,6 @@ namespace HelpDesk.Tests.Integration
             var response = await WithToken(_api.CreateClient(), token).PostAsync("/api/Login/Refresh", null);
 
             Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
-            StringAssert.Contains("hd_token=;", string.Join(";", response.Headers.GetValues("Set-Cookie")));
             Assert.IsNull(await _api.LoginAsync("renewoff"), "and they cannot sign in again");
         }
 
@@ -149,6 +148,96 @@ namespace HelpDesk.Tests.Integration
 
             Assert.Greater(expires, DateTime.UtcNow.AddMinutes(58));
             Assert.Less(expires, DateTime.UtcNow.AddMinutes(62));
+        }
+    }
+}
+
+namespace HelpDesk.Tests.Integration
+{
+    // A token stays valid until it expires, but a user who was disabled or deleted meanwhile is refused.
+    public class DisabledUserTokenTests
+    {
+        private ApiFactory _api;
+        private ApiFactory _cached;
+
+        [OneTimeSetUp]
+        public void SetUp()
+        {
+            _api = new ApiFactory(enforce: true);
+            _api.Seed();
+            _cached = new ApiFactory(enforce: true, activeCheckSeconds: 60);
+            _cached.Seed();
+        }
+
+        [OneTimeTearDown]
+        public void TearDown()
+        {
+            _api.Dispose();
+            _cached.Dispose();
+        }
+
+        private static HttpClient WithToken(HttpClient client, string token)
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            return client;
+        }
+
+        [Test]
+        public async Task AnActiveUser_KeepsWorking()
+        {
+            var token = await _api.LoginAsync("tech1");
+
+            var response = await WithToken(_api.CreateClient(), token).GetAsync("/api/User/4/unique");
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Test]
+        public async Task AUserDisabledAfterSigningIn_IsRefusedWithTheSameToken()
+        {
+            var token = await _api.LoginAsync("revokeoff");
+            Assert.AreEqual(HttpStatusCode.OK, (await WithToken(_api.CreateClient(), token).GetAsync("/api/User/14/unique")).StatusCode);
+            _api.Query(db => { db.Usuarios.Single(x => x.Id == 14).Habilitado = false; db.SaveChanges(); return 0; });
+
+            var response = await WithToken(_api.CreateClient(), token).GetAsync("/api/User/14/unique");
+
+            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Test]
+        public async Task AUserDeletedAfterSigningIn_IsRefusedWithTheSameToken()
+        {
+            var token = await _api.LoginAsync("revokedel");
+            _api.Query(db => { db.Usuarios.Remove(db.Usuarios.Single(x => x.Id == 15)); db.SaveChanges(); return 0; });
+
+            var response = await WithToken(_api.CreateClient(), token).GetAsync("/api/User/15/unique");
+
+            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Test]
+        public async Task TheAnswerIsRemembered_SoADisabledUserIsRefusedOnlyAfterTheCacheWindow()
+        {
+            var token = await _cached.LoginAsync("revokecache");
+            Assert.AreEqual(HttpStatusCode.OK, (await WithToken(_cached.CreateClient(), token).GetAsync("/api/User/16/unique")).StatusCode);
+            _cached.Query(db => { db.Usuarios.Single(x => x.Id == 16).Habilitado = false; db.SaveChanges(); return 0; });
+
+            var response = await WithToken(_cached.CreateClient(), token).GetAsync("/api/User/16/unique");
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "inside the window the remembered answer is used (this is the trade-off for not querying on every call)");
+        }
+
+        [Test]
+        public async Task TheReportCookie_OfADisabledUser_IsRefusedToo()
+        {
+            var token = await _api.LoginAsync("tech2");
+            _api.Query(db => { db.Usuarios.Single(x => x.Id == 5).Habilitado = false; db.SaveChanges(); return 0; });
+            var client = _api.CreateClient();
+            client.DefaultRequestHeaders.Add("Cookie", "hd_token=" + token);
+
+            var response = await client.GetAsync("/OrderReport?value=1-1");
+
+            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
     }
 }

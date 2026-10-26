@@ -22,6 +22,8 @@ export class SessionService {
         document.addEventListener(name, () => { this.lastActivity = Date.now(); }, true));
       document.addEventListener('visibilitychange', () => { if (!document.hidden) { this.check(); } });
       setInterval(() => this.check(), 15000);
+      // Cheap, so the notice connection closes right after signing out instead of up to 15 seconds later.
+      setInterval(() => this.syncNotices(), 2000);
     });
     this.syncNotices();
   }
