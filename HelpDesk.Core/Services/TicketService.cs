@@ -399,25 +399,30 @@ namespace HelpDesk.Core.Services
                                     <header>
                                       <div class='row border-bottom border-dark pb-2'>
                                         <div class='col-6'>
-                                          <img src='{"data:image/jpeg;base64," + Convert.ToBase64String(business.Image)}' class='logo' alt='{business.RazonSocial}'/>
+                                          {(business.Image != null && business.Image.Length > 0 ? $"<img src='data:image/jpeg;base64,{Convert.ToBase64String(business.Image)}' class='logo' alt='{business.RazonSocial}'/>" : $"<h2>{business.RazonSocial}</h2>")}
                                         </div>
 
                                       </div>
                                       <div class='row py-2'>
 
                                         <div class='col-6'>";
-                    var c = business.Direccion.Split('\n').Count();
-                    for (int i = 0; i < c; i++)
+                    // The company data is optional: only the lines that have a value are written.
+                    foreach (var line in (business.Direccion ?? string.Empty).Split('\n').Where(l => !string.IsNullOrWhiteSpace(l)))
                     {
-                        body = body + $"<p class='info'>{business.Direccion.Split('\n')[i]}</p>";
-
+                        body = body + $"<p class='info'>{line}</p>";
+                    }
+                    if (!string.IsNullOrWhiteSpace(business.Telefono))
+                    {
+                        body = body + $"<p class='info'>Tel: {business.Telefono}</p>";
+                    }
+                    if (!string.IsNullOrWhiteSpace(business.Correo))
+                    {
+                        body = body + $"<p class='info'>E-mail: {business.Correo}</p>";
                     }
 
-                    body = body + $@"<p class='info'>Tel: {business.Telefono}</p>
-                                          <p class='info'>E-mail: {business.Correo}</p>
-                                        </div>
+                    body = body + $@"</div>
                                         <div class='col-6 d-flex justify-content-end align-items-top py-2'>
-                                          <p class='info'>RNC: {business.Rnc}</p>
+                                          {(string.IsNullOrWhiteSpace(business.Rnc) ? string.Empty : $"<p class='info'>RNC: {business.Rnc}</p>")}
                                         </div>
                                       </div>
                                     </header>
@@ -464,16 +469,20 @@ namespace HelpDesk.Core.Services
                         }
                     }
 
-                    emailMessage = new EmailMessage
+                    // A customer without an e-mail address cannot be notified; the ticket is approved anyway.
+                    if (!string.IsNullOrWhiteSpace(customer?.Correo))
                     {
-                        Body = body,
-                        Subject = subject,
-                        ReceptorEmail = customer.Correo,
-                        Host = business.Host,
-                        Port = Convert.ToInt32(business.Port),
-                        EmisorEmail = business.Correo,
-                        PasswordEmail = _secretProtector.Unprotect(business.Contrasena)
-                    };
+                        emailMessage = new EmailMessage
+                        {
+                            Body = body,
+                            Subject = subject,
+                            ReceptorEmail = customer.Correo,
+                            Host = business.Host,
+                            Port = Convert.ToInt32(business.Port),
+                            EmisorEmail = business.Correo,
+                            PasswordEmail = _secretProtector.Unprotect(business.Contrasena)
+                        };
+                    }
 
                     //var resp = MailClient.Send(business.Host, Convert.ToInt32(business.Port), System.Net.Mail.SmtpDeliveryMethod.Network, false,
                     //        true, business.Correo, business.Contrasena, customer.Correo, subject, body, true);

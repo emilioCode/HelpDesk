@@ -35,8 +35,8 @@
             <tbody>
             <tr *ngFor="let item of users | filter: search">
               <td width="25%">
-                  <img  width="20%" *ngIf="item.image ==null" src="../../../../assets/dist/img/photo_default.png" class="img-circle" alt="User Image">
-                  <img  width="20%" *ngIf="item.image !=null" [src]="'data:image/jpeg;base64,'+ item.image" class="img-circle" alt="User Image">&nbsp;
+                  <img  width="20%" *ngIf="!service.hasImage(item.image)" src="../../../../assets/dist/img/photo_default.png" class="img-circle" alt="User Image">
+                  <img  width="20%" *ngIf="service.hasImage(item.image)" [src]="'data:image/jpeg;base64,'+ item.image" class="img-circle" alt="User Image">&nbsp;
                 {{ item.nombre }}
               </td>
               <td width="17%">{{ item.numDocumento }}</td>
@@ -131,13 +131,13 @@
           </div>
           <div class="col-xs-4 col-sm-4">
             <div class="form-group col-xs-12 col-ms-12"  >
-              <img [hidden]="user.image!=null" src="../../../../assets/dist/img/photo_default.png" style="width:250px;height:250px;" >
-              <img *ngIf="user.image!=null" [src]="'data:image/jpeg;base64,'+ user.image" style="width:250px;height:250px;" >
+              <img [hidden]="service.hasImage(user.image)" src="../../../../assets/dist/img/photo_default.png" style="width:250px;height:250px;" >
+              <img *ngIf="service.hasImage(user.image)" [src]="'data:image/jpeg;base64,'+ user.image" style="width:250px;height:250px;" >
               <!-- <img src="{{imageUrl}}" style="width:250px;height:250px;" *ngIf="imageUrl!==''"> -->
             </div>
             <div class=" col-xs-12 col-sm-12">
               <input type="file" class="form-control"  (change)="handleFileInput($event.target.files)" accept="image/*" [disabled]="option=='delete'"/>
-              <button class="btn btn-danger btn-block" (click)="imageUrl='';user.image=null;" *ngIf="user.image!=null;">Eliminar</button>
+              <button class="btn btn-danger btn-block" (click)="imageUrl='';user.image=null;" *ngIf="service.hasImage(user.image);">Eliminar</button>
             </div>
           </div>
   

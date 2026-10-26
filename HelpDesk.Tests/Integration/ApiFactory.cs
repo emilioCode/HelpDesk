@@ -30,6 +30,9 @@ namespace HelpDesk.Tests.Integration
 
         private readonly bool? _enforce;
         private readonly int _activeCheckSeconds;
+
+        // Every e-mail the application tried to send.
+        public FakeMailService Mail { get; } = new FakeMailService();
         private readonly string _databaseName = Guid.NewGuid().ToString();
 
         // enforce = null leaves Auth:Enforce unset, to check the default.
@@ -68,7 +71,7 @@ namespace HelpDesk.Tests.Integration
                 services.RemoveAll<HelpDeskDBContext>();
                 services.AddDbContext<HelpDeskDBContext>(options => options.UseInMemoryDatabase(_databaseName));
                 services.RemoveAll<IMailService>();
-                services.AddSingleton<IMailService, FakeMailService>();
+                services.AddSingleton<IMailService>(Mail);
             });
         }
 
@@ -136,7 +139,7 @@ namespace HelpDesk.Tests.Integration
             Contrasena = password, Correo = account + "@test.local", NumDocumento = "000", Habilitado = true
         };
 
-        private static Solicitud Ticket(int id, string number, int company, int user, int customer, DateTime created) => new Solicitud
+        public static Solicitud Ticket(int id, string number, int company, int user, int customer, DateTime created) => new Solicitud
         {
             Id = id, NoSecuencia = number, IdEmpresa = company, IdUsuario = user, IdCliente = customer,
             FechaCreacion = created, TipoSolicitud = "Servicio Taller", TipoServicio = "Garantía",
@@ -165,9 +168,16 @@ namespace HelpDesk.Tests.Integration
 
         public static StringContent Json(object value) => new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
 
-        private class FakeMailService : IMailService
+        public class FakeMailService : IMailService
         {
-            public bool Send(string host, int port, SmtpDeliveryMethod method, bool useDefaultCredentials, bool enableSsl, string emailFrom, string password, string emailTo, string subject, string message, bool isBodyHtml) => true;
+            public List<(string To, string Subject, string Body)> Sent { get; } = new List<(string To, string Subject, string Body)>();
+
+            public bool Send(string host, int port, SmtpDeliveryMethod method, bool useDefaultCredentials, bool enableSsl, string emailFrom, string password, string emailTo, string subject, string message, bool isBodyHtml)
+            {
+                lock (Sent) { Sent.Add((emailTo, subject, message)); }
+                return true;
+            }
+
             public bool TestConnection() => true;
         }
     }
