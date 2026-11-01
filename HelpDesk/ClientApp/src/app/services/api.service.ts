@@ -229,6 +229,11 @@ export class ApiService {
     this.sessionSt.store('user', Object.assign({}, this.getUser(), session));
   }
 
+  // A photo or logo counts only when it has content. The API sends an empty text for an empty image, which is not null.
+  hasImage(image: any): boolean {
+    return image != null && image !== '' && image.length > 0;
+  }
+
   isNullorEmpty(value:any):boolean{
     return (value=='' || value==null)?true:false;
   }

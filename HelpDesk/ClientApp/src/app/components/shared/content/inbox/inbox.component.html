@@ -266,8 +266,8 @@
                         <div class="box-footer box-comments" id="divScroll" style="max-height: 300px;overflow:auto;" >
                           <div class="box-comment" *ngFor="let item of traces">
                             <!-- User image -->
-                            <img *ngIf="item.userImage ==null" class="img-circle img-sm" src="../../../../../assets/dist/img/photo_default.png" alt="User Image">
-                            <img *ngIf="item.userImage !=null" class="img-circle img-sm" [src]="'data:image/jpeg;base64,'+ item.userImage" alt="User Image">
+                            <img *ngIf="!service.hasImage(item.userImage)" class="img-circle img-sm" src="../../../../../assets/dist/img/photo_default.png" alt="User Image">
+                            <img *ngIf="service.hasImage(item.userImage)" class="img-circle img-sm" [src]="'data:image/jpeg;base64,'+ item.userImage" alt="User Image">
                             <div class="comment-text">
                                   <span class="username">
                                     {{ item.userName }} <i class="fa fa-star-o" *ngIf="item.favorito != true" title="Marcar como favorito" (click)="putTrace(item,'favorito')"></i><i class="fa fa-star" *ngIf="item.favorito == true" style="color:gold" title="Desmarcar como favorito" (click)="putTrace(item,'favorito')"></i> <i class="fa fa-bookmark-o" *ngIf="item.etiquetado != true" title="Marcar como solución" (click)="putTrace(item,'etiquetado')"></i><i class="fa fa-bookmark" *ngIf="item.etiquetado == true" title="Desmarcar como solución" style="color:tomato" (click)="putTrace(item,'etiquetado')"></i>
@@ -282,8 +282,8 @@
                         <!-- /.box-footer -->
                         <div class="box-footer">
                           <div>
-                            <img *ngIf="service.getUser().image == null" src="../../../../../assets/dist/img/photo_default.png" class="img-responsive img-circle img-sm" alt="Alt Text">
-                            <img *ngIf="service.getUser() !=null && service.getUser().image !=null" [src]="'data:image/jpeg;base64,'+ service.getUser().image" class="img-responsive img-circle img-sm" alt="Alt Text">
+                            <img *ngIf="!service.hasImage(service.getUser().image)" src="../../../../../assets/dist/img/photo_default.png" class="img-responsive img-circle img-sm" alt="Alt Text">
+                            <img *ngIf="service.getUser() !=null && service.hasImage(service.getUser().image)" [src]="'data:image/jpeg;base64,'+ service.getUser().image" class="img-responsive img-circle img-sm" alt="Alt Text">
                             <!-- .img-push is used to add margin to elements next to floating images -->
                             <div class="img-push input-group">
                               <input type="text" class="form-control " [(ngModel)]="trace.texto" (keyup.enter)="addTrace()" placeholder="Press enter to post comment" [disabled]="ticket.estado==service.ticketStatuses.completed && ticket.aprobadoPor!=null">

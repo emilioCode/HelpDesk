@@ -110,13 +110,13 @@
         </div>
         <div class="col-xs-4 col-sm-4">
           <div class="form-group col-xs-12 col-ms-12"  >
-            <img [hidden]="empresa.image!=null" src="../../../../assets/dist/img/photo_default.png" style="width:250px;height:250px;" >
-            <img *ngIf="empresa.image!=null" [src]="'data:image/jpeg;base64,'+ empresa.image" style="width:250px;height:250px;" >
+            <img [hidden]="service.hasImage(empresa.image)" src="../../../../assets/dist/img/photo_default.png" style="width:250px;height:250px;" >
+            <img *ngIf="service.hasImage(empresa.image)" [src]="'data:image/jpeg;base64,'+ empresa.image" style="width:250px;height:250px;" >
             <!-- <img src="{{imageUrl}}" style="width:250px;height:250px;" *ngIf="imageUrl!==''"> -->
           </div>
           <div class=" col-xs-12 col-sm-12">
             <input type="file" class="form-control"  (change)="handleFileInput($event.target.files)" accept="image/*" [disabled]="option=='delete'"/>
-            <button class="btn btn-danger btn-block" (click)="imageUrl='';empresa.image=null;" *ngIf="empresa.image!=null;">Eliminar</button>
+            <button class="btn btn-danger btn-block" (click)="imageUrl='';empresa.image=null;" *ngIf="service.hasImage(empresa.image);">Eliminar</button>
           </div>
         </div>
 

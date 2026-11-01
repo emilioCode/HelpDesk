@@ -18,7 +18,7 @@
         <header>
             <div class="row border-bottom border-dark pb-2">
                 <div class="col-6">
-                    @if (Model.empresa.Image != null)
+                    @if (Model.empresa.Image != null && Model.empresa.Image.Length > 0)
                     {
                         var imageUrl = "data:image/jpg; base64," + Convert.ToBase64String(@Model.empresa.Image);
 
@@ -26,7 +26,7 @@
                     }
                     else
                     {
-                        <img class="logo" alt="@Model.empresa.RazonSocial">
+                        <div class="h4 font-weight-bold mb-0">@Model.empresa.RazonSocial</div>
                     }
                 </div>
                 <div class="col-6 d-flex justify-content-end align-items-center">
