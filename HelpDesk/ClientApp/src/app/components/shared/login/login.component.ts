@@ -43,19 +43,9 @@ export class LoginComponent implements OnInit {
       }
       this.isLoading =false;
     },error => {
-      let errors = error.error.errors;
-      let title = error.error.title ? error.error.title : 'Warning';
-      let list = [];
-      if(title !== "Warning"){
-        let objectKeys =  Object.keys(errors);
-        objectKeys.forEach(x => {
-          list.push(errors[x]);
-        });
-      }
-      let message = title !== "Warning" ? list.join(','): errors[0].detail;
-      this.service.swal(title, message, 'warning');
-      console.error(error);
-      this.service.isLoading =false;
+      // Shows the message from the server (for example a locked account), or a generic one when there is none.
+      this.service.handleHttpError(error);
+      this.isLoading = false;
     });
   }
 }

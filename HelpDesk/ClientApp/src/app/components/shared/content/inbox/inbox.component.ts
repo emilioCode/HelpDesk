@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 // import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
@@ -8,7 +8,7 @@ import * as signalR from '@microsoft/signalr';
   templateUrl: './inbox.component.html',
   styles: []
 })
-export class InboxComponent implements OnInit {
+export class InboxComponent implements OnInit, OnDestroy {
 
   constructor(private service: ApiService) { 
     this.getTickets(this.service.getUser().id,"unique")
@@ -30,9 +30,14 @@ export class InboxComponent implements OnInit {
   addPart=false;
   hubConnection: signalR.HubConnection;
 
+  // Each screen opens its own real-time connection, so it closes it when the screen goes away.
+  ngOnDestroy() {
+    this.hubConnection.stop().catch(() => {});
+  }
+
   ngOnInit() {
     this.hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl(this.service.baseUrl+'hub')
+    .withUrl(this.service.baseUrl+'hub', { accessTokenFactory: () => this.service.getToken() })
     //.withUrl('/hub'//this.service.baseUrl+'/hub'
     // ,{
     //   skipNegotiation: true,

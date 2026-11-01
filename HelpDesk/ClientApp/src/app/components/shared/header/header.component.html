@@ -119,8 +119,8 @@
               <!-- Menu Toggle Button -->
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <!-- The user image in the navbar-->
-                <img *ngIf="service.getUser() ==null || service.getUser().image ==null" src="../../../../assets/dist/img/photo_default.png" class="user-image" alt="User Image">
-                <img *ngIf="service.getUser() !=null && service.getUser().image !=null" [src]="'data:image/jpeg;base64,'+ service.getUser().image" class="user-image" alt="User Image">
+                <img *ngIf="service.getUser() ==null || !service.hasImage(service.getUser().image)" src="../../../../assets/dist/img/photo_default.png" class="user-image" alt="User Image">
+                <img *ngIf="service.getUser() !=null && service.hasImage(service.getUser().image)" [src]="'data:image/jpeg;base64,'+ service.getUser().image" class="user-image" alt="User Image">
                 
                 <!-- hidden-xs hides the username on small devices so only the image appears. -->
                 <span class="hidden-xs" *ngIf="service.getUser() !=null">{{ service.getUser().nombre.substr(0,15) }}</span><span *ngIf="service.getUser().nombre.length > 16 && service.getUser() !=null">...</span>
@@ -128,8 +128,8 @@
               <ul class="dropdown-menu">
                 <!-- The user image in the menu -->
                 <li class="user-header">
-                  <img *ngIf="service.getUser() ==null || service.getUser().image ==null" src="../../../../assets/dist/img/photo_default.png" class="img-circle" alt="User Image">
-                  <img *ngIf="service.getUser() !=null && service.getUser().image !=null" [src]="'data:image/jpeg;base64,'+ service.getUser().image" class="img-circle" alt="User Image">
+                  <img *ngIf="service.getUser() ==null || !service.hasImage(service.getUser().image)" src="../../../../assets/dist/img/photo_default.png" class="img-circle" alt="User Image">
+                  <img *ngIf="service.getUser() !=null && service.hasImage(service.getUser().image)" [src]="'data:image/jpeg;base64,'+ service.getUser().image" class="img-circle" alt="User Image">
   
                   <p>
                     {{ service.getUser().nombre }}

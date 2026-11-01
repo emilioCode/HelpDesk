@@ -1,23 +1,29 @@
-﻿using HelpDesk.Core.Entities;
+using HelpDesk.Core.Constants;
+using HelpDesk.Core.Entities;
+using HelpDesk.Core.Exceptions;
 using HelpDesk.Core.Interfaces;
+using HelpDesk.Core.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using HelpDesk.Core.Constants;
 
 namespace HelpDesk.Core.Services
 {
     public class DeviceService : IDeviceService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public DeviceService(IUnitOfWork unitOfWork)
+        private readonly ICurrentUser _currentUser;
+        public DeviceService(IUnitOfWork unitOfWork, ICurrentUser currentUser)
         {
             _unitOfWork = unitOfWork;
+            _currentUser = currentUser;
         }
 
         public async Task<Equipo> AddDevice(Equipo device)
         {
+            _currentUser.EnsureTicketInCompany(_unitOfWork, device.IdSolicitud);
+            if (_currentUser.IsAuthenticated) device.IdEmpresa = _currentUser.CompanyId;
             device.Habilitado = true;
             await _unitOfWork.DeviceRepository.Add(device);
             await _unitOfWork.SaveChangeAsync();
@@ -32,6 +38,11 @@ namespace HelpDesk.Core.Services
             {
                 throw new Exception(Messages.FieldsRequired);
             }
+            devices.ForEach(x =>
+            {
+                _currentUser.EnsureTicketInCompany(_unitOfWork, x.IdSolicitud);
+                if (_currentUser.IsAuthenticated) x.IdEmpresa = _currentUser.CompanyId;
+            });
             devices.ForEach(async x =>
             {
                 x.Habilitado = true;
@@ -43,12 +54,14 @@ namespace HelpDesk.Core.Services
 
         public IEnumerable<Equipo> GetDevicesByTicketId(int ticketId)
         {
+            _currentUser.EnsureTicketInCompany(_unitOfWork, ticketId);
             var devices = _unitOfWork.DeviceRepository.GetDevicesByTicketId(ticketId);
             return devices;
         }
 
         public async Task<bool> DeleteDevide(int deviceId)
         {
+            RequireOwnCompany(_unitOfWork.DeviceRepository.GetAll().FirstOrDefault(x => x.Id == deviceId));
             await _unitOfWork.DeviceRepository.Delete(deviceId);
             await _unitOfWork.SaveChangeAsync();
             return true;
@@ -62,10 +75,24 @@ namespace HelpDesk.Core.Services
             {
                 throw new Exception(Messages.FieldsRequired);
             }
+            if (_currentUser.IsAuthenticated)
+            {
+                var persisted = _unitOfWork.DeviceRepository.GetAll().FirstOrDefault(x => x.Id == device.Id);
+                RequireOwnCompany(persisted);
+                device.IdEmpresa = persisted.IdEmpresa;
+                device.IdSolicitud = persisted.IdSolicitud;
+            }
             device.Habilitado = true;
             _unitOfWork.DeviceRepository.Update(device);
             await _unitOfWork.SaveChangeAsync();
             return device;
+        }
+
+        private void RequireOwnCompany(Equipo device)
+        {
+            if (!_currentUser.IsAuthenticated) return;
+            if (device == null) throw new AccessDeniedException();
+            _currentUser.RequireCompany(device.IdEmpresa);
         }
     }
 }

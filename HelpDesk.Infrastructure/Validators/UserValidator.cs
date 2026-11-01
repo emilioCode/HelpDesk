@@ -21,10 +21,14 @@ namespace HelpDesk.Infrastructure.Validators
                 .NotNull()
                 .MaximumLength(20);
 
+            // Required to create a user. When editing, an empty password keeps the current one.
             RuleFor(x => x.Contrasena)
                 .NotNull()
                 .NotEmpty()
-                .MinimumLength(6);
+                .When(x => x.Id == 0);
+            RuleFor(x => x.Contrasena)
+                .MinimumLength(6)
+                .When(x => !string.IsNullOrEmpty(x.Contrasena));
 
             RuleFor(x => x.Acceso)
                 .NotEmpty()

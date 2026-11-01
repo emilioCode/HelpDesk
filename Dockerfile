@@ -6,7 +6,7 @@ WORKDIR /src/HelpDesk/ClientApp
 COPY HelpDesk/ClientApp/package.json HelpDesk/ClientApp/package-lock.json ./
 RUN npm ci
 COPY HelpDesk/ClientApp/ ./
-RUN npm run build
+RUN npm run build -- --output-hashing=all
 
 # 2) .NET restore and build
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build

@@ -2,6 +2,8 @@
 using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
 using HelpDesk.Core.Rules;
+using HelpDesk.Core.Exceptions;
+using HelpDesk.Core.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,14 +15,19 @@ namespace HelpDesk.Core.Services
     public class TicketService : ITicketService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public TicketService(IUnitOfWork unitOfWork)
+        private readonly ICurrentUser _currentUser;
+        private readonly ISecretProtector _secretProtector;
+        public TicketService(IUnitOfWork unitOfWork, ICurrentUser currentUser, ISecretProtector secretProtector)
         {
             _unitOfWork = unitOfWork;
+            _currentUser = currentUser;
+            _secretProtector = secretProtector;
         }
 
         public async Task<(Solicitud, EmailMessage)> CreateTicket(Solicitud ticket)
         {
             EmailMessage emailMessage = null;
+            await EnsureCanCreate(ticket);
             var business = await _unitOfWork.BusinessRepository.GetById(ticket.IdEmpresa);
 
             ticket.IdUsuario = ticket.IdUsuario < 1 ? 0 : ticket.IdUsuario;
@@ -58,7 +65,7 @@ namespace HelpDesk.Core.Services
                     Host = business.Host,
                     Port = Convert.ToInt32(business.Port),
                     EmisorEmail = business.Correo,
-                    PasswordEmail = business.Contrasena
+                    PasswordEmail = _secretProtector.Unprotect(business.Contrasena)
                 };
             }
             return (ticket, emailMessage);
@@ -66,6 +73,7 @@ namespace HelpDesk.Core.Services
 
         public async Task<Metric> GetMetricsByUserId(int userId)
         {
+            userId = _currentUser.ResolveUserId(userId);
             var user = await _unitOfWork.UserRepository.GetById(userId);
             var ticketsByUser = _unitOfWork.TicketRepository.GetTicketsByUserId(user.Id);
             var ticketsByBusiness = _unitOfWork.TicketRepository.GetAll().Where(x => x.IdEmpresa == user.IdEmpresa);
@@ -96,6 +104,7 @@ namespace HelpDesk.Core.Services
 
         public IEnumerable<SummaryInformation> GetSummaryInformation(Solicitud ticket)
         {
+            if (_currentUser.IsAuthenticated) ticket.IdEmpresa = _currentUser.CompanyId;
             var tickets = _unitOfWork.TicketRepository.GetAll().ToList();
             var users = _unitOfWork.UserRepository.GetAll().ToList();
             var customers = _unitOfWork.CustomerRepository.GetAll().ToList();
@@ -127,7 +136,7 @@ namespace HelpDesk.Core.Services
 
         public IEnumerable<Solicitud> GetTicketBySecuencialNumber(string secuencialNumber)
         {
-            return _unitOfWork.TicketRepository.GetAll().Where(e => e.NoSecuencia == secuencialNumber);
+            return _unitOfWork.TicketRepository.GetAll().Where(e => e.NoSecuencia == secuencialNumber && (!_currentUser.IsAuthenticated || e.IdEmpresa == _currentUser.CompanyId));
         }
 
         public async Task<IEnumerable<SolicitudT>> GetTicketsByIdAndCondition(int id, string option)
@@ -136,6 +145,7 @@ namespace HelpDesk.Core.Services
             {
                 throw new Exception(Messages.OptionRequired);
             }
+            id = _currentUser.ResolveUserId(id);
             option = option.ToLower();
             var container = new List<Solicitud>();
 
@@ -201,6 +211,62 @@ namespace HelpDesk.Core.Services
             return containerTicket.AsEnumerable();
         }
 
+        // Company, customer and assignee must belong to the signed-in user's company, and a technician only creates tickets for themselves.
+        private async Task EnsureCanCreate(Solicitud ticket)
+        {
+            if (!_currentUser.IsAuthenticated) return;
+            ticket.IdEmpresa = _currentUser.CompanyId;
+            await RequireSameCompany(await _unitOfWork.CustomerRepository.GetById(ticket.IdCliente));
+            if (ticket.IdUsuario > 0)
+            {
+                if (_currentUser.Level < RoleLevel.Moderator && ticket.IdUsuario != _currentUser.Id) throw new AccessDeniedException();
+                await RequireSameCompany(await _unitOfWork.UserRepository.GetById(ticket.IdUsuario));
+            }
+        }
+
+        // What each role may do with an existing ticket, and the fields a client is never allowed to change.
+        private async Task ApplyCurrentUserRules(Solicitud ticket, string action)
+        {
+            if (!_currentUser.IsAuthenticated || action == "NOCHANGEPLEASE") return;
+
+            var persisted = _unitOfWork.TicketRepository.GetAll().FirstOrDefault(x => x.Id == ticket.Id);
+            if (persisted == null) throw new AccessDeniedException();
+            _currentUser.RequireCompany(persisted.IdEmpresa);
+
+            if (action == "USUARIO" || action == "APROBAR")
+            {
+                _currentUser.RequireLevel(RoleLevel.Moderator);
+            }
+            else if (_currentUser.Level < RoleLevel.Moderator && persisted.IdUsuario != _currentUser.Id)
+            {
+                throw new AccessDeniedException();
+            }
+
+            ticket.IdEmpresa = persisted.IdEmpresa;
+            ticket.NoSecuencia = persisted.NoSecuencia;
+            ticket.FechaCreacion = persisted.FechaCreacion;
+            ticket.AprobadoPor = action == "APROBAR" ? (int?)_currentUser.Id : persisted.AprobadoPor;
+            if (action != "USUARIO")
+            {
+                ticket.IdUsuario = persisted.IdUsuario;
+            }
+            else if (ticket.IdUsuario > 0)
+            {
+                await RequireSameCompany(await _unitOfWork.UserRepository.GetById(ticket.IdUsuario));
+            }
+            if (ticket.IdCliente != persisted.IdCliente)
+            {
+                await RequireSameCompany(await _unitOfWork.CustomerRepository.GetById(ticket.IdCliente));
+            }
+        }
+
+        private Task RequireSameCompany(ICompanyEntity entity)
+        {
+            if (entity == null) throw new AccessDeniedException();
+            _currentUser.RequireCompany(entity.IdEmpresa);
+            return Task.CompletedTask;
+        }
+
         private static void ValidateDates(Solicitud ticket, DateTime creationDate)
         {
             var error = TicketDateRules.Validate(creationDate, ticket.FechaInicio, ticket.HoraInicio, ticket.FechaTermino, ticket.HoraTermino);
@@ -217,6 +283,7 @@ namespace HelpDesk.Core.Services
             {
                 throw new Exception("action is required. Please select an action.");
             }
+            await ApplyCurrentUserRules(ticket, action);
             //ticket = await _unitOfWork.TicketRepository.GetById(ticket.Id);
             var business = await _unitOfWork.BusinessRepository.GetById(ticket.IdEmpresa);
             var user = await _unitOfWork.UserRepository.GetById(ticket.IdUsuario);
@@ -301,7 +368,7 @@ namespace HelpDesk.Core.Services
                     Host = business.Host,
                     Port = Convert.ToInt32(business.Port),
                     EmisorEmail = business.Correo,
-                    PasswordEmail = business.Contrasena
+                    PasswordEmail = _secretProtector.Unprotect(business.Contrasena)
                 };
                 //var resp = MailClient.Send(business.Host, Convert.ToInt32(business.Port), System.Net.Mail.SmtpDeliveryMethod.Network, false,
                 //true, business.Correo, business.Contrasena, user.Correo, subject, body, true);
@@ -332,25 +399,30 @@ namespace HelpDesk.Core.Services
                                     <header>
                                       <div class='row border-bottom border-dark pb-2'>
                                         <div class='col-6'>
-                                          <img src='{"data:image/jpeg;base64," + Convert.ToBase64String(business.Image)}' class='logo' alt='{business.RazonSocial}'/>
+                                          {(business.Image != null && business.Image.Length > 0 ? $"<img src='data:image/jpeg;base64,{Convert.ToBase64String(business.Image)}' class='logo' alt='{business.RazonSocial}'/>" : $"<h2>{business.RazonSocial}</h2>")}
                                         </div>
 
                                       </div>
                                       <div class='row py-2'>
 
                                         <div class='col-6'>";
-                    var c = business.Direccion.Split('\n').Count();
-                    for (int i = 0; i < c; i++)
+                    // The company data is optional: only the lines that have a value are written.
+                    foreach (var line in (business.Direccion ?? string.Empty).Split('\n').Where(l => !string.IsNullOrWhiteSpace(l)))
                     {
-                        body = body + $"<p class='info'>{business.Direccion.Split('\n')[i]}</p>";
-
+                        body = body + $"<p class='info'>{line}</p>";
+                    }
+                    if (!string.IsNullOrWhiteSpace(business.Telefono))
+                    {
+                        body = body + $"<p class='info'>Tel: {business.Telefono}</p>";
+                    }
+                    if (!string.IsNullOrWhiteSpace(business.Correo))
+                    {
+                        body = body + $"<p class='info'>E-mail: {business.Correo}</p>";
                     }
 
-                    body = body + $@"<p class='info'>Tel: {business.Telefono}</p>
-                                          <p class='info'>E-mail: {business.Correo}</p>
-                                        </div>
+                    body = body + $@"</div>
                                         <div class='col-6 d-flex justify-content-end align-items-top py-2'>
-                                          <p class='info'>RNC: {business.Rnc}</p>
+                                          {(string.IsNullOrWhiteSpace(business.Rnc) ? string.Empty : $"<p class='info'>RNC: {business.Rnc}</p>")}
                                         </div>
                                       </div>
                                     </header>
@@ -397,16 +469,20 @@ namespace HelpDesk.Core.Services
                         }
                     }
 
-                    emailMessage = new EmailMessage
+                    // A customer without an e-mail address cannot be notified; the ticket is approved anyway.
+                    if (!string.IsNullOrWhiteSpace(customer?.Correo))
                     {
-                        Body = body,
-                        Subject = subject,
-                        ReceptorEmail = customer.Correo,
-                        Host = business.Host,
-                        Port = Convert.ToInt32(business.Port),
-                        EmisorEmail = business.Correo,
-                        PasswordEmail =business.Contrasena
-                    };
+                        emailMessage = new EmailMessage
+                        {
+                            Body = body,
+                            Subject = subject,
+                            ReceptorEmail = customer.Correo,
+                            Host = business.Host,
+                            Port = Convert.ToInt32(business.Port),
+                            EmisorEmail = business.Correo,
+                            PasswordEmail = _secretProtector.Unprotect(business.Contrasena)
+                        };
+                    }
 
                     //var resp = MailClient.Send(business.Host, Convert.ToInt32(business.Port), System.Net.Mail.SmtpDeliveryMethod.Network, false,
                     //        true, business.Correo, business.Contrasena, customer.Correo, subject, body, true);

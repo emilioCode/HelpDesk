@@ -2,13 +2,19 @@ using AutoMapper;
 using FluentValidation.AspNetCore;
 using HelpDesk.Infrastructure.Extensions;
 using HelpDesk.Infrastructure.Filters;
+using HelpDesk.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Net.Http.Headers;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Linq;
 
 namespace HelpDesk
 {
@@ -21,11 +27,27 @@ namespace HelpDesk
 
         public IConfiguration Configuration { get; }
 
+        // index.html is checked with the server on every load, so a new deployment is picked up at once. The bundles carry a
+        // hash of their content in the file name, so they can be kept for a year without ever being out of date.
+        private static void SetSpaCacheHeaders(StaticFileResponseContext context)
+        {
+            var hashed = Regex.IsMatch(context.File.Name, @"\.[0-9a-f]{20}\.(js|css)$");
+            context.Context.Response.Headers[HeaderNames.CacheControl] = hashed ? "public,max-age=31536000,immutable" : "no-cache";
+        }
+
+        // Dynamic assemblies (for example the ones a mocking library generates in tests) cannot be scanned.
+        private static System.Reflection.Assembly[] ScannableAssemblies()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic).ToArray();
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {     
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddAutoMapper(ScannableAssemblies());
             services.AddDbContexts(Configuration);
+            services.AddSecurityServices(Configuration);
+            services.AddHelpDeskAuthentication(Configuration);
 
             services.AddSignalR();
             services.AddRazorPages();
@@ -51,7 +73,7 @@ namespace HelpDesk
                 })
                 .AddFluentValidation(options =>
                 {
-                    options.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+                    options.RegisterValidatorsFromAssemblies(ScannableAssemblies());
                 });
 
             services.AddServices();
@@ -78,14 +100,8 @@ namespace HelpDesk
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseDefaultFiles();
-            app.UseSpaStaticFiles();
+            app.UseSpaStaticFiles(new StaticFileOptions { OnPrepareResponse = SetSpaCacheHeaders });
 
-            app.UseCors(options =>
-            {
-                options.AllowAnyOrigin();
-                options.AllowAnyHeader();
-                options.AllowAnyMethod();
-            });
             //app.UseSignalR(x =>
             //{
             //    x.MapHub<Hubs.hub>("/hub");
@@ -97,6 +113,20 @@ namespace HelpDesk
             //        template: "{controller}/{action=Index}/{id?}");
             //});
             app.UseRouting();
+            // The SPA is served by this same application, so CORS is only needed when other origins are configured.
+            var allowedOrigins = (Configuration["Cors:AllowedOrigins"] ?? string.Empty)
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            if (allowedOrigins.Length > 0)
+            {
+                app.UseCors(options =>
+                {
+                    options.WithOrigins(allowedOrigins);
+                    options.AllowAnyHeader();
+                    options.AllowAnyMethod();
+                });
+            }
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
@@ -114,6 +144,7 @@ namespace HelpDesk
                 // see https://go.microsoft.com/fwlink/?linkid=864501
 
                 spa.Options.SourcePath = "ClientApp";
+                spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions { OnPrepareResponse = SetSpaCacheHeaders };
 
                 if (env.IsDevelopment())
                 {
