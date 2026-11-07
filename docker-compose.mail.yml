@@ -1,0 +1,37 @@
+# Adds a mail catcher so the e-mails the application sends can be read instead of going out.
+#   docker compose -f docker-compose.yml -f docker-compose.mail.yml up -d
+# Then set the company's mail server to host "mailpit" and port 1025 (see docker/README.md) and open http://localhost:8025.
+# For development only: the catcher uses a self-signed certificate that is generated here, and the web container is told to accept it.
+services:
+  mail-cert:
+    image: alpine/openssl
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >
+        test -f /certs/cert.pem ||
+        (openssl req -x509 -newkey rsa:2048 -nodes -keyout /certs/key.pem -out /certs/cert.pem -days 365
+        -subj "/CN=mailpit" -addext "subjectAltName=DNS:mailpit" && chmod 644 /certs/key.pem /certs/cert.pem)
+    volumes:
+      - mailcerts:/certs
+    restart: "no"
+
+  mailpit:
+    image: axllent/mailpit:v1.33.0
+    depends_on:
+      mail-cert:
+        condition: service_completed_successfully
+    environment:
+      MP_SMTP_TLS_CERT: /certs/cert.pem
+      MP_SMTP_TLS_KEY: /certs/key.pem
+      MP_SMTP_AUTH_ACCEPT_ANY: "1"
+    volumes:
+      - mailcerts:/certs:ro
+    ports:
+      - "127.0.0.1:${MAILPIT_PORT:-8025}:8025"
+
+  web:
+    environment:
+      Mail__AllowUntrustedCertificates: "true"
+
+volumes:
+  mailcerts:
