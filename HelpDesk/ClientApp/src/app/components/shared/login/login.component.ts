@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
       Contrasena: values.pwd
     }
 
-    this.service.http.post(this.service.baseUrl + 'api/Login',obj,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Login', obj)
     .subscribe(res=>{
       if(res===null){
         this.service.swal('Acceso Denegado','Verifique el usuario o la contraseña, o sino comuniquese con soporte.','error');

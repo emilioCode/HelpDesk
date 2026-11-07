@@ -59,7 +59,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   getBusiness(id){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Business/'+id,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Business/'+id)
       .subscribe(res=>{
         this.empresas = res;
         this.imageBusiness = this.empresas.filter(x=>x.id==this.service.getUser().idEmpresa)[0].image;
@@ -74,7 +74,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   getUsers(id,option){
     this.service.isLoading = true;
     this.getBusiness(this.service.getUser().id);
-    this.service.http.get(this.service.baseUrl + 'api/User/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('User/'+ id + '/' + option)
       .subscribe(res=>{
         this.users = res;
         this.userT = this.users[0];
@@ -101,7 +101,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }else{
     this.service.isLoading = true;
     // this.user.habilitado = true;
-     this.service.http.post(this.service.baseUrl + 'api/User/Put/'+this.service.getUser().id,this.userT,{headers:this.service.headers,responseType:'json'})
+     this.service.post('User/Put/'+this.service.getUser().id, this.userT)
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -117,7 +117,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   numbersOfTickets(idUser){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Ticket/numbersOfTickets/'+ idUser ,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Ticket/numbersOfTickets/'+ idUser)
       .subscribe(res=>{
         this.numbers =  res.data;
         // console.log( this.numbers );

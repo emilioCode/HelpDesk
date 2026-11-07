@@ -48,7 +48,7 @@ export class EmpresaComponent implements OnInit, OnDestroy {
         
         /* */
         // this.service.isLoading = true;
-        this.service.http.get(this.service.baseUrl + 'api/Business/'+this.service.getUser().id,{headers:this.service.headers,responseType:'json'})
+        this.service.get('Business/'+this.service.getUser().id)
           .subscribe(res=>{
             this.empresas = res;
             var item =this.empresas.filter(e=>e.id == this.service.getUser().idEmpresa)[0];
@@ -79,7 +79,7 @@ export class EmpresaComponent implements OnInit, OnDestroy {
 
   getBusiness(id){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Business/'+id,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Business/'+id)
       .subscribe(res=>{
         this.empresas = res;
         this.service.isLoading = false;
@@ -116,7 +116,7 @@ export class EmpresaComponent implements OnInit, OnDestroy {
 
   add(){
     this.service.isLoading = true;
-     this.service.http.post(this.service.baseUrl + 'api/Business/' + this.service.getUser().id,this.empresa,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Business/' + this.service.getUser().id, this.empresa)
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -144,7 +144,7 @@ export class EmpresaComponent implements OnInit, OnDestroy {
   edit(){
     this.service.isLoading = true;
     this.empresa.habilitado = true;
-     this.service.http.post(this.service.baseUrl + 'api/Business/Put/'+this.service.getUser().id,this.empresa,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Business/Put/'+this.service.getUser().id, this.empresa)
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -171,7 +171,7 @@ export class EmpresaComponent implements OnInit, OnDestroy {
   delete(){
     this.service.isLoading = true;
     this.empresa.habilitado = !this.empresa.habilitado;
-     this.service.http.post(this.service.baseUrl + 'api/Business/Put/'+this.service.getUser().id,this.empresa,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Business/Put/'+this.service.getUser().id, this.empresa)
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {      

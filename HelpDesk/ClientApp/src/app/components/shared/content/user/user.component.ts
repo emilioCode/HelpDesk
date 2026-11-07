@@ -53,7 +53,7 @@ export class UserComponent implements OnInit, OnDestroy {
         
         /* */
         // this.service.isLoading = true;
-        this.service.http.get(this.service.baseUrl + 'api/User/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
+        this.service.get('User/'+ this.service.getUser().id + '/' + '*')
           .subscribe(res=>{
             this.users = res;
             this.service.updateSession(this.users);
@@ -83,7 +83,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   getUsers(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/User/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('User/'+ id + '/' + option)
       .subscribe(res=>{
         this.users = res;
         this.service.updateSession(this.users);
@@ -127,7 +127,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   getBusiness(id){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Business/'+id,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Business/'+id)
       .subscribe(res=>{
         this.empresas = res;
         this.service.isLoading = false;
@@ -139,7 +139,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   add(){
     this.service.isLoading = true;
-     this.service.http.post(this.service.baseUrl + 'api/User',this.user,{headers:this.service.headers,responseType:'json'})
+     this.service.post('User', this.user)
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -167,7 +167,7 @@ export class UserComponent implements OnInit, OnDestroy {
   edit(){
     this.service.isLoading = true;
     this.user.habilitado = true;
-     this.service.http.post(this.service.baseUrl + 'api/User/Put/'+this.service.getUser().id,this.user,{headers:this.service.headers,responseType:'json'})
+     this.service.post('User/Put/'+this.service.getUser().id, this.user)
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -195,7 +195,7 @@ export class UserComponent implements OnInit, OnDestroy {
   delete(){
     this.service.isLoading = true;
     this.user.habilitado = !this.user.habilitado;
-     this.service.http.post(this.service.baseUrl + 'api/User/Put/'+this.user.id,this.user,{headers:this.service.headers,responseType:'json'})
+     this.service.post('User/Put/'+this.user.id, this.user)
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -223,7 +223,7 @@ export class UserComponent implements OnInit, OnDestroy {
       this.renderHTML3 = "";
       this.message = "";
     }else{
-      this.service.http.get(this.service.baseUrl + 'api/Login/'+ this.service.getUser().idEmpresa + '/' + userAccount,{headers:this.service.headers,responseType:'json'})
+      this.service.get('Login/'+ this.service.getUser().idEmpresa + '/' + userAccount)
       .subscribe(res=>{
         
         this.renderHTML1= res ? "has-success has-feedback": "has-warning has-feedback";

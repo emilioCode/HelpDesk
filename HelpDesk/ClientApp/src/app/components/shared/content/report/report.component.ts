@@ -72,7 +72,7 @@ export class ReportComponent implements OnInit, OnDestroy {
     }
 
     this.service.isLoading = true;
-    this.service.http.post(this.service.baseUrl + 'api/Ticket/GetJsonTicket',this.request,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Ticket/GetJsonTicket', this.request)
       .subscribe(res=>{
         this.requests = res;
         // console.table( this.requests )
