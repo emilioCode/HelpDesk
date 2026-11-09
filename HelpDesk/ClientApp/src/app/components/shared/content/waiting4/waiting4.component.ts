@@ -59,7 +59,7 @@ export class Waiting4Component implements OnInit, OnDestroy {
         
         /* */
         // this.service.isLoading = true;
-        this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
+        this.service.get('Ticket/'+ this.service.getUser().id + '/' + '*')
           .subscribe(res=>{
             this.tickets = res.filter(x=>/*x.idUsuario ==0  &&*/ x.estado == this.service.ticketStatuses.completed && x.aprobadoPor==null);
             var id = this.ticket.id===null?0:this.ticket.id;
@@ -168,7 +168,7 @@ export class Waiting4Component implements OnInit, OnDestroy {
 
   getCostumers(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Costumer/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Costumer/'+ id + '/' + option)
       .subscribe(res=>{
         this.costumers = res;
         this.service.isLoading = false;
@@ -180,7 +180,7 @@ export class Waiting4Component implements OnInit, OnDestroy {
 
   getUsers(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/User/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('User/'+ id + '/' + option)
       .subscribe(res=>{
         this.users = res;
         this.service.isLoading = false;
@@ -216,7 +216,7 @@ export class Waiting4Component implements OnInit, OnDestroy {
 
   getTickets(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Ticket/'+ id + '/' + option)
       .subscribe(res=>{
         this.tickets = res.filter(x=>/*x.idUsuario ==0  &&*/ x.estado == this.service.ticketStatuses.completed && x.aprobadoPor==null);
         // console.log(  this.tickets )
@@ -256,7 +256,7 @@ export class Waiting4Component implements OnInit, OnDestroy {
     // console.log('--TICKET REQUEST--')
     // console.log(this.ticket)
     this.service.isLoading = true;
-     this.service.http.post(this.service.baseUrl + 'api/Ticket',this.ticket,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Ticket', this.ticket)
       .subscribe(res=>{
       // console.log( res )
       this.service.swal(res.title,res.message,res.icon);
@@ -290,7 +290,7 @@ export class Waiting4Component implements OnInit, OnDestroy {
     });
     // console.log('devices')
     // console.log(this.devices)
-     this.service.http.post(this.service.baseUrl + 'api/Device/PostArray',this.devices,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Device/PostArray', this.devices)
       .subscribe(res=>{
       // console.log( res )
       
@@ -315,7 +315,7 @@ export class Waiting4Component implements OnInit, OnDestroy {
 
   getDevices(id){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Device/'+ id,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Device/'+ id)
       .subscribe(res=>{
         this.devices = res;
         // console.log(  this.devices )
@@ -333,7 +333,7 @@ export class Waiting4Component implements OnInit, OnDestroy {
 
   getTraces(idSolicitud,idEmpresa){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Trace/'+ idSolicitud + '/' + idEmpresa,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Trace/'+ idSolicitud + '/' + idEmpresa)
       .subscribe(res=>{
         this.traces = res.data;
         // console.log(  this.traces )
@@ -352,7 +352,7 @@ export class Waiting4Component implements OnInit, OnDestroy {
     this.trace.idSolicitud = this.ticket.id;
 
     this.service.isLoading = true;
-    this.service.http.post(this.service.baseUrl + 'api/Trace', this.trace ,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Trace', this.trace)
       .subscribe(res=>{
         this.getTraces(this.ticket.id,this.ticket.idEmpresa)
         this.trace = {};
@@ -378,7 +378,7 @@ export class Waiting4Component implements OnInit, OnDestroy {
         break;
     }
     this.service.isLoading = true;
-    this.service.http.post(this.service.baseUrl + 'api/Trace/Put', trace ,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Trace/Put', trace)
       .subscribe(res=>{
         // this.getTraces(this.ticket.id,this.ticket.idEmpresa)
         this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
@@ -462,7 +462,7 @@ export class Waiting4Component implements OnInit, OnDestroy {
       option = "NOCHANGEPLEASE";
     }
     this.service.isLoading = true;
-    this.service.http.post(this.service.baseUrl + 'api/Ticket/EDIT/'+option, this.ticket ,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Ticket/EDIT/'+option, this.ticket)
       .subscribe(res=>{
         // console.log(res.data)
 
@@ -577,7 +577,7 @@ export class Waiting4Component implements OnInit, OnDestroy {
 
   getUsersAP(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/User/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('User/'+ id + '/' + option)
       .subscribe(res=>{
         this.costumerAPs = res;
 
@@ -591,7 +591,7 @@ export class Waiting4Component implements OnInit, OnDestroy {
 
   getParts(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Part/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Part/'+ id + '/' + option)
       .subscribe(res=>{
         this.parts = res;
         // console.log(  this.parts )
@@ -613,7 +613,7 @@ export class Waiting4Component implements OnInit, OnDestroy {
     part.idEmpresa = this.ticket.idEmpresa;
     // console.log('devices')
     // console.log(this.devices)
-     this.service.http.post(this.service.baseUrl + 'api/Part',part,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Part', part)
       .subscribe(res=>{
       // console.log( res )
       

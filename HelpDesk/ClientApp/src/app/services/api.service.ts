@@ -140,7 +140,17 @@ export class ApiService {
     ) {
       this.route =_route;
       this.baseUrl = _baseUrl; 
-      this.http =_http;    
+      this.http =_http;
+  }
+
+  // Calls to the API. The path is what follows "api/", for example get('Ticket/' + id + '/*').
+  // The access token is added by the interceptor.
+  get(path: string) {
+    return this.http.get(this.baseUrl + 'api/' + path, { headers: this.headers, responseType: 'json' });
+  }
+
+  post(path: string, body?: any) {
+    return this.http.post(this.baseUrl + 'api/' + path, body === undefined ? null : body, { headers: this.headers, responseType: 'json' });
   }
 
   setUser(user:any):void{
@@ -155,7 +165,7 @@ export class ApiService {
 
   closeSession(){
     // Also clears the cookie the printable reports use. If it fails the cookie expires with the token.
-    this.http.post(this.baseUrl + 'api/Login/Logout', {}).subscribe(() => {}, () => {});
+    this.post('Login/Logout', {}).subscribe(() => {}, () => {});
     while (this.sessionSt.retrieve('user')!=null) {
       this.sessionSt.clear('user');
       this.route.navigateByUrl('/');

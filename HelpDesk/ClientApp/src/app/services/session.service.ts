@@ -105,7 +105,7 @@ export class SessionService {
     }
     this.refreshing = true;
     this.zone.run(() => {
-      this.service.http.post(this.service.baseUrl + 'api/Login/Refresh', {}).subscribe(res => {
+      this.service.post('Login/Refresh', {}).subscribe(res => {
         this.service.setToken(res.token, res.expiresAt);
         this.warned = false;
         this.refreshing = false;

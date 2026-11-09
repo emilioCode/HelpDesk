@@ -46,7 +46,7 @@ export class CostumerComponent implements OnInit, OnDestroy {
       if( (component=='costumer' && idEmpresa == this.service.getUser().idEmpresa) || this.service.getUser().acceso ==this.service.roles.root ){
         
         /* */
-        this.service.http.get(this.service.baseUrl + 'api/Costumer/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
+        this.service.get('Costumer/'+ this.service.getUser().id + '/' + '*')
           .subscribe(res=>{
             this.costumers = res;
             if(idUsuario >0 && this.costumer.id == idUsuario){
@@ -68,7 +68,7 @@ export class CostumerComponent implements OnInit, OnDestroy {
 
   getCostumers(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Costumer/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Costumer/'+ id + '/' + option)
       .subscribe(res=>{
         this.costumers = res;
         this.service.isLoading = false;
@@ -88,7 +88,7 @@ export class CostumerComponent implements OnInit, OnDestroy {
 
   getBusiness(id){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Business/'+id,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Business/'+id)
       .subscribe(res=>{
         this.empresas = res;
         this.service.isLoading = false;
@@ -104,7 +104,7 @@ export class CostumerComponent implements OnInit, OnDestroy {
       return false;
     }
     this.service.isLoading = true;
-     this.service.http.post(this.service.baseUrl + 'api/Costumer',this.costumer,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Costumer', this.costumer)
       .subscribe(res=>{
       console.log( res )
       this.service.swal(res.title,res.message,res.icon);
@@ -126,7 +126,7 @@ export class CostumerComponent implements OnInit, OnDestroy {
     }
     this.service.isLoading = true;
     this.costumer.habilitado = true;
-     this.service.http.post(this.service.baseUrl + 'api/Costumer/Put/'+ this.service.getUser().id,this.costumer,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Costumer/Put/'+ this.service.getUser().id, this.costumer)
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -154,7 +154,7 @@ export class CostumerComponent implements OnInit, OnDestroy {
   delete(){
     this.service.isLoading = true;
     this.costumer.habilitado = !this.costumer.habilitado;
-     this.service.http.post(this.service.baseUrl + 'api/Costumer/Put/'+this.service.getUser().id,this.costumer,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Costumer/Put/'+this.service.getUser().id, this.costumer)
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {

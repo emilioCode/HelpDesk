@@ -58,7 +58,7 @@ export class TicketComponent implements OnInit, OnDestroy {
         
         /* */
         // this.service.isLoading = true;
-        this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
+        this.service.get('Ticket/'+ this.service.getUser().id + '/' + '*')
           .subscribe(res=>{
             this.tickets = res;
             // debugger;
@@ -90,7 +90,7 @@ export class TicketComponent implements OnInit, OnDestroy {
       if( (component=='costumer' && idEmpresa == this.service.getUser().idEmpresa) ){
         
         /* */
-        this.service.http.get(this.service.baseUrl + 'api/Costumer/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
+        this.service.get('Costumer/'+ this.service.getUser().id + '/' + '*')
           .subscribe(res=>{
             this.costumers = res;
             
@@ -176,7 +176,7 @@ export class TicketComponent implements OnInit, OnDestroy {
 
   getCostumers(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Costumer/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Costumer/'+ id + '/' + option)
       .subscribe(res=>{
         this.costumers = res;
         this.service.isLoading = false;
@@ -188,7 +188,7 @@ export class TicketComponent implements OnInit, OnDestroy {
 
   getUsers(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/User/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('User/'+ id + '/' + option)
       .subscribe(res=>{
         this.users = res;
         this.service.isLoading = false;
@@ -230,7 +230,7 @@ export class TicketComponent implements OnInit, OnDestroy {
 
   getTickets(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Ticket/'+ id + '/' + option)
       .subscribe(res=>{
         this.tickets = res;
         // console.log(  this.tickets )
@@ -270,7 +270,7 @@ export class TicketComponent implements OnInit, OnDestroy {
     // console.log('--TICKET REQUEST--')
     // console.log(this.ticket)
     this.service.isLoading = true;
-     this.service.http.post(this.service.baseUrl + 'api/Ticket',this.ticket,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Ticket', this.ticket)
       .subscribe(res=>{
       // console.log( res )
       this.service.swal(res.title,res.message,res.icon);
@@ -306,7 +306,7 @@ export class TicketComponent implements OnInit, OnDestroy {
     });
     // console.log('devices')
     // console.log(this.devices)
-     this.service.http.post(this.service.baseUrl + 'api/Device/PostArray',this.devices,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Device/PostArray', this.devices)
       .subscribe(res=>{
       // console.log( res )
       
@@ -340,7 +340,7 @@ export class TicketComponent implements OnInit, OnDestroy {
 
   getDevices(id){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Device/'+ id,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Device/'+ id)
       .subscribe(res=>{
         this.devices = res;
         // console.log(  this.devices )
@@ -358,7 +358,7 @@ export class TicketComponent implements OnInit, OnDestroy {
 
   getTraces(idSolicitud,idEmpresa){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Trace/'+ idSolicitud + '/' + idEmpresa,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Trace/'+ idSolicitud + '/' + idEmpresa)
       .subscribe(res=>{
         this.traces = res.data;
         // console.log(  this.traces )
@@ -377,7 +377,7 @@ export class TicketComponent implements OnInit, OnDestroy {
     this.trace.idSolicitud = this.ticket.id;
 
     this.service.isLoading = true;
-    this.service.http.post(this.service.baseUrl + 'api/Trace', this.trace ,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Trace', this.trace)
       .subscribe(res=>{
         // this.getTraces(this.ticket.id,this.ticket.idEmpresa)
         this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
@@ -404,7 +404,7 @@ export class TicketComponent implements OnInit, OnDestroy {
         break;
     }
     this.service.isLoading = true;
-    this.service.http.post(this.service.baseUrl + 'api/Trace/Put', trace ,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Trace/Put', trace)
       .subscribe(res=>{
         // this.getTraces(this.ticket.id,this.ticket.idEmpresa)
         this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
@@ -493,7 +493,7 @@ export class TicketComponent implements OnInit, OnDestroy {
       option = "NOCHANGEPLEASE";
     }
     this.service.isLoading = true;
-    this.service.http.post(this.service.baseUrl + 'api/Ticket/EDIT/'+option, this.ticket ,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Ticket/EDIT/'+option, this.ticket)
       .subscribe(res=>{
         // console.log(res.data)
 
@@ -625,7 +625,7 @@ export class TicketComponent implements OnInit, OnDestroy {
 
   getUsersAP(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/User/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('User/'+ id + '/' + option)
       .subscribe(res=>{
         this.costumerAPs = res;
 
@@ -651,7 +651,7 @@ export class TicketComponent implements OnInit, OnDestroy {
       return false;
     }
     this.service.isLoading = true;
-     this.service.http.post(this.service.baseUrl + 'api/Costumer',this.costumer,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Costumer', this.costumer)
       .subscribe(res=>{
         // debugger;
       // console.log( res )
@@ -688,7 +688,7 @@ export class TicketComponent implements OnInit, OnDestroy {
 
   getParts(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Part/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Part/'+ id + '/' + option)
       .subscribe(res=>{
         this.parts = res;
         // console.log(  this.parts )
@@ -710,7 +710,7 @@ export class TicketComponent implements OnInit, OnDestroy {
     part.idEmpresa = this.ticket.idEmpresa;
     // console.log('devices')
     // console.log(this.devices)
-     this.service.http.post(this.service.baseUrl + 'api/Part',part,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Part', part)
       .subscribe(res=>{
       // console.log( res )
       
@@ -735,7 +735,7 @@ export class TicketComponent implements OnInit, OnDestroy {
     this.service.isLoading = true;
     // console.log('devices')
     // console.log(this.devices)
-     this.service.http.post(this.service.baseUrl + 'api/Device/PostOne',device,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Device/PostOne', device)
       .subscribe(res=>{
       // console.log( res )
       
@@ -793,7 +793,7 @@ export class TicketComponent implements OnInit, OnDestroy {
     }
     this.service.isLoading = true;
     
-    this.service.http.post(this.service.baseUrl + 'api/Part/Put',part,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Part/Put', part)
     .subscribe(res=>{
     // console.log( res )
     
@@ -816,7 +816,7 @@ export class TicketComponent implements OnInit, OnDestroy {
 
   deletePartUsed(part){
     // console.log(part);
-    this.service.http.post(this.service.baseUrl + 'api/Part/Delete/'+part.id,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Part/Delete/'+part.id)
     .subscribe(res=>{
     // console.log( res )
     
@@ -846,7 +846,7 @@ export class TicketComponent implements OnInit, OnDestroy {
 
   deleteDevice(part){
     // console.log(part);
-    this.service.http.post(this.service.baseUrl + 'api/Device/Delete/'+part.id,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Device/Delete/'+part.id)
     .subscribe(res=>{
     // console.log( res )
     
@@ -876,7 +876,7 @@ export class TicketComponent implements OnInit, OnDestroy {
     }
     this.service.isLoading = true;
     
-    this.service.http.post(this.service.baseUrl + 'api/Device/Put',part,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Device/Put', part)
     .subscribe(res=>{
     // console.log( res )
     

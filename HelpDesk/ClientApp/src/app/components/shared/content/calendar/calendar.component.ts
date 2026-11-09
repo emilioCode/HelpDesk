@@ -104,7 +104,7 @@ export class CalendarComponent implements OnInit {
     // Taller             = /OrderReport1?value=20200102-1
     // Taller (Cerrado)   = /OrderReportF?value=20200103-1
     this.service.isLoading = true;
-    this.service.http.post(this.service.baseUrl + 'api/Event', request ,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Event', request)
       .subscribe(res=>{
         this.events = res.data.map((e)=>{
           var url = "";
