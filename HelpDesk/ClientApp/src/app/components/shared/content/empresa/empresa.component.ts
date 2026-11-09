@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 // import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
@@ -6,11 +7,12 @@ import * as signalR from '@microsoft/signalr';
 @Component({
   selector: 'app-empresa',
   templateUrl: './empresa.component.html',
-  styles: []
+  styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }']
 })
 export class EmpresaComponent implements OnInit, OnDestroy {
 
-  constructor(private service: ApiService) { 
+  constructor(private service: ApiService, private formBuilder: FormBuilder) { 
+    this.initializeForm();
     if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
       alert(this.service.messages.noPermissionToAccess);
       this.service.route.navigateByUrl('/');
@@ -24,6 +26,32 @@ export class EmpresaComponent implements OnInit, OnDestroy {
   empresa:any={};
   imageUrl;
   hubConnection: signalR.HubConnection;
+  form: FormGroup;
+
+  // Same limits as the server-side validator (BusinessValidator), so a mistake shows before saving.
+  initializeForm = (): void => {
+    this.form = this.formBuilder.group({
+      razonSocial: ['', Validators.required],
+      sectorComercial: ['', Validators.maxLength(50)],
+      rnc: ['', Validators.maxLength(50)],
+      telefono: ['', Validators.maxLength(50)],
+      noAutorizacion: ['', Validators.maxLength(12)],
+      correo: ['', [Validators.maxLength(50), Validators.email]],
+      contrasena: ['', Validators.maxLength(30)],
+      secuenciaticket: ['', [Validators.required, Validators.maxLength(12)]],
+      url: ['', Validators.maxLength(80)],
+      host: ['', Validators.maxLength(30)],
+      port: [null],
+      direccion: ['', Validators.maxLength(150)],
+      condicionesTaller: [''],
+      condicionesDomicilio: ['']
+    });
+  }
+
+  // The form holds what the person types; the rest of the company (id, image, limit...) stays in this.empresa.
+  private payload() {
+    return Object.assign({}, this.empresa, this.form.value);
+  }
 
   // Each screen opens its own real-time connection, so it closes it when the screen goes away.
   ngOnDestroy() {
@@ -92,6 +120,9 @@ export class EmpresaComponent implements OnInit, OnDestroy {
   fillModal(option='add',object){
     this.option = option;
     this.empresa = object;
+    this.form.reset();
+    this.form.patchValue(object);
+    option == 'delete' ? this.form.disable() : this.form.enable();
 
     if(document.getElementById('collapseOne').classList.length > 1) document.getElementById('collapseOnebtn').click();
     if(document.getElementById('collapseTwo').classList.length > 1) document.getElementById('collapseTwobtn').click();
@@ -116,7 +147,7 @@ export class EmpresaComponent implements OnInit, OnDestroy {
 
   add(){
     this.service.isLoading = true;
-     this.service.post('Business/' + this.service.getUser().id, this.empresa)
+     this.service.post('Business/' + this.service.getUser().id, this.payload())
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -144,7 +175,7 @@ export class EmpresaComponent implements OnInit, OnDestroy {
   edit(){
     this.service.isLoading = true;
     this.empresa.habilitado = true;
-     this.service.post('Business/Put/'+this.service.getUser().id, this.empresa)
+     this.service.post('Business/Put/'+this.service.getUser().id, this.payload())
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {

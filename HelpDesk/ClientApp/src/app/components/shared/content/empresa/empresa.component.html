@@ -73,38 +73,39 @@
         <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea deshabilitar este Entidad?</b></h4>
       </div>
       <div class="modal-body">
+        <form [formGroup]="form" novalidate>
         
         <!---->
         <div class="row">
         <div class="col-xs-8 col-sm-8">
           <div class="form-group col-xs-8 col-sm-8">
             <label for="razonSocial">Razón Social:</label>
-            <input type="text" class="form-control" placeholder="Razón Social" [(ngModel)]="empresa.razonSocial" [disabled]="option=='delete'">
+            <input type="text" class="form-control" placeholder="Razón Social" formControlName="razonSocial">
           </div>
           <div class="form-group col-xs-4 col-sm-4">
             <label for="sectorComercial">Sector Comercial:</label>
-            <input type="text" class="form-control" placeholder="Sector Comercial" [(ngModel)]="empresa.sectorComercial" [disabled]="option=='delete'">
+            <input type="text" class="form-control" placeholder="Sector Comercial" formControlName="sectorComercial">
           </div>
 
           <div class="form-group col-xs-12 col-sm-12">
               <label for="rnc">RNC/Cédula:</label>
-              <input type="text" class="form-control" placeholder="RNC/Cédula" [(ngModel)]="empresa.rnc" [disabled]="option=='delete'">
+              <input type="text" class="form-control" placeholder="RNC/Cédula" formControlName="rnc">
             </div>
             <div class="form-group col-xs-6 col-sm-6">
               <label for="telefono">Teléfono:</label>
-              <input type="text" class="form-control" placeholder="Teléfono" [(ngModel)]="empresa.telefono" [disabled]="option=='delete'">
+              <input type="text" class="form-control" placeholder="Teléfono" formControlName="telefono">
             </div>
             <div class="form-group col-xs-6 col-sm-6">
                 <label for="noAutorizacion">No. Autorización:</label>
-                <input type="text" class="form-control" placeholder="No. Autorización" [(ngModel)]="empresa.noAutorizacion" [disabled]="option=='delete'">
+                <input type="text" class="form-control" placeholder="No. Autorización" formControlName="noAutorizacion">
             </div>
             <div class="form-group col-xs-6 col-sm-6">
                 <label for="correo">Correo Electrónico</label>
-                <input type="text" class="form-control" placeholder="Correo Electrónico" [(ngModel)]="empresa.correo" [disabled]="option=='delete'">
+                <input type="text" class="form-control" placeholder="Correo Electrónico" formControlName="correo">
             </div>
             <div class="form-group col-xs-6 col-sm-6">
               <label for="contrasena">Contraseña:</label>
-              <input type="password" class="form-control" placeholder="Contraseña" [(ngModel)]="empresa.contrasena" [disabled]="option=='delete'">
+              <input type="password" class="form-control" placeholder="Contraseña" formControlName="contrasena">
             </div>
             
         </div>
@@ -116,30 +117,30 @@
           </div>
           <div class=" col-xs-12 col-sm-12">
             <input type="file" class="form-control"  (change)="handleFileInput($event.target.files)" accept="image/*" [disabled]="option=='delete'"/>
-            <button class="btn btn-danger btn-block" (click)="imageUrl='';empresa.image=null;" *ngIf="service.hasImage(empresa.image);">Eliminar</button>
+            <button type="button" class="btn btn-danger btn-block" (click)="imageUrl='';empresa.image=null;" *ngIf="service.hasImage(empresa.image);">Eliminar</button>
           </div>
         </div>
 
         <div class="col-xs-12 col-sm-12">
           <div class="form-group col-xs-3 col-sm-3">
             <label for="url">Secuencia Ticket:</label>
-            <input type="text" class="form-control" placeholder="No. Ticket" [(ngModel)]="empresa.secuenciaticket" [disabled]="option=='delete'">
+            <input type="text" class="form-control" placeholder="No. Ticket" formControlName="secuenciaticket">
           </div>
           <div class="form-group col-xs-3 col-sm-3">
             <label for="url">Url:</label>
-            <input type="text" class="form-control" placeholder="Url" [(ngModel)]="empresa.url" [disabled]="option=='delete'">
+            <input type="text" class="form-control" placeholder="Url" formControlName="url">
           </div>
           <div class="form-group col-xs-3 col-sm-3">
             <label for="host">Host:</label>
-            <input type="text" class="form-control" placeholder="Host" [(ngModel)]="empresa.host" [disabled]="option=='delete'">
+            <input type="text" class="form-control" placeholder="Host" formControlName="host">
           </div>
           <div class="form-group col-xs-3 col-sm-3">
             <label for="port">Puerto:</label>
-            <input type="number" class="form-control" placeholder="Puerto" [(ngModel)]="empresa.port" [disabled]="option=='delete'">
+            <input type="number" class="form-control" placeholder="Puerto" formControlName="port">
           </div>
           <div class="form-group col-xs-12 col-sm-12">
             <label for="direccion">Dirección:</label>
-            <textarea class="form-control" rows="2" [(ngModel)]="empresa.direccion" [disabled]="option=='delete'"></textarea>
+            <textarea class="form-control" rows="2" formControlName="direccion"></textarea>
           </div>
 
           <div class="form-group col-xs-12 col-sm-12">
@@ -155,7 +156,7 @@
             
                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                   <div class="card-body">
-                    <textarea class="form-control" rows="2" [(ngModel)]="empresa.condicionesTaller" [disabled]="option=='delete'"></textarea>
+                    <textarea class="form-control" rows="2" formControlName="condicionesTaller"></textarea>
                   </div>
                 </div>
               </div>
@@ -169,7 +170,7 @@
                 </div>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
                   <div class="card-body">
-                    <textarea class="form-control" rows="2" [(ngModel)]="empresa.condicionesDomicilio" [disabled]="option=='delete'"></textarea>
+                    <textarea class="form-control" rows="2" formControlName="condicionesDomicilio"></textarea>
                   </div>
                 </div>
               </div>
@@ -186,13 +187,14 @@
       </div>
       <!---->
 
+        </form>
       </div>
       <div class="modal-footer">
           <div class="overlay" [hidden]="!service.isLoading">
               <i class="fa fa-refresh fa-spin"></i>
           </div>
-          <button type="button" class="btn btn-primary" *ngIf="option=='add'" (click)="add()" [disabled]="service.isNullorEmpty(empresa.razonSocial) || service.isNullorEmpty(empresa.secuenciaticket)"><i class="fa fa-fw fa-file-o"></i> Crear</button>
-          <button type="button" class="btn btn-success" *ngIf="option=='edit'" (click)="edit()" [disabled]="service.isNullorEmpty(empresa.razonSocial) || service.isNullorEmpty(empresa.secuenciaticket)"><i class="fa fa-fw fa-save"></i> Guardar</button>
+          <button type="button" class="btn btn-primary" *ngIf="option=='add'" (click)="add()" [disabled]="form.invalid"><i class="fa fa-fw fa-file-o"></i> Crear</button>
+          <button type="button" class="btn btn-success" *ngIf="option=='edit'" (click)="edit()" [disabled]="form.invalid"><i class="fa fa-fw fa-save"></i> Guardar</button>
           <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
           <button type="button" class="btn btn-default" data-dismiss="modal" (click)="getBusiness(service.getUser().id)" id="closeModalBtn">Close</button>
         <!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->
