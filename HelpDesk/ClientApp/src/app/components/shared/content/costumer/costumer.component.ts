@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, Pipe } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 // import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
@@ -6,12 +7,14 @@ import * as signalR from '@microsoft/signalr';
 @Component({
   selector: 'app-costumer',
   templateUrl: './costumer.component.html',
-  styleUrls: []
+  styleUrls: [],
+  styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }']
 })
 @Pipe({name:'FilterPipe'})
 export class CostumerComponent implements OnInit, OnDestroy {
 
-  constructor(private service: ApiService) { 
+  constructor(private service: ApiService, private formBuilder: FormBuilder) { 
+    this.initializeForm();
     this.getCostumers(this.service.getUser().id,"*")
   }
 
@@ -23,6 +26,27 @@ export class CostumerComponent implements OnInit, OnDestroy {
   imageUrl;
   levels:any;
   hubConnection: signalR.HubConnection;
+  form: FormGroup;
+
+  // Limits are the ones of the database columns (and CustomerValidator for the name), so a long value shows before saving.
+  initializeForm = (): void => {
+    this.form = this.formBuilder.group({
+      nombre: ['', [Validators.required, Validators.maxLength(100)]],
+      rnc: ['', [Validators.required, Validators.maxLength(30)]],
+      contacto: ['', Validators.maxLength(80)],
+      telefono: ['', Validators.maxLength(20)],
+      extension: ['', Validators.maxLength(10)],
+      correo: ['', Validators.maxLength(50)],
+      departamento: ['', Validators.maxLength(60)],
+      idEmpresa: [null],
+      direccion: ['']
+    });
+  }
+
+  // The form holds what the person types; the rest of the customer (id, status...) stays in this.costumer.
+  private payload() {
+    return Object.assign({}, this.costumer, this.form.value);
+  }
 
   // Each screen opens its own real-time connection, so it closes it when the screen goes away.
   ngOnDestroy() {
@@ -82,6 +106,12 @@ export class CostumerComponent implements OnInit, OnDestroy {
     this.option = option;
     this.costumer = object;
     if(option=='add')this.costumer.idEmpresa = this.service.getUser().idEmpresa;
+    this.form.reset();
+    this.form.patchValue(object);
+    // Same rules as before: nobody edits while disabling, a technician only reads, and only root changes the company.
+    const level = this.service.getLevel(this.service.getUser().acceso);
+    option == 'delete' || level <= 1 ? this.form.disable() : this.form.enable();
+    if(level != 4) this.form.get('idEmpresa').disable();
     // console.log(this.user)
     this.getBusiness(this.service.getUser().id);
   }
@@ -104,7 +134,7 @@ export class CostumerComponent implements OnInit, OnDestroy {
       return false;
     }
     this.service.isLoading = true;
-     this.service.post('Costumer', this.costumer)
+     this.service.post('Costumer', this.payload())
       .subscribe(res=>{
       console.log( res )
       this.service.swal(res.title,res.message,res.icon);
@@ -126,7 +156,7 @@ export class CostumerComponent implements OnInit, OnDestroy {
     }
     this.service.isLoading = true;
     this.costumer.habilitado = true;
-     this.service.post('Costumer/Put/'+ this.service.getUser().id, this.costumer)
+     this.service.post('Costumer/Put/'+ this.service.getUser().id, this.payload())
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
