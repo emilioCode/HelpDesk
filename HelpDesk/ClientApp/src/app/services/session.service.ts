@@ -28,7 +28,8 @@ export class SessionService {
     this.syncNotices();
   }
 
-  // One connection for the whole session, whatever screen is open, to receive the notice that the user was disabled.
+  // One connection for the whole session, whatever screen is open, to receive the notices that the user was disabled
+  // (idOther 0) or that their role or company changed (idOther 2).
   // It exists only while someone is signed in.
   private syncNotices(): void {
     const signedIn = !!this.service.getToken();
@@ -38,9 +39,13 @@ export class SessionService {
         .build();
       this.notices.on('refresh', (component, idEmpresa, idUsuario, idOther) => {
         const user = this.service.getUser();
-        if (component === 'session' && user && idEmpresa == user.idEmpresa && idUsuario == user.id && idOther == 0) {
-          // Screens that handle this notice themselves act first; this covers the ones that do not.
-          setTimeout(() => this.zone.run(() => this.endDisabledSession()), 1000);
+        if (component === 'session' && user && idEmpresa == user.idEmpresa && idUsuario == user.id) {
+          // Screens that handle the disabled notice themselves act first; this covers the ones that do not.
+          if (idOther == 0) {
+            setTimeout(() => this.zone.run(() => this.endSession(this.service.messages.userDisabled)), 1000);
+          } else if (idOther == 2) {
+            this.zone.run(() => this.endSession(this.service.messages.accessChanged));
+          }
         }
       });
       this.notices.start().catch(err => console.error(err.toString()));
@@ -50,12 +55,12 @@ export class SessionService {
     }
   }
 
-  private endDisabledSession(): void {
+  private endSession(message: string): void {
     if (!this.service.getUser()) {
       return;
     }
     this.service.closeSession();
-    this.service.swal(this.service.messages.titleSessionExpired, this.service.messages.userDisabled, 'info');
+    this.service.swal(this.service.messages.titleSessionExpired, message, 'info');
   }
 
   check(): void {

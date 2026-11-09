@@ -86,17 +86,17 @@ namespace HelpDesk.Tests.Integration
         }
 
         [Test]
-        public async Task Refresh_ReadsTheRoleAgain()
+        public async Task Refresh_WithATokenWhoseRoleChanged_IsRefused_AndSigningInGivesTheCurrentRole()
         {
             var token = await _api.LoginAsync("renewrole");
             Assert.AreEqual("TECNICO", RoleIn(token));
 
             _api.Query(db => { var u = db.Usuarios.Single(x => x.Id == 12); u.Acceso = "MODERADOR"; db.SaveChanges(); return 0; });
             var response = await WithToken(_api.CreateClient(), token).PostAsync("/api/Login/Refresh", null);
-            var renewed = (string)JObject.Parse(await response.Content.ReadAsStringAsync())["token"];
+            var again = await _api.LoginAsync("renewrole");
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-            Assert.AreEqual("MODERADOR", RoleIn(renewed), "the new token carries the current role, not the one at sign-in");
+            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode, "the old token no longer says what the user is, so it is not renewed");
+            Assert.AreEqual("MODERADOR", RoleIn(again), "signing in again carries the current role");
         }
 
         [Test]
@@ -225,6 +225,44 @@ namespace HelpDesk.Tests.Integration
             var response = await WithToken(_cached.CreateClient(), token).GetAsync("/api/User/16/unique");
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "inside the window the remembered answer is used (this is the trade-off for not querying on every call)");
+        }
+
+        [Test]
+        public async Task AUserWhoseRoleChanged_IsRefusedWithTheSameToken_UntilTheySignInAgain()
+        {
+            var token = await _api.LoginAsync("rolechg");
+            Assert.AreEqual(HttpStatusCode.OK, (await WithToken(_api.CreateClient(), token).GetAsync("/api/User/17/unique")).StatusCode);
+            _api.Query(db => { db.Usuarios.Single(x => x.Id == 17).Acceso = "MODERADOR"; db.SaveChanges(); return 0; });
+
+            var response = await WithToken(_api.CreateClient(), token).GetAsync("/api/User/17/unique");
+            var again = await _api.LoginAsync("rolechg");
+            var afterSigningIn = await WithToken(_api.CreateClient(), again).GetAsync("/api/User/17/unique");
+
+            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, afterSigningIn.StatusCode);
+        }
+
+        [Test]
+        public async Task AUserMovedToAnotherCompany_IsRefusedWithTheSameToken()
+        {
+            var token = await _api.LoginAsync("companychg");
+            Assert.AreEqual(HttpStatusCode.OK, (await WithToken(_api.CreateClient(), token).GetAsync("/api/User/18/unique")).StatusCode);
+            _api.Query(db => { db.Usuarios.Single(x => x.Id == 18).IdEmpresa = 2; db.SaveChanges(); return 0; });
+
+            var response = await WithToken(_api.CreateClient(), token).GetAsync("/api/User/18/unique");
+
+            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Test]
+        public async Task AUserEditedWithoutChangingRoleOrCompany_KeepsWorking()
+        {
+            var token = await _api.LoginAsync("samerole");
+            _api.Query(db => { db.Usuarios.Single(x => x.Id == 19).Nombre = "New name"; db.SaveChanges(); return 0; });
+
+            var response = await WithToken(_api.CreateClient(), token).GetAsync("/api/User/19/unique");
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
 
         [Test]

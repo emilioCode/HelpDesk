@@ -1,3 +1,4 @@
+using HelpDesk.Core.CustomEntities;
 using HelpDesk.Core.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -56,7 +57,8 @@ namespace HelpDesk.Security
                     {
                         OnTokenValidated = async context =>
                         {
-                            // A token stays valid until it expires, so a user disabled meanwhile is refused here.
+                            // A token stays valid until it expires, so what it says is checked against the user now:
+                            // a user disabled meanwhile, or whose role or company changed, must sign in again.
                             if (!int.TryParse(context.Principal?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var userId))
                             {
                                 context.Fail("The token has no user.");
@@ -64,26 +66,33 @@ namespace HelpDesk.Security
                             }
                             var cache = context.HttpContext.RequestServices.GetRequiredService<IMemoryCache>();
                             var key = "active-user:" + userId;
-                            if (!cache.TryGetValue(key, out bool active))
+                            if (!cache.TryGetValue(key, out UserIdentity current))
                             {
                                 try
                                 {
                                     var users = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                                    active = await users.GetActiveIdentityAsync(userId) != null;
+                                    current = await users.GetActiveIdentityAsync(userId);
                                 }
                                 catch
                                 {
                                     // If the user cannot be checked, the request is refused rather than let through.
-                                    active = false;
+                                    current = null;
                                 }
                                 if (options.ActiveCheckSeconds > 0)
                                 {
-                                    cache.Set(key, active, TimeSpan.FromSeconds(options.ActiveCheckSeconds));
+                                    cache.Set(key, current, TimeSpan.FromSeconds(options.ActiveCheckSeconds));
                                 }
                             }
-                            if (!active)
+                            if (current == null)
                             {
                                 context.Fail("The user is no longer active.");
+                                return;
+                            }
+                            var role = context.Principal.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+                            var company = context.Principal.FindFirst(JwtTokenService.CompanyClaim)?.Value;
+                            if (role != (current.Acceso ?? string.Empty) || company != current.IdEmpresa.ToString())
+                            {
+                                context.Fail("The role or the company of the user changed.");
                             }
                         },
                         OnMessageReceived = context =>
