@@ -90,40 +90,41 @@
         <div class="modal-body">
           
           <!---->
+          <form [formGroup]="form" novalidate>
           <div class="row">
           <div class="col-xs-8 col-sm-8">
             <div class="form-group col-xs-8 col-sm-8">
               <label for="razonSocial">Nombre completo:</label>
-              <input type="text" class="form-control" placeholder="Nombre" [(ngModel)]="user.nombre" [disabled]="option=='delete'">
+              <input type="text" class="form-control" placeholder="Nombre" formControlName="nombre">
             </div>
             <div class="form-group col-xs-4 col-sm-4">
               <label for="sectorComercial">Cédula:</label>
-              <input type="text" class="form-control" placeholder="No. documento" [(ngModel)]="user.numDocumento" [disabled]="option=='delete'">
+              <input type="text" class="form-control" placeholder="No. documento" formControlName="numDocumento">
             </div>
   
             <div class="form-group col-xs-6 col-sm-6 {{ renderHTML1 }}">
                 <label for="rnc">Cuenta de usuario:</label>
-                <input type="text" class="form-control" placeholder="Cuenta de usuario" (change)="validateUserAccount(user.cuentaUsuario)" [(ngModel)]="user.cuentaUsuario" [disabled]="(service.getUser().acceso != service.roles.root && option !='add') ||option=='delete'">
+                <input type="text" class="form-control" placeholder="Cuenta de usuario" (change)="validateUserAccount(form.get('cuentaUsuario').value)" formControlName="cuentaUsuario">
                 <span class="{{ renderHTML2 }}"></span>
                 <small class="{{ renderHTML3 }}">{{ message }}</small>
             </div>
             <div class="form-group col-xs-6 col-sm-6">
               <label for="telefono">Contraseña:</label>
-              <input type="password" class="form-control" placeholder="Contraseña" [(ngModel)]="user.contrasena" [disabled]="option=='delete'">
+              <input type="password" class="form-control" placeholder="Contraseña" formControlName="contrasena">
             </div>
             <div class="form-group col-xs-12 col-sm-12">
                 <label for="correo">Correo Electrónico</label>
-                <input type="text" class="form-control" placeholder="Correo Electrónico" [(ngModel)]="user.correo" [disabled]="option=='delete'">
+                <input type="text" class="form-control" placeholder="Correo Electrónico" formControlName="correo">
             </div>
             <div class="form-group col-xs-6 col-sm-6">
                 <label for="rnc">Empresa:</label>
-                <select class="form-control" [(ngModel)]="user.idEmpresa">
+                <select class="form-control" formControlName="idEmpresa">
                   <option value="{{empresa.id}}" *ngFor="let empresa of empresas">{{ empresa.razonSocial }}</option>
                 </select>
             </div>
             <div class="form-group col-xs-6 col-sm-6">
               <label for="telefono">Rol(Acceso):</label>
-              <select class="form-control" [(ngModel)]="user.acceso">
+              <select class="form-control" formControlName="acceso">
                 <option value="{{level.name}}" *ngFor="let level of levels">{{ level.name }}</option>
               </select>
             </div>
@@ -137,11 +138,12 @@
             </div>
             <div class=" col-xs-12 col-sm-12">
               <input type="file" class="form-control"  (change)="handleFileInput($event.target.files)" accept="image/*" [disabled]="option=='delete'"/>
-              <button class="btn btn-danger btn-block" (click)="imageUrl='';user.image=null;" *ngIf="service.hasImage(user.image);">Eliminar</button>
+              <button type="button" class="btn btn-danger btn-block" (click)="imageUrl='';user.image=null;" *ngIf="service.hasImage(user.image);">Eliminar</button>
             </div>
           </div>
   
         </div>
+          </form>
         <!---->
   
         </div>
@@ -149,8 +151,8 @@
             <div class="overlay" [hidden]="!service.isLoading">
                 <i class="fa fa-refresh fa-spin"></i>
             </div>
-            <button type="button" class="btn btn-primary" *ngIf="option=='add'" (click)="add()" [disabled]="service.isNullorEmpty(user.nombre) || service.isNullorEmpty(user.cuentaUsuario) || service.isNullorEmpty(user.contrasena) || service.isNullorEmpty(user.acceso)"><i class="fa fa-fw fa-file-o"></i> Crear</button>
-            <button type="button" class="btn btn-success" *ngIf="option=='edit'" (click)="edit()" [disabled]="service.isNullorEmpty(user.nombre) || service.isNullorEmpty(user.cuentaUsuario) || service.isNullorEmpty(user.acceso)"><i class="fa fa-fw fa-save"></i> Guardar</button>
+            <button type="button" class="btn btn-primary" *ngIf="option=='add'" (click)="add()" [disabled]="form.invalid"><i class="fa fa-fw fa-file-o"></i> Crear</button>
+            <button type="button" class="btn btn-success" *ngIf="option=='edit'" (click)="edit()" [disabled]="form.invalid"><i class="fa fa-fw fa-save"></i> Guardar</button>
             <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
             <button type="button" class="btn btn-default" data-dismiss="modal" id="closeModalBtn" (click)='getUsers(service.getUser().id,"*")'>Close</button>
           <!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->

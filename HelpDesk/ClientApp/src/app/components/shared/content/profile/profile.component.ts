@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 // import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
@@ -6,14 +7,32 @@ import * as signalR from '@microsoft/signalr';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styles: []
+  styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }']
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 
   userT:any={};
   users;
   empresas;
-  pwdValidation:string;
+  form: FormGroup;
+
+  // Only the password can be changed here: it needs 6 characters (as in UserValidator) and its confirmation.
+  initializeForm = (): void => {
+    this.form = this.formBuilder.group({
+      idEmpresa: [null],
+      cuentaUsuario: [''],
+      correo: [''],
+      contrasena: ['', [Validators.required, Validators.minLength(6)]],
+      confirmacion: ['', Validators.required]
+    }, { validator: (g: FormGroup) => g.get('contrasena').value === g.get('confirmacion').value ? null : { mismatch: true } });
+  }
+
+  // Shows the loaded user in the form. The password fields start empty.
+  private fillForm() {
+    this.form.reset();
+    this.form.patchValue(this.userT);
+    if(this.service.getLevel(this.service.getUser().acceso) != 4) this.form.get('idEmpresa').disable();
+  }
   imageBusiness;
   numbers:any={};
   hubConnection: signalR.HubConnection;
@@ -38,6 +57,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
       // console.log(`component: ${component} | idEmpresa: ${idEmpresa} | idUsuario: ${idUsuario} | idOther: ${idOther}`)
       // debugger
 
+    // Someone changed this user (name, e-mail...): show it here too, keeping what is being typed in the password fields.
+    if( component=='users' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id ){
+      this.refreshProfile();
+    }
+
     if( component=='session' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id  ){
       if(idOther == 0 ){
         alert(this.service.messages.userDisabled);
@@ -51,7 +75,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
 
-  constructor(private service: ApiService) {4
+  constructor(private service: ApiService, private formBuilder: FormBuilder) {
+    this.initializeForm();
     this.getUsers(this.service.getUser().id,'UNIQUE');
     this.numbersOfTickets(this.service.getUser().id);
     
@@ -71,6 +96,21 @@ export class ProfileComponent implements OnInit, OnDestroy {
       });
   }
 
+  refreshProfile(){
+    this.service.get('User/'+ this.service.getUser().id + '/UNIQUE')
+      .subscribe((res:any)=>{
+        this.users = res;
+        const typed = { contrasena: this.form.get('contrasena').value, confirmacion: this.form.get('confirmacion').value };
+        this.userT = this.users[0];
+        this.userT.contrasena = null;
+        this.fillForm();
+        this.form.patchValue(typed);
+        this.service.updateSession(this.users);
+      },error => {
+        this.service.handleHttpError(error);
+      });
+  }
+
   getUsers(id,option){
     this.service.isLoading = true;
     this.getBusiness(this.service.getUser().id);
@@ -79,7 +119,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.users = res;
         this.userT = this.users[0];
         this.userT.contrasena = null;
-        this.pwdValidation=null;
+        this.fillForm();
         // console.log(this.userT)
         this.service.updateSession(this.users);
         this.service.isLoading = false;
@@ -90,18 +130,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   edit(){
-    if(this.pwdValidation == '' || this.pwdValidation == null
-    || this.userT.contrasena == '' || this.userT.contrasena == null
-    ){
+    if(this.form.invalid){
       this.service.swal(this.service.messages.titleRequiredFields,'Se necesita rellenar los campo para optar por el cambio de contraseña','info');
-      // return false;
-    }else if(this.pwdValidation !== this.userT.contrasena){
-      this.service.swal('Contraseñas no coinciden','La contraseña no coincide con su confirmación.\n Favor intentar nuevamente.','warning');
-      // return false;
-    }else{
+      return;
+    }
+    const values = this.form.value;
+    const body = Object.assign({}, this.userT, { contrasena: values.contrasena });
+    if(this.service.getLevel(this.service.getUser().acceso) == 4) body.idEmpresa = values.idEmpresa;
     this.service.isLoading = true;
-    // this.user.habilitado = true;
-     this.service.post('User/Put/'+this.service.getUser().id, this.userT)
+     this.service.post('User/Put/'+this.service.getUser().id, body)
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -112,7 +149,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.service.handleHttpError(error);
         this.service.isLoading =false;
       });
-    }
   }
 
   numbersOfTickets(idUser){
