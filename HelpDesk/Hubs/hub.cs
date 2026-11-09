@@ -9,13 +9,20 @@ namespace HelpDesk.Hubs
     {
         public static string GroupOf(int idEmpresa) => "empresa-" + idEmpresa;
 
-        // Every connection joins the group of its own company, taken from the token and never from what the browser says.
+        // Notices for one person, wherever they are connected from. Only the server sends to it.
+        public static string GroupOfUser(int idUsuario) => "usuario-" + idUsuario;
+
+        // Every connection joins the group of its own company and the one of its own user, taken from the token and never from what the browser says.
         public override async Task OnConnectedAsync()
         {
             var company = CompanyOf(Context.User);
             if (company > 0)
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, GroupOf(company));
+            }
+            if (int.TryParse(Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId))
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, GroupOfUser(userId));
             }
             await base.OnConnectedAsync();
         }

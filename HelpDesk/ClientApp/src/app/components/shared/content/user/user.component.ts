@@ -196,19 +196,13 @@ export class UserComponent implements OnInit, OnDestroy {
     this.service.isLoading = true;
     this.user.habilitado = true;
     const body = this.payload();
-    // this.user still holds what the user had before the change.
-    const before = { company: this.user.idEmpresa, role: this.user.acceso };
      this.service.post('User/Put/'+this.service.getUser().id, body)
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
         // this.getUsers(this.service.getUser().id,"*");
-        this.hubConnection.invoke('refresh', 'users',before.company,this.user.id,0)
-        // The user holds a token with the old role and company, so their session ends and they sign in again with the new
-        // ones. The hub sends the notice to the company of whoever sends it, which is where the user is connected.
-        if(body.idEmpresa != before.company || body.acceso != before.role){
-          this.hubConnection.invoke('refresh', 'session',before.company,this.user.id,2)
-        }
+        this.hubConnection.invoke('refresh', 'users',this.user.idEmpresa,this.user.id,0)
+        // When the role or the company changed, the server itself tells that user to sign in again.
       }
       document.getElementById('closeModalBtn').click();
       this.service.isLoading =false;
