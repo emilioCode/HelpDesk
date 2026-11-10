@@ -142,6 +142,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
+        if(body.idEmpresa != this.userT.idEmpresa){
+          // Root moved itself to another company: the token still carries the old one, so it signs in again.
+          this.service.closeSession();
+          this.service.swal(this.service.messages.titleSessionExpired, this.service.messages.accessChanged, 'info');
+          return;
+        }
         this.getUsers(this.service.getUser().id,"UNIQUE");
       }
       this.service.isLoading =false;

@@ -58,6 +58,7 @@ export class ApiService {
     noPermissionToAccess: 'No tiene permisos para acceder',
     noAdminPermissionToAdjust: 'No cuenta con los permisos de Administrador para realizar el ajuste',
     userDisabled: 'Su usuario ha sido deshabilitado, comuníquese con el administrador',
+    accessChanged: 'Su rol o su empresa fue modificado. Por seguridad debe iniciar sesión de nuevo.',
     ticketWithoutTechnician: 'Esta orden no tiene técnico asignado.\nNecesita primero asignar un técnico para trabajarla.',
     closedOrderAdjustment: 'No se pudo aplicar ajuste debido a que la orden se encuentra cerrada.',
     // Confirmations

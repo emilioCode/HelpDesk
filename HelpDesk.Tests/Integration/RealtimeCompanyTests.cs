@@ -5,6 +5,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace HelpDesk.Tests.Integration
@@ -122,6 +125,60 @@ namespace HelpDesk.Tests.Integration
             Assert.That(a.Received.Select(r => r.Item1).ToArray(), Is.EqualTo(new[] { "ticket" }));
             Assert.That(b.Received.Select(r => r.Item1).ToArray(), Is.EqualTo(new[] { "costumer" }));
             Assert.That(c.Received.Select(r => r.Item1).ToArray(), Is.EqualTo(new[] { "users" }));
+        }
+
+// Edits a user as the given account and returns the status code.
+        private async Task<System.Net.HttpStatusCode> EditUserAsync(string editor, int editorId, int userId, string account, string role, int company)
+        {
+            var token = await _factory.LoginAsync(editor, editor == "root" ? "root" : null);
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var json = "{\"id\":" + userId + ",\"nombre\":\"Edited\",\"numDocumento\":\"1\",\"cuentaUsuario\":\"" + account + "\",\"acceso\":\"" + role + "\",\"idEmpresa\":" + company + ",\"habilitado\":true}";
+            var response = await client.PostAsync("/api/User/Put/" + editorId, new StringContent(json, Encoding.UTF8, "application/json"));
+            return response.StatusCode;
+        }
+
+        [Test]
+        public async Task AUserWhoseRoleChanged_IsToldToSignInAgain_AndNobodyElseIs()
+        {
+            var affected = await ConnectAsync("tech2");
+            var colleague = await ConnectAsync("tech1");
+
+            var status = await EditUserAsync("admin", 2, 5, "tech2", "MODERADOR", 1);
+
+            await WaitFor(() => affected.Received.Any(r => r.Item1 == "session"));
+            await Settle();
+            Assert.AreEqual(System.Net.HttpStatusCode.OK, status);
+            Assert.That(affected.Received.Where(r => r.Item1 == "session").ToArray(), Is.EqualTo(new[] { ("session", 1, (int?)5, (int?)2) }));
+            Assert.That(colleague.Received.Where(r => r.Item1 == "session"), Is.Empty);
+        }
+
+        [Test]
+        public async Task AUserMovedToAnotherCompany_IsTold_EvenThoughTheEditorIsInAnotherCompany()
+        {
+            var moved = await ConnectAsync("adminb");
+            var rootsCompany = await ConnectAsync("admin");
+
+            // Root belongs to company 1; the user belongs to company 2 and is moved to company 3.
+            var status = await EditUserAsync("root", 1, 6, "adminb", "ADMINISTRADOR", 3);
+
+            await WaitFor(() => moved.Received.Any(r => r.Item1 == "session"));
+            await Settle();
+            Assert.AreEqual(System.Net.HttpStatusCode.OK, status);
+            Assert.That(moved.Received.Where(r => r.Item1 == "session").ToArray(), Is.EqualTo(new[] { ("session", 2, (int?)6, (int?)2) }), "it carries the company the user had");
+            Assert.That(rootsCompany.Received.Where(r => r.Item1 == "session"), Is.Empty);
+        }
+
+        [Test]
+        public async Task EditingAUserWithoutChangingRoleOrCompany_TellsNoOneToSignInAgain()
+        {
+            var user = await ConnectAsync("tech2");
+
+            var status = await EditUserAsync("admin", 2, 5, "tech2", "TECNICO", 1);
+
+            await Settle();
+            Assert.AreEqual(System.Net.HttpStatusCode.OK, status);
+            Assert.That(user.Received.Where(r => r.Item1 == "session"), Is.Empty);
         }
 
         [Test]

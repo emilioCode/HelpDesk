@@ -3,8 +3,10 @@ using HelpDesk.Controllers;
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
+using HelpDesk.Hubs;
 using HelpDesk.Responses;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -23,7 +25,7 @@ namespace HelpDesk.Tests.Controllers
             _userServiceMock = new Mock<IUserService>();
             _mapperMock = new Mock<IMapper>();
 
-            _userController = new UserController(_userServiceMock.Object, _mapperMock.Object);
+            _userController = new UserController(_userServiceMock.Object, _mapperMock.Object, new Mock<IHubContext<hub>>().Object);
         }
 
         [Test]

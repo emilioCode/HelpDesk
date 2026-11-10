@@ -102,7 +102,10 @@ namespace HelpDesk.Tests.Integration
                 User(13, "renewoff", "TECNICO", 1, hash),                // gets disabled after signing in
                 User(14, "revokeoff", "TECNICO", 1, hash),               // gets disabled while holding a valid token
                 User(15, "revokedel", "TECNICO", 1, hash),               // gets deleted while holding a valid token
-                User(16, "revokecache", "TECNICO", 1, hash));            // gets disabled inside the cache window
+                User(16, "revokecache", "TECNICO", 1, hash),             // gets disabled inside the cache window
+                User(17, "rolechg", "TECNICO", 1, hash),                 // gets a new role while holding a valid token
+                User(18, "companychg", "TECNICO", 1, hash),              // is moved to another company while holding a valid token
+                User(19, "samerole", "TECNICO", 1, hash));               // is edited without changing role or company
 
             db.Clientes.AddRange(
                 new Cliente { Id = 1, Nombre = "Customer A", Correo = "ca@test.local", IdEmpresa = 1, Habilitado = true },
