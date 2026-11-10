@@ -30,8 +30,6 @@ import { TicketComponent } from './components/shared/content/ticket/ticket.compo
 import { InboxComponent } from './components/shared/content/inbox/inbox.component';
 import { ReportComponent } from './components/shared/content/report/report.component';
 import { WaitingComponent } from './components/shared/content/waiting/waiting.component';
-import { Waiting2Component } from './components/shared/content/waiting2/waiting2.component';
-import { Waiting3Component } from './components/shared/content/waiting3/waiting3.component';
 import { Waiting4Component } from './components/shared/content/waiting4/waiting4.component';
 import { CalendarComponent } from './components/shared/content/calendar/calendar.component';
 
@@ -58,8 +56,6 @@ import { CalendarComponent } from './components/shared/content/calendar/calendar
     InboxComponent,
     ReportComponent,
     WaitingComponent,
-    Waiting2Component,
-    Waiting3Component,
     Waiting4Component,
     CalendarComponent
   ],
@@ -79,9 +75,10 @@ import { CalendarComponent } from './components/shared/content/calendar/calendar
       { path: 'ticket', component: TicketComponent, canActivate: [AuthGuard], data: { minLevel: 2 } },
       { path: 'inbox', component: InboxComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
       { path: 'report', component: ReportComponent, canActivate: [AuthGuard], data: { minLevel: 3 } },
-      { path: 'waiting', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2 } },
-      { path: 'waiting2', component: Waiting2Component, canActivate: [AuthGuard], data: { minLevel: 2 } },
-      { path: 'waiting3', component: Waiting3Component, canActivate: [AuthGuard], data: { minLevel: 2 } },
+      // The three lists of tickets not yet assigned are one screen; the route says which type it shows and its title.
+      { path: 'waiting', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2, requestType: null, title: 'Ordenes pendiente por asignar' } },
+      { path: 'waiting2', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2, requestType: 'workshop', title: 'Ordenes de Servicio de Taller pendiente por asignar' } },
+      { path: 'waiting3', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2, requestType: 'onSite', title: 'Ordenes de Servicio a Domicilio pendiente por asignar' } },
       { path: 'finished', component: Waiting4Component, canActivate: [AuthGuard], data: { minLevel: 2 } },
       { path: 'calendar', component: CalendarComponent, canActivate: [AuthGuard], data: { minLevel: 1 } }
     ]),
