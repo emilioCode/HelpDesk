@@ -227,104 +227,14 @@
                 </div>
                 <!-- /.tab-pane -->
                 <div class="tab-pane" id="timeline">
-                  <!--START-->
-                  <div>
-                    <div class="col-md-12">
-                      <!-- Box Comment -->
-                      <div class="box box-widget">
-                        <div class="box-header with-border">
-                          <!-- <div class="user-block">
-                            <img class="img-circle" src="../dist/img/user1-128x128.jpg" alt="User Image">
-                            <span class="username"><a href="#">Jonathan Burke Jr.</a></span>
-                            <span class="description">Shared publicly - 7:30 PM Today</span>
-                          </div> -->
-                          <!-- /.user-block -->
-                          <div class="box-tools">
-
-                          </div>
-                          <!-- /.box-tools -->
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                          <div class="alert" role="alert">
-                            <strong>Nota:</strong> Aquellas actividades marcadas como solución serán aquellas que se mostrarán en el reporte como actividades realizadas.
-                          </div>
-                        </div>
-                        <!-- /.box-body -->
-                        <div class="box-footer box-comments" id="divScroll" style="max-height: 300px;overflow:auto;" >
-                          <div class="box-comment" *ngFor="let item of traces">
-                            <!-- User image -->
-                            <img *ngIf="!service.hasImage(item.userImage)" class="img-circle img-sm" src="../../../../../assets/dist/img/photo_default.png" alt="User Image">
-                            <img *ngIf="service.hasImage(item.userImage)" class="img-circle img-sm" [src]="'data:image/jpeg;base64,'+ item.userImage" alt="User Image">
-                            <div class="comment-text">
-                                  <span class="username">
-                                    {{ item.userName }} <i class="fa fa-star-o" *ngIf="item.favorito != true" title="Marcar como favorito" (click)="putTrace(item,'favorito')"></i><i class="fa fa-star" *ngIf="item.favorito == true" style="color:gold" title="Desmarcar como favorito" (click)="putTrace(item,'favorito')"></i> <i class="fa fa-bookmark-o" *ngIf="item.etiquetado != true" title="Marcar como solución" (click)="putTrace(item,'etiquetado')"></i><i class="fa fa-bookmark" *ngIf="item.etiquetado == true" title="Desmarcar como solución" style="color:tomato" (click)="putTrace(item,'etiquetado')"></i>
-                                    <span class="text-muted pull-right">{{  service.setTime(item.hora)  }} {{ item.fecha | date:"dd/MM/yy" }}</span>
-                                  </span><!-- /.username -->
-                              {{ item.texto }}
-                            </div>
-                            <!-- /.comment-text -->
-                          </div>
-                          <!-- /.box-comment -->
-                        </div>
-                        <!-- /.box-footer -->
-                        <div class="box-footer">
-                          <div>
-                            <img *ngIf="!service.hasImage(service.getUser().image)" src="../../../../../assets/dist/img/photo_default.png" class="img-responsive img-circle img-sm" alt="Alt Text">
-                            <img *ngIf="service.getUser() !=null && service.hasImage(service.getUser().image)" [src]="'data:image/jpeg;base64,'+ service.getUser().image" class="img-responsive img-circle img-sm" alt="Alt Text">
-                            <!-- .img-push is used to add margin to elements next to floating images -->
-                            <div class="img-push input-group">
-                              <input type="text" class="form-control " [(ngModel)]="trace.texto" (keyup.enter)="addTrace()" placeholder="Press enter to post comment" [disabled]="ticket.estado==service.ticketStatuses.completed && ticket.aprobadoPor!=null">
-                              <span class="input-group-btn">
-                                <button class="btn btn-primary btn-flat" (click)="addTrace()"  [disabled]="service.validateTrim( trace.texto )"><i class="fa fa-paper-plane" aria-hidden="true"></i> Colocar actividad</button>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- /.box-footer -->
-                      </div>
-                      <!-- /.box -->
-                    </div>
-                  </div>
-                  <!--END-->
+<app-ticket-timeline [ticket]="ticket" [traces]="traces" [trace]="trace"
+  (add)="addTrace()" (toggle)="putTrace($event.item, $event.field)"></app-ticket-timeline>
                 </div>
                 <!-- /.tab-pane -->
   
                 <div class="tab-pane" id="settings">
-                  <!-- Partes Utilizadas -->
-                  <div class="form-group col-xs-12 col-sm-12">
-                    <br/>
-                    <h6 class="text-center">PARTES UTILIZADAS</h6>
-                    <div class="row">
-                      <table class="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th scope="col" class="text-center">Cantidad</th>
-                            <th scope="col" class="text-center">Serial No.</th>
-                            <th scope="col" class="text-center">Descripci&oacute;n</th>
-                            <th scope="col" class="text-center" [hidden]="ticket.estado == service.ticketStatuses.completed || parts.length >=3 || option =='add'"><a class="btn-link" (click)="addPart=true;part={}" [hidden]="addPart"><i class="fa fa-plus"></i></a></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                            <tr [hidden]="!addPart" >
-                              <td ><input type="number" min="1" [(ngModel)]="part.cantidad" placeholder="(Requerido)" class="form-control"/></td>
-                              <td><input type="text" [(ngModel)]="part.noSerial" placeholder="(Requerido)" class="form-control"/></td>
-                              <td><input type="text" [(ngModel)]="part.descripcion" placeholder="(Requerido)" class="form-control"/></td>
-                              <td >
-                                <a class="btn-link" (click)="addPartOne(part)"><i class="fa fa-check"></i></a>
-                                <a class="btn-link" (click)="addPart=false;part={}"><i class="fa fa-remove"></i></a>
-                              </td>
-                            </tr>
-                          <tr *ngFor="let e of parts">
-                            <td>{{e.cantidad}}</td>
-                            <td>{{e.noSerial}}</td>
-                            <td>{{e.descripcion}}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <!-- Partes Utilizadas -->
+<app-ticket-parts [ticket]="ticket" [parts]="parts" [part]="part" [option]="option" [addPart]="addPart" [actions]="false"
+  (startAdd)="addPart=true;part={}" (save)="addPartOne($event)" (cancel)="addPart=false;part={}" (choose)="partChoosen($event)"></app-ticket-parts>
                 </div>
                 <!-- /.tab-pane -->
               </div>

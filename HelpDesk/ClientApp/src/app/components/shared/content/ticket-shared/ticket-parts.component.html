@@ -1,0 +1,39 @@
+<!-- Partes Utilizadas -->
+<div class="form-group col-xs-12 col-sm-12">
+  <br/>
+  <h6 class="text-center">PARTES UTILIZADAS</h6>
+  <div class="row">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col" class="text-center">Cantidad</th>
+          <th scope="col" class="text-center">Serial No.</th>
+          <th scope="col" class="text-center">Descripci&oacute;n</th>
+          <th scope="col" class="text-center" [hidden]="ticket.estado == service.ticketStatuses.completed || parts.length >= 3 || option =='add'"><a class="btn-link" (click)="startAdd.emit()" [hidden]="addPart"><i class="fa fa-plus"></i></a></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr [hidden]="!addPart" >
+            <td ><input type="number" min="1" [(ngModel)]="part.cantidad" placeholder="(Requerido)" class="form-control"/></td>
+            <td><input type="text" [(ngModel)]="part.noSerial" placeholder="(Requerido)" class="form-control"/></td>
+            <td><input type="text" [(ngModel)]="part.descripcion" placeholder="(Requerido)" class="form-control"/></td>
+            <td >
+              <a class="btn-link" (click)="save.emit(part)"><i class="fa fa-check"></i></a>
+              <a class="btn-link" (click)="cancel.emit()"><i class="fa fa-remove"></i></a>
+            </td>
+          </tr>
+        <tr *ngFor="let e of parts">
+          <td>{{e.cantidad}}</td>
+          <td>{{e.noSerial}}</td>
+          <td>{{e.descripcion}}
+            <span style="float: right;" *ngIf="actions">
+                <span data-toggle="modal" data-target="#modalclient3" *ngIf="ticket.estado != service.ticketStatuses.completed" class="btn-link" title="editar"  (click)="choose.emit(e)"><i class="fa fa-edit"></i></span> 
+                <span data-toggle="modal" data-target="#modalclient4" *ngIf="ticket.estado != service.ticketStatuses.completed" class="btn-link" [title]="deleteTitle"  (click)="choose.emit(e)"><i class="fa fa-remove"></i></span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- Partes Utilizadas -->
