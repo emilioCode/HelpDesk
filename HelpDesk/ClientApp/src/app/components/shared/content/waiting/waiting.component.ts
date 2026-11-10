@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 // import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
@@ -10,7 +11,16 @@ import * as signalR from '@microsoft/signalr';
 })
 export class WaitingComponent implements OnInit, OnDestroy {
 
-  constructor(private service: ApiService) { 
+  // One screen for the three lists of tickets not yet assigned. The route says which one it is:
+  //  - requestType: 'workshop', 'onSite', or nothing for every type
+  //  - title: the heading of the list
+  requestType: string = null;
+  title: string = '';
+
+  constructor(private service: ApiService, private activatedRoute: ActivatedRoute) { 
+    const data = this.activatedRoute.snapshot.data;
+    this.requestType = data.requestType ? this.service.requestTypes[data.requestType] : null;
+    this.title = data.title;
     if(this.service.getLevel(this.service.getUser().acceso) < 2 ){
       alert(this.service.messages.noPermissionToAccess);
       this.service.route.navigateByUrl('/');
@@ -60,7 +70,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
         // this.service.isLoading = true;
         this.service.get('Ticket/'+ this.service.getUser().id + '/' + '*')
           .subscribe(res=>{
-            this.tickets = res.filter(x=>x.idUsuario ==0);
+            this.tickets = this.unassigned(res);
             var id = this.ticket.id===null?0:this.ticket.id;
             if(/*idUsuario >0 &&*/  id== idOther){
               
@@ -213,11 +223,16 @@ export class WaitingComponent implements OnInit, OnDestroy {
     // console.log( this.devices )
   }
 
+  // Tickets with no technician yet, of the type this screen shows.
+  private unassigned(tickets){
+    return tickets.filter(x=>x.idUsuario ==0 && (this.requestType == null || x.tipoSolicitud == this.requestType));
+  }
+
   getTickets(id,option){
     this.service.isLoading = true;
     this.service.get('Ticket/'+ id + '/' + option)
       .subscribe(res=>{
-        this.tickets = res.filter(x=>x.idUsuario ==0);
+        this.tickets = this.unassigned(res);
         // console.log(  this.tickets )
         this.tickets.forEach(element => {
           if(element.horaInicio != null)element.horaInicio = element.horaInicio; //this.service.fillZeroWithNumber(element.horaInicio/*.value.hours*/) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.minutes) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.seconds); 
