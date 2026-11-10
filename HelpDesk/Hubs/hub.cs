@@ -1,6 +1,7 @@
 using HelpDesk.Security;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace HelpDesk.Hubs
@@ -29,14 +30,30 @@ namespace HelpDesk.Hubs
 
         // The notice only reaches the sender's company. The company in the call is replaced by the one in the token,
         // so a browser cannot notify another company. Without a company in the token nobody is notified.
-        public async Task refresh(string component, int idEmpresa, int? idUsuario, int? idOther)
+        // The ids come from the screens as they are in a form, so a number may arrive as text ("2", from a selector).
+        // They are accepted either way; a value that is not a number is delivered as nothing.
+        public async Task refresh(string component, object idEmpresa, object idUsuario, object idOther)
         {
             var company = CompanyOf(Context.User);
             if (company <= 0)
             {
                 return;
             }
-            await Clients.Group(GroupOf(company)).SendAsync("refresh", component, company, idUsuario, idOther);
+            await Clients.Group(GroupOf(company)).SendAsync("refresh", component, company, AsInt(idUsuario), AsInt(idOther));
+        }
+
+        public static int? AsInt(object value)
+        {
+            switch (value)
+            {
+                case null: return null;
+                case int number: return number;
+                case long big when big >= int.MinValue && big <= int.MaxValue: return (int)big;
+                case string text: return int.TryParse(text, out var parsed) ? parsed : (int?)null;
+                case JsonElement json when json.ValueKind == JsonValueKind.Number: return json.TryGetInt32(out var n) ? n : (int?)null;
+                case JsonElement json when json.ValueKind == JsonValueKind.String: return int.TryParse(json.GetString(), out var s) ? s : (int?)null;
+                default: return null;
+            }
         }
 
         private static int CompanyOf(ClaimsPrincipal user)

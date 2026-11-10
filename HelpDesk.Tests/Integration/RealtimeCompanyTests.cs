@@ -182,6 +182,31 @@ namespace HelpDesk.Tests.Integration
         }
 
         [Test]
+        public async Task AnIdSentAsText_IsDeliveredAsANumber()
+        {
+            // A selector in the screens gives the technician's id as text: "2", not 2.
+            var sender = await ConnectAsync("tech1");
+            var colleague = await ConnectAsync("admin");
+
+            await sender.Connection.InvokeAsync("refresh", "ticket", 1, "5", "12");
+
+            await WaitFor(() => colleague.Received.Count > 0);
+            Assert.That(colleague.Received.ToArray(), Is.EqualTo(new[] { ("ticket", 1, (int?)5, (int?)12) }));
+        }
+
+        [Test]
+        public async Task IdsThatAreNotNumbers_AreDeliveredAsNothing_WithoutBreakingTheNotice()
+        {
+            var sender = await ConnectAsync("tech1");
+            var colleague = await ConnectAsync("admin");
+
+            await sender.Connection.InvokeAsync("refresh", "ticket", 1, "abc", null);
+
+            await WaitFor(() => colleague.Received.Count > 0);
+            Assert.That(colleague.Received.ToArray(), Is.EqualTo(new[] { ("ticket", 1, (int?)null, (int?)null) }));
+        }
+
+        [Test]
         public async Task TheHub_RefusesAConnectionWithoutAToken()
         {
             var connection = new HubConnectionBuilder()
