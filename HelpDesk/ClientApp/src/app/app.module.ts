@@ -30,6 +30,9 @@ import { TicketComponent } from './components/shared/content/ticket/ticket.compo
 import { InboxComponent } from './components/shared/content/inbox/inbox.component';
 import { ReportComponent } from './components/shared/content/report/report.component';
 import { WaitingComponent } from './components/shared/content/waiting/waiting.component';
+import { TicketTimelineComponent } from './components/shared/content/ticket-shared/ticket-timeline.component';
+import { TicketPartsComponent } from './components/shared/content/ticket-shared/ticket-parts.component';
+import { TicketItemDialogsComponent } from './components/shared/content/ticket-shared/ticket-item-dialogs.component';
 import { Waiting4Component } from './components/shared/content/waiting4/waiting4.component';
 import { CalendarComponent } from './components/shared/content/calendar/calendar.component';
 
@@ -57,6 +60,9 @@ import { CalendarComponent } from './components/shared/content/calendar/calendar
     ReportComponent,
     WaitingComponent,
     Waiting4Component,
+    TicketTimelineComponent,
+    TicketPartsComponent,
+    TicketItemDialogsComponent,
     CalendarComponent
   ],
   imports: [
