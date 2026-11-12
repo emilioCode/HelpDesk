@@ -105,7 +105,7 @@
                       </select>                    
                     </div>
                     <div class="form-group col-xs-3 col-sm-3">
-                      <label>Tipo de Solicitud</label>
+                      <label>Tipo de Solicitud{{ mode == 'inbox' ? ':' : '' }}</label>
                       <select class="form-control" [(ngModel)]="ticket.tipoSolicitud" [disabled]="option!='add'" (change)="clearDevicesIf()">
                         <option value="" selected [hidden]="ticket.tipoSolicitud!=''">Tipo Solicitud</option>
                         <option value="{{type.value}}" *ngFor="let type of service.getTypeOfRequests()">{{ type.value }}</option>
@@ -113,10 +113,18 @@
                     </div>
                     <div class="form-group col-xs-3 col-sm-3">
                       <label>Tipo de Servicio:</label>
+<ng-container *ngIf="mode != 'finished'">
                       <select class="form-control" [(ngModel)]="ticket.tipoServicio" [disabled]="option!='add' &&   2>service.getLevel(service.getUser().acceso ) || ticket.estado ==service.ticketStatuses.completed" (change)="editAsAdministrator()">
                         <option value="" selected [hidden]="ticket.tipoServicio!=''">Tipo Servicio</option>
                         <option value="{{type.value}}" *ngFor="let type of service.getTypeOfServices()">{{ type.value }}</option>
                       </select>
+</ng-container>
+<ng-container *ngIf="mode == 'finished'">
+                      <select class="form-control" [(ngModel)]="ticket.tipoServicio" [disabled]="option!='add'">
+                        <option value="" selected [hidden]="ticket.tipoServicio!=''">Tipo Servicio</option>
+                        <option value="{{type.value}}" *ngFor="let type of service.getTypeOfServices()">{{ type.value }}</option>
+                      </select>
+</ng-container>
                     </div>
                     <div class="form-group col-xs-12 col-sm-12">
                       <div class="form-group col-xs-2 col-sm-2">
@@ -166,7 +174,16 @@
                               <th scope="col" class="text-center">Marca</th>
                               <th scope="col" class="text-center">Modelo</th>
                               <th scope="col" class="text-center">Serial No.</th>
+<ng-container *ngIf="mode == 'pending'">
                               <th scope="col" class="text-center" [hidden]="ticket.tipoSolicitud ==service.requestTypes.onSite || ticket.estado == service.ticketStatuses.completed || addDevice || devices.length >= 4 "><a class="btn-link" (click)="addDevice=true;device={}" ><i class="fa fa-plus"></i></a></th>
+</ng-container>
+<ng-container *ngIf="mode == 'inbox'">
+                              <th scope="col" class="text-center" [hidden]="ticket.tipoSolicitud !=service.requestTypes.onSite || devices.length >= 4 || ticket.estado ==service.ticketStatuses.completed"><a class="btn-link" (click)="addDevice=true;device={}" [hidden]="addDevice || devices.length >= 4"><i class="fa fa-plus"></i></a></th>
+                              <th scope="col" class="text-center" *ngIf="ticket.tipoSolicitud !=service.requestTypes.onSite && 4>= devices.length && ticket.estado !=service.ticketStatuses.completed && service.getLevel(service.getUser().acceso)>1"><a class="btn-link" (click)="addDevice=true;device={}" [hidden]="addDevice || devices.length >= 4"><i class="fa fa-plus"></i></a></th>
+</ng-container>
+<ng-container *ngIf="mode == 'finished'">
+                              <th scope="col" class="text-center" [hidden]="ticket.tipoSolicitud ==service.requestTypes.onSite || option=='edit' || ticket.estado != service.ticketStatuses.open"><a class="btn-link" (click)="addDevice=true;device={}" [hidden]="addDevice || devices.length >= 4 || option !='add'"><i class="fa fa-plus"></i></a></th>
+</ng-container>
                             </tr>
                           </thead>
                           <tbody>
@@ -176,6 +193,7 @@
                               <td><input type="text" [(ngModel)]="device.marca" placeholder="(Requerido)" class="form-control"/></td>
                               <td><input type="text" [(ngModel)]="device.modelo" placeholder="(Requerido)" class="form-control"/></td>
                               <td><input type="text" [(ngModel)]="device.noSerial" placeholder="(Requerido)" class="form-control"/></td>
+<ng-container *ngIf="mode != 'finished'">
                               <td>
                                   <a class="btn-link" *ngIf="option == 'add'" (click)="addDeviceList(device)"><i class="fa fa-check"></i></a>
                                   <a class="btn-link" *ngIf="option == 'add'" (click)="addDevice=false;device={}"><i class="fa fa-remove"></i></a>
@@ -183,19 +201,39 @@
                                   <a class="btn-link" *ngIf="option != 'add'" (click)="addDeviceOne(device)"><i class="fa fa-check"></i></a>
                                   <a class="btn-link" *ngIf="option != 'add'" (click)="addDevice=false;device={}"><i class="fa fa-remove"></i></a>
                               </td>
+</ng-container>
+<ng-container *ngIf="mode == 'finished'">
+                                <td [hidden]="ticket.tipoSolicitud ==service.requestTypes.onSite">
+                                  <a class="btn-link" (click)="addDeviceList(device)"><i class="fa fa-check"></i></a>
+                                  <a class="btn-link" (click)="addDevice=false;device={}"><i class="fa fa-remove"></i></a>
+                                </td>
+</ng-container>
                             </tr>
                             <tr *ngFor="let e of devices">
                               <td>{{e.descripcion}}</td>
                               <td>{{e.fallaReportada}}</td>
                               <td>{{e.marca}}</td>
                               <td>{{e.modelo}}</td>
+<ng-container *ngIf="mode == 'pending'">
                               <td>{{e.noSerial}}
                                 <span style="float: right;">
                                     <span data-toggle="modal" data-target="#modalclient5" *ngIf="ticket.estado != service.ticketStatuses.completed" class="btn-link" title="editar"  (click)="deviceChoosen(e)"><i class="fa fa-edit"></i></span> 
                                     <span data-toggle="modal" data-target="#modalclient6" *ngIf="ticket.estado != service.ticketStatuses.completed" class="btn-link" title="eliminar"  (click)="deviceChoosen(e)"><i class="fa fa-remove"></i></span>
                                 </span>
                               </td>
-                              <td [hidden]="option=='edit'">
+</ng-container>
+<ng-container *ngIf="mode == 'inbox'">
+                              <td>{{e.noSerial}}
+                                  <span style="float: right;" *ngIf="service.getLevel(this.service.getUser().acceso)>1">
+                                      <span data-toggle="modal" data-target="#modalclient5" *ngIf="ticket.estado != service.ticketStatuses.completed" class="btn-link" title="editar"  (click)="deviceChoosen(e)"><i class="fa fa-edit"></i></span> 
+                                      <span data-toggle="modal" data-target="#modalclient6" *ngIf="ticket.estado != service.ticketStatuses.completed" class="btn-link" title="eliminar"  (click)="deviceChoosen(e)"><i class="fa fa-remove"></i></span>
+                                  </span>
+                              </td>
+</ng-container>
+<ng-container *ngIf="mode == 'finished'">
+                              <td>{{e.noSerial}}</td>
+</ng-container>
+                              <td *ngIf="mode != 'inbox'" [hidden]="option=='edit'">
                                 <a class="btn-link" (click)="removeDeviceList(e)"><i class="fa fa-minus"></i></a>
                               </td>
                             </tr>
@@ -204,9 +242,19 @@
                       </div>
                     </div>
                     <div class="form-group col-xs-12 col-sm-12">
+<ng-container *ngIf="mode != 'finished'">
                       <textarea *ngIf="ticket.tipoSolicitud ==service.requestTypes.workshop" placeholder="Observaciones" class="form-control" rows="5" [(ngModel)]="ticket.descripcion" [disabled]="option!='add' &&   2>service.getLevel(service.getUser().acceso )  || ticket.estado ==service.ticketStatuses.completed" (change)="editAsAdministrator()"></textarea>
+</ng-container>
+<ng-container *ngIf="mode == 'finished'">
+                      <textarea *ngIf="ticket.tipoSolicitud ==service.requestTypes.workshop" placeholder="Observaciones" class="form-control" rows="5" [(ngModel)]="ticket.descripcion" [disabled]="option!='add'"></textarea>
+</ng-container>
                       <label *ngIf="ticket.tipoSolicitud !=service.requestTypes.workshop">Falla Reportada por el cliente:</label>
+<ng-container *ngIf="mode != 'finished'">
                       <input *ngIf="ticket.tipoSolicitud !=service.requestTypes.workshop" class="form-control" placeholder="Falla Reportada" [(ngModel)]="ticket.descripcion" [disabled]="option!='add' &&   2>service.getLevel(service.getUser().acceso )  || ticket.estado ==service.ticketStatuses.completed" (change)="editAsAdministrator()"/>
+</ng-container>
+<ng-container *ngIf="mode == 'finished'">
+                      <input *ngIf="ticket.tipoSolicitud !=service.requestTypes.workshop" class="form-control" placeholder="Falla Reportada" [(ngModel)]="ticket.descripcion" [disabled]="option!='add'"/>
+</ng-container>
                     </div>
                     <div class="form-group col-xs-4 col-sm-4">
                       <label>Estado: </label>
@@ -218,14 +266,25 @@
                     </div>
                     <div class="form-group col-xs-4 col-sm-4">
                       <label>Técnico asignado:</label>
+<ng-container *ngIf="mode != 'inbox'">
                       <select class="form-control" [(ngModel)]="ticket.idUsuario" [disabled]="service.getLevel(service.getUser().acceso)<2 || (option!='add' && service.getUser().id == ticket.idUsuario && service.getLevel(this.service.getUser().acceso)<1)" (change)="putTicket('USUARIO')">
                         <option value="0" selected [hidden]="ticket.idUsuario!='0'">Seleccione</option>
                         <option value="{{user.id}}" *ngFor="let user of users">{{ user.nombre }} | "{{ user.cuentaUsuario }}"</option>
                       </select>
+</ng-container>
+<ng-container *ngIf="mode == 'inbox'">
+                      <br *ngIf="!(service.getLevel(service.getUser().acceso)>1)"/>
+                      <span *ngIf="!(service.getLevel(service.getUser().acceso)>1)">{{service.getUser().nombre}}</span>
+                      <select class="form-control" [(ngModel)]="ticket.idUsuario" *ngIf="service.getLevel(service.getUser().acceso)>1" (change)="putTicket('USUARIO')">
+                        <option value="" selected [hidden]="ticket.idUsuario!=''">Seleccione</option>
+                        <option value="{{user.id}}" *ngFor="let user of users">{{ user.nombre }} | "{{ user.cuentaUsuario }}"</option>
+                      </select>
+</ng-container>
                     </div>
                     <div class="form-group col-xs-4 col-sm-4">
                       <label>Aprobador por:</label>
                       <br *ngIf="ticket.aprobadoPor==null"/>
+                      <span *ngIf="mode == 'inbox' && ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)==0 && ticket.estado ==service.ticketStatuses.completed">Pendiente de aprobación</span>
                       <span *ngIf="ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)>1 && ticket.estado ==service.ticketStatuses.completed"><a class="btn-link" (click)="aprobar()">Aprobar</a></span>
                       <select class="form-control" [(ngModel)]="ticket.aprobadoPor" *ngIf="ticket.aprobadoPor!=null" disabled>
                         <option value="{{costumer.id}}" *ngFor="let costumer of costumerAPs">{{ costumer.nombre }}</option>
@@ -241,7 +300,7 @@
                 <!-- /.tab-pane -->
   
                 <div class="tab-pane" id="settings">
-<app-ticket-parts [ticket]="ticket" [parts]="parts" [part]="part" [option]="option" [addPart]="addPart"
+<app-ticket-parts [ticket]="ticket" [parts]="parts" [part]="part" [option]="option" [addPart]="addPart" [actions]="mode == 'finished' ? false : mode == 'inbox' ? service.getLevel(service.getUser().acceso)>1 : true"
   (startAdd)="addPart=true;part={}" (save)="addPartOne($event)" (cancel)="addPart=false;part={}" (choose)="partChoosen($event)"></app-ticket-parts>
                 </div>
                 <!-- /.tab-pane -->
@@ -259,7 +318,7 @@
           <div class="overlay" [hidden]="!service.isLoading">
               <i class="fa fa-refresh fa-spin"></i>
           </div>
-          <button type="button" class="btn btn-primary"  *ngIf="option=='add'" [disabled]="addDevice || ticket.tipoSolicitud === '' || (ticket.tipoSolicitud === service.requestTypes.workshop && devices.length == 0)" (click)="add()" ><i class="fa fa-fw fa-file-o"></i> Crear</button>
+          <button type="button" class="btn btn-primary"  *ngIf="option=='add'" [disabled]="mode == 'inbox' ? addDevice : (addDevice || ticket.tipoSolicitud === '' || (ticket.tipoSolicitud === service.requestTypes.workshop && devices.length == 0))" (click)="add()" ><i class="fa fa-fw fa-file-o"></i> Crear</button>
           <!-- <button type="button" class="btn btn-success"  *ngIf="option=='edit'" (click)="edit()" ><i class="fa fa-fw fa-save"></i> Guardar</button> -->
           <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
           <button type="button" class="btn btn-default" id="btnClose" data-dismiss="modal" >Close</button><!--(click)='getTickets(service.getUser().id,"*")'-->
@@ -272,6 +331,6 @@
   <!-- /.modal-dialog -->
 </div>
 
-<app-ticket-item-dialogs [parToEdit]="parToEdit" [deviceToEdit]="deviceToEdit"
+<app-ticket-item-dialogs *ngIf="mode != 'finished'" [parToEdit]="parToEdit" [deviceToEdit]="deviceToEdit"
   (editPart)="editPartUsed($event)" (deletePart)="deletePartUsed($event)" (closeParts)="getParts(ticket.id,service.getUser().idEmpresa)"
   (editDevice)="editDevice($event)" (deleteDevice)="deleteDevice($event)" (closeDevices)="getDevices(ticket.id)"></app-ticket-item-dialogs>

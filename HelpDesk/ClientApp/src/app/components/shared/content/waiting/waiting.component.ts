@@ -11,9 +11,11 @@ import * as signalR from '@microsoft/signalr';
 })
 export class WaitingComponent implements OnInit, OnDestroy {
 
-  // One screen for the three lists of tickets not yet assigned. The route says which one it is:
-  //  - requestType: 'workshop', 'onSite', or nothing for every type
+  // One screen for the lists of tickets. The route says which one it is:
+  //  - mode: 'pending' (not assigned yet), 'inbox' (the tickets of the person, not approved yet) or 'finished' (completed, not approved yet)
+  //  - requestType: 'workshop', 'onSite', or nothing for every type (only for 'pending')
   //  - title: the heading of the list
+  mode: string = 'pending';
   requestType: string = null;
   title: string = '';
 
@@ -21,11 +23,13 @@ export class WaitingComponent implements OnInit, OnDestroy {
     const data = this.activatedRoute.snapshot.data;
     this.requestType = data.requestType ? this.service.requestTypes[data.requestType] : null;
     this.title = data.title;
-    if(this.service.getLevel(this.service.getUser().acceso) < 2 ){
+    this.mode = data.mode || 'pending';
+    // The inbox is open to every level (it shows only the tickets of the person); the other lists need the moderator level.
+    if(this.mode != 'inbox' && this.service.getLevel(this.service.getUser().acceso) < 2 ){
       alert(this.service.messages.noPermissionToAccess);
       this.service.route.navigateByUrl('/');
     }else{
-      this.getTickets(this.service.getUser().id,"*")
+      this.getTickets(this.service.getUser().id, this.mode == 'inbox' ? 'unique' : '*')
     }
   }
 
@@ -68,11 +72,11 @@ export class WaitingComponent implements OnInit, OnDestroy {
         
         /* */
         // this.service.isLoading = true;
-        this.service.get('Ticket/'+ this.service.getUser().id + '/' + '*')
+        this.service.get('Ticket/'+ this.service.getUser().id + '/' + (this.mode == 'inbox' ? 'unique' : '*'))
           .subscribe(res=>{
-            this.tickets = this.unassigned(res);
+            this.tickets = this.listed(res);
             var id = this.ticket.id===null?0:this.ticket.id;
-            if(/*idUsuario >0 &&*/  id== idOther){
+            if((this.mode != 'inbox' || idUsuario >0) &&  id== idOther){
               
               this.ticket = this.tickets.filter(c=>c.id==idOther)[0];
               // console.log(this.ticket)
@@ -223,16 +227,24 @@ export class WaitingComponent implements OnInit, OnDestroy {
     // console.log( this.devices )
   }
 
-  // Tickets with no technician yet, of the type this screen shows.
-  private unassigned(tickets){
-    return tickets.filter(x=>x.idUsuario ==0 && (this.requestType == null || x.tipoSolicitud == this.requestType));
+  // The tickets this screen lists.
+  private listed(tickets){
+    switch(this.mode){
+      case 'inbox':
+        return tickets.filter(t=>t.aprobadoPor == null);
+      case 'finished':
+        return tickets.filter(x=>x.estado == this.service.ticketStatuses.completed && x.aprobadoPor==null);
+      default:
+        // No technician yet, and of the type this screen shows.
+        return tickets.filter(x=>x.idUsuario ==0 && (this.requestType == null || x.tipoSolicitud == this.requestType));
+    }
   }
 
   getTickets(id,option){
     this.service.isLoading = true;
     this.service.get('Ticket/'+ id + '/' + option)
       .subscribe(res=>{
-        this.tickets = this.unassigned(res);
+        this.tickets = this.listed(res);
         // console.log(  this.tickets )
         this.tickets.forEach(element => {
           if(element.horaInicio != null)element.horaInicio = element.horaInicio; //this.service.fillZeroWithNumber(element.horaInicio/*.value.hours*/) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.minutes) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.seconds); 
@@ -329,7 +341,8 @@ export class WaitingComponent implements OnInit, OnDestroy {
 
   getDevices(id){
     this.service.isLoading = true;
-    this.service.get('Device/'+ id)
+    // The inbox has always asked with the company in the address too.
+    this.service.get('Device/'+ id + (this.mode == 'inbox' ? '/' + this.service.getUser().idEmpresa : ''))
       .subscribe(res=>{
         this.devices = res;
         // console.log(  this.devices )
@@ -368,10 +381,15 @@ export class WaitingComponent implements OnInit, OnDestroy {
     this.service.isLoading = true;
     this.service.post('Trace', this.trace)
       .subscribe(res=>{
-        this.getTraces(this.ticket.id,this.ticket.idEmpresa)
+        if(this.mode == 'inbox'){
+          // The inbox lets the notice bring the activities back instead of asking for them.
+          this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
+        }else{
+          this.getTraces(this.ticket.id,this.ticket.idEmpresa)
+        }
         this.trace = {};
         var element = document.getElementById('divScroll');
-        element.scrollTop = 500;
+        element.scrollTop = this.mode == 'inbox' ? element.scrollHeight + 60 : 500;
 
         this.service.isLoading = false;
       },error => {
@@ -799,7 +817,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
     }
     this.service.isLoading = true;
     
-    this.service.post('Device/Put', part)
+    this.service.post('Device/Put' + (this.mode == 'inbox' ? '/' : ''), part)
     .subscribe(res=>{
     // console.log( res )
     
