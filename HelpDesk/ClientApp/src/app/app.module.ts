@@ -27,13 +27,11 @@ import { ProfileComponent } from './components/shared/content/profile/profile.co
 import { FilterPipe } from './pipes/filter.pipe';
 import { CostumerComponent } from './components/shared/content/costumer/costumer.component';
 import { TicketComponent } from './components/shared/content/ticket/ticket.component';
-import { InboxComponent } from './components/shared/content/inbox/inbox.component';
 import { ReportComponent } from './components/shared/content/report/report.component';
 import { WaitingComponent } from './components/shared/content/waiting/waiting.component';
 import { TicketTimelineComponent } from './components/shared/content/ticket-shared/ticket-timeline.component';
 import { TicketPartsComponent } from './components/shared/content/ticket-shared/ticket-parts.component';
 import { TicketItemDialogsComponent } from './components/shared/content/ticket-shared/ticket-item-dialogs.component';
-import { Waiting4Component } from './components/shared/content/waiting4/waiting4.component';
 import { CalendarComponent } from './components/shared/content/calendar/calendar.component';
 
 
@@ -56,10 +54,8 @@ import { CalendarComponent } from './components/shared/content/calendar/calendar
     FilterPipe,
     CostumerComponent,
     TicketComponent,
-    InboxComponent,
     ReportComponent,
     WaitingComponent,
-    Waiting4Component,
     TicketTimelineComponent,
     TicketPartsComponent,
     TicketItemDialogsComponent,
@@ -79,13 +75,13 @@ import { CalendarComponent } from './components/shared/content/calendar/calendar
       { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
       { path: 'costumer', component: CostumerComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
       { path: 'ticket', component: TicketComponent, canActivate: [AuthGuard], data: { minLevel: 2 } },
-      { path: 'inbox', component: InboxComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
+      { path: 'inbox', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 1, mode: 'inbox', title: 'Buzón' } },
       { path: 'report', component: ReportComponent, canActivate: [AuthGuard], data: { minLevel: 3 } },
-      // The three lists of tickets not yet assigned are one screen; the route says which type it shows and its title.
+      // The lists of tickets (pending to assign, inbox and finished) are one screen; the route says which one it is, which type it shows and its title.
       { path: 'waiting', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2, requestType: null, title: 'Ordenes pendiente por asignar' } },
       { path: 'waiting2', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2, requestType: 'workshop', title: 'Ordenes de Servicio de Taller pendiente por asignar' } },
       { path: 'waiting3', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2, requestType: 'onSite', title: 'Ordenes de Servicio a Domicilio pendiente por asignar' } },
-      { path: 'finished', component: Waiting4Component, canActivate: [AuthGuard], data: { minLevel: 2 } },
+      { path: 'finished', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2, mode: 'finished', title: 'Ordenes Completadas' } },
       { path: 'calendar', component: CalendarComponent, canActivate: [AuthGuard], data: { minLevel: 1 } }
     ]),
     ReactiveFormsModule,
