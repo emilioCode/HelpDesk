@@ -13,12 +13,12 @@
         </tr>
       </thead>
       <tbody>
-          <tr [hidden]="!addPart" >
-            <td ><input type="number" min="1" [(ngModel)]="part.cantidad" placeholder="(Requerido)" class="form-control"/></td>
-            <td><input type="text" [(ngModel)]="part.noSerial" placeholder="(Requerido)" class="form-control"/></td>
-            <td><input type="text" [(ngModel)]="part.descripcion" placeholder="(Requerido)" class="form-control"/></td>
+          <tr [hidden]="!addPart" [formGroup]="form.group">
+            <td ><input type="number" min="1" formControlName="cantidad" placeholder="(Requerido)" class="form-control"/></td>
+            <td><input type="text" formControlName="noSerial" placeholder="(Requerido)" class="form-control"/></td>
+            <td><input type="text" formControlName="descripcion" placeholder="(Requerido)" class="form-control"/></td>
             <td >
-              <a class="btn-link" (click)="save.emit(part)"><i class="fa fa-check"></i></a>
+              <a class="btn-link" (click)="onSave()"><i class="fa fa-check"></i></a>
               <a class="btn-link" (click)="cancel.emit()"><i class="fa fa-remove"></i></a>
             </td>
           </tr>
