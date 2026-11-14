@@ -52,6 +52,7 @@ export class ApiService {
     enterReportedFailure: 'Favor digite falla reportada',
     completeMinimumOrderData: 'Asegúrese de completar los datos mínimos necesarios para crear la orden',
     deviceDataRequired: 'Es necesario suministrar los datos del dispositivo',
+    partSerialTooLong: 'El serial de la parte es demasiado largo (máximo 50 caracteres)',
     deviceDataTooLong: 'Algún dato del dispositivo es demasiado largo (falla reportada: 80 caracteres; marca, modelo y serial: 50)',
     mustHaveDevice: 'Must have a device as well',
     optionRequired: 'an option is required',

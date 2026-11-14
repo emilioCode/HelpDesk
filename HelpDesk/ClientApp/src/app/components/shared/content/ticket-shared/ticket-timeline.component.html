@@ -40,12 +40,12 @@
       </div>
       <!-- /.box-footer -->
       <div class="box-footer">
-        <div>
+        <div [formGroup]="form.group">
           <img *ngIf="!service.hasImage(service.getUser().image)" src="../../../../../assets/dist/img/photo_default.png" class="img-responsive img-circle img-sm" alt="Alt Text">
           <img *ngIf="service.getUser() !=null && service.hasImage(service.getUser().image)" [src]="'data:image/jpeg;base64,'+ service.getUser().image" class="img-responsive img-circle img-sm" alt="Alt Text">
           <!-- .img-push is used to add margin to elements next to floating images -->
           <div class="img-push input-group">
-            <input type="text" class="form-control " [(ngModel)]="trace.texto" (keyup.enter)="add.emit()" placeholder="Press enter to post comment" [disabled]="ticket.estado==service.ticketStatuses.completed && ticket.aprobadoPor!=null">
+            <input type="text" class="form-control " formControlName="texto" (keyup.enter)="add.emit()" placeholder="Press enter to post comment">
             <span class="input-group-btn">
               <button class="btn btn-primary btn-flat" (click)="add.emit()"  [disabled]="service.validateTrim( trace.texto )"><i class="fa fa-paper-plane" aria-hidden="true"></i> Colocar actividad</button>
             </span>

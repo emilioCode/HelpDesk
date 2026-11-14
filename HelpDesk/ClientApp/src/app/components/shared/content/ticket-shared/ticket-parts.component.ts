@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, DoCheck, EventEmitter, Input, Output } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
+import { MirroredForm } from './mirrored-form';
 
 // The parts used in a ticket, with the row to add one and, when the screen allows it, the buttons to edit or remove one.
 @Component({
@@ -7,7 +9,7 @@ import { ApiService } from '../../../../services/api.service';
   templateUrl: './ticket-parts.component.html',
   styles: [':host { display: block; }']
 })
-export class TicketPartsComponent {
+export class TicketPartsComponent implements DoCheck {
   @Input() ticket: any = {};
   @Input() parts: any = [];
   // The part being written in the adding row.
@@ -24,5 +26,27 @@ export class TicketPartsComponent {
   // The person chose a part to edit or to remove.
   @Output() choose = new EventEmitter<any>();
 
-  constructor(public service: ApiService) { }
+  // The adding row: quantity, serial (up to 50, as the server) and description, kept equal to the part the screen gives.
+  form: MirroredForm;
+
+  constructor(public service: ApiService, formBuilder: FormBuilder) {
+    this.form = new MirroredForm(formBuilder.group({
+      cantidad: [null, [Validators.required, Validators.min(1)]],
+      noSerial: [null, [Validators.required, Validators.maxLength(50)]],
+      descripcion: [null, Validators.required]
+    }), () => this.part);
+  }
+
+  ngDoCheck() {
+    this.form.sync();
+  }
+
+  // The screen checks what is required; a serial that is too long is stopped here, before asking the server.
+  onSave() {
+    if (this.form.group.get('noSerial').hasError('maxlength')) {
+      this.service.swal(this.service.messages.titleRequiredFields, this.service.messages.partSerialTooLong, 'warning');
+      return;
+    }
+    this.save.emit(this.part);
+  }
 }

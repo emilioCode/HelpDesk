@@ -9,22 +9,22 @@
           <!-- <h4 class="modal-title" *ngIf="option=='edit'"><b>Cliente</b></h4>
           <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea deshabilitar este Cliente?</b></h4> -->
         </div>
-        <div class="modal-body">
+        <div class="modal-body" [formGroup]="partEdit.group">
           
           <!---->
           <div class="row">
   
           <div class="form-group col-xs-4 col-sm-4">
             <label for="razonSocial">Cantidad:</label>
-            <input type="number" class="form-control" min="1" placeholder="(Requerido)" [(ngModel)]="parToEdit.cantidad">
+            <input type="number" class="form-control" min="1" placeholder="(Requerido)" formControlName="cantidad">
           </div>
           <div class="form-group col-xs-4 col-sm-4">
             <label for="razonSocial">Serial No.:</label>
-            <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="parToEdit.noSerial">
+            <input type="text" class="form-control" placeholder="(Requerido)" formControlName="noSerial">
           </div>
           <div class="form-group col-xs-4 col-sm-4">
             <label for="correo">Descripción:</label>
-            <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="parToEdit.descripcion">
+            <input type="text" class="form-control" placeholder="(Requerido)" formControlName="descripcion">
           </div>
   
         <!---->
@@ -34,7 +34,7 @@
             <div class="overlay" [hidden]="!service.isLoading">
                 <i class="fa fa-refresh fa-spin"></i>
             </div>
-            <button type="button" class="btn btn-success" data-dismiss="modal" (click)="editPart.emit(parToEdit)" [disabled]="service.isNullorEmpty(parToEdit.noSerial) || service.isNullorEmpty(parToEdit.descripcion) || 1>parToEdit "><i class="fa fa-edit"></i> Editar</button>
+            <button type="button" class="btn btn-success" data-dismiss="modal" (click)="editPart.emit(parToEdit)" [disabled]="partEdit.group.invalid"><i class="fa fa-edit"></i> Editar</button>
             <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeParts.emit()">Close</button>
         </div>
       </div>
@@ -59,22 +59,22 @@
               <!-- <h4 class="modal-title" *ngIf="option=='edit'"><b>Cliente</b></h4>
               <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea deshabilitar este Cliente?</b></h4> -->
             </div>
-            <div class="modal-body">
+            <div class="modal-body" [formGroup]="partRemove.group">
               
               <!---->
               <div class="row">
       
               <div class="form-group col-xs-4 col-sm-4">
                 <label for="razonSocial">Cantidad:</label>
-                <input type="number" class="form-control" min="1" placeholder="(Requerido)" [(ngModel)]="parToEdit.cantidad" disabled>
+                <input type="number" class="form-control" min="1" placeholder="(Requerido)" formControlName="cantidad">
               </div>
               <div class="form-group col-xs-4 col-sm-4">
                 <label for="razonSocial">Serial No.:</label>
-                <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="parToEdit.noSerial" disabled>
+                <input type="text" class="form-control" placeholder="(Requerido)" formControlName="noSerial">
               </div>
               <div class="form-group col-xs-4 col-sm-4">
                 <label for="correo">Descripción:</label>
-                <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="parToEdit.descripcion" disabled>
+                <input type="text" class="form-control" placeholder="(Requerido)" formControlName="descripcion">
               </div>
   
             <!---->
@@ -111,30 +111,30 @@
             <!-- <h4 class="modal-title" *ngIf="option=='edit'"><b>Cliente</b></h4>
             <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea deshabilitar este Cliente?</b></h4> -->
           </div>
-          <div class="modal-body">
+          <div class="modal-body" [formGroup]="deviceEdit.group">
             
                 <!---->
                 <div class="row">
         
                     <div class="form-group col-xs-6 col-sm-6">
                       <label for="correo">Descripción:</label>
-                      <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="deviceToEdit.descripcion" >
+                      <input type="text" class="form-control" placeholder="(Requerido)" formControlName="descripcion">
                     </div>
                     <div class="form-group col-xs-6 col-sm-6">
                       <label for="razonSocial">Falla reportada:</label>
-                      <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="deviceToEdit.fallaReportada" >
+                      <input type="text" class="form-control" placeholder="(Requerido)" formControlName="fallaReportada">
                     </div>
                     <div class="form-group col-xs-4 col-sm-4">
                       <label for="razonSocial">Marca:</label>
-                      <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="deviceToEdit.marca" >
+                      <input type="text" class="form-control" placeholder="(Requerido)" formControlName="marca">
                     </div>
                     <div class="form-group col-xs-4 col-sm-4">
                       <label for="razonSocial">Modelo</label>
-                      <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="deviceToEdit.modelo" >
+                      <input type="text" class="form-control" placeholder="(Requerido)" formControlName="modelo">
                     </div>
                     <div class="form-group col-xs-4 col-sm-4">
                       <label for="razonSocial">Serial No.:</label>
-                      <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="deviceToEdit.noSerial" >
+                      <input type="text" class="form-control" placeholder="(Requerido)" formControlName="noSerial">
                     </div>
         
                   <!---->
@@ -144,7 +144,7 @@
               <div class="overlay" [hidden]="!service.isLoading">
                   <i class="fa fa-refresh fa-spin"></i>
               </div>
-              <button type="button" class="btn btn-success" data-dismiss="modal" (click)="editDevice.emit(deviceToEdit)" [disabled]="service.isNullorEmpty(deviceToEdit.descripcion) || service.isNullorEmpty(deviceToEdit.fallaReportada) || service.isNullorEmpty(deviceToEdit.noSerial) || service.isNullorEmpty(deviceToEdit.modelo) || service.isNullorEmpty(deviceToEdit.marca)"><i class="fa fa-edit"></i> Editar</button>
+              <button type="button" class="btn btn-success" data-dismiss="modal" (click)="editDevice.emit(deviceToEdit)" [disabled]="deviceEdit.group.invalid"><i class="fa fa-edit"></i> Editar</button>
               <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeDevices.emit()">Close</button>
           </div>
         </div>
@@ -169,30 +169,30 @@
                 <!-- <h4 class="modal-title" *ngIf="option=='edit'"><b>Cliente</b></h4>
                 <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea deshabilitar este Cliente?</b></h4> -->
               </div>
-              <div class="modal-body">
+              <div class="modal-body" [formGroup]="deviceRemove.group">
                 
                 <!---->
                 <div class="row">
         
                 <div class="form-group col-xs-6 col-sm-6">
                   <label for="correo">Descripción:</label>
-                  <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="deviceToEdit.descripcion" disabled>
+                  <input type="text" class="form-control" placeholder="(Requerido)" formControlName="descripcion">
                 </div>
                 <div class="form-group col-xs-6 col-sm-6">
                   <label for="razonSocial">Falla reportada:</label>
-                  <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="deviceToEdit.fallaReportada" disabled>
+                  <input type="text" class="form-control" placeholder="(Requerido)" formControlName="fallaReportada">
                 </div>
                 <div class="form-group col-xs-4 col-sm-4">
                   <label for="razonSocial">Marca:</label>
-                  <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="deviceToEdit.noSerial" disabled>
+                  <input type="text" class="form-control" placeholder="(Requerido)" formControlName="noSerial">
                 </div>
                 <div class="form-group col-xs-4 col-sm-4">
                   <label for="razonSocial">Modelo</label>
-                  <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="deviceToEdit.modelo" disabled>
+                  <input type="text" class="form-control" placeholder="(Requerido)" formControlName="modelo">
                 </div>
                 <div class="form-group col-xs-4 col-sm-4">
                   <label for="razonSocial">Serial No.:</label>
-                  <input type="text" class="form-control" placeholder="(Requerido)" [(ngModel)]="deviceToEdit.noSerial" disabled>
+                  <input type="text" class="form-control" placeholder="(Requerido)" formControlName="noSerial">
                 </div>
     
               <!---->
