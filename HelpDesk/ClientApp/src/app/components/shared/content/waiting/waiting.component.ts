@@ -12,7 +12,8 @@ import * as signalR from '@microsoft/signalr';
 export class WaitingComponent implements OnInit, OnDestroy {
 
   // One screen for the lists of tickets. The route says which one it is:
-  //  - mode: 'pending' (not assigned yet), 'inbox' (the tickets of the person, not approved yet) or 'finished' (completed, not approved yet)
+  //  - mode: 'pending' (not assigned yet), 'inbox' (the tickets of the person, not approved yet), 'finished' (completed, not approved yet)
+  //    or 'all' (every ticket; the only one that creates orders and customers)
   //  - requestType: 'workshop', 'onSite', or nothing for every type (only for 'pending')
   //  - title: the heading of the list
   mode: string = 'pending';
@@ -37,6 +38,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
   ticket:any={};
   option;
   costumers:any;
+  costumer:any={};
   users:any;
   devices:any = [];
   device:any={};
@@ -80,7 +82,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
               
               this.ticket = this.tickets.filter(c=>c.id==idOther)[0];
               // console.log(this.ticket)
-              if(this.ticket === undefined){
+              if(this.ticket === undefined && this.mode != 'all'){
                 this.ticket = {};
                 // debugger;
                 var modal = document.getElementById('modal-default');
@@ -102,6 +104,18 @@ export class WaitingComponent implements OnInit, OnDestroy {
 
       }
       
+      // Only the screen that creates orders keeps its list of customers up to date.
+      if( this.mode == 'all' && component=='costumer' && idEmpresa == this.service.getUser().idEmpresa ){
+        this.service.get('Costumer/'+ this.service.getUser().id + '/' + '*')
+          .subscribe(res=>{
+            this.costumers = res;
+            this.service.isLoading = false;
+          },error => {
+            this.service.handleHttpError(error);
+            this.service.isLoading = false;
+          });
+      }
+
       if( component=='session' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id  ){
         if(idOther == 0 ){
           alert(this.service.messages.userDisabled);
@@ -204,19 +218,22 @@ export class WaitingComponent implements OnInit, OnDestroy {
   }
 
   i=0;
+  // Only reachable while an order is being created (option 'add'), which only the 'all' screen does.
   addDeviceList(item){
-    if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
-    ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
-      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.deviceDataRequired,'info');
-      return false;
+    if(this.ticket.tipoSolicitud ==this.service.requestTypes.onSite){
+      this.addDeviceOne(item);
+    }else if(this.ticket.tipoSolicitud ==this.service.requestTypes.workshop){
+      if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
+      ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
+        this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.deviceDataRequired,'info');
+        return false;
+      }
+      item.id =  this.i++;
+      item.idEmpresa = this.service.getUser().idEmpresa;
+      item.idSolicitud = 0;
+      this.devices.push(item)
+      this.addDevice =false;
     }
-    item.id =  this.i++;
-    item.idEmpresa = this.service.getUser().idEmpresa;
-    item.idSolicitud = 0;
-    this.devices.push(item)
-    this.addDevice =false;
-
-    // console.log( this.devices )
   }
 
   removeDeviceList(item){
@@ -234,6 +251,8 @@ export class WaitingComponent implements OnInit, OnDestroy {
         return tickets.filter(t=>t.aprobadoPor == null);
       case 'finished':
         return tickets.filter(x=>x.estado == this.service.ticketStatuses.completed && x.aprobadoPor==null);
+      case 'all':
+        return tickets;
       default:
         // No technician yet, and of the type this screen shows.
         return tickets.filter(x=>x.idUsuario ==0 && (this.requestType == null || x.tipoSolicitud == this.requestType));
@@ -290,6 +309,8 @@ export class WaitingComponent implements OnInit, OnDestroy {
         this.option = 'edit';
         var idSolicitud = res.data.id;
         if(this.devices.length > 0)this.addDevices(idSolicitud);
+        this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,0)
+        this.ticket.id = res.data.id;
         this.ticket.noSecuencia = res.data.noSecuencia;
         this.ticket.fechaCreacion = res.data.fechaCreacion;
         this.ticket.fechaInicio = res.data.fechaInicio;
@@ -324,10 +345,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
         // console.log('devices saved')
         
 
-        this.getDevices(idSolicitud);
-        // var object = this.devices.filter(x=>x.idSolicitud==idSolicitud)[0];
-        // console.log(""+this.option+" "+object)
-        // this.fillModal(this.option,object);
+        // The devices of a new order are already in the list; nothing to ask for.
       }else{
         this.devices = temp;
         this.service.swal(res.title,res.message,res.icon);
@@ -381,15 +399,15 @@ export class WaitingComponent implements OnInit, OnDestroy {
     this.service.isLoading = true;
     this.service.post('Trace', this.trace)
       .subscribe(res=>{
-        if(this.mode == 'inbox'){
-          // The inbox lets the notice bring the activities back instead of asking for them.
+        if(this.mode == 'inbox' || this.mode == 'all'){
+          // The inbox and the full list let the notice bring the activities back instead of asking for them.
           this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
         }else{
           this.getTraces(this.ticket.id,this.ticket.idEmpresa)
         }
         this.trace = {};
         var element = document.getElementById('divScroll');
-        element.scrollTop = this.mode == 'inbox' ? element.scrollHeight + 60 : 500;
+        element.scrollTop = (this.mode == 'inbox' || this.mode == 'all') ? element.scrollHeight + 60 : 500;
 
         this.service.isLoading = false;
       },error => {
@@ -467,6 +485,11 @@ export class WaitingComponent implements OnInit, OnDestroy {
           break;
       }
     }else if(option =='USUARIO'){
+      // A new order (no number yet) is not assigned until it is created.
+      if(!this.ticket.noSecuencia){
+        return false;
+      }
+
       var response = confirm(this.service.messages.confirmAssignTicket);
       if(!response){
   
@@ -635,6 +658,36 @@ export class WaitingComponent implements OnInit, OnDestroy {
       },error => {
         this.service.handleHttpError(error);
         this.service.isLoading = false;
+      });
+  }
+
+  chooseClient(client){
+    this.ticket.idCliente = String(client.id);
+  }
+
+  addClient(){
+    this.costumer.idEmpresa = this.service.getUser().idEmpresa;
+
+    if(this.service.getLevel(this.service.getUser().acceso) <= 1){
+      this.service.swal(this.service.messages.titleAccessDenied,'','error');
+      return false;
+    }
+    this.service.isLoading = true;
+     this.service.post('Costumer', this.costumer)
+      .subscribe(res=>{
+      this.service.swal(res.title,res.message,res.icon);
+      if(res.code=="1") {
+        this.hubConnection.invoke('refresh', 'costumer',this.costumer.idEmpresa,0,0);
+        document.getElementById('btnCloseClient2').click();
+        document.getElementById('btnCloseClient').click();
+
+        this.ticket.idCliente = String(res.data.id);
+        this.costumer = {};
+      }
+      this.service.isLoading =false;
+      },error => {
+        this.service.handleHttpError(error);
+        this.service.isLoading =false;
       });
   }
 
