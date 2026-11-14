@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 // import * as signalR from '@aspnet/signalr';
@@ -9,7 +10,7 @@ import * as signalR from '@microsoft/signalr';
   templateUrl: './waiting.component.html',
   styles: []
 })
-export class WaitingComponent implements OnInit, OnDestroy {
+export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
 
   // One screen for the lists of tickets. The route says which one it is:
   //  - mode: 'pending' (not assigned yet), 'inbox' (the tickets of the person, not approved yet), 'finished' (completed, not approved yet)
@@ -20,7 +21,8 @@ export class WaitingComponent implements OnInit, OnDestroy {
   requestType: string = null;
   title: string = '';
 
-  constructor(private service: ApiService, private activatedRoute: ActivatedRoute) { 
+  constructor(private service: ApiService, private activatedRoute: ActivatedRoute, private formBuilder: FormBuilder) { 
+    this.initializeForms();
     const data = this.activatedRoute.snapshot.data;
     this.requestType = data.requestType ? this.service.requestTypes[data.requestType] : null;
     this.title = data.title;
@@ -32,6 +34,105 @@ export class WaitingComponent implements OnInit, OnDestroy {
     }else{
       this.getTickets(this.service.getUser().id, this.mode == 'inbox' ? 'unique' : '*')
     }
+  }
+
+  // The forms. The data of the screen stays in the plain objects (ticket, device, costumer), which the code of the screen reads and
+  // changes everywhere; each form keeps its controls and the validation, and both are kept equal (see ngDoCheck and watch).
+  ticketForm: FormGroup;
+  deviceForm: FormGroup;
+  costumerForm: FormGroup;
+
+  // Limits of the new device and of the new customer are the ones of the server (DeviceValidator, CustomerValidator) and of the columns.
+  private initializeForms(){
+    this.ticketForm = this.formBuilder.group({
+      idCliente: [null, Validators.required],
+      tipoSolicitud: [null, Validators.required],
+      tipoServicio: [null, Validators.required],
+      fechaInicio: [null],
+      horaInicio: [null],
+      fechaTermino: [null],
+      horaTermino: [null],
+      descripcion: [null],
+      estado: [null],
+      idUsuario: [null],
+      aprobadoPor: [null]
+    });
+    this.deviceForm = this.formBuilder.group({
+      descripcion: [null],
+      fallaReportada: [null, Validators.maxLength(80)],
+      marca: [null, Validators.maxLength(50)],
+      modelo: [null, Validators.maxLength(50)],
+      noSerial: [null, Validators.maxLength(50)]
+    });
+    this.costumerForm = this.formBuilder.group({
+      nombre: [null, [Validators.required, Validators.maxLength(100)]],
+      rnc: [null, [Validators.required, Validators.maxLength(30)]],
+      contacto: [null, Validators.maxLength(80)],
+      telefono: [null, Validators.maxLength(20)],
+      extension: [null, Validators.maxLength(10)],
+      correo: [null, Validators.maxLength(50)],
+      departamento: [null, Validators.maxLength(60)],
+      idEmpresa: [null],
+      direccion: [null]
+    });
+    this.watch(this.ticketForm, () => this.ticket);
+    this.watch(this.deviceForm, () => this.device);
+    this.watch(this.costumerForm, () => this.costumer);
+  }
+
+  // What the person types in a control goes to the object of the screen right away (before the code of the change event runs).
+  private watch(form: FormGroup, model: () => any){
+    Object.keys(form.controls).forEach(name => {
+      form.get(name).valueChanges.subscribe(value => { model()[name] = value; });
+    });
+  }
+
+  // What the code of the screen leaves in the objects goes to the controls, with the same rules the template used to apply with [disabled].
+  ngDoCheck(){
+    this.mirror(this.ticketForm, this.ticket);
+    this.mirror(this.deviceForm, this.device);
+    this.mirror(this.costumerForm, this.costumer);
+    this.applyDisabled();
+  }
+
+  private mirror(form: FormGroup, model: any){
+    Object.keys(form.controls).forEach(name => {
+      const control = form.get(name);
+      const value = model && model[name] !== undefined ? model[name] : null;
+      if(control.value !== value){
+        control.setValue(value, { emitEvent: false });
+      }
+    });
+  }
+
+  private setDisabled(form: FormGroup, name: string, disabled: boolean){
+    const control = form.get(name);
+    if(disabled && control.enabled){
+      control.disable({ emitEvent: false });
+    }else if(!disabled && control.disabled){
+      control.enable({ emitEvent: false });
+    }
+  }
+
+  private applyDisabled(){
+    const t = this.ticket || {};
+    const level = this.service.getLevel(this.service.getUser().acceso);
+    const adding = this.option == 'add';
+    const closedAndApproved = t.estado == this.service.ticketStatuses.completed && t.aprobadoPor != null;
+    const dates = adding || closedAndApproved;
+    ['fechaInicio','horaInicio','fechaTermino','horaTermino'].forEach(n => this.setDisabled(this.ticketForm, n, dates));
+    // What an administrator can still adjust: not on a completed ticket, and not by lower levels once the ticket exists.
+    const locked = (!adding && 2 > level) || t.estado == this.service.ticketStatuses.completed;
+    const finished = this.mode == 'finished';
+    this.setDisabled(this.ticketForm, 'idCliente', locked);
+    this.setDisabled(this.ticketForm, 'tipoSolicitud', !adding);
+    this.setDisabled(this.ticketForm, 'tipoServicio', finished ? !adding : locked);
+    this.setDisabled(this.ticketForm, 'descripcion', finished ? !adding : locked);
+    this.setDisabled(this.ticketForm, 'idUsuario', this.mode != 'inbox' && (level < 2 || (!adding && this.service.getUser().id == t.idUsuario && level < 1)));
+    this.setDisabled(this.ticketForm, 'aprobadoPor', true);
+    // Only a person who can create customers sees the new customer form enabled.
+    const canCreateCostumers = level > 1;
+    Object.keys(this.costumerForm.controls).forEach(n => this.setDisabled(this.costumerForm, n, !canCreateCostumers));
   }
 
   tickets:any;
@@ -228,6 +329,10 @@ export class WaitingComponent implements OnInit, OnDestroy {
         this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.deviceDataRequired,'info');
         return false;
       }
+      if(this.deviceForm.invalid){
+        this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.deviceDataTooLong,'info');
+        return false;
+      }
       item.id =  this.i++;
       item.idEmpresa = this.service.getUser().idEmpresa;
       item.idSolicitud = 0;
@@ -277,9 +382,8 @@ export class WaitingComponent implements OnInit, OnDestroy {
   }
 
   add(){
-    if(this.service.validate(this.ticket.tipoSolicitud)
-    || this.service.validate(this.ticket.tipoServicio) || this.service.validate(this.ticket.estado)
-    || this.service.validate(this.ticket.idCliente) /*|| this.service.validate(this.ticket.idUsuario)*/ ){
+    // The customer, the type of request and the type of service are required (the form says so); the state is always set.
+    if(this.ticketForm.invalid || this.service.validate(this.ticket.estado)){
       this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.completeMinimumOrderData,'warning');
       return false;
     }
@@ -665,6 +769,11 @@ export class WaitingComponent implements OnInit, OnDestroy {
     this.ticket.idCliente = String(client.id);
   }
 
+  // A new customer starts from an empty form.
+  newClient(){
+    this.costumer = {};
+  }
+
   addClient(){
     this.costumer.idEmpresa = this.service.getUser().idEmpresa;
 
@@ -673,7 +782,10 @@ export class WaitingComponent implements OnInit, OnDestroy {
       return false;
     }
     this.service.isLoading = true;
-     this.service.post('Costumer', this.costumer)
+     // The empty fields are not sent, as before.
+     const body = Object.assign({}, this.costumer);
+     Object.keys(body).forEach(k => { if(body[k] === '' || body[k] === null) delete body[k]; });
+     this.service.post('Costumer', body)
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -763,6 +875,10 @@ export class WaitingComponent implements OnInit, OnDestroy {
     if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
     ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
       this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.deviceDataRequired,'info');
+      return false;
+    }
+    if(this.deviceForm.invalid){
+      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.deviceDataTooLong,'info');
       return false;
     }
     item.id = 0;
