@@ -2,7 +2,8 @@ import { Directive, DoCheck, ElementRef, OnDestroy, Renderer2 } from '@angular/c
 import { AbstractControl, FormControl, NgControl } from '@angular/forms';
 
 // The marks every reactive form shows, written once. It sits on every control of a form (formControlName) and:
-//  - marks the group of the field (the nearest ".form-group") with "is-required" while the control is required and editable,
+//  - marks the group of the field (the nearest ".form-group") with the attribute data-required while the control is required and
+//    editable (an attribute, because some groups rebuild their class with an interpolation and would lose a class),
 //    so the label gets its "*" from the stylesheet (styles.css), which is the only place that says how it looks;
 //  - shows, under the control, why its value is not valid, once the person has touched or changed it.
 // A control opts out with the attribute data-no-hints (the sign-in screen has no labels and says nothing until you submit).
@@ -34,7 +35,7 @@ export class FieldHintsDirective implements DoCheck, OnDestroy {
     this.required = required;
     const group = (this.element.nativeElement as HTMLElement).closest('.form-group');
     if (!group) { return; }
-    if (required) { this.renderer.addClass(group, 'is-required'); } else { this.renderer.removeClass(group, 'is-required'); }
+    if (required) { this.renderer.setAttribute(group, 'data-required', ''); } else { this.renderer.removeAttribute(group, 'data-required'); }
   }
 
   private showMessage(control: AbstractControl) {
