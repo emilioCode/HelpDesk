@@ -2,8 +2,7 @@ import { Directive, DoCheck, ElementRef, OnDestroy, Renderer2 } from '@angular/c
 import { AbstractControl, FormControl, NgControl } from '@angular/forms';
 
 // The marks every reactive form shows, written once. It sits on every control of a form (formControlName) and:
-//  - marks the group of the field (the nearest ".form-group") with the attribute data-required while the control is required and
-//    editable (an attribute, because some groups rebuild their class with an interpolation and would lose a class),
+//  - marks the label of the field (in its ".form-group") with the attribute data-required while the control is required and editable,
 //    so the label gets its "*" from the stylesheet (styles.css), which is the only place that says how it looks;
 //  - shows, under the control, why its value is not valid, once the person has touched or changed it.
 // A control opts out with the attribute data-no-hints (the sign-in screen has no labels and says nothing until you submit).
@@ -13,7 +12,6 @@ import { AbstractControl, FormControl, NgControl } from '@angular/forms';
 export class FieldHintsDirective implements DoCheck, OnDestroy {
   private message: HTMLElement = null;
   private shown = '';
-  private required: boolean = null;
 
   constructor(private control: NgControl, private element: ElementRef, private renderer: Renderer2) { }
 
@@ -31,11 +29,11 @@ export class FieldHintsDirective implements DoCheck, OnDestroy {
   private markRequired(control: AbstractControl) {
     const failsWhenEmpty = control.validator ? control.validator(new FormControl('')) : null;
     const required = !!(failsWhenEmpty && failsWhenEmpty.required) && control.enabled;
-    if (required === this.required) { return; }
-    this.required = required;
+    // The mark is on the label of the group (which nothing else rewrites) and is checked on every pass, so it cannot be lost.
     const group = (this.element.nativeElement as HTMLElement).closest('.form-group');
-    if (!group) { return; }
-    if (required) { this.renderer.setAttribute(group, 'data-required', ''); } else { this.renderer.removeAttribute(group, 'data-required'); }
+    const label = group ? group.querySelector(':scope > label') : null;
+    if (!label || label.hasAttribute('data-required') === required) { return; }
+    if (required) { this.renderer.setAttribute(label, 'data-required', ''); } else { this.renderer.removeAttribute(label, 'data-required'); }
   }
 
   private showMessage(control: AbstractControl) {
