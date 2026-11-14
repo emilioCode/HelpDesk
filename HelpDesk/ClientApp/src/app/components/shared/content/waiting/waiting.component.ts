@@ -95,7 +95,15 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
     this.applyDisabled();
   }
 
+  private lastModel = new Map<FormGroup, any>();
+
   private mirror(form: FormGroup, model: any){
+    if(this.lastModel.get(form) !== model){
+      // Another object (another ticket, a new customer...): the form starts clean, with no messages left from the one before.
+      this.lastModel.set(form, model);
+      form.markAsPristine();
+      form.markAsUntouched();
+    }
     Object.keys(form.controls).forEach(name => {
       const control = form.get(name);
       const value = model && model[name] !== undefined ? model[name] : null;

@@ -1,1 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Marks of the forms (see FieldHintsDirective): the "*" of a required field and the message of an invalid one. */
+.form-group.is-required > label::after { content: " *"; color: #dd4b39; }
+.field-error { display: block; margin-top: 3px; color: #dd4b39; }

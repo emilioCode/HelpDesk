@@ -13,8 +13,16 @@ export class MirroredForm {
     });
   }
 
+  private last: any;
+
   sync() {
     const source = this.model();
+    if (source !== this.last) {
+      // Another object: the form starts clean, with no messages left from the one before.
+      this.last = source;
+      this.group.markAsPristine();
+      this.group.markAsUntouched();
+    }
     Object.keys(this.group.controls).forEach(name => {
       const control = this.group.get(name);
       const value = source && source[name] !== undefined ? source[name] : null;

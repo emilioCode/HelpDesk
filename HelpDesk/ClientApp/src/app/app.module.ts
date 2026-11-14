@@ -27,6 +27,7 @@ import { ProfileComponent } from './components/shared/content/profile/profile.co
 import { FilterPipe } from './pipes/filter.pipe';
 import { CostumerComponent } from './components/shared/content/costumer/costumer.component';
 import { ReportComponent } from './components/shared/content/report/report.component';
+import { FieldHintsDirective } from './components/shared/field-hints.directive';
 import { WaitingComponent } from './components/shared/content/waiting/waiting.component';
 import { TicketTimelineComponent } from './components/shared/content/ticket-shared/ticket-timeline.component';
 import { TicketPartsComponent } from './components/shared/content/ticket-shared/ticket-parts.component';
@@ -54,6 +55,7 @@ import { CalendarComponent } from './components/shared/content/calendar/calendar
     CostumerComponent,
     ReportComponent,
     WaitingComponent,
+    FieldHintsDirective,
     TicketTimelineComponent,
     TicketPartsComponent,
     TicketItemDialogsComponent,
