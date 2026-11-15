@@ -24,4 +24,9 @@
     <ProjectReference Include="..\HelpDesk\HelpDesk.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- What every mapping must answer (see MappingGoldenTests) -->
+    <None Update="Mappings\Golden\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

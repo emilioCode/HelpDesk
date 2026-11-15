@@ -1,0 +1,58 @@
+[
+  {
+    "input": {
+      "IdEmpresa": 17,
+      "IdSolicitud": 18,
+      "IdUsuario": 19,
+      "Texto": "Texto-text",
+      "Fecha": "2026-03-04T05:06:07",
+      "Hora": "01:02:03",
+      "Favorito": true,
+      "Etiquetado": true,
+      "Id": 16,
+      "Habilitado": true
+    },
+    "output": {
+      "Id": 16,
+      "IdEmpresa": 17,
+      "IdSolicitud": 18,
+      "IdUsuario": 19,
+      "Texto": "Texto-text",
+      "Fecha": "2026-03-04T05:06:07",
+      "Hora": "01:02:03",
+      "Favorito": true,
+      "Etiquetado": true,
+      "Habilitado": true
+    }
+  },
+  {
+    "input": {
+      "IdEmpresa": 0,
+      "IdSolicitud": 0,
+      "IdUsuario": 0,
+      "Texto": null,
+      "Fecha": "0001-01-01T00:00:00",
+      "Hora": "00:00:00",
+      "Favorito": null,
+      "Etiquetado": null,
+      "Id": 0,
+      "Habilitado": null
+    },
+    "output": {
+      "Id": 0,
+      "IdEmpresa": 0,
+      "IdSolicitud": 0,
+      "IdUsuario": 0,
+      "Texto": null,
+      "Fecha": "0001-01-01T00:00:00",
+      "Hora": "00:00:00",
+      "Favorito": null,
+      "Etiquetado": null,
+      "Habilitado": null
+    }
+  },
+  {
+    "input": null,
+    "output": null
+  }
+]
