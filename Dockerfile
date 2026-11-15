@@ -9,7 +9,7 @@ COPY HelpDesk/ClientApp/ ./
 RUN npm run build -- --output-hashing=all
 
 # 2) .NET restore and build
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY HelpDesk.sln ./
 COPY HelpDesk/HelpDesk.csproj HelpDesk/
@@ -31,7 +31,7 @@ FROM build AS publish
 RUN dotnet publish HelpDesk/HelpDesk.csproj -c Release --no-restore -o /app/publish -p:SkipSpaBuild=true
 
 # 5) Runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 RUN useradd --system --no-create-home --uid 10001 helpdesk
 COPY --from=publish /app/publish ./
