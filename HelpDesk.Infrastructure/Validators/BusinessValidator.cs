@@ -22,7 +22,7 @@ namespace HelpDesk.Infrastructure.Validators
 
             RuleFor(x => x.Correo)
                 .MaximumLength(50)
-                .EmailAddress(FluentValidation.Validators.EmailValidationMode.AspNetCoreCompatible);
+                .EmailAddress();
 
             RuleFor(x => x.Contrasena)
                 .MaximumLength(30);

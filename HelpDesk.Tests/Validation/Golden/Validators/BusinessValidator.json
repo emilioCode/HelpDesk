@@ -68,7 +68,7 @@
       {
         "PropertyName": "Correo",
         "ErrorMessage": "'Correo' is not a valid email address.",
-        "ErrorCode": "AspNetCoreCompatibleEmailValidator"
+        "ErrorCode": "EmailValidator"
       },
       {
         "PropertyName": "Contrasena",
@@ -114,7 +114,7 @@
       {
         "PropertyName": "Correo",
         "ErrorMessage": "'Correo' is not a valid email address.",
-        "ErrorCode": "AspNetCoreCompatibleEmailValidator"
+        "ErrorCode": "EmailValidator"
       },
       {
         "PropertyName": "Secuenciaticket",
@@ -135,7 +135,7 @@
       {
         "PropertyName": "Correo",
         "ErrorMessage": "'Correo' is not a valid email address.",
-        "ErrorCode": "AspNetCoreCompatibleEmailValidator"
+        "ErrorCode": "EmailValidator"
       },
       {
         "PropertyName": "Secuenciaticket",
@@ -183,7 +183,7 @@
       {
         "PropertyName": "Correo",
         "ErrorMessage": "'Correo' is not a valid email address.",
-        "ErrorCode": "AspNetCoreCompatibleEmailValidator"
+        "ErrorCode": "EmailValidator"
       },
       {
         "PropertyName": "NoAutorizacion",

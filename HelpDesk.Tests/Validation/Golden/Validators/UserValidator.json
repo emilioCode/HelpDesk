@@ -92,7 +92,7 @@
       {
         "PropertyName": "Correo",
         "ErrorMessage": "'Correo' is not a valid email address.",
-        "ErrorCode": "AspNetCoreCompatibleEmailValidator"
+        "ErrorCode": "EmailValidator"
       }
     ]
   },
@@ -128,7 +128,7 @@
       {
         "PropertyName": "Correo",
         "ErrorMessage": "'Correo' is not a valid email address.",
-        "ErrorCode": "AspNetCoreCompatibleEmailValidator"
+        "ErrorCode": "EmailValidator"
       }
     ]
   },
@@ -159,7 +159,7 @@
       {
         "PropertyName": "Correo",
         "ErrorMessage": "'Correo' is not a valid email address.",
-        "ErrorCode": "AspNetCoreCompatibleEmailValidator"
+        "ErrorCode": "EmailValidator"
       }
     ]
   },
@@ -192,7 +192,7 @@
       {
         "PropertyName": "Correo",
         "ErrorMessage": "'Correo' is not a valid email address.",
-        "ErrorCode": "AspNetCoreCompatibleEmailValidator"
+        "ErrorCode": "EmailValidator"
       }
     ]
   }
