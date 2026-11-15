@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
@@ -16,8 +16,8 @@ namespace HelpDesk.Controllers
     public class BusinessController : ControllerBase
     {
         private readonly IBusinessService _businessService;
-        private readonly IMapper _mapper;
-        public BusinessController(IBusinessService businessService, IMapper mapper)
+        private readonly IHelpDeskMapper _mapper;
+        public BusinessController(IBusinessService businessService, IHelpDeskMapper mapper)
         {
             _businessService = businessService;
             _mapper = mapper;
@@ -28,7 +28,7 @@ namespace HelpDesk.Controllers
         public async Task<IActionResult> Get(int userId)
         {
             var businesses = await _businessService.GetBusinessesByUserAccess(userId);
-            var businessDtos = _mapper.Map<IEnumerable<EmpresaDto>>(businesses);
+            var businessDtos = _mapper.Map(businesses);
             if (businessDtos != null)
             {
                 // The mail password is never sent back to the client.
@@ -41,9 +41,9 @@ namespace HelpDesk.Controllers
         [HttpPost("{userId}")]
         public async Task<IActionResult> Post(int userId, [FromBody] EmpresaDto businessDto)
         {
-            var business = _mapper.Map<Empresa>(businessDto);
+            var business = _mapper.Map(businessDto);
             business = await _businessService.CreateBusinness(userId, business);
-            var created = _mapper.Map<EmpresaDto>(business);
+            var created = _mapper.Map(business);
             if (created != null) created.Contrasena = null;
             var response = ObjectResponse.Saved(Messages.Saved, created);
             return Ok(response);
@@ -54,7 +54,7 @@ namespace HelpDesk.Controllers
         [HttpPost("[action]/{userId}")]
         public async Task<IActionResult> Put(int userId, [FromBody] EmpresaDto businessDto)
         {
-            var business = _mapper.Map<Empresa>(businessDto);
+            var business = _mapper.Map(businessDto);
             var result = await _businessService.UpdateBusiness(userId, business);
             var response = ObjectResponse.Saved(Messages.Updated, result);
             return Ok(response);

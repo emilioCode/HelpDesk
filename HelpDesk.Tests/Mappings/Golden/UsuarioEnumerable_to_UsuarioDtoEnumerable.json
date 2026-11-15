@@ -1,0 +1,64 @@
+[
+  {
+    "input": [
+      {
+        "Nombre": "Nombre-text",
+        "NumDocumento": "NumDocumento-text",
+        "CuentaUsuario": "CuentaUsuario-text",
+        "Contrasena": "Contrasena-text",
+        "Acceso": "Acceso-text",
+        "Correo": "Correo-text",
+        "IdEmpresa": 17,
+        "Image": "AQIS",
+        "Id": 16,
+        "Habilitado": true
+      },
+      {
+        "Nombre": null,
+        "NumDocumento": null,
+        "CuentaUsuario": null,
+        "Contrasena": null,
+        "Acceso": null,
+        "Correo": null,
+        "IdEmpresa": 0,
+        "Image": null,
+        "Id": 0,
+        "Habilitado": null
+      }
+    ],
+    "output": [
+      {
+        "Id": 16,
+        "Nombre": "Nombre-text",
+        "NumDocumento": "NumDocumento-text",
+        "CuentaUsuario": "CuentaUsuario-text",
+        "Contrasena": "Contrasena-text",
+        "Acceso": "Acceso-text",
+        "Correo": "Correo-text",
+        "IdEmpresa": 17,
+        "Image": "AQIS",
+        "Habilitado": true
+      },
+      {
+        "Id": 0,
+        "Nombre": null,
+        "NumDocumento": null,
+        "CuentaUsuario": null,
+        "Contrasena": null,
+        "Acceso": null,
+        "Correo": null,
+        "IdEmpresa": null,
+        "Image": null,
+        "Habilitado": null
+      }
+    ]
+  },
+  {
+    "input": [],
+    "output": []
+  },
+  {
+    "input": null,
+    "output": []
+  }
+]

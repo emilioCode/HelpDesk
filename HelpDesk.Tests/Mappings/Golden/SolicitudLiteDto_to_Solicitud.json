@@ -1,0 +1,58 @@
+[
+  {
+    "input": {
+      "TipoSolicitud": "TipoSolicitud-text",
+      "FechaInicio": "2026-03-04T05:06:07",
+      "FechaTermino": "2026-03-04T05:06:07",
+      "IdEmpresa": 13
+    },
+    "output": {
+      "NoSecuencia": null,
+      "FechaCreacion": "0001-01-01T00:00:00",
+      "FechaInicio": "2026-03-04T05:06:07",
+      "HoraInicio": null,
+      "FechaTermino": "2026-03-04T05:06:07",
+      "HoraTermino": null,
+      "IdUsuario": 0,
+      "IdCliente": 0,
+      "TipoSolicitud": "TipoSolicitud-text",
+      "TipoServicio": null,
+      "Estado": null,
+      "IdEmpresa": 13,
+      "Descripcion": null,
+      "AprobadoPor": null,
+      "Id": 0,
+      "Habilitado": null
+    }
+  },
+  {
+    "input": {
+      "TipoSolicitud": null,
+      "FechaInicio": null,
+      "FechaTermino": null,
+      "IdEmpresa": 0
+    },
+    "output": {
+      "NoSecuencia": null,
+      "FechaCreacion": "0001-01-01T00:00:00",
+      "FechaInicio": null,
+      "HoraInicio": null,
+      "FechaTermino": null,
+      "HoraTermino": null,
+      "IdUsuario": 0,
+      "IdCliente": 0,
+      "TipoSolicitud": null,
+      "TipoServicio": null,
+      "Estado": null,
+      "IdEmpresa": 0,
+      "Descripcion": null,
+      "AprobadoPor": null,
+      "Id": 0,
+      "Habilitado": null
+    }
+  },
+  {
+    "input": null,
+    "output": null
+  }
+]

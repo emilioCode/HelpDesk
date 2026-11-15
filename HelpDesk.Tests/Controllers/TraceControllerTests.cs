@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using HelpDesk.Controllers;
 using HelpDesk.Core.CustomEntities;
 using HelpDesk.Core.DTOs;
@@ -16,14 +16,14 @@ namespace HelpDesk.Tests.Controllers
     public class TraceControllerTests
     {
         private readonly Mock<ITraceService> _traceServiceMock;
-        private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IHelpDeskMapper> _mapperMock;
 
         private readonly TraceController _traceController;
 
         public TraceControllerTests()
         {
             _traceServiceMock = new Mock<ITraceService>();
-            _mapperMock = new Mock<IMapper>();
+            _mapperMock = new Mock<IHelpDeskMapper>();
 
             _traceController = new TraceController(_traceServiceMock.Object, _mapperMock.Object);
         }
@@ -55,11 +55,11 @@ namespace HelpDesk.Tests.Controllers
             var traceDto = new SeguimientoDto();
             var trace = new Seguimiento();
             // Act
-            _mapperMock.Setup(x => x.Map<Seguimiento>(traceDto))
+            _mapperMock.Setup(x => x.Map(traceDto))
                 .Returns(trace);
             _traceServiceMock.Setup(service => service.AddTrace(trace))
                 .ReturnsAsync(trace);
-            _mapperMock.Setup(x => x.Map<SeguimientoDto>(trace))
+            _mapperMock.Setup(x => x.Map(trace))
                 .Returns(traceDto);
             var result = await _traceController.Post(traceDto) as OkObjectResult;
             var response = result.Value as ObjectResponse;
@@ -76,11 +76,11 @@ namespace HelpDesk.Tests.Controllers
             var traceDto = new SeguimientoDto();
             var trace = new Seguimiento();
             // Act
-            _mapperMock.Setup(x => x.Map<Seguimiento>(traceDto))
+            _mapperMock.Setup(x => x.Map(traceDto))
                 .Returns(trace);
             _traceServiceMock.Setup(service => service.UpdateTrace(trace))
                 .ReturnsAsync(trace);
-            _mapperMock.Setup(x => x.Map<SeguimientoDto>(trace))
+            _mapperMock.Setup(x => x.Map(trace))
                 .Returns(traceDto);
             var result = await _traceController.Put(traceDto) as OkObjectResult;
             var response = result.Value as ObjectResponse;

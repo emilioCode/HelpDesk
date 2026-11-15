@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using HelpDesk.Controllers;
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
@@ -15,12 +15,12 @@ namespace HelpDesk.Tests.Controllers
     public class PartControllerTests
     {
         private readonly Mock<IPieceService> _pieceServiceMock;
-        private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IHelpDeskMapper> _mapperMock;
 
         private readonly PartController _partController;
         public PartControllerTests()
         {
-            _mapperMock = new Mock<IMapper>();
+            _mapperMock = new Mock<IHelpDeskMapper>();
             _pieceServiceMock = new Mock<IPieceService>();
 
             _partController = new PartController(_pieceServiceMock.Object, _mapperMock.Object);
@@ -37,7 +37,7 @@ namespace HelpDesk.Tests.Controllers
             // Act
             _pieceServiceMock.Setup(service => service.GetPieces(ticketId, businessId))
                 .Returns(parts);
-            _mapperMock.Setup(x => x.Map<IEnumerable<PiezasDto>>(parts))
+            _mapperMock.Setup(x => x.Map(parts))
                 .Returns(partsDto);
             var result = _partController.Get(ticketId, businessId) as OkObjectResult;
             // Assert
@@ -53,11 +53,11 @@ namespace HelpDesk.Tests.Controllers
             var pieceDto = new PiezasDto();
             var piece = new Piezas();
             //Act
-            _mapperMock.Setup(x => x.Map<Piezas>(pieceDto))
+            _mapperMock.Setup(x => x.Map(pieceDto))
                 .Returns(piece);
             _pieceServiceMock.Setup(service => service.AddPiece(piece))
                 .ReturnsAsync(piece);
-            _mapperMock.Setup(x => x.Map<PiezasDto>(piece))
+            _mapperMock.Setup(x => x.Map(piece))
                 .Returns(pieceDto);
             var result = await _partController.Post(pieceDto) as OkObjectResult;
             var response = result.Value as ObjectResponse;
@@ -74,11 +74,11 @@ namespace HelpDesk.Tests.Controllers
             var pieceDto = new PiezasDto();
             var piece = new Piezas();
             //Act
-            _mapperMock.Setup(x => x.Map<Piezas>(pieceDto))
+            _mapperMock.Setup(x => x.Map(pieceDto))
                 .Returns(piece);
             _pieceServiceMock.Setup(service => service.UpdatePiece(piece))
                 .ReturnsAsync(piece);
-            _mapperMock.Setup(x => x.Map<PiezasDto>(piece))
+            _mapperMock.Setup(x => x.Map(piece))
                 .Returns(pieceDto);
             var result = await _partController.Put(pieceDto) as OkObjectResult;
             var response = result.Value as ObjectResponse;

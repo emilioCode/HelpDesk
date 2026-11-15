@@ -1,4 +1,4 @@
-using AutoMapper;
+
 using FluentValidation.AspNetCore;
 using HelpDesk.Infrastructure.Extensions;
 using HelpDesk.Infrastructure.Filters;
@@ -44,7 +44,6 @@ namespace HelpDesk
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {     
-            services.AddAutoMapper(ScannableAssemblies());
             services.AddDbContexts(Configuration);
             services.AddSecurityServices(Configuration);
             services.AddHelpDeskAuthentication(Configuration);

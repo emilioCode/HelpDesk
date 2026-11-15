@@ -1,0 +1,82 @@
+[
+  {
+    "input": {
+      "Id": 20,
+      "NoSecuencia": "NoSecuencia-text",
+      "FechaCreacion": "2026-03-04T05:06:07",
+      "FechaInicio": "2026-03-04T05:06:07",
+      "HoraInicio": "01:02:03",
+      "FechaTermino": "2026-03-04T05:06:07",
+      "HoraTermino": "01:02:03",
+      "IdUsuario": 23,
+      "IdCliente": 21,
+      "TipoSolicitud": "TipoSolicitud-text",
+      "TipoServicio": "TipoServicio-text",
+      "Estado": "Estado-text",
+      "IdEmpresa": 22,
+      "Descripcion": "Descripcion-text",
+      "AprobadoPor": 11,
+      "Habilitado": true
+    },
+    "output": {
+      "NoSecuencia": "NoSecuencia-text",
+      "FechaCreacion": "2026-03-04T05:06:07",
+      "FechaInicio": "2026-03-04T05:06:07",
+      "HoraInicio": "01:02:03",
+      "FechaTermino": "2026-03-04T05:06:07",
+      "HoraTermino": "01:02:03",
+      "IdUsuario": 23,
+      "IdCliente": 21,
+      "TipoSolicitud": "TipoSolicitud-text",
+      "TipoServicio": "TipoServicio-text",
+      "Estado": "Estado-text",
+      "IdEmpresa": 22,
+      "Descripcion": "Descripcion-text",
+      "AprobadoPor": 11,
+      "Id": 20,
+      "Habilitado": true
+    }
+  },
+  {
+    "input": {
+      "Id": 0,
+      "NoSecuencia": null,
+      "FechaCreacion": "0001-01-01T00:00:00",
+      "FechaInicio": null,
+      "HoraInicio": null,
+      "FechaTermino": null,
+      "HoraTermino": null,
+      "IdUsuario": 0,
+      "IdCliente": 0,
+      "TipoSolicitud": null,
+      "TipoServicio": null,
+      "Estado": null,
+      "IdEmpresa": 0,
+      "Descripcion": null,
+      "AprobadoPor": null,
+      "Habilitado": null
+    },
+    "output": {
+      "NoSecuencia": null,
+      "FechaCreacion": "0001-01-01T00:00:00",
+      "FechaInicio": null,
+      "HoraInicio": null,
+      "FechaTermino": null,
+      "HoraTermino": null,
+      "IdUsuario": 0,
+      "IdCliente": 0,
+      "TipoSolicitud": null,
+      "TipoServicio": null,
+      "Estado": null,
+      "IdEmpresa": 0,
+      "Descripcion": null,
+      "AprobadoPor": null,
+      "Id": 0,
+      "Habilitado": null
+    }
+  },
+  {
+    "input": null,
+    "output": null
+  }
+]
