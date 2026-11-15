@@ -68,6 +68,9 @@ namespace HelpDesk.Tests.Integration
             builder.ConfigureTestServices(services =>
             {
                 services.RemoveAll<DbContextOptions<HelpDeskDBContext>>();
+                // From EF Core 9 the options of a context are also kept as a configuration object; without removing it too,
+                // the SQL Server provider stays registered next to the in-memory one.
+                services.RemoveAll<Microsoft.EntityFrameworkCore.Infrastructure.IDbContextOptionsConfiguration<HelpDeskDBContext>>();
                 services.RemoveAll<HelpDeskDBContext>();
                 services.AddDbContext<HelpDeskDBContext>(options => options.UseInMemoryDatabase(_databaseName));
                 services.RemoveAll<IMailService>();
