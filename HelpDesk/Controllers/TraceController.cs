@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
@@ -14,8 +14,8 @@ namespace HelpDesk.Controllers
     public class TraceController : ControllerBase
     {
         private readonly ITraceService _traceService;
-        private readonly IMapper _mapper;
-        public TraceController(ITraceService traceService, IMapper mapper)
+        private readonly IHelpDeskMapper _mapper;
+        public TraceController(ITraceService traceService, IHelpDeskMapper mapper)
         {
             _traceService = traceService;   
             _mapper = mapper;
@@ -32,9 +32,9 @@ namespace HelpDesk.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SeguimientoDto traceDto)
         {
-            var trace = _mapper.Map<Seguimiento>(traceDto);
+            var trace = _mapper.Map(traceDto);
             trace = await _traceService.AddTrace(trace);
-            traceDto = _mapper.Map<SeguimientoDto>(trace);
+            traceDto = _mapper.Map(trace);
             var response = ObjectResponse.Saved(Messages.Saved, traceDto);
             return Ok(response);
         }
@@ -43,9 +43,9 @@ namespace HelpDesk.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Put([FromBody] SeguimientoDto traceDto)
         {
-            var trace = _mapper.Map<Seguimiento>(traceDto);
+            var trace = _mapper.Map(traceDto);
             trace = await _traceService.UpdateTrace(trace);
-            traceDto = _mapper.Map<SeguimientoDto>(trace);
+            traceDto = _mapper.Map(trace);
             var response = ObjectResponse.Saved(Messages.Updated, traceDto);
             return Ok(response);
         }

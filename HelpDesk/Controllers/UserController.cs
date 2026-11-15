@@ -1,4 +1,3 @@
-using AutoMapper;
 using HelpDesk.Core.Constants;
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
@@ -18,9 +17,9 @@ namespace HelpDesk.Controllers
     public class UserController : ControllerBase
     {
         public readonly IUserService _userService;
-        private readonly IMapper _mapper;
+        private readonly IHelpDeskMapper _mapper;
         private readonly IHubContext<hub> _hub;
-        public UserController(IUserService userService, IMapper mapper, IHubContext<hub> hub)
+        public UserController(IUserService userService, IHelpDeskMapper mapper, IHubContext<hub> hub)
         {
             _userService = userService;
             _hub = hub;
@@ -32,7 +31,7 @@ namespace HelpDesk.Controllers
         public async Task<IActionResult> Get(int idUser,string option = "unique")
         {
             var users = await _userService.GetUsersByIdAndCondition(idUser, option);
-            var userDtos = _mapper.Map<IEnumerable<UsuarioDto>>(users);
+            var userDtos = _mapper.Map(users);
             if (userDtos != null)
             {
                 foreach (var userDto in userDtos) userDto.Contrasena = null;
@@ -44,7 +43,7 @@ namespace HelpDesk.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] UsuarioDto usuarioDto)
         {
-            var user = _mapper.Map<Usuario>(usuarioDto);
+            var user = _mapper.Map(usuarioDto);
             user = await _userService.InsertUSer(user);
             var response = ObjectResponse.Saved(Messages.Saved, WithoutPassword(user));
             return Ok(response);
@@ -54,7 +53,7 @@ namespace HelpDesk.Controllers
         [HttpPost("[action]/{idUserReq}")]
         public async Task<IActionResult> Put(int idUserReq, [FromBody] UsuarioDto usuarioDto)
         {
-            var user = _mapper.Map<Usuario>(usuarioDto);
+            var user = _mapper.Map(usuarioDto);
             var before = await _userService.GetActiveIdentityAsync(user.Id);
             var result = await _userService.UpdateUSer(user, idUserReq);
             await NotifyIfAccessChanged(before, user.Id);
@@ -78,7 +77,7 @@ namespace HelpDesk.Controllers
         // Passwords, hashed or not, are never sent back to the client.
         private UsuarioDto WithoutPassword(Usuario user)
         {
-            var dto = _mapper.Map<UsuarioDto>(user);
+            var dto = _mapper.Map(user);
             if (dto != null) dto.Contrasena = null;
             return dto;
         }

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using HelpDesk.Controllers;
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
@@ -15,13 +15,13 @@ namespace HelpDesk.Tests.Controllers
     public class CostumerControllerTests
     {
         private readonly Mock<ICustomerService> _customerServiceMock;
-        private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IHelpDeskMapper> _mapperMock;
 
         private readonly CostumerController _customerController;
         public CostumerControllerTests()
         {
             _customerServiceMock = new Mock<ICustomerService> ();
-            _mapperMock = new Mock<IMapper> ();
+            _mapperMock = new Mock<IHelpDeskMapper> ();
 
             _customerController = new CostumerController(_customerServiceMock.Object, _mapperMock.Object);
         }
@@ -37,7 +37,7 @@ namespace HelpDesk.Tests.Controllers
             // Act
             _customerServiceMock.Setup(service => service.GetCustomersByIdAndCondition(idUserOridClient, option))
                 .ReturnsAsync(customers);
-            _mapperMock.Setup(x => x.Map<IEnumerable<ClienteDto>>(customers))
+            _mapperMock.Setup(x => x.Map(customers))
                 .Returns(customersDto);
             var result = await _customerController.Get(idUserOridClient, option) as OkObjectResult;
             // Assert
@@ -53,7 +53,7 @@ namespace HelpDesk.Tests.Controllers
             var customerDto = new ClienteDto();
             var customer = new Cliente();
             // Act
-            _mapperMock.Setup(x => x.Map<Cliente>(customerDto))
+            _mapperMock.Setup(x => x.Map(customerDto))
                 .Returns(() => customer);
             _customerServiceMock.Setup(service => service.CreateCustomer(customer))
                 .ReturnsAsync(customer);
@@ -74,7 +74,7 @@ namespace HelpDesk.Tests.Controllers
             var customerDto = new ClienteDto();
             var customer = new Cliente();
             // Act
-            _mapperMock.Setup(x => x.Map<Cliente>(customerDto))
+            _mapperMock.Setup(x => x.Map(customerDto))
                 .Returns(customer);
             _customerServiceMock.Setup(service => service.UpdateCustomer(customer, userCreatorId))
                 .ReturnsAsync(true);

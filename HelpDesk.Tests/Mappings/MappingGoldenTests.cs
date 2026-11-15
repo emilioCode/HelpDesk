@@ -1,4 +1,4 @@
-using AutoMapper;
+using HelpDesk.Core.Interfaces;
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
 using HelpDesk.Infrastructure.Mappings;
@@ -21,12 +21,12 @@ namespace HelpDesk.Tests.Mappings
     [TestFixture]
     public class MappingGoldenTests
     {
-        private IMapper _mapper;
+        private IHelpDeskMapper _mapper;
 
         [OneTimeSetUp]
         public void SetUp()
         {
-            _mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutomapperProfile>()).CreateMapper();
+            _mapper = new HelpDeskMapper();
         }
 
         private static readonly JsonSerializerSettings Json = new JsonSerializerSettings
@@ -74,31 +74,31 @@ namespace HelpDesk.Tests.Mappings
 
         private IEnumerable<(string Name, Func<object, object> Map, List<object> Inputs)> Cases()
         {
-            yield return ("EquipoDto_to_Equipo", x => _mapper.Map<Equipo>((EquipoDto)x), new List<object> { Full<EquipoDto>(), Empty<EquipoDto>(), null });
-            yield return ("Equipo_to_EquipoDto", x => _mapper.Map<EquipoDto>((Equipo)x), new List<object> { Full<Equipo>(), Empty<Equipo>(), null });
-            yield return ("EquipoDtoList_to_EquipoList", x => _mapper.Map<List<Equipo>>((List<EquipoDto>)x), Lists<EquipoDto>());
-            yield return ("EquipoEnumerable_to_EquipoDtoEnumerable", x => _mapper.Map<IEnumerable<EquipoDto>>((IEnumerable<Equipo>)x), Lists<Equipo>());
+            yield return ("EquipoDto_to_Equipo", x => _mapper.Map((EquipoDto)x), new List<object> { Full<EquipoDto>(), Empty<EquipoDto>(), null });
+            yield return ("Equipo_to_EquipoDto", x => _mapper.Map((Equipo)x), new List<object> { Full<Equipo>(), Empty<Equipo>(), null });
+            yield return ("EquipoDtoList_to_EquipoList", x => _mapper.Map((List<EquipoDto>)x), Lists<EquipoDto>());
+            yield return ("EquipoEnumerable_to_EquipoDtoEnumerable", x => _mapper.Map((IEnumerable<Equipo>)x), Lists<Equipo>());
 
-            yield return ("UsuarioDto_to_Usuario", x => _mapper.Map<Usuario>((UsuarioDto)x), new List<object> { Full<UsuarioDto>(), Empty<UsuarioDto>(), With(Full<UsuarioDto>(), "IdEmpresa", 0), With(Full<UsuarioDto>(), "Image", null), null });
-            yield return ("Usuario_to_UsuarioDto", x => _mapper.Map<UsuarioDto>((Usuario)x), new List<object> { Full<Usuario>(), Empty<Usuario>(), With(Full<Usuario>(), "IdEmpresa", 0), With(Full<Usuario>(), "Image", null), null });
-            yield return ("UsuarioEnumerable_to_UsuarioDtoEnumerable", x => _mapper.Map<IEnumerable<UsuarioDto>>((IEnumerable<Usuario>)x), Lists<Usuario>());
+            yield return ("UsuarioDto_to_Usuario", x => _mapper.Map((UsuarioDto)x), new List<object> { Full<UsuarioDto>(), Empty<UsuarioDto>(), With(Full<UsuarioDto>(), "IdEmpresa", 0), With(Full<UsuarioDto>(), "Image", null), null });
+            yield return ("Usuario_to_UsuarioDto", x => _mapper.Map((Usuario)x), new List<object> { Full<Usuario>(), Empty<Usuario>(), With(Full<Usuario>(), "IdEmpresa", 0), With(Full<Usuario>(), "Image", null), null });
+            yield return ("UsuarioEnumerable_to_UsuarioDtoEnumerable", x => _mapper.Map((IEnumerable<Usuario>)x), Lists<Usuario>());
 
-            yield return ("SeguimientoDto_to_Seguimiento", x => _mapper.Map<Seguimiento>((SeguimientoDto)x), new List<object> { Full<SeguimientoDto>(), Empty<SeguimientoDto>(), null });
-            yield return ("Seguimiento_to_SeguimientoDto", x => _mapper.Map<SeguimientoDto>((Seguimiento)x), new List<object> { Full<Seguimiento>(), Empty<Seguimiento>(), null });
+            yield return ("SeguimientoDto_to_Seguimiento", x => _mapper.Map((SeguimientoDto)x), new List<object> { Full<SeguimientoDto>(), Empty<SeguimientoDto>(), null });
+            yield return ("Seguimiento_to_SeguimientoDto", x => _mapper.Map((Seguimiento)x), new List<object> { Full<Seguimiento>(), Empty<Seguimiento>(), null });
 
-            yield return ("ClienteDto_to_Cliente", x => _mapper.Map<Cliente>((ClienteDto)x), new List<object> { Full<ClienteDto>(), Empty<ClienteDto>(), null });
-            yield return ("ClienteEnumerable_to_ClienteDtoEnumerable", x => _mapper.Map<IEnumerable<ClienteDto>>((IEnumerable<Cliente>)x), Lists<Cliente>());
+            yield return ("ClienteDto_to_Cliente", x => _mapper.Map((ClienteDto)x), new List<object> { Full<ClienteDto>(), Empty<ClienteDto>(), null });
+            yield return ("ClienteEnumerable_to_ClienteDtoEnumerable", x => _mapper.Map((IEnumerable<Cliente>)x), Lists<Cliente>());
 
-            yield return ("EmpresaDto_to_Empresa", x => _mapper.Map<Empresa>((EmpresaDto)x), new List<object> { Full<EmpresaDto>(), Empty<EmpresaDto>(), With(Full<EmpresaDto>(), "Image", null), null });
-            yield return ("Empresa_to_EmpresaDto", x => _mapper.Map<EmpresaDto>((Empresa)x), new List<object> { Full<Empresa>(), Empty<Empresa>(), With(Full<Empresa>(), "Image", null), null });
-            yield return ("EmpresaEnumerable_to_EmpresaDtoEnumerable", x => _mapper.Map<IEnumerable<EmpresaDto>>((IEnumerable<Empresa>)x), Lists<Empresa>());
+            yield return ("EmpresaDto_to_Empresa", x => _mapper.Map((EmpresaDto)x), new List<object> { Full<EmpresaDto>(), Empty<EmpresaDto>(), With(Full<EmpresaDto>(), "Image", null), null });
+            yield return ("Empresa_to_EmpresaDto", x => _mapper.Map((Empresa)x), new List<object> { Full<Empresa>(), Empty<Empresa>(), With(Full<Empresa>(), "Image", null), null });
+            yield return ("EmpresaEnumerable_to_EmpresaDtoEnumerable", x => _mapper.Map((IEnumerable<Empresa>)x), Lists<Empresa>());
 
-            yield return ("SolicitudDto_to_Solicitud", x => _mapper.Map<Solicitud>((SolicitudDto)x), new List<object> { Full<SolicitudDto>(), Empty<SolicitudDto>(), null });
-            yield return ("SolicitudLiteDto_to_Solicitud", x => _mapper.Map<Solicitud>((SolicitudLiteDto)x), new List<object> { Full<SolicitudLiteDto>(), Empty<SolicitudLiteDto>(), null });
+            yield return ("SolicitudDto_to_Solicitud", x => _mapper.Map((SolicitudDto)x), new List<object> { Full<SolicitudDto>(), Empty<SolicitudDto>(), null });
+            yield return ("SolicitudLiteDto_to_Solicitud", x => _mapper.Map((SolicitudLiteDto)x), new List<object> { Full<SolicitudLiteDto>(), Empty<SolicitudLiteDto>(), null });
 
-            yield return ("PiezasDto_to_Piezas", x => _mapper.Map<Piezas>((PiezasDto)x), new List<object> { Full<PiezasDto>(), Empty<PiezasDto>(), null });
-            yield return ("Piezas_to_PiezasDto", x => _mapper.Map<PiezasDto>((Piezas)x), new List<object> { Full<Piezas>(), Empty<Piezas>(), null });
-            yield return ("PiezasEnumerable_to_PiezasDtoEnumerable", x => _mapper.Map<IEnumerable<PiezasDto>>((IEnumerable<Piezas>)x), Lists<Piezas>());
+            yield return ("PiezasDto_to_Piezas", x => _mapper.Map((PiezasDto)x), new List<object> { Full<PiezasDto>(), Empty<PiezasDto>(), null });
+            yield return ("Piezas_to_PiezasDto", x => _mapper.Map((Piezas)x), new List<object> { Full<Piezas>(), Empty<Piezas>(), null });
+            yield return ("PiezasEnumerable_to_PiezasDtoEnumerable", x => _mapper.Map((IEnumerable<Piezas>)x), Lists<Piezas>());
         }
 
         // Lists of the source type: two items, none, and no list at all. They are handed over as the type each call expects.

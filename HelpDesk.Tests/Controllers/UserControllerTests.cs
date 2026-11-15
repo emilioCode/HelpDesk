@@ -1,4 +1,4 @@
-using AutoMapper;
+
 using HelpDesk.Controllers;
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
@@ -17,13 +17,13 @@ namespace HelpDesk.Tests.Controllers
     public class UserControllerTests
     {
         private readonly Mock<IUserService> _userServiceMock;
-        private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IHelpDeskMapper> _mapperMock;
 
         private readonly UserController _userController;
         public UserControllerTests()
         {
             _userServiceMock = new Mock<IUserService>();
-            _mapperMock = new Mock<IMapper>();
+            _mapperMock = new Mock<IHelpDeskMapper>();
 
             _userController = new UserController(_userServiceMock.Object, _mapperMock.Object, new Mock<IHubContext<hub>>().Object);
         }
@@ -58,7 +58,7 @@ namespace HelpDesk.Tests.Controllers
 
             _userServiceMock.Setup(x => x.GetUsersByIdAndCondition(idUser, option))
                 .ReturnsAsync(users);
-            _mapperMock.Setup(x => x.Map<IEnumerable<UsuarioDto>>(users))
+            _mapperMock.Setup(x => x.Map(users))
                 .Returns(userDtos);
 
             // Act
@@ -86,9 +86,9 @@ namespace HelpDesk.Tests.Controllers
                 data = savedDto
             };
 
-            _mapperMock.Setup(mapper => mapper.Map<Usuario>(usuarioDto))
+            _mapperMock.Setup(mapper => mapper.Map(usuarioDto))
                        .Returns(user);
-            _mapperMock.Setup(mapper => mapper.Map<UsuarioDto>(user))
+            _mapperMock.Setup(mapper => mapper.Map(user))
                        .Returns(savedDto);
 
             _userServiceMock.Setup(service => service.InsertUSer(user))
@@ -125,7 +125,7 @@ namespace HelpDesk.Tests.Controllers
                 data = true
             };
 
-            _mapperMock.Setup(mapper => mapper.Map<Usuario>(usuarioDto))
+            _mapperMock.Setup(mapper => mapper.Map(usuarioDto))
                        .Returns(user);
 
             _userServiceMock.Setup(service => service.UpdateUSer(user, idUserReq))
@@ -153,8 +153,8 @@ namespace HelpDesk.Tests.Controllers
             var usuarioDto = new UsuarioDto { Nombre = "John", Contrasena = "secret1" };
             var user = new Usuario { Nombre = "John", Contrasena = "$2a$11$hash" };
             var savedDto = new UsuarioDto { Nombre = "John", Contrasena = "$2a$11$hash" };
-            _mapperMock.Setup(mapper => mapper.Map<Usuario>(usuarioDto)).Returns(user);
-            _mapperMock.Setup(mapper => mapper.Map<UsuarioDto>(user)).Returns(savedDto);
+            _mapperMock.Setup(mapper => mapper.Map(usuarioDto)).Returns(user);
+            _mapperMock.Setup(mapper => mapper.Map(user)).Returns(savedDto);
             _userServiceMock.Setup(service => service.InsertUSer(user)).ReturnsAsync(user);
 
             // Act
@@ -172,7 +172,7 @@ namespace HelpDesk.Tests.Controllers
             var users = new List<Usuario> { new Usuario { Id = 1, Contrasena = "plain" } };
             var userDtos = new List<UsuarioDto> { new UsuarioDto { Id = 1, Contrasena = "plain" } };
             _userServiceMock.Setup(x => x.GetUsersByIdAndCondition(1, "*")).ReturnsAsync(users);
-            _mapperMock.Setup(x => x.Map<IEnumerable<UsuarioDto>>(users)).Returns(userDtos);
+            _mapperMock.Setup(x => x.Map(users)).Returns(userDtos);
 
             // Act
             var result = await _userController.Get(1, "*") as OkObjectResult;
