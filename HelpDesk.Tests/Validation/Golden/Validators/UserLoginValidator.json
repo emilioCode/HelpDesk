@@ -1,0 +1,80 @@
+[
+  {
+    "situation": "nothing_filled",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "CuentaUsuario",
+        "ErrorMessage": "'Cuenta Usuario' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "CuentaUsuario",
+        "ErrorMessage": "'Cuenta Usuario' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      },
+      {
+        "PropertyName": "Contrasena",
+        "ErrorMessage": "'Contrasena' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Contrasena",
+        "ErrorMessage": "'Contrasena' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      }
+    ]
+  },
+  {
+    "situation": "everything_filled",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "long_texts",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "blank_texts",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "CuentaUsuario",
+        "ErrorMessage": "'Cuenta Usuario' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Contrasena",
+        "ErrorMessage": "'Contrasena' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      }
+    ]
+  },
+  {
+    "situation": "empty_texts",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "CuentaUsuario",
+        "ErrorMessage": "'Cuenta Usuario' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Contrasena",
+        "ErrorMessage": "'Contrasena' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      }
+    ]
+  },
+  {
+    "situation": "zero_numbers",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "negative_numbers",
+    "valid": true,
+    "failures": []
+  }
+]

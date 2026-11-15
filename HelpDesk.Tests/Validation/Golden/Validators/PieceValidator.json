@@ -1,0 +1,88 @@
+[
+  {
+    "situation": "nothing_filled",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Descripcion",
+        "ErrorMessage": "'Descripcion' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Descripcion",
+        "ErrorMessage": "'Descripcion' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      },
+      {
+        "PropertyName": "Cantidad",
+        "ErrorMessage": "'Cantidad' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      },
+      {
+        "PropertyName": "NoSerial",
+        "ErrorMessage": "'No Serial' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      }
+    ]
+  },
+  {
+    "situation": "everything_filled",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "long_texts",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "NoSerial",
+        "ErrorMessage": "The length of 'No Serial' must be 50 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      }
+    ]
+  },
+  {
+    "situation": "blank_texts",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Descripcion",
+        "ErrorMessage": "'Descripcion' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      }
+    ]
+  },
+  {
+    "situation": "empty_texts",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Descripcion",
+        "ErrorMessage": "'Descripcion' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      }
+    ]
+  },
+  {
+    "situation": "zero_numbers",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Cantidad",
+        "ErrorMessage": "'Cantidad' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      }
+    ]
+  },
+  {
+    "situation": "negative_numbers",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Cantidad",
+        "ErrorMessage": "'Cantidad' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      }
+    ]
+  }
+]

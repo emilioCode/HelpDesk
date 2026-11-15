@@ -1,0 +1,80 @@
+[
+  {
+    "body": "nothing_filled",
+    "status": 403,
+    "type": "application/json",
+    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+  },
+  {
+    "body": "everything_filled",
+    "status": 403,
+    "type": "application/json",
+    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+  },
+  {
+    "body": "long_texts",
+    "status": 403,
+    "type": "application/json",
+    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+  },
+  {
+    "body": "blank_texts",
+    "status": 403,
+    "type": "application/json",
+    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+  },
+  {
+    "body": "empty_texts",
+    "status": 403,
+    "type": "application/json",
+    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+  },
+  {
+    "body": "zero_numbers",
+    "status": 403,
+    "type": "application/json",
+    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+  },
+  {
+    "body": "negative_numbers",
+    "status": 403,
+    "type": "application/json",
+    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+  },
+  {
+    "body": "text_instead_of_a_number",
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"id\":[\"Could not convert string to integer: x. Path 'id', line 1, position 9.\"],\"idEmpresa\":[\"Could not convert string to integer: x. Path 'idEmpresa', line 1, position 25.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
+  },
+  {
+    "body": "a_list_instead_of_an_object",
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"\":[\"Cannot deserialize the current JSON array (e.g. [1,2,3]) into type 'HelpDesk.Core.DTOs.SolicitudDto' because the type requires a JSON object (e.g. {\\\"name\\\":\\\"value\\\"}) to deserialize correctly.\\nTo fix this error either change the JSON to a JSON object (e.g. {\\\"name\\\":\\\"value\\\"}) or change the deserialized type to an array or a type that implements a collection interface (e.g. ICollection, IList) like List<T> that can be deserialized from a JSON array. JsonArrayAttribute can also be added to the type to force it to deserialize from a JSON array.\\nPath '', line 1, position 1.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
+  },
+  {
+    "body": "no_body",
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"\":[\"A non-empty request body is required.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
+  },
+  {
+    "body": "null",
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"\":[\"A non-empty request body is required.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
+  },
+  {
+    "body": "a_text",
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"\":[\"Error converting value \\\"just text\\\" to type 'HelpDesk.Core.DTOs.SolicitudDto'. Path '', line 1, position 11.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
+  },
+  {
+    "body": "broken_json",
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"id\":[\"Unexpected end when setting id's value. Path 'id', line 1, position 6.\",\"Unexpected end when deserializing object. Path 'id', line 1, position 6.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
+  }
+]

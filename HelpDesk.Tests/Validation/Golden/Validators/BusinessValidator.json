@@ -1,0 +1,200 @@
+[
+  {
+    "situation": "nothing_filled",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "RazonSocial",
+        "ErrorMessage": "'Razon Social' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      },
+      {
+        "PropertyName": "RazonSocial",
+        "ErrorMessage": "'Razon Social' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Secuenciaticket",
+        "ErrorMessage": "'Secuenciaticket' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Secuenciaticket",
+        "ErrorMessage": "'Secuenciaticket' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      }
+    ]
+  },
+  {
+    "situation": "everything_filled",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "NoAutorizacion",
+        "ErrorMessage": "The length of 'No Autorizacion' must be 12 characters or fewer. You entered 19 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Secuenciaticket",
+        "ErrorMessage": "The length of 'Secuenciaticket' must be 12 characters or fewer. You entered 20 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      }
+    ]
+  },
+  {
+    "situation": "long_texts",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "SectorComercial",
+        "ErrorMessage": "The length of 'Sector Comercial' must be 50 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Rnc",
+        "ErrorMessage": "The length of 'Rnc' must be 50 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Telefono",
+        "ErrorMessage": "The length of 'Telefono' must be 50 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Correo",
+        "ErrorMessage": "The length of 'Correo' must be 50 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Correo",
+        "ErrorMessage": "'Correo' is not a valid email address.",
+        "ErrorCode": "AspNetCoreCompatibleEmailValidator"
+      },
+      {
+        "PropertyName": "Contrasena",
+        "ErrorMessage": "The length of 'Contrasena' must be 30 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Url",
+        "ErrorMessage": "The length of 'Url' must be 80 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Host",
+        "ErrorMessage": "The length of 'Host' must be 30 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Direccion",
+        "ErrorMessage": "The length of 'Direccion' must be 150 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "NoAutorizacion",
+        "ErrorMessage": "The length of 'No Autorizacion' must be 12 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Secuenciaticket",
+        "ErrorMessage": "The length of 'Secuenciaticket' must be 12 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      }
+    ]
+  },
+  {
+    "situation": "blank_texts",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "RazonSocial",
+        "ErrorMessage": "'Razon Social' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Correo",
+        "ErrorMessage": "'Correo' is not a valid email address.",
+        "ErrorCode": "AspNetCoreCompatibleEmailValidator"
+      },
+      {
+        "PropertyName": "Secuenciaticket",
+        "ErrorMessage": "'Secuenciaticket' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      }
+    ]
+  },
+  {
+    "situation": "empty_texts",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "RazonSocial",
+        "ErrorMessage": "'Razon Social' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Correo",
+        "ErrorMessage": "'Correo' is not a valid email address.",
+        "ErrorCode": "AspNetCoreCompatibleEmailValidator"
+      },
+      {
+        "PropertyName": "Secuenciaticket",
+        "ErrorMessage": "'Secuenciaticket' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      }
+    ]
+  },
+  {
+    "situation": "zero_numbers",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "NoAutorizacion",
+        "ErrorMessage": "The length of 'No Autorizacion' must be 12 characters or fewer. You entered 19 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Secuenciaticket",
+        "ErrorMessage": "The length of 'Secuenciaticket' must be 12 characters or fewer. You entered 20 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      }
+    ]
+  },
+  {
+    "situation": "negative_numbers",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "NoAutorizacion",
+        "ErrorMessage": "The length of 'No Autorizacion' must be 12 characters or fewer. You entered 19 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Secuenciaticket",
+        "ErrorMessage": "The length of 'Secuenciaticket' must be 12 characters or fewer. You entered 20 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      }
+    ]
+  },
+  {
+    "situation": "bad_email",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Correo",
+        "ErrorMessage": "'Correo' is not a valid email address.",
+        "ErrorCode": "AspNetCoreCompatibleEmailValidator"
+      },
+      {
+        "PropertyName": "NoAutorizacion",
+        "ErrorMessage": "The length of 'No Autorizacion' must be 12 characters or fewer. You entered 19 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Secuenciaticket",
+        "ErrorMessage": "The length of 'Secuenciaticket' must be 12 characters or fewer. You entered 20 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      }
+    ]
+  }
+]
