@@ -2,8 +2,8 @@
   {
     "body": "nothing_filled",
     "status": 400,
-    "type": null,
-    "answer": ""
+    "type": "application/json",
+    "answer": "{\"errors\":{\"Nombre\":[\"'Nombre' must not be empty.\"],\"IdEmpresa\":[\"'Id Empresa' must be greater than '0'.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "everything_filled",
@@ -14,8 +14,8 @@
   {
     "body": "long_texts",
     "status": 400,
-    "type": null,
-    "answer": ""
+    "type": "application/json",
+    "answer": "{\"errors\":{\"Nombre\":[\"The length of 'Nombre' must be 100 characters or fewer. You entered 300 characters.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "blank_texts",
@@ -31,15 +31,15 @@
   },
   {
     "body": "zero_numbers",
-    "status": 200,
+    "status": 400,
     "type": "application/json",
-    "answer": "{\"title\":\"Saved\",\"message\":\"has been saved successfully\",\"icon\":\"success\",\"code\":\"1\",\"data\":{\"nombre\":\"Nombre-text\",\"contacto\":\"Contacto-text\",\"telefono\":\"Telefono-text\",\"extension\":\"Extension-text\",\"rnc\":\"Rnc-text\",\"correo\":\"name@test.local\",\"departamento\":\"Departamento-text\",\"direccion\":\"Direccion-text\",\"idEmpresa\":1,\"id\":18,\"habilitado\":true}}"
+    "answer": "{\"errors\":{\"IdEmpresa\":[\"'Id Empresa' must be greater than '0'.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "negative_numbers",
-    "status": 200,
+    "status": 400,
     "type": "application/json",
-    "answer": "{\"title\":\"Saved\",\"message\":\"has been saved successfully\",\"icon\":\"success\",\"code\":\"1\",\"data\":{\"nombre\":\"Nombre-text\",\"contacto\":\"Contacto-text\",\"telefono\":\"Telefono-text\",\"extension\":\"Extension-text\",\"rnc\":\"Rnc-text\",\"correo\":\"name@test.local\",\"departamento\":\"Departamento-text\",\"direccion\":\"Direccion-text\",\"idEmpresa\":1,\"id\":-1,\"habilitado\":true}}"
+    "answer": "{\"errors\":{\"IdEmpresa\":[\"'Id Empresa' must be greater than '0'.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "bad_email",

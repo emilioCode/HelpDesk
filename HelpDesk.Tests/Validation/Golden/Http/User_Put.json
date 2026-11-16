@@ -3,7 +3,7 @@
     "body": "nothing_filled",
     "status": 400,
     "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"the user is required\"}]}"
+    "answer": "{\"errors\":{\"Acceso\":[\"'Acceso' must not be empty.\",\"'Acceso' must not be empty.\"],\"Nombre\":[\"'Nombre' must not be empty.\",\"'Nombre' must not be empty.\"],\"IdEmpresa\":[\"'Id Empresa' must not be empty.\"],\"Contrasena\":[\"'Contrasena' must not be empty.\",\"'Contrasena' must not be empty.\"],\"NumDocumento\":[\"'Num Documento' must not be empty.\"],\"CuentaUsuario\":[\"'Cuenta Usuario' must not be empty.\",\"'Cuenta Usuario' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "everything_filled",
@@ -13,39 +13,39 @@
   },
   {
     "body": "long_texts",
-    "status": 200,
+    "status": 400,
     "type": "application/json",
-    "answer": "{\"title\":\"Saved\",\"message\":\"has been saved successfully\",\"icon\":\"success\",\"code\":\"1\",\"data\":true}"
+    "answer": "{\"errors\":{\"Acceso\":[\"The length of 'Acceso' must be 20 characters or fewer. You entered 300 characters.\"],\"Correo\":[\"The length of 'Correo' must be 50 characters or fewer. You entered 300 characters.\",\"'Correo' is not a valid email address.\"],\"Nombre\":[\"The length of 'Nombre' must be 255 characters or fewer. You entered 300 characters.\"],\"NumDocumento\":[\"The length of 'Num Documento' must be 30 characters or fewer. You entered 300 characters.\"],\"CuentaUsuario\":[\"The length of 'Cuenta Usuario' must be 20 characters or fewer. You entered 300 characters.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "blank_texts",
-    "status": 200,
+    "status": 400,
     "type": "application/json",
-    "answer": "{\"title\":\"Saved\",\"message\":\"has been saved successfully\",\"icon\":\"success\",\"code\":\"1\",\"data\":true}"
+    "answer": "{\"errors\":{\"Acceso\":[\"'Acceso' must not be empty.\"],\"Correo\":[\"'Correo' is not a valid email address.\"],\"Nombre\":[\"'Nombre' must not be empty.\"],\"Contrasena\":[\"The length of 'Contrasena' must be at least 6 characters. You entered 3 characters.\"],\"NumDocumento\":[\"'Num Documento' must not be empty.\"],\"CuentaUsuario\":[\"'Cuenta Usuario' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "empty_texts",
-    "status": 200,
+    "status": 400,
     "type": "application/json",
-    "answer": "{\"title\":\"Saved\",\"message\":\"has been saved successfully\",\"icon\":\"success\",\"code\":\"1\",\"data\":true}"
+    "answer": "{\"errors\":{\"Acceso\":[\"'Acceso' must not be empty.\"],\"Correo\":[\"'Correo' is not a valid email address.\"],\"Nombre\":[\"'Nombre' must not be empty.\"],\"NumDocumento\":[\"'Num Documento' must not be empty.\"],\"CuentaUsuario\":[\"'Cuenta Usuario' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "zero_numbers",
     "status": 400,
     "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"the user is required\"}]}"
+    "answer": "{\"errors\":{\"IdEmpresa\":[\"'Id Empresa' must be greater than '0'.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "negative_numbers",
     "status": 400,
     "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"the user is required\"}]}"
+    "answer": "{\"errors\":{\"IdEmpresa\":[\"'Id Empresa' must be greater than '0'.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "bad_email",
     "status": 400,
-    "type": null,
-    "answer": ""
+    "type": "application/json",
+    "answer": "{\"errors\":{\"Correo\":[\"'Correo' is not a valid email address.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "text_instead_of_a_number",

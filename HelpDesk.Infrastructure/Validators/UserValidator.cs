@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
+using HelpDesk.Core.Constants;
 using HelpDesk.Core.DTOs;
+using System;
 
 namespace HelpDesk.Infrastructure.Validators
 {
@@ -12,8 +14,12 @@ namespace HelpDesk.Infrastructure.Validators
                 .NotNull()
                 .MaximumLength(255);
 
+            // The root user is the account of the system and has no document (the initial script creates it without one),
+            // so everybody else needs it but root does not; otherwise root could not save its own profile.
             RuleFor(x => x.NumDocumento)
                 .NotEmpty()
+                .When(x => !string.Equals(x.Acceso, Roles.Root, StringComparison.OrdinalIgnoreCase));
+            RuleFor(x => x.NumDocumento)
                 .MaximumLength(30);
 
             RuleFor(x => x.CuentaUsuario)
