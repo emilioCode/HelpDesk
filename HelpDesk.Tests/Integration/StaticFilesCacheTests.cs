@@ -31,10 +31,12 @@ namespace HelpDesk.Tests.Integration
             Assert.AreEqual("no-cache", response.Headers.CacheControl.ToString(), url);
         }
 
-        [Test]
-        public async Task ABundleNamedAfterItsContent_CanBeKeptForAYear()
+        [TestCase("/main.0123456789abcdef0123.js")]
+        [TestCase("/main-es2015.0123456789abcdef0123.js")]
+        [TestCase("/main-es5.0123456789abcdef0123.js")]
+        public async Task ABundleNamedAfterItsContent_CanBeKeptForAYear(string url)
         {
-            var response = await _api.CreateClient().GetAsync("/main.0123456789abcdef0123.js");
+            var response = await _api.CreateClient().GetAsync(url);
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             StringAssert.Contains("max-age=31536000", response.Headers.CacheControl.ToString());
