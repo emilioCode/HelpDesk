@@ -78,6 +78,17 @@ export class UserComponent implements OnInit, OnDestroy {
           .subscribe(res=>{
             this.users = res;
             this.service.updateSession(this.users);
+            // The window that is open shows the form, not the list, so what the other person saved is put in the form too.
+            // The password is left as it is: what is being typed there is not part of the saved user.
+            if(this.option == 'edit' && idUsuario > 0 && this.user && this.user.id == idUsuario){
+              const saved = this.users.filter(u=>u.id==idUsuario)[0];
+              if(saved){
+                this.user = saved;
+                const shown = Object.assign({}, saved);
+                delete shown.contrasena;
+                this.form.patchValue(shown);
+              }
+            }
             if(!this.service.getUser().habilitado){
               alert(this.service.messages.userDisabled);
               this.service.closeSession();
