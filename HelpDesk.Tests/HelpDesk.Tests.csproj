@@ -27,6 +27,8 @@
   <ItemGroup>
     <!-- What every mapping must answer (see MappingGoldenTests) -->
     <None Update="Mappings\Golden\**" CopyToOutputDirectory="PreserveNewest" />
+    <!-- What the validators and the endpoints answer to wrong data (see GoldenFiles) -->
+    <None Update="Validation\Golden\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

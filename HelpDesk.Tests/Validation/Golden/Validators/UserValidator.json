@@ -1,0 +1,199 @@
+[
+  {
+    "situation": "nothing_filled",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Nombre",
+        "ErrorMessage": "'Nombre' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Nombre",
+        "ErrorMessage": "'Nombre' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      },
+      {
+        "PropertyName": "NumDocumento",
+        "ErrorMessage": "'Num Documento' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "CuentaUsuario",
+        "ErrorMessage": "'Cuenta Usuario' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "CuentaUsuario",
+        "ErrorMessage": "'Cuenta Usuario' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      },
+      {
+        "PropertyName": "Contrasena",
+        "ErrorMessage": "'Contrasena' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      },
+      {
+        "PropertyName": "Contrasena",
+        "ErrorMessage": "'Contrasena' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Acceso",
+        "ErrorMessage": "'Acceso' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Acceso",
+        "ErrorMessage": "'Acceso' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      },
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      }
+    ]
+  },
+  {
+    "situation": "everything_filled",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "long_texts",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Nombre",
+        "ErrorMessage": "The length of 'Nombre' must be 255 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "NumDocumento",
+        "ErrorMessage": "The length of 'Num Documento' must be 30 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "CuentaUsuario",
+        "ErrorMessage": "The length of 'Cuenta Usuario' must be 20 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Acceso",
+        "ErrorMessage": "The length of 'Acceso' must be 20 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Correo",
+        "ErrorMessage": "The length of 'Correo' must be 50 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Correo",
+        "ErrorMessage": "'Correo' is not a valid email address.",
+        "ErrorCode": "EmailValidator"
+      }
+    ]
+  },
+  {
+    "situation": "blank_texts",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Nombre",
+        "ErrorMessage": "'Nombre' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "NumDocumento",
+        "ErrorMessage": "'Num Documento' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "CuentaUsuario",
+        "ErrorMessage": "'Cuenta Usuario' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Contrasena",
+        "ErrorMessage": "The length of 'Contrasena' must be at least 6 characters. You entered 3 characters.",
+        "ErrorCode": "MinimumLengthValidator"
+      },
+      {
+        "PropertyName": "Acceso",
+        "ErrorMessage": "'Acceso' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Correo",
+        "ErrorMessage": "'Correo' is not a valid email address.",
+        "ErrorCode": "EmailValidator"
+      }
+    ]
+  },
+  {
+    "situation": "empty_texts",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Nombre",
+        "ErrorMessage": "'Nombre' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "NumDocumento",
+        "ErrorMessage": "'Num Documento' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "CuentaUsuario",
+        "ErrorMessage": "'Cuenta Usuario' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Acceso",
+        "ErrorMessage": "'Acceso' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Correo",
+        "ErrorMessage": "'Correo' is not a valid email address.",
+        "ErrorCode": "EmailValidator"
+      }
+    ]
+  },
+  {
+    "situation": "zero_numbers",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      }
+    ]
+  },
+  {
+    "situation": "negative_numbers",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      }
+    ]
+  },
+  {
+    "situation": "bad_email",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Correo",
+        "ErrorMessage": "'Correo' is not a valid email address.",
+        "ErrorCode": "EmailValidator"
+      }
+    ]
+  }
+]

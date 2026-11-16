@@ -1,0 +1,100 @@
+[
+  {
+    "situation": "nothing_filled",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "IdSolicitud",
+        "ErrorMessage": "'Id Solicitud' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "FallaReportada",
+        "ErrorMessage": "'Falla Reportada' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      },
+      {
+        "PropertyName": "Marca",
+        "ErrorMessage": "'Marca' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      },
+      {
+        "PropertyName": "Modelo",
+        "ErrorMessage": "'Modelo' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      },
+      {
+        "PropertyName": "NoSerial",
+        "ErrorMessage": "'No Serial' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      }
+    ]
+  },
+  {
+    "situation": "everything_filled",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "long_texts",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "FallaReportada",
+        "ErrorMessage": "The length of 'Falla Reportada' must be 80 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Marca",
+        "ErrorMessage": "The length of 'Marca' must be 50 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "Modelo",
+        "ErrorMessage": "The length of 'Modelo' must be 50 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      },
+      {
+        "PropertyName": "NoSerial",
+        "ErrorMessage": "The length of 'No Serial' must be 50 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      }
+    ]
+  },
+  {
+    "situation": "blank_texts",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "empty_texts",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "zero_numbers",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "IdSolicitud",
+        "ErrorMessage": "'Id Solicitud' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      }
+    ]
+  },
+  {
+    "situation": "negative_numbers",
+    "valid": true,
+    "failures": []
+  }
+]
