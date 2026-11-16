@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HelpDesk.Hubs
 {
-    public class hub : Hub
+    public class HelpDeskHub : Hub
     {
         public static string GroupOf(int idEmpresa) => "empresa-" + idEmpresa;
 

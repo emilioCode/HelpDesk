@@ -17,7 +17,11 @@ namespace HelpDesk.Infrastructure.Services
             // Only for a development mail catcher (Mailpit) that presents a self-signed certificate. Off by default.
             if (string.Equals(configuration?["Mail:AllowUntrustedCertificates"], "true", StringComparison.OrdinalIgnoreCase))
             {
+                // ServicePointManager is obsolete for web requests (they use HttpClient now), but SmtpClient has no setting of its own for
+                // the certificate and still reads this one, so it stays for the mail only.
+#pragma warning disable SYSLIB0014
                 ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+#pragma warning restore SYSLIB0014
             }
         }
 
@@ -52,22 +56,5 @@ namespace HelpDesk.Infrastructure.Services
             }
         }
 
-        // Checks that the machine has Internet access. The e-mail is no longer held back by it: an internal mail
-        // server works without Internet, and a failed send is logged with its real cause.
-        public bool TestConnection()
-        {
-            try
-            {
-                var request = WebRequest.Create(new Uri("http://www.google.com/"));
-                using (request.GetResponse())
-                {
-                    return true;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
     }
 }

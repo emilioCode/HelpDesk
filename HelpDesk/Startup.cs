@@ -93,7 +93,7 @@ namespace HelpDesk
 
             //app.UseSignalR(x =>
             //{
-            //    x.MapHub<Hubs.hub>("/hub");
+            //    x.MapHub<Hubs.HelpDeskHub>("/hub");
             //});
             //app.UseMvc(routes =>
             //{
@@ -123,7 +123,7 @@ namespace HelpDesk
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}"//,
                     /*defaults: new { controller="App", Action="Index" }*/);
-                endpoints.MapHub<Hubs.hub>("/hub");
+                endpoints.MapHub<Hubs.HelpDeskHub>("/hub");
             });
            
 

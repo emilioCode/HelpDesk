@@ -18,8 +18,8 @@ namespace HelpDesk.Controllers
     {
         public readonly IUserService _userService;
         private readonly IHelpDeskMapper _mapper;
-        private readonly IHubContext<hub> _hub;
-        public UserController(IUserService userService, IHelpDeskMapper mapper, IHubContext<hub> hub)
+        private readonly IHubContext<HelpDeskHub> _hub;
+        public UserController(IUserService userService, IHelpDeskMapper mapper, IHubContext<HelpDeskHub> hub)
         {
             _userService = userService;
             _hub = hub;
@@ -70,7 +70,7 @@ namespace HelpDesk.Controllers
             var after = await _userService.GetActiveIdentityAsync(userId);
             if (after != null && (after.Acceso != before.Acceso || after.IdEmpresa != before.IdEmpresa))
             {
-                await _hub.Clients.Group(hub.GroupOfUser(userId)).SendAsync("refresh", "session", before.IdEmpresa, userId, 2);
+                await _hub.Clients.Group(HelpDeskHub.GroupOfUser(userId)).SendAsync("refresh", "session", before.IdEmpresa, userId, 2);
             }
         }
 

@@ -182,8 +182,6 @@ namespace HelpDesk.Tests.Integration
                 lock (Sent) { Sent.Add((emailTo, subject, message)); }
                 return true;
             }
-
-            public bool TestConnection() => true;
         }
     }
 
