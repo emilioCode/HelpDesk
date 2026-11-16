@@ -36,7 +36,8 @@ WORKDIR /app
 RUN useradd --system --no-create-home --uid 10001 helpdesk
 COPY --from=publish /app/publish ./
 COPY --from=spa /src/HelpDesk/ClientApp/dist ./ClientApp/dist
-ENV ASPNETCORE_URLS=http://+:8080 \
+# The port is the current setting of the runtime image (ASPNETCORE_HTTP_PORTS); ASPNETCORE_URLS would override it with a warning.
+ENV ASPNETCORE_HTTP_PORTS=8080 \
     ASPNETCORE_ENVIRONMENT=Production
 EXPOSE 8080
 USER helpdesk
