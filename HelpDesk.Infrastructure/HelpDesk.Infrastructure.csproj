@@ -22,8 +22,9 @@
     <!-- Writes the conversions between entities and DTOs at build time; nothing of it is needed at run time -->
     <PackageReference Include="Riok.Mapperly" Version="4.3.1" PrivateAssets="all" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-    <!-- The rules of the validators (Validators folder). Nothing connects them to the requests yet: see the description of the pull request that moved them to this version -->
+    <!-- The rules of the validators (Validators folder). They are applied to every body the API receives (FluentValidationModelValidatorProvider) -->
     <PackageReference Include="FluentValidation" Version="12.2.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.15">
