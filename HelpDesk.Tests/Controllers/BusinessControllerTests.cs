@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using HelpDesk.Controllers;
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
@@ -15,13 +15,13 @@ namespace HelpDesk.Tests.Controllers
     public class BusinessControllerTests
     {
         private readonly Mock<IBusinessService> _businessService;
-        private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IHelpDeskMapper> _mapperMock;
 
         private readonly BusinessController _businessController;
         public BusinessControllerTests()
         {
             _businessService = new Mock<IBusinessService>();
-            _mapperMock = new Mock<IMapper>();
+            _mapperMock = new Mock<IHelpDeskMapper>();
 
             _businessController = new BusinessController(_businessService.Object, _mapperMock.Object);
         }
@@ -36,7 +36,7 @@ namespace HelpDesk.Tests.Controllers
             // Act
             _businessService.Setup(service => service.GetBusinessesByUserAccess(userId))
                 .ReturnsAsync(businesses);
-            _mapperMock.Setup(x => x.Map<IEnumerable<EmpresaDto>>(businesses))
+            _mapperMock.Setup(x => x.Map(businesses))
                 .Returns(businessDtos);
             var result = await _businessController.Get(userId) as OkObjectResult;
             var response =  result.Value as List<EmpresaDto>;
@@ -55,9 +55,9 @@ namespace HelpDesk.Tests.Controllers
             var business = new Empresa { Contrasena = "enc:v1:secret" };
             var createdDto = new EmpresaDto { Contrasena = "enc:v1:secret" };
             // Act
-            _mapperMock.Setup(x =>x.Map<Empresa>(businessDto))
+            _mapperMock.Setup(x =>x.Map(businessDto))
                 .Returns(() => business);
-            _mapperMock.Setup(x => x.Map<EmpresaDto>(business))
+            _mapperMock.Setup(x => x.Map(business))
                 .Returns(createdDto);
             _businessService.Setup(service => service.CreateBusinness(userId, business))
                 .ReturnsAsync(business);
@@ -79,7 +79,7 @@ namespace HelpDesk.Tests.Controllers
             var businessDto = new EmpresaDto();
             var business = new Empresa();
             // Act
-            _mapperMock.Setup(x => x.Map<Empresa>(businessDto))
+            _mapperMock.Setup(x => x.Map(businessDto))
                 .Returns(business);
             _businessService.Setup(service => service.UpdateBusiness(userId, business))
                  .ReturnsAsync(true);

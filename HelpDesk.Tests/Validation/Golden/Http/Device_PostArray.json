@@ -1,0 +1,50 @@
+[
+  {
+    "body": "empty_list",
+    "status": 200,
+    "type": "application/json",
+    "answer": "{\"title\":\"Saved\",\"message\":\"created successfully\",\"icon\":\"success\",\"code\":\"1\",\"data\":[]}"
+  },
+  {
+    "body": "one_empty_item",
+    "status": 400,
+    "type": "application/json",
+    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"Field(s) required!\"}]}"
+  },
+  {
+    "body": "two_items",
+    "status": 400,
+    "type": "application/json",
+    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"Field(s) required!\"}]}"
+  },
+  {
+    "body": "not_a_list",
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"\":[\"Cannot deserialize the current JSON object (e.g. {\\\"name\\\":\\\"value\\\"}) into type 'System.Collections.Generic.List`1[HelpDesk.Core.DTOs.EquipoDto]' because the type requires a JSON array (e.g. [1,2,3]) to deserialize correctly.\\nTo fix this error either change the JSON to a JSON array (e.g. [1,2,3]) or change the deserialized type so that it is a normal .NET type (e.g. not a primitive type like integer, not a collection type like an array or List<T>) that can be deserialized from a JSON object. JsonObjectAttribute can also be added to the type to force it to deserialize from a JSON object.\\nPath '', line 1, position 2.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
+  },
+  {
+    "body": "no_body",
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"\":[\"A non-empty request body is required.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
+  },
+  {
+    "body": "null",
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"\":[\"A non-empty request body is required.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
+  },
+  {
+    "body": "a_text",
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"\":[\"Error converting value \\\"just text\\\" to type 'System.Collections.Generic.List`1[HelpDesk.Core.DTOs.EquipoDto]'. Path '', line 1, position 11.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
+  },
+  {
+    "body": "broken_json",
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"id\":[\"Cannot deserialize the current JSON object (e.g. {\\\"name\\\":\\\"value\\\"}) into type 'System.Collections.Generic.List`1[HelpDesk.Core.DTOs.EquipoDto]' because the type requires a JSON array (e.g. [1,2,3]) to deserialize correctly.\\nTo fix this error either change the JSON to a JSON array (e.g. [1,2,3]) or change the deserialized type so that it is a normal .NET type (e.g. not a primitive type like integer, not a collection type like an array or List<T>) that can be deserialized from a JSON object. JsonObjectAttribute can also be added to the type to force it to deserialize from a JSON object.\\nPath 'id', line 1, position 6.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
+  }
+]

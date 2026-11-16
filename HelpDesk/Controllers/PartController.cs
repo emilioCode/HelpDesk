@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
@@ -15,8 +15,8 @@ namespace HelpDesk.Controllers
     public class PartController : ControllerBase
     {
         private readonly IPieceService _pieceService;
-        private readonly IMapper _mapper;
-        public PartController(IPieceService pieceService, IMapper mapper)
+        private readonly IHelpDeskMapper _mapper;
+        public PartController(IPieceService pieceService, IHelpDeskMapper mapper)
         {
             _pieceService = pieceService;
             _mapper = mapper;
@@ -27,7 +27,7 @@ namespace HelpDesk.Controllers
         public IActionResult Get(int ticketId, int businessId)
         {
             var parts = _pieceService.GetPieces(ticketId, businessId);
-            var partsDtos = _mapper.Map<IEnumerable<PiezasDto>>(parts);
+            var partsDtos = _mapper.Map(parts);
             return Ok(partsDtos);
         }
 
@@ -35,9 +35,9 @@ namespace HelpDesk.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PiezasDto pieceDto)
         {
-            var piece = _mapper.Map<Piezas>(pieceDto);
+            var piece = _mapper.Map(pieceDto);
             piece = await _pieceService.AddPiece(piece);
-            pieceDto = _mapper.Map<PiezasDto>(piece);
+            pieceDto = _mapper.Map(piece);
             var response = ObjectResponse.Saved(Messages.Created, pieceDto);
             return Ok(response);
         }
@@ -47,9 +47,9 @@ namespace HelpDesk.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Put([FromBody] PiezasDto pieceDto)
         {
-            var piece = _mapper.Map<Piezas>(pieceDto);
+            var piece = _mapper.Map(pieceDto);
             piece = await _pieceService.UpdatePiece(piece);
-            pieceDto = _mapper.Map<PiezasDto>(piece);
+            pieceDto = _mapper.Map(piece);
             var response = ObjectResponse.Saved(Messages.Modified, pieceDto);
             return Ok(response);
         }

@@ -7,11 +7,11 @@
         <p class="login-box-msg">Sign in to start your session</p>
         <form [formGroup]="form" (ngSubmit)="singIn()">
           <div class="form-group has-feedback">
-            <input type="text" class="form-control" placeholder="User" formControlName="user" />
+            <input type="text" class="form-control" placeholder="User" formControlName="user" data-no-hints />
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
           </div>
           <div class="form-group has-feedback">
-            <input type="password" class="form-control" placeholder="Password" formControlName="pwd" autocomplete="off"/>
+            <input type="password" class="form-control" placeholder="Password" formControlName="pwd" data-no-hints autocomplete="off"/>
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>
           <div class="row">

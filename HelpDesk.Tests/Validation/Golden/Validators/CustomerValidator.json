@@ -1,0 +1,71 @@
+[
+  {
+    "situation": "nothing_filled",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Nombre",
+        "ErrorMessage": "'Nombre' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      },
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      }
+    ]
+  },
+  {
+    "situation": "everything_filled",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "long_texts",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Nombre",
+        "ErrorMessage": "The length of 'Nombre' must be 100 characters or fewer. You entered 300 characters.",
+        "ErrorCode": "MaximumLengthValidator"
+      }
+    ]
+  },
+  {
+    "situation": "blank_texts",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "empty_texts",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "zero_numbers",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      }
+    ]
+  },
+  {
+    "situation": "negative_numbers",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      }
+    ]
+  },
+  {
+    "situation": "bad_email",
+    "valid": true,
+    "failures": []
+  }
+]

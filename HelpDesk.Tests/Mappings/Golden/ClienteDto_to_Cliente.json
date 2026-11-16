@@ -1,0 +1,62 @@
+[
+  {
+    "input": {
+      "Id": 17,
+      "Nombre": "Nombre-text",
+      "Contacto": "Contacto-text",
+      "Telefono": "Telefono-text",
+      "Extension": "Extension-text",
+      "Rnc": "Rnc-text",
+      "Correo": "Correo-text",
+      "Departamento": "Departamento-text",
+      "Direccion": "Direccion-text",
+      "IdEmpresa": 18,
+      "Habilitado": true
+    },
+    "output": {
+      "Nombre": "Nombre-text",
+      "Contacto": "Contacto-text",
+      "Telefono": "Telefono-text",
+      "Extension": "Extension-text",
+      "Rnc": "Rnc-text",
+      "Correo": "Correo-text",
+      "Departamento": "Departamento-text",
+      "Direccion": "Direccion-text",
+      "IdEmpresa": 18,
+      "Id": 17,
+      "Habilitado": true
+    }
+  },
+  {
+    "input": {
+      "Id": 0,
+      "Nombre": null,
+      "Contacto": null,
+      "Telefono": null,
+      "Extension": null,
+      "Rnc": null,
+      "Correo": null,
+      "Departamento": null,
+      "Direccion": null,
+      "IdEmpresa": 0,
+      "Habilitado": null
+    },
+    "output": {
+      "Nombre": null,
+      "Contacto": null,
+      "Telefono": null,
+      "Extension": null,
+      "Rnc": null,
+      "Correo": null,
+      "Departamento": null,
+      "Direccion": null,
+      "IdEmpresa": 0,
+      "Id": 0,
+      "Habilitado": null
+    }
+  },
+  {
+    "input": null,
+    "output": null
+  }
+]

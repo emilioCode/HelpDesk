@@ -52,12 +52,15 @@ export class ApiService {
     enterReportedFailure: 'Favor digite falla reportada',
     completeMinimumOrderData: 'Asegúrese de completar los datos mínimos necesarios para crear la orden',
     deviceDataRequired: 'Es necesario suministrar los datos del dispositivo',
+    partSerialTooLong: 'El serial de la parte es demasiado largo (máximo 50 caracteres)',
+    deviceDataTooLong: 'Algún dato del dispositivo es demasiado largo (falla reportada: 80 caracteres; marca, modelo y serial: 50)',
     mustHaveDevice: 'Must have a device as well',
     optionRequired: 'an option is required',
     activityRequired: 'Se necesita al menos una actividad realizada',
     noPermissionToAccess: 'No tiene permisos para acceder',
     noAdminPermissionToAdjust: 'No cuenta con los permisos de Administrador para realizar el ajuste',
     userDisabled: 'Su usuario ha sido deshabilitado, comuníquese con el administrador',
+    accessChanged: 'Su rol o su empresa fue modificado. Por seguridad debe iniciar sesión de nuevo.',
     ticketWithoutTechnician: 'Esta orden no tiene técnico asignado.\nNecesita primero asignar un técnico para trabajarla.',
     closedOrderAdjustment: 'No se pudo aplicar ajuste debido a que la orden se encuentra cerrada.',
     // Confirmations
@@ -140,7 +143,17 @@ export class ApiService {
     ) {
       this.route =_route;
       this.baseUrl = _baseUrl; 
-      this.http =_http;    
+      this.http =_http;
+  }
+
+  // Calls to the API. The path is what follows "api/", for example get('Ticket/' + id + '/*').
+  // The access token is added by the interceptor.
+  get(path: string) {
+    return this.http.get(this.baseUrl + 'api/' + path, { headers: this.headers, responseType: 'json' });
+  }
+
+  post(path: string, body?: any) {
+    return this.http.post(this.baseUrl + 'api/' + path, body === undefined ? null : body, { headers: this.headers, responseType: 'json' });
   }
 
   setUser(user:any):void{
@@ -155,7 +168,7 @@ export class ApiService {
 
   closeSession(){
     // Also clears the cookie the printable reports use. If it fails the cookie expires with the token.
-    this.http.post(this.baseUrl + 'api/Login/Logout', {}).subscribe(() => {}, () => {});
+    this.post('Login/Logout', {}).subscribe(() => {}, () => {});
     while (this.sessionSt.retrieve('user')!=null) {
       this.sessionSt.clear('user');
       this.route.navigateByUrl('/');

@@ -2,6 +2,7 @@
 using HelpDesk.Core.Services;
 using HelpDesk.Infrastructure.Data;
 using HelpDesk.Infrastructure.Interfaces;
+using HelpDesk.Infrastructure.Mappings;
 using HelpDesk.Infrastructure.Repositories;
 using HelpDesk.Infrastructure.Security;
 using HelpDesk.Infrastructure.Services;
@@ -44,6 +45,9 @@ namespace HelpDesk.Infrastructure.Extensions
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
+            // No state: one instance serves every request
+            services.AddSingleton<IHelpDeskMapper, HelpDeskMapper>();
+
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IBusinessService, BusinessService>();
             services.AddTransient<ICustomerService, CustomerService>();

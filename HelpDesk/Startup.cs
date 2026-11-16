@@ -1,5 +1,4 @@
-using AutoMapper;
-using FluentValidation.AspNetCore;
+
 using HelpDesk.Infrastructure.Extensions;
 using HelpDesk.Infrastructure.Filters;
 using HelpDesk.Security;
@@ -35,16 +34,10 @@ namespace HelpDesk
             context.Context.Response.Headers[HeaderNames.CacheControl] = hashed ? "public,max-age=31536000,immutable" : "no-cache";
         }
 
-        // Dynamic assemblies (for example the ones a mocking library generates in tests) cannot be scanned.
-        private static System.Reflection.Assembly[] ScannableAssemblies()
-        {
-            return AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic).ToArray();
-        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {     
-            services.AddAutoMapper(ScannableAssemblies());
             services.AddDbContexts(Configuration);
             services.AddSecurityServices(Configuration);
             services.AddHelpDeskAuthentication(Configuration);
@@ -70,10 +63,6 @@ namespace HelpDesk
                 .AddMvc(options =>
                 {
                     options.Filters.Add<ValidationFilter>();
-                })
-                .AddFluentValidation(options =>
-                {
-                    options.RegisterValidatorsFromAssemblies(ScannableAssemblies());
                 });
 
             services.AddServices();
@@ -104,7 +93,7 @@ namespace HelpDesk
 
             //app.UseSignalR(x =>
             //{
-            //    x.MapHub<Hubs.hub>("/hub");
+            //    x.MapHub<Hubs.HelpDeskHub>("/hub");
             //});
             //app.UseMvc(routes =>
             //{
@@ -134,7 +123,7 @@ namespace HelpDesk
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}"//,
                     /*defaults: new { controller="App", Action="Index" }*/);
-                endpoints.MapHub<Hubs.hub>("/hub");
+                endpoints.MapHub<Hubs.HelpDeskHub>("/hub");
             });
            
 

@@ -1,0 +1,137 @@
+[
+  {
+    "situation": "nothing_filled",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Texto",
+        "ErrorMessage": "'Texto' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "Texto",
+        "ErrorMessage": "'Texto' must not be empty.",
+        "ErrorCode": "NotNullValidator"
+      },
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      },
+      {
+        "PropertyName": "IdSolicitud",
+        "ErrorMessage": "'Id Solicitud' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "IdSolicitud",
+        "ErrorMessage": "'Id Solicitud' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      },
+      {
+        "PropertyName": "IdUsuario",
+        "ErrorMessage": "'Id Usuario' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "IdUsuario",
+        "ErrorMessage": "'Id Usuario' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      }
+    ]
+  },
+  {
+    "situation": "everything_filled",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "long_texts",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "blank_texts",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Texto",
+        "ErrorMessage": "'Texto' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      }
+    ]
+  },
+  {
+    "situation": "empty_texts",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "Texto",
+        "ErrorMessage": "'Texto' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      }
+    ]
+  },
+  {
+    "situation": "zero_numbers",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      },
+      {
+        "PropertyName": "IdSolicitud",
+        "ErrorMessage": "'Id Solicitud' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "IdSolicitud",
+        "ErrorMessage": "'Id Solicitud' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      },
+      {
+        "PropertyName": "IdUsuario",
+        "ErrorMessage": "'Id Usuario' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "IdUsuario",
+        "ErrorMessage": "'Id Usuario' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      }
+    ]
+  },
+  {
+    "situation": "negative_numbers",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      },
+      {
+        "PropertyName": "IdSolicitud",
+        "ErrorMessage": "'Id Solicitud' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      },
+      {
+        "PropertyName": "IdUsuario",
+        "ErrorMessage": "'Id Usuario' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      }
+    ]
+  }
+]

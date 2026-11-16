@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using HelpDesk.Controllers;
 using HelpDesk.Core.CustomEntities;
 using HelpDesk.Core.DTOs;
@@ -17,14 +17,14 @@ namespace HelpDesk.Tests.Controllers
     public class TicketControllerTests
     {
         private readonly Mock<ITicketService> _ticketServiceMock;
-        private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IHelpDeskMapper> _mapperMock;
         private readonly Mock<IMailService> _mailServiceMock;
 
         private readonly TicketController _ticketController;
         public TicketControllerTests()
         {
             _ticketServiceMock = new Mock<ITicketService>();
-            _mapperMock = new Mock<IMapper>();
+            _mapperMock = new Mock<IHelpDeskMapper>();
             _mailServiceMock = new Mock<IMailService>();
 
             _ticketController = new TicketController(_ticketServiceMock.Object, _mapperMock.Object, _mailServiceMock.Object);
@@ -58,7 +58,7 @@ namespace HelpDesk.Tests.Controllers
             var email = new EmailMessage();
             var tupleResponse = (ticket, email);
             // Act
-            _mapperMock.Setup(x => x.Map<Solicitud>(ticketDto))
+            _mapperMock.Setup(x => x.Map(ticketDto))
                 .Returns(ticket);
             _ticketServiceMock.Setup(service => service.CreateTicket(ticket))
                 .ReturnsAsync(tupleResponse);
@@ -81,7 +81,7 @@ namespace HelpDesk.Tests.Controllers
             email = null;
             var tupleResponse = (ticket, email);
             // Act
-            _mapperMock.Setup(x => x.Map<Solicitud>(ticketDto))
+            _mapperMock.Setup(x => x.Map(ticketDto))
                 .Returns(ticket);
             _ticketServiceMock.Setup(service => service.CreateTicket(ticket))
                 .ReturnsAsync(tupleResponse);
@@ -103,7 +103,7 @@ namespace HelpDesk.Tests.Controllers
             var email = new EmailMessage();
             var tupleResponse = (ticket, email);
             // Act
-            _mapperMock.Setup(x => x.Map<Solicitud>(ticketDto))
+            _mapperMock.Setup(x => x.Map(ticketDto))
                 .Returns(ticket);
             _ticketServiceMock.Setup(service => service.UpdateTicket(ticket, toDo))
                 .ReturnsAsync(tupleResponse);
@@ -126,7 +126,7 @@ namespace HelpDesk.Tests.Controllers
             email = null;
             var tupleResponse = (ticket, email);
             // Act
-            _mapperMock.Setup(x => x.Map<Solicitud>(ticketDto))
+            _mapperMock.Setup(x => x.Map(ticketDto))
                 .Returns(ticket);
             _ticketServiceMock.Setup(service => service.UpdateTicket(ticket, toDo))
                 .ReturnsAsync(tupleResponse);
@@ -163,7 +163,7 @@ namespace HelpDesk.Tests.Controllers
             var ticket = new Solicitud();
             var responseExpected = new List<SummaryInformation>();
             // Act
-            _mapperMock.Setup(x => x.Map<Solicitud>(ticketLiteDto))
+            _mapperMock.Setup(x => x.Map(ticketLiteDto))
                 .Returns(ticket);
             _ticketServiceMock.Setup(service => service.GetSummaryInformation(ticket))
                 .Returns(responseExpected);

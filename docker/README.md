@@ -39,6 +39,7 @@ For another environment (cloud, managed SQL), override that variable; no code ch
 | `SECRETS_KEY` (`Secrets__Key`) | Encrypts the companies' mail password in the database. Required, at least 32 characters. Changing it makes the stored mail passwords unreadable. |
 | `AUTH_ENFORCE` (`Auth__Enforce`) | `true` (default) rejects requests without a valid token. `false` is a transition mode that lets anonymous requests through; use it only for testing. |
 | `JWT_EXPIRES_MINUTES` (`Jwt__ExpiresMinutes`) | Token lifetime, 60 minutes by default. The front end asks for a new token while the user is active. |
+| `Jwt__ActiveCheckSeconds` | A valid token is also checked against the database so a disabled or deleted user stops working before it expires. The answer is remembered this many seconds per user, 30 by default (0 checks on every request). |
 | `Auth__MaxFailedAttempts`, `Auth__LockoutMinutes` | Sign-in lockout, 5 attempts and 15 minutes by default. |
 | `Cors__AllowedOrigins` | Comma separated origins allowed to call the API from another site. Empty by default because the front end is served by the API itself. |
 
@@ -47,6 +48,20 @@ The app does not start without `Jwt__Key` and `Secrets__Key`. Never reuse the ex
 ### Existing databases
 
 The company mail password is stored encrypted and needs a wider column. Databases created before this change must run `db/migrations/001-widen-company-mail-password.sql` once. Plain-text user passwords are converted to hashes the first time each user signs in; a stored mail password is encrypted the next time its company is saved.
+
+### Reading the e-mails the application sends
+
+Tickets send e-mail (assigned, completed, approved) through the mail server saved in each company. To see those messages without sending anything out, start the stack with the mail catcher:
+
+```sh
+docker compose -f docker-compose.yml -f docker-compose.mail.yml up -d
+```
+
+Then point the company at it (Entidad screen, or in the database): mail server `mailpit`, port `1025`, any sender address and password. Open http://localhost:8025 to read what was sent (`MAILPIT_PORT` changes that port).
+
+- This is for development only. The catcher uses a self-signed certificate generated on first start, so the web container runs with `Mail__AllowUntrustedCertificates=true`. Never set that in production.
+- If an e-mail cannot be sent, the ticket change is still saved and the reason is written to the web container log (`docker compose logs web`), for example a wrong server, port or password.
+- The application always asks the mail server for an encrypted connection (STARTTLS), so a real server must offer it, as Gmail and Microsoft 365 do on port 587.
 
 ## Notes
 

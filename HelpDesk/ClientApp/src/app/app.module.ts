@@ -26,13 +26,12 @@ import { UserComponent } from './components/shared/content/user/user.component';
 import { ProfileComponent } from './components/shared/content/profile/profile.component';
 import { FilterPipe } from './pipes/filter.pipe';
 import { CostumerComponent } from './components/shared/content/costumer/costumer.component';
-import { TicketComponent } from './components/shared/content/ticket/ticket.component';
-import { InboxComponent } from './components/shared/content/inbox/inbox.component';
 import { ReportComponent } from './components/shared/content/report/report.component';
+import { FieldHintsDirective } from './components/shared/field-hints.directive';
 import { WaitingComponent } from './components/shared/content/waiting/waiting.component';
-import { Waiting2Component } from './components/shared/content/waiting2/waiting2.component';
-import { Waiting3Component } from './components/shared/content/waiting3/waiting3.component';
-import { Waiting4Component } from './components/shared/content/waiting4/waiting4.component';
+import { TicketTimelineComponent } from './components/shared/content/ticket-shared/ticket-timeline.component';
+import { TicketPartsComponent } from './components/shared/content/ticket-shared/ticket-parts.component';
+import { TicketItemDialogsComponent } from './components/shared/content/ticket-shared/ticket-item-dialogs.component';
 import { CalendarComponent } from './components/shared/content/calendar/calendar.component';
 
 
@@ -54,13 +53,12 @@ import { CalendarComponent } from './components/shared/content/calendar/calendar
     ProfileComponent,
     FilterPipe,
     CostumerComponent,
-    TicketComponent,
-    InboxComponent,
     ReportComponent,
     WaitingComponent,
-    Waiting2Component,
-    Waiting3Component,
-    Waiting4Component,
+    FieldHintsDirective,
+    TicketTimelineComponent,
+    TicketPartsComponent,
+    TicketItemDialogsComponent,
     CalendarComponent
   ],
   imports: [
@@ -76,13 +74,14 @@ import { CalendarComponent } from './components/shared/content/calendar/calendar
       { path: 'user', component: UserComponent, canActivate: [AuthGuard], data: { minLevel: 3 } },
       { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
       { path: 'costumer', component: CostumerComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
-      { path: 'ticket', component: TicketComponent, canActivate: [AuthGuard], data: { minLevel: 2 } },
-      { path: 'inbox', component: InboxComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
+      { path: 'ticket', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2, mode: 'all', title: 'Ordenes de servicio' } },
+      { path: 'inbox', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 1, mode: 'inbox', title: 'Buzón' } },
       { path: 'report', component: ReportComponent, canActivate: [AuthGuard], data: { minLevel: 3 } },
-      { path: 'waiting', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2 } },
-      { path: 'waiting2', component: Waiting2Component, canActivate: [AuthGuard], data: { minLevel: 2 } },
-      { path: 'waiting3', component: Waiting3Component, canActivate: [AuthGuard], data: { minLevel: 2 } },
-      { path: 'finished', component: Waiting4Component, canActivate: [AuthGuard], data: { minLevel: 2 } },
+      // The lists of tickets (pending to assign, inbox and finished) are one screen; the route says which one it is, which type it shows and its title.
+      { path: 'waiting', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2, requestType: null, title: 'Ordenes pendiente por asignar' } },
+      { path: 'waiting2', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2, requestType: 'workshop', title: 'Ordenes de Servicio de Taller pendiente por asignar' } },
+      { path: 'waiting3', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2, requestType: 'onSite', title: 'Ordenes de Servicio a Domicilio pendiente por asignar' } },
+      { path: 'finished', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2, mode: 'finished', title: 'Ordenes Completadas' } },
       { path: 'calendar', component: CalendarComponent, canActivate: [AuthGuard], data: { minLevel: 1 } }
     ]),
     ReactiveFormsModule,

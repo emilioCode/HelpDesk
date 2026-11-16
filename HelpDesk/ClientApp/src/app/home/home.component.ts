@@ -39,7 +39,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         
         /* */
         // this.service.isLoading = true;
-        this.service.http.get(this.service.baseUrl + 'api/Ticket/numbersOfTickets/'+ this.service.getUser().id ,{headers:this.service.headers,responseType:'json'})
+        this.service.get('Ticket/numbersOfTickets/'+ this.service.getUser().id)
           .subscribe(res=>{
             this.numbers =  res.data;
             // console.log( this.numbers );
@@ -66,7 +66,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   numbers:any = {};
   numbersOfTickets(idUser){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Ticket/numbersOfTickets/'+ idUser ,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Ticket/numbersOfTickets/'+ idUser)
       .subscribe(res=>{
         this.numbers =  res.data;
         // console.log( this.numbers );

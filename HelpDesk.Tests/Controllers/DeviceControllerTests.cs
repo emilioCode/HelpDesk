@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using HelpDesk.Controllers;
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
@@ -15,13 +15,13 @@ namespace HelpDesk.Tests.Controllers
     public class DeviceControllerTests
     {
         private readonly Mock<IDeviceService> _deviceServiceMock;
-        private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IHelpDeskMapper> _mapperMock;
 
         private readonly DeviceController _deviceController;
         public DeviceControllerTests()
         {
             _deviceServiceMock = new Mock<IDeviceService>();
-            _mapperMock = new Mock<IMapper>();
+            _mapperMock = new Mock<IHelpDeskMapper>();
 
             _deviceController = new DeviceController(_deviceServiceMock.Object, _mapperMock.Object);
         }
@@ -36,7 +36,7 @@ namespace HelpDesk.Tests.Controllers
             // Act
             _deviceServiceMock.Setup(service => service.GetDevicesByTicketId(ticketId))
                 .Returns(devices);
-            _mapperMock.Setup(x => x.Map<IEnumerable<EquipoDto>>(devices))
+            _mapperMock.Setup(x => x.Map(devices))
                 .Returns(devicesDto);
             var result = _deviceController.Get(ticketId) as OkObjectResult;
             // Assert
@@ -52,11 +52,11 @@ namespace HelpDesk.Tests.Controllers
             var device = new Equipo();
             var deviceDto = new EquipoDto();
             // Act
-            _mapperMock.Setup(x => x.Map<Equipo>(deviceDto))
+            _mapperMock.Setup(x => x.Map(deviceDto))
                 .Returns(device);
             _deviceServiceMock.Setup(service => service.AddDevice(device))
                 .ReturnsAsync(device);
-            _mapperMock.Setup(x => x.Map<EquipoDto>(device))
+            _mapperMock.Setup(x => x.Map(device))
                 .Returns(deviceDto);
             var result = await _deviceController.PostOne(deviceDto) as OkObjectResult;
             var response = result.Value as ObjectResponse;
@@ -73,11 +73,11 @@ namespace HelpDesk.Tests.Controllers
             var devices = new List<Equipo>();
             var devicesDto = new List<EquipoDto>();
             // Act
-            _mapperMock.Setup(x => x.Map<List<Equipo>>(devicesDto))
+            _mapperMock.Setup(x => x.Map(devicesDto))
                 .Returns(devices);
             _deviceServiceMock.Setup(service => service.AddRangeDevice(devices))
                 .ReturnsAsync(devices);
-            _mapperMock.Setup(x => x.Map<List<EquipoDto>>(devices))
+            _mapperMock.Setup(x => x.Map(devices))
                 .Returns(devicesDto);
             var result = await _deviceController.PostArray(devicesDto) as OkObjectResult;
             var response = result.Value as ObjectResponse;
@@ -94,11 +94,11 @@ namespace HelpDesk.Tests.Controllers
             var device = new Equipo();
             var deviceDto = new EquipoDto();
             // Act
-            _mapperMock.Setup(x => x.Map<Equipo>(deviceDto))
+            _mapperMock.Setup(x => x.Map(deviceDto))
                 .Returns(device);
             _deviceServiceMock.Setup(service => service.ModifyDevice(device))
                 .ReturnsAsync(device);
-            _mapperMock.Setup(x => x.Map<EquipoDto>(device))
+            _mapperMock.Setup(x => x.Map(device))
                 .Returns(deviceDto);
             var result = await _deviceController.Put(deviceDto) as OkObjectResult;
             var response = result.Value as ObjectResponse;

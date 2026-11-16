@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
@@ -15,8 +15,8 @@ namespace HelpDesk.Controllers
     public class DeviceController : ControllerBase
     {
         private readonly IDeviceService _deviceService;
-        private readonly IMapper _mapper;
-        public DeviceController(IDeviceService deviceService, IMapper mapper)
+        private readonly IHelpDeskMapper _mapper;
+        public DeviceController(IDeviceService deviceService, IHelpDeskMapper mapper)
         {
             _deviceService = deviceService;
             _mapper = mapper;
@@ -26,7 +26,7 @@ namespace HelpDesk.Controllers
         public IActionResult Get(int ticketId)
         {
             var devices = _deviceService.GetDevicesByTicketId(ticketId);
-            var devicesDto = _mapper.Map<IEnumerable<EquipoDto>>(devices);
+            var devicesDto = _mapper.Map(devices);
             return Ok(devicesDto);
         }
 
@@ -34,9 +34,9 @@ namespace HelpDesk.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> PostOne([FromBody] EquipoDto deviceDto)
         {
-            var device = _mapper.Map<Equipo>(deviceDto);
+            var device = _mapper.Map(deviceDto);
             device = await _deviceService.AddDevice(device);
-            deviceDto = _mapper.Map<EquipoDto>(device);
+            deviceDto = _mapper.Map(device);
             var response = ObjectResponse.Saved(Messages.Created, deviceDto);
             return Ok(response);
         }
@@ -44,9 +44,9 @@ namespace HelpDesk.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> PostArray([FromBody] List<EquipoDto> devicesDto)
         {
-            var devices = _mapper.Map<List<Equipo>>(devicesDto);
+            var devices = _mapper.Map(devicesDto);
             devices = await _deviceService.AddRangeDevice(devices);
-            var deviceDtos = _mapper.Map<IEnumerable<EquipoDto>>(devices);
+            var deviceDtos = _mapper.Map(devices);
             var response = ObjectResponse.Saved(Messages.Created, deviceDtos);
             return Ok(response);
         }
@@ -55,9 +55,9 @@ namespace HelpDesk.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Put([FromBody] EquipoDto deviceDto)
         {
-            var device = _mapper.Map<Equipo>(deviceDto);
+            var device = _mapper.Map(deviceDto);
             device = await _deviceService.ModifyDevice(device);
-            deviceDto = _mapper.Map<EquipoDto>(device);
+            deviceDto = _mapper.Map(device);
             var response = ObjectResponse.Saved(Messages.Modified, deviceDto);
             return Ok(response);
         }

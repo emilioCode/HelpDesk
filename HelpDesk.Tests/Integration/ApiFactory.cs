@@ -45,6 +45,16 @@ namespace HelpDesk.Tests.Integration
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.UseEnvironment("Testing");
+            // The settings the application reads while it starts. With the host of the application (WebApplication) the code that
+            // starts it reads the configuration before ConfigureAppConfiguration is applied, so they go in as settings of the host.
+            builder.UseSetting("Jwt:Key", JwtKey);
+            builder.UseSetting("Secrets:Key", SecretsKey);
+            builder.UseSetting("ConnectionStrings:HelpDesk", "unused");
+            builder.UseSetting("Jwt:ActiveCheckSeconds", _activeCheckSeconds.ToString());
+            if (_enforce.HasValue)
+            {
+                builder.UseSetting("Auth:Enforce", _enforce.Value ? "true" : "false");
+            }
             builder.ConfigureAppConfiguration((context, config) =>
             {
                 // The single page app is not built in tests; a few stand-in files let the static file rules be checked.
@@ -53,21 +63,13 @@ namespace HelpDesk.Tests.Integration
                 File.WriteAllText(Path.Combine(dist, "index.html"), "<html><body>HelpDesk</body></html>");
                 File.WriteAllText(Path.Combine(dist, "runtime.js"), "// unhashed bundle");
                 File.WriteAllText(Path.Combine(dist, "main.0123456789abcdef0123.js"), "// hashed bundle");
-                config.AddInMemoryCollection(new Dictionary<string, string>
-                {
-                    ["Jwt:Key"] = JwtKey,
-                    ["Secrets:Key"] = SecretsKey,
-                    ["ConnectionStrings:HelpDesk"] = "unused",
-                    ["Jwt:ActiveCheckSeconds"] = _activeCheckSeconds.ToString()
-                });
-                if (_enforce.HasValue)
-                {
-                    config.AddInMemoryCollection(new Dictionary<string, string> { ["Auth:Enforce"] = _enforce.Value ? "true" : "false" });
-                }
             });
             builder.ConfigureTestServices(services =>
             {
                 services.RemoveAll<DbContextOptions<HelpDeskDBContext>>();
+                // From EF Core 9 the options of a context are also kept as a configuration object; without removing it too,
+                // the SQL Server provider stays registered next to the in-memory one.
+                services.RemoveAll<Microsoft.EntityFrameworkCore.Infrastructure.IDbContextOptionsConfiguration<HelpDeskDBContext>>();
                 services.RemoveAll<HelpDeskDBContext>();
                 services.AddDbContext<HelpDeskDBContext>(options => options.UseInMemoryDatabase(_databaseName));
                 services.RemoveAll<IMailService>();
@@ -102,7 +104,10 @@ namespace HelpDesk.Tests.Integration
                 User(13, "renewoff", "TECNICO", 1, hash),                // gets disabled after signing in
                 User(14, "revokeoff", "TECNICO", 1, hash),               // gets disabled while holding a valid token
                 User(15, "revokedel", "TECNICO", 1, hash),               // gets deleted while holding a valid token
-                User(16, "revokecache", "TECNICO", 1, hash));            // gets disabled inside the cache window
+                User(16, "revokecache", "TECNICO", 1, hash),             // gets disabled inside the cache window
+                User(17, "rolechg", "TECNICO", 1, hash),                 // gets a new role while holding a valid token
+                User(18, "companychg", "TECNICO", 1, hash),              // is moved to another company while holding a valid token
+                User(19, "samerole", "TECNICO", 1, hash));               // is edited without changing role or company
 
             db.Clientes.AddRange(
                 new Cliente { Id = 1, Nombre = "Customer A", Correo = "ca@test.local", IdEmpresa = 1, Habilitado = true },
@@ -177,8 +182,6 @@ namespace HelpDesk.Tests.Integration
                 lock (Sent) { Sent.Add((emailTo, subject, message)); }
                 return true;
             }
-
-            public bool TestConnection() => true;
         }
     }
 

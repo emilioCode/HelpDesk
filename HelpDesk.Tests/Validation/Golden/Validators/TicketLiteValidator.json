@@ -1,0 +1,65 @@
+[
+  {
+    "situation": "nothing_filled",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      }
+    ]
+  },
+  {
+    "situation": "everything_filled",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "long_texts",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "blank_texts",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "empty_texts",
+    "valid": true,
+    "failures": []
+  },
+  {
+    "situation": "zero_numbers",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must not be empty.",
+        "ErrorCode": "NotEmptyValidator"
+      },
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      }
+    ]
+  },
+  {
+    "situation": "negative_numbers",
+    "valid": false,
+    "failures": [
+      {
+        "PropertyName": "IdEmpresa",
+        "ErrorMessage": "'Id Empresa' must be greater than '0'.",
+        "ErrorCode": "GreaterThanValidator"
+      }
+    ]
+  }
+]

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using HelpDesk.Core.DTOs;
 using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
@@ -15,9 +15,9 @@ namespace HelpDesk.Controllers
     public class TicketController : ControllerBase
     {
         private readonly ITicketService _ticketService;
-        private readonly IMapper _mapper;
+        private readonly IHelpDeskMapper _mapper;
         private readonly IMailService _mailService;
-        public TicketController(ITicketService ticketService, IMapper mapper, IMailService mailService)
+        public TicketController(ITicketService ticketService, IHelpDeskMapper mapper, IMailService mailService)
         {
             _ticketService = ticketService;
             _mapper = mapper;
@@ -35,7 +35,7 @@ namespace HelpDesk.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SolicitudDto ticketDto)
         {
-            var ticket = _mapper.Map<Solicitud>(ticketDto);
+            var ticket = _mapper.Map(ticketDto);
             var result = await _ticketService.CreateTicket(ticket);
             ticket = result.Item1;
             
@@ -52,7 +52,7 @@ namespace HelpDesk.Controllers
         [HttpPost("[action]/{toDo}")]
         public async Task<IActionResult> EDIT(string toDo, [FromBody] SolicitudDto ticketDto)
         {
-            var ticket = _mapper.Map<Solicitud>(ticketDto);
+            var ticket = _mapper.Map(ticketDto);
             var results = await _ticketService.UpdateTicket(ticket, toDo);
             var response = ObjectResponse.Saved(Messages.Updated, results.Item1);
             if (results.Item2 != null)
@@ -78,7 +78,7 @@ namespace HelpDesk.Controllers
         [HttpPost("[action]")]
         public IActionResult GetJsonTicket([FromBody] SolicitudLiteDto ticketLiteDto)
         {
-            var ticket = _mapper.Map<Solicitud>(ticketLiteDto);
+            var ticket = _mapper.Map(ticketLiteDto);
             var response = _ticketService.GetSummaryInformation(ticket);
             return Ok(response);
         }

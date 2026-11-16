@@ -1,4 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 // import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
@@ -8,21 +10,144 @@ import * as signalR from '@microsoft/signalr';
   templateUrl: './waiting.component.html',
   styles: []
 })
-export class WaitingComponent implements OnInit, OnDestroy {
+export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
 
-  constructor(private service: ApiService) { 
-    if(this.service.getLevel(this.service.getUser().acceso) < 2 ){
+  // One screen for the lists of tickets. The route says which one it is:
+  //  - mode: 'pending' (not assigned yet), 'inbox' (the tickets of the person, not approved yet), 'finished' (completed, not approved yet)
+  //    or 'all' (every ticket; the only one that creates orders and customers)
+  //  - requestType: 'workshop', 'onSite', or nothing for every type (only for 'pending')
+  //  - title: the heading of the list
+  mode: string = 'pending';
+  requestType: string = null;
+  title: string = '';
+
+  constructor(private service: ApiService, private activatedRoute: ActivatedRoute, private formBuilder: FormBuilder) { 
+    this.initializeForms();
+    const data = this.activatedRoute.snapshot.data;
+    this.requestType = data.requestType ? this.service.requestTypes[data.requestType] : null;
+    this.title = data.title;
+    this.mode = data.mode || 'pending';
+    // The inbox is open to every level (it shows only the tickets of the person); the other lists need the moderator level.
+    if(this.mode != 'inbox' && this.service.getLevel(this.service.getUser().acceso) < 2 ){
       alert(this.service.messages.noPermissionToAccess);
       this.service.route.navigateByUrl('/');
     }else{
-      this.getTickets(this.service.getUser().id,"*")
+      this.getTickets(this.service.getUser().id, this.mode == 'inbox' ? 'unique' : '*')
     }
+  }
+
+  // The forms. The data of the screen stays in the plain objects (ticket, device, costumer), which the code of the screen reads and
+  // changes everywhere; each form keeps its controls and the validation, and both are kept equal (see ngDoCheck and watch).
+  ticketForm: FormGroup;
+  deviceForm: FormGroup;
+  costumerForm: FormGroup;
+
+  // Limits of the new device and of the new customer are the ones of the server (DeviceValidator, CustomerValidator) and of the columns.
+  private initializeForms(){
+    this.ticketForm = this.formBuilder.group({
+      idCliente: [null, Validators.required],
+      tipoSolicitud: [null, Validators.required],
+      tipoServicio: [null, Validators.required],
+      fechaInicio: [null],
+      horaInicio: [null],
+      fechaTermino: [null],
+      horaTermino: [null],
+      descripcion: [null],
+      estado: [null],
+      idUsuario: [null],
+      aprobadoPor: [null]
+    });
+    this.deviceForm = this.formBuilder.group({
+      descripcion: [null],
+      fallaReportada: [null, Validators.maxLength(80)],
+      marca: [null, Validators.maxLength(50)],
+      modelo: [null, Validators.maxLength(50)],
+      noSerial: [null, Validators.maxLength(50)]
+    });
+    this.costumerForm = this.formBuilder.group({
+      nombre: [null, [Validators.required, Validators.maxLength(100)]],
+      rnc: [null, [Validators.required, Validators.maxLength(30)]],
+      contacto: [null, Validators.maxLength(80)],
+      telefono: [null, Validators.maxLength(20)],
+      extension: [null, Validators.maxLength(10)],
+      correo: [null, Validators.maxLength(50)],
+      departamento: [null, Validators.maxLength(60)],
+      idEmpresa: [null],
+      direccion: [null]
+    });
+    this.watch(this.ticketForm, () => this.ticket);
+    this.watch(this.deviceForm, () => this.device);
+    this.watch(this.costumerForm, () => this.costumer);
+  }
+
+  // What the person types in a control goes to the object of the screen right away (before the code of the change event runs).
+  private watch(form: FormGroup, model: () => any){
+    Object.keys(form.controls).forEach(name => {
+      form.get(name).valueChanges.subscribe(value => { model()[name] = value; });
+    });
+  }
+
+  // What the code of the screen leaves in the objects goes to the controls, with the same rules the template used to apply with [disabled].
+  ngDoCheck(){
+    this.mirror(this.ticketForm, this.ticket);
+    this.mirror(this.deviceForm, this.device);
+    this.mirror(this.costumerForm, this.costumer);
+    this.applyDisabled();
+  }
+
+  private lastModel = new Map<FormGroup, any>();
+
+  private mirror(form: FormGroup, model: any){
+    if(this.lastModel.get(form) !== model){
+      // Another object (another ticket, a new customer...): the form starts clean, with no messages left from the one before.
+      this.lastModel.set(form, model);
+      form.markAsPristine();
+      form.markAsUntouched();
+    }
+    Object.keys(form.controls).forEach(name => {
+      const control = form.get(name);
+      const value = model && model[name] !== undefined ? model[name] : null;
+      if(control.value !== value){
+        control.setValue(value, { emitEvent: false });
+      }
+    });
+  }
+
+  private setDisabled(form: FormGroup, name: string, disabled: boolean){
+    const control = form.get(name);
+    if(disabled && control.enabled){
+      control.disable({ emitEvent: false });
+    }else if(!disabled && control.disabled){
+      control.enable({ emitEvent: false });
+    }
+  }
+
+  private applyDisabled(){
+    const t = this.ticket || {};
+    const level = this.service.getLevel(this.service.getUser().acceso);
+    const adding = this.option == 'add';
+    const closedAndApproved = t.estado == this.service.ticketStatuses.completed && t.aprobadoPor != null;
+    const dates = adding || closedAndApproved;
+    ['fechaInicio','horaInicio','fechaTermino','horaTermino'].forEach(n => this.setDisabled(this.ticketForm, n, dates));
+    // What an administrator can still adjust: not on a completed ticket, and not by lower levels once the ticket exists.
+    const locked = (!adding && 2 > level) || t.estado == this.service.ticketStatuses.completed;
+    const finished = this.mode == 'finished';
+    this.setDisabled(this.ticketForm, 'idCliente', locked);
+    this.setDisabled(this.ticketForm, 'tipoSolicitud', !adding);
+    this.setDisabled(this.ticketForm, 'tipoServicio', finished ? !adding : locked);
+    this.setDisabled(this.ticketForm, 'descripcion', finished ? !adding : locked);
+    this.setDisabled(this.ticketForm, 'idUsuario', this.mode != 'inbox' && (level < 2 || (!adding && this.service.getUser().id == t.idUsuario && level < 1)));
+    this.setDisabled(this.ticketForm, 'aprobadoPor', true);
+    // Only a person who can create customers sees the new customer form enabled.
+    const canCreateCostumers = level > 1;
+    Object.keys(this.costumerForm.controls).forEach(n => this.setDisabled(this.costumerForm, n, !canCreateCostumers));
   }
 
   tickets:any;
   ticket:any={};
   option;
   costumers:any;
+  costumer:any={};
   users:any;
   devices:any = [];
   device:any={};
@@ -58,15 +183,15 @@ export class WaitingComponent implements OnInit, OnDestroy {
         
         /* */
         // this.service.isLoading = true;
-        this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
+        this.service.get('Ticket/'+ this.service.getUser().id + '/' + (this.mode == 'inbox' ? 'unique' : '*'))
           .subscribe(res=>{
-            this.tickets = res.filter(x=>x.idUsuario ==0);
+            this.tickets = this.listed(res);
             var id = this.ticket.id===null?0:this.ticket.id;
-            if(/*idUsuario >0 &&*/  id== idOther){
+            if((this.mode != 'inbox' || idUsuario >0) &&  id== idOther){
               
               this.ticket = this.tickets.filter(c=>c.id==idOther)[0];
               // console.log(this.ticket)
-              if(this.ticket === undefined){
+              if(this.ticket === undefined && this.mode != 'all'){
                 this.ticket = {};
                 // debugger;
                 var modal = document.getElementById('modal-default');
@@ -88,6 +213,18 @@ export class WaitingComponent implements OnInit, OnDestroy {
 
       }
       
+      // Only the screen that creates orders keeps its list of customers up to date.
+      if( this.mode == 'all' && component=='costumer' && idEmpresa == this.service.getUser().idEmpresa ){
+        this.service.get('Costumer/'+ this.service.getUser().id + '/' + '*')
+          .subscribe(res=>{
+            this.costumers = res;
+            this.service.isLoading = false;
+          },error => {
+            this.service.handleHttpError(error);
+            this.service.isLoading = false;
+          });
+      }
+
       if( component=='session' && idEmpresa == this.service.getUser().idEmpresa && idUsuario == this.service.getUser().id  ){
         if(idOther == 0 ){
           alert(this.service.messages.userDisabled);
@@ -167,7 +304,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
 
   getCostumers(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Costumer/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Costumer/'+ id + '/' + option)
       .subscribe(res=>{
         this.costumers = res;
         this.service.isLoading = false;
@@ -179,7 +316,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
 
   getUsers(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/User/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('User/'+ id + '/' + option)
       .subscribe(res=>{
         this.users = res;
         this.service.isLoading = false;
@@ -190,19 +327,26 @@ export class WaitingComponent implements OnInit, OnDestroy {
   }
 
   i=0;
+  // Only reachable while an order is being created (option 'add'), which only the 'all' screen does.
   addDeviceList(item){
-    if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
-    ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
-      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.deviceDataRequired,'info');
-      return false;
+    if(this.ticket.tipoSolicitud ==this.service.requestTypes.onSite){
+      this.addDeviceOne(item);
+    }else if(this.ticket.tipoSolicitud ==this.service.requestTypes.workshop){
+      if(this.service.validateTrim(item.marca) || this.service.validateTrim(item.fallaReportada)
+      ||this.service.validateTrim(item.modelo) ||this.service.validateTrim(item.noSerial)){
+        this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.deviceDataRequired,'info');
+        return false;
+      }
+      if(this.deviceForm.invalid){
+        this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.deviceDataTooLong,'info');
+        return false;
+      }
+      item.id =  this.i++;
+      item.idEmpresa = this.service.getUser().idEmpresa;
+      item.idSolicitud = 0;
+      this.devices.push(item)
+      this.addDevice =false;
     }
-    item.id =  this.i++;
-    item.idEmpresa = this.service.getUser().idEmpresa;
-    item.idSolicitud = 0;
-    this.devices.push(item)
-    this.addDevice =false;
-
-    // console.log( this.devices )
   }
 
   removeDeviceList(item){
@@ -213,11 +357,26 @@ export class WaitingComponent implements OnInit, OnDestroy {
     // console.log( this.devices )
   }
 
+  // The tickets this screen lists.
+  private listed(tickets){
+    switch(this.mode){
+      case 'inbox':
+        return tickets.filter(t=>t.aprobadoPor == null);
+      case 'finished':
+        return tickets.filter(x=>x.estado == this.service.ticketStatuses.completed && x.aprobadoPor==null);
+      case 'all':
+        return tickets;
+      default:
+        // No technician yet, and of the type this screen shows.
+        return tickets.filter(x=>x.idUsuario ==0 && (this.requestType == null || x.tipoSolicitud == this.requestType));
+    }
+  }
+
   getTickets(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Ticket/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Ticket/'+ id + '/' + option)
       .subscribe(res=>{
-        this.tickets = res.filter(x=>x.idUsuario ==0);
+        this.tickets = this.listed(res);
         // console.log(  this.tickets )
         this.tickets.forEach(element => {
           if(element.horaInicio != null)element.horaInicio = element.horaInicio; //this.service.fillZeroWithNumber(element.horaInicio/*.value.hours*/) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.minutes) + ":" + this.service.fillZeroWithNumber(element.horaInicio.value.seconds); 
@@ -231,9 +390,8 @@ export class WaitingComponent implements OnInit, OnDestroy {
   }
 
   add(){
-    if(this.service.validate(this.ticket.tipoSolicitud)
-    || this.service.validate(this.ticket.tipoServicio) || this.service.validate(this.ticket.estado)
-    || this.service.validate(this.ticket.idCliente) /*|| this.service.validate(this.ticket.idUsuario)*/ ){
+    // The customer, the type of request and the type of service are required (the form says so); the state is always set.
+    if(this.ticketForm.invalid || this.service.validate(this.ticket.estado)){
       this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.completeMinimumOrderData,'warning');
       return false;
     }
@@ -255,7 +413,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
     // console.log('--TICKET REQUEST--')
     // console.log(this.ticket)
     this.service.isLoading = true;
-     this.service.http.post(this.service.baseUrl + 'api/Ticket',this.ticket,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Ticket', this.ticket)
       .subscribe(res=>{
       // console.log( res )
       this.service.swal(res.title,res.message,res.icon);
@@ -263,6 +421,8 @@ export class WaitingComponent implements OnInit, OnDestroy {
         this.option = 'edit';
         var idSolicitud = res.data.id;
         if(this.devices.length > 0)this.addDevices(idSolicitud);
+        this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,0)
+        this.ticket.id = res.data.id;
         this.ticket.noSecuencia = res.data.noSecuencia;
         this.ticket.fechaCreacion = res.data.fechaCreacion;
         this.ticket.fechaInicio = res.data.fechaInicio;
@@ -289,7 +449,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
     });
     // console.log('devices')
     // console.log(this.devices)
-     this.service.http.post(this.service.baseUrl + 'api/Device/PostArray',this.devices,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Device/PostArray', this.devices)
       .subscribe(res=>{
       // console.log( res )
       
@@ -297,10 +457,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
         // console.log('devices saved')
         
 
-        this.getDevices(idSolicitud);
-        // var object = this.devices.filter(x=>x.idSolicitud==idSolicitud)[0];
-        // console.log(""+this.option+" "+object)
-        // this.fillModal(this.option,object);
+        // The devices of a new order are already in the list; nothing to ask for.
       }else{
         this.devices = temp;
         this.service.swal(res.title,res.message,res.icon);
@@ -314,7 +471,8 @@ export class WaitingComponent implements OnInit, OnDestroy {
 
   getDevices(id){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Device/'+ id,{headers:this.service.headers,responseType:'json'})
+    // The inbox has always asked with the company in the address too.
+    this.service.get('Device/'+ id + (this.mode == 'inbox' ? '/' + this.service.getUser().idEmpresa : ''))
       .subscribe(res=>{
         this.devices = res;
         // console.log(  this.devices )
@@ -332,7 +490,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
 
   getTraces(idSolicitud,idEmpresa){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Trace/'+ idSolicitud + '/' + idEmpresa,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Trace/'+ idSolicitud + '/' + idEmpresa)
       .subscribe(res=>{
         this.traces = res.data;
         // console.log(  this.traces )
@@ -351,12 +509,17 @@ export class WaitingComponent implements OnInit, OnDestroy {
     this.trace.idSolicitud = this.ticket.id;
 
     this.service.isLoading = true;
-    this.service.http.post(this.service.baseUrl + 'api/Trace', this.trace ,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Trace', this.trace)
       .subscribe(res=>{
-        this.getTraces(this.ticket.id,this.ticket.idEmpresa)
+        if(this.mode == 'inbox' || this.mode == 'all'){
+          // The inbox and the full list let the notice bring the activities back instead of asking for them.
+          this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
+        }else{
+          this.getTraces(this.ticket.id,this.ticket.idEmpresa)
+        }
         this.trace = {};
         var element = document.getElementById('divScroll');
-        element.scrollTop = 500;
+        element.scrollTop = (this.mode == 'inbox' || this.mode == 'all') ? element.scrollHeight + 60 : 500;
 
         this.service.isLoading = false;
       },error => {
@@ -377,7 +540,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
         break;
     }
     this.service.isLoading = true;
-    this.service.http.post(this.service.baseUrl + 'api/Trace/Put', trace ,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Trace/Put', trace)
       .subscribe(res=>{
         // this.getTraces(this.ticket.id,this.ticket.idEmpresa)
         this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
@@ -434,6 +597,11 @@ export class WaitingComponent implements OnInit, OnDestroy {
           break;
       }
     }else if(option =='USUARIO'){
+      // A new order (no number yet) is not assigned until it is created.
+      if(!this.ticket.noSecuencia){
+        return false;
+      }
+
       var response = confirm(this.service.messages.confirmAssignTicket);
       if(!response){
   
@@ -461,7 +629,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
       option = "NOCHANGEPLEASE";
     }
     this.service.isLoading = true;
-    this.service.http.post(this.service.baseUrl + 'api/Ticket/EDIT/'+option, this.ticket ,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Ticket/EDIT/'+option, this.ticket)
       .subscribe(res=>{
         // console.log(res.data)
 
@@ -593,7 +761,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
 
   getUsersAP(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/User/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('User/'+ id + '/' + option)
       .subscribe(res=>{
         this.costumerAPs = res;
 
@@ -605,9 +773,47 @@ export class WaitingComponent implements OnInit, OnDestroy {
       });
   }
 
+  chooseClient(client){
+    this.ticket.idCliente = String(client.id);
+  }
+
+  // A new customer starts from an empty form.
+  newClient(){
+    this.costumer = {};
+  }
+
+  addClient(){
+    this.costumer.idEmpresa = this.service.getUser().idEmpresa;
+
+    if(this.service.getLevel(this.service.getUser().acceso) <= 1){
+      this.service.swal(this.service.messages.titleAccessDenied,'','error');
+      return false;
+    }
+    this.service.isLoading = true;
+     // The empty fields are not sent, as before.
+     const body = Object.assign({}, this.costumer);
+     Object.keys(body).forEach(k => { if(body[k] === '' || body[k] === null) delete body[k]; });
+     this.service.post('Costumer', body)
+      .subscribe(res=>{
+      this.service.swal(res.title,res.message,res.icon);
+      if(res.code=="1") {
+        this.hubConnection.invoke('refresh', 'costumer',this.costumer.idEmpresa,0,0);
+        document.getElementById('btnCloseClient2').click();
+        document.getElementById('btnCloseClient').click();
+
+        this.ticket.idCliente = String(res.data.id);
+        this.costumer = {};
+      }
+      this.service.isLoading =false;
+      },error => {
+        this.service.handleHttpError(error);
+        this.service.isLoading =false;
+      });
+  }
+
   getParts(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Part/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Part/'+ id + '/' + option)
       .subscribe(res=>{
         this.parts = res;
         // console.log(  this.parts )
@@ -629,7 +835,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
     part.idEmpresa = this.ticket.idEmpresa;
     // console.log('devices')
     // console.log(this.devices)
-     this.service.http.post(this.service.baseUrl + 'api/Part',part,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Part', part)
       .subscribe(res=>{
       // console.log( res )
       
@@ -654,7 +860,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
     this.service.isLoading = true;
     // console.log('devices')
     // console.log(this.devices)
-     this.service.http.post(this.service.baseUrl + 'api/Device/PostOne',device,{headers:this.service.headers,responseType:'json'})
+     this.service.post('Device/PostOne', device)
       .subscribe(res=>{
       // console.log( res )
       
@@ -679,6 +885,10 @@ export class WaitingComponent implements OnInit, OnDestroy {
       this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.deviceDataRequired,'info');
       return false;
     }
+    if(this.deviceForm.invalid){
+      this.service.swal(this.service.messages.titleRequiredFields,this.service.messages.deviceDataTooLong,'info');
+      return false;
+    }
     item.id = 0;
     item.idEmpresa = this.service.getUser().idEmpresa;
     item.idSolicitud = Number(this.ticket.id);
@@ -701,7 +911,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
     }
     this.service.isLoading = true;
     
-    this.service.http.post(this.service.baseUrl + 'api/Part/Put',part,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Part/Put', part)
     .subscribe(res=>{
     // console.log( res )
     
@@ -724,7 +934,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
 
   deletePartUsed(part){
     // console.log(part);
-    this.service.http.post(this.service.baseUrl + 'api/Part/Delete/'+part.id,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Part/Delete/'+part.id)
     .subscribe(res=>{
     // console.log( res )
     
@@ -754,7 +964,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
 
   deleteDevice(part){
     // console.log(part);
-    this.service.http.post(this.service.baseUrl + 'api/Device/Delete/'+part.id,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Device/Delete/'+part.id)
     .subscribe(res=>{
     // console.log( res )
     
@@ -784,7 +994,7 @@ export class WaitingComponent implements OnInit, OnDestroy {
     }
     this.service.isLoading = true;
     
-    this.service.http.post(this.service.baseUrl + 'api/Device/Put',part,{headers:this.service.headers,responseType:'json'})
+    this.service.post('Device/Put' + (this.mode == 'inbox' ? '/' : ''), part)
     .subscribe(res=>{
     // console.log( res )
     

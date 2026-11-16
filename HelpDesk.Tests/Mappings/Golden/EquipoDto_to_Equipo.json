@@ -1,0 +1,54 @@
+[
+  {
+    "input": {
+      "Id": 14,
+      "IdSolicitud": 16,
+      "IdEmpresa": 15,
+      "Descripcion": "Descripcion-text",
+      "FallaReportada": "FallaReportada-text",
+      "Marca": "Marca-text",
+      "Modelo": "Modelo-text",
+      "NoSerial": "NoSerial-text",
+      "Habilitado": true
+    },
+    "output": {
+      "IdSolicitud": 16,
+      "IdEmpresa": 15,
+      "Descripcion": "Descripcion-text",
+      "FallaReportada": "FallaReportada-text",
+      "Marca": "Marca-text",
+      "Modelo": "Modelo-text",
+      "NoSerial": "NoSerial-text",
+      "Id": 14,
+      "Habilitado": true
+    }
+  },
+  {
+    "input": {
+      "Id": 0,
+      "IdSolicitud": 0,
+      "IdEmpresa": 0,
+      "Descripcion": null,
+      "FallaReportada": null,
+      "Marca": null,
+      "Modelo": null,
+      "NoSerial": null,
+      "Habilitado": null
+    },
+    "output": {
+      "IdSolicitud": 0,
+      "IdEmpresa": 0,
+      "Descripcion": null,
+      "FallaReportada": null,
+      "Marca": null,
+      "Modelo": null,
+      "NoSerial": null,
+      "Id": 0,
+      "Habilitado": null
+    }
+  },
+  {
+    "input": null,
+    "output": null
+  }
+]

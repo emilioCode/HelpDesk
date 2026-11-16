@@ -1,0 +1,46 @@
+[
+  {
+    "input": {
+      "IdSolicitud": 16,
+      "IdEmpresa": 15,
+      "Cantidad": 11,
+      "NoSerial": "NoSerial-text",
+      "Descripcion": "Descripcion-text",
+      "Id": 14,
+      "Habilitado": true
+    },
+    "output": {
+      "Id": 14,
+      "IdSolicitud": 16,
+      "IdEmpresa": 15,
+      "Cantidad": 11,
+      "NoSerial": "NoSerial-text",
+      "Descripcion": "Descripcion-text",
+      "Habilitado": true
+    }
+  },
+  {
+    "input": {
+      "IdSolicitud": 0,
+      "IdEmpresa": 0,
+      "Cantidad": 0,
+      "NoSerial": null,
+      "Descripcion": null,
+      "Id": 0,
+      "Habilitado": null
+    },
+    "output": {
+      "Id": 0,
+      "IdSolicitud": 0,
+      "IdEmpresa": 0,
+      "Cantidad": 0,
+      "NoSerial": null,
+      "Descripcion": null,
+      "Habilitado": null
+    }
+  },
+  {
+    "input": null,
+    "output": null
+  }
+]

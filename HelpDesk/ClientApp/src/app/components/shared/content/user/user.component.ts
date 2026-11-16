@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, Pipe } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { FilterPipe } from '../../../../pipes/filter.pipe';
 // import * as signalR from '@aspnet/signalr';
@@ -6,12 +7,13 @@ import * as signalR from '@microsoft/signalr';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styles: []
+  styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }']
 })
 @Pipe({name:'FilterPipe'})
 export class UserComponent implements OnInit, OnDestroy {
   
-  constructor(private service:ApiService) {
+  constructor(private service:ApiService, private formBuilder: FormBuilder) {
+    this.initializeForm();
     if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
       alert(this.service.messages.noPermissionToAccess);
       this.service.route.navigateByUrl('/');
@@ -29,6 +31,25 @@ export class UserComponent implements OnInit, OnDestroy {
   imageUrl;
   levels:any;
   hubConnection: signalR.HubConnection;
+  form: FormGroup;
+
+  // Same rules as the server-side validator (UserValidator). The password is required only when creating (see fillModal).
+  initializeForm = (): void => {
+    this.form = this.formBuilder.group({
+      nombre: ['', [Validators.required, Validators.maxLength(255)]],
+      numDocumento: ['', [Validators.required, Validators.maxLength(30)]],
+      cuentaUsuario: ['', [Validators.required, Validators.maxLength(20)]],
+      contrasena: ['', Validators.minLength(6)],
+      correo: ['', [Validators.maxLength(50), Validators.email]],
+      idEmpresa: [null, Validators.required],
+      acceso: ['', [Validators.required, Validators.maxLength(20)]]
+    });
+  }
+
+  // The form holds what the person types; the rest of the user (id, photo, status) stays in this.user.
+  private payload() {
+    return Object.assign({}, this.user, this.form.value);
+  }
 
   // Each screen opens its own real-time connection, so it closes it when the screen goes away.
   ngOnDestroy() {
@@ -53,10 +74,21 @@ export class UserComponent implements OnInit, OnDestroy {
         
         /* */
         // this.service.isLoading = true;
-        this.service.http.get(this.service.baseUrl + 'api/User/'+ this.service.getUser().id + '/' + '*',{headers:this.service.headers,responseType:'json'})
+        this.service.get('User/'+ this.service.getUser().id + '/' + '*')
           .subscribe(res=>{
             this.users = res;
             this.service.updateSession(this.users);
+            // The window that is open shows the form, not the list, so what the other person saved is put in the form too.
+            // The password is left as it is: what is being typed there is not part of the saved user.
+            if(this.option == 'edit' && idUsuario > 0 && this.user && this.user.id == idUsuario){
+              const saved = this.users.filter(u=>u.id==idUsuario)[0];
+              if(saved){
+                this.user = saved;
+                const shown = Object.assign({}, saved);
+                delete shown.contrasena;
+                this.form.patchValue(shown);
+              }
+            }
             if(!this.service.getUser().habilitado){
               alert(this.service.messages.userDisabled);
               this.service.closeSession();
@@ -83,7 +115,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   getUsers(id,option){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/User/'+ id + '/' + option,{headers:this.service.headers,responseType:'json'})
+    this.service.get('User/'+ id + '/' + option)
       .subscribe(res=>{
         this.users = res;
         this.service.updateSession(this.users);
@@ -98,7 +130,14 @@ export class UserComponent implements OnInit, OnDestroy {
     this.option = option;
     this.user = object;
     if(option=='add')this.user.idEmpresa = this.service.getUser().idEmpresa;
-    // console.log(this.user)
+    this.form.reset();
+    this.form.patchValue(object);
+    const password = this.form.get('contrasena');
+    password.setValidators(option == 'add' ? [Validators.required, Validators.minLength(6)] : [Validators.minLength(6)]);
+    password.updateValueAndValidity();
+    // The account name can be changed only by root once the user exists; nothing is edited when disabling.
+    option == 'delete' ? this.form.disable() : this.form.enable();
+    if(this.service.getUser().acceso != this.service.roles.root && option != 'add') this.form.get('cuentaUsuario').disable();
     this.getBusiness(this.service.getUser().id);
     this.levels = this.service.levels.filter(l=>l.value <= this.service.getLevel(this.service.getUser().acceso));
 
@@ -127,7 +166,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   getBusiness(id){
     this.service.isLoading = true;
-    this.service.http.get(this.service.baseUrl + 'api/Business/'+id,{headers:this.service.headers,responseType:'json'})
+    this.service.get('Business/'+id)
       .subscribe(res=>{
         this.empresas = res;
         this.service.isLoading = false;
@@ -139,7 +178,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   add(){
     this.service.isLoading = true;
-     this.service.http.post(this.service.baseUrl + 'api/User',this.user,{headers:this.service.headers,responseType:'json'})
+     this.service.post('User', this.payload())
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -167,12 +206,14 @@ export class UserComponent implements OnInit, OnDestroy {
   edit(){
     this.service.isLoading = true;
     this.user.habilitado = true;
-     this.service.http.post(this.service.baseUrl + 'api/User/Put/'+this.service.getUser().id,this.user,{headers:this.service.headers,responseType:'json'})
+    const body = this.payload();
+     this.service.post('User/Put/'+this.service.getUser().id, body)
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
         // this.getUsers(this.service.getUser().id,"*");
         this.hubConnection.invoke('refresh', 'users',this.user.idEmpresa,this.user.id,0)
+        // When the role or the company changed, the server itself tells that user to sign in again.
       }
       document.getElementById('closeModalBtn').click();
       this.service.isLoading =false;
@@ -195,7 +236,7 @@ export class UserComponent implements OnInit, OnDestroy {
   delete(){
     this.service.isLoading = true;
     this.user.habilitado = !this.user.habilitado;
-     this.service.http.post(this.service.baseUrl + 'api/User/Put/'+this.user.id,this.user,{headers:this.service.headers,responseType:'json'})
+     this.service.post('User/Put/'+this.user.id, this.user)
       .subscribe(res=>{
       this.service.swal(res.title,res.message,res.icon);
       if(res.code=="1") {
@@ -223,7 +264,7 @@ export class UserComponent implements OnInit, OnDestroy {
       this.renderHTML3 = "";
       this.message = "";
     }else{
-      this.service.http.get(this.service.baseUrl + 'api/Login/'+ this.service.getUser().idEmpresa + '/' + userAccount,{headers:this.service.headers,responseType:'json'})
+      this.service.get('Login/'+ this.service.getUser().idEmpresa + '/' + userAccount)
       .subscribe(res=>{
         
         this.renderHTML1= res ? "has-success has-feedback": "has-warning has-feedback";

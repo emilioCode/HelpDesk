@@ -39,6 +39,8 @@ services:
       Secrets__Key: "${SECRETS_KEY:?Set SECRETS_KEY in .env (at least 32 characters)}"
       Auth__Enforce: "${AUTH_ENFORCE:-true}"
       Jwt__ExpiresMinutes: "${JWT_EXPIRES_MINUTES:-60}"
+      # The time zone of the business. The API dates new orders and checks their dates with the clock of the container.
+      TZ: "${TZ:-UTC}"
     ports:
       - "${HELPDESK_PORT:-8080}:8080"
 
