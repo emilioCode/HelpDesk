@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, Pipe } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-// import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
 
 @Component({
@@ -12,8 +11,9 @@ import * as signalR from '@microsoft/signalr';
 })
 @Pipe({name:'FilterPipe'})
 export class CostumerComponent implements OnInit, OnDestroy {
+  search: any = "";
 
-  constructor(private service: ApiService, private formBuilder: FormBuilder) { 
+  constructor(public service: ApiService, private formBuilder: FormBuilder) { 
     this.initializeForm();
     this.getCostumers(this.service.getUser().id,"*")
   }

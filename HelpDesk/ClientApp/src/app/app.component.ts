@@ -8,7 +8,7 @@ import { SessionService } from './services/session.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  constructor(private service: ApiService, private session: SessionService){ }
+  constructor(public service: ApiService, private session: SessionService){ }
 
   ngOnInit(){
     this.session.start();

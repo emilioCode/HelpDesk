@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
-// import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
 @Component({
   selector: 'app-home',
@@ -8,7 +7,7 @@ import * as signalR from '@microsoft/signalr';
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  constructor(private service: ApiService){
+  constructor(public service: ApiService){
     if(this.service.getUser() !=null)this.numbersOfTickets(this.service.getUser().id)
   }
 

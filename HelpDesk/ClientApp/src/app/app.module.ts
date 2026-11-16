@@ -20,7 +20,7 @@ import { ApiService } from './services/api.service';
 import { AuthGuard } from './services/auth.guard';
 import { AuthInterceptor } from './services/auth.interceptor';
 import { SessionService } from './services/session.service';
-import { Ng2Webstorage } from 'ngx-webstorage';
+import { SessionStore } from './services/session-store.service';
 import { EmpresaComponent } from './components/shared/content/empresa/empresa.component';
 import { UserComponent } from './components/shared/content/user/user.component';
 import { ProfileComponent } from './components/shared/content/profile/profile.component';
@@ -62,7 +62,7 @@ import { CalendarComponent } from './components/shared/content/calendar/calendar
     CalendarComponent
   ],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+    BrowserModule,
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot([
@@ -84,13 +84,13 @@ import { CalendarComponent } from './components/shared/content/calendar/calendar
       { path: 'finished', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2, mode: 'finished', title: 'Ordenes Completadas' } },
       { path: 'calendar', component: CalendarComponent, canActivate: [AuthGuard], data: { minLevel: 1 } }
     ]),
-    ReactiveFormsModule,
-    Ng2Webstorage
+    ReactiveFormsModule
   ],
   providers: [
     ApiService,
     AuthGuard,
     SessionService,
+    SessionStore,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

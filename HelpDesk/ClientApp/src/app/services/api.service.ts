@@ -1,5 +1,5 @@
 import { Injectable,Inject } from '@angular/core';
-import { SessionStorageService } from 'ngx-webstorage';
+import { SessionStore } from './session-store.service';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import Swal from 'sweetalert2';
@@ -136,7 +136,7 @@ export class ApiService {
   defaultPhoto = '../../../../assets/dist/img/photo_default.png';
 
   constructor(
-    private sessionSt: SessionStorageService,
+    private sessionSt: SessionStore,
     private _route: Router,
     @Inject('BASE_URL') _baseUrl: string,
     private _http:HttpClient

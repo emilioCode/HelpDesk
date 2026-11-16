@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-// import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
 
 @Component({
@@ -75,7 +74,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
 
-  constructor(private service: ApiService, private formBuilder: FormBuilder) {
+  constructor(public service: ApiService, private formBuilder: FormBuilder) {
     this.initializeForm();
     this.getUsers(this.service.getUser().id,'UNIQUE');
     this.numbersOfTickets(this.service.getUser().id);
