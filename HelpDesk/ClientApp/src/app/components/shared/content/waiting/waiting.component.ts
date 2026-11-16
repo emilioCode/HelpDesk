@@ -2,7 +2,6 @@ import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
-// import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
 
 @Component({
@@ -11,6 +10,7 @@ import * as signalR from '@microsoft/signalr';
   styles: []
 })
 export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
+  search: any = "";
 
   // One screen for the lists of tickets. The route says which one it is:
   //  - mode: 'pending' (not assigned yet), 'inbox' (the tickets of the person, not approved yet), 'finished' (completed, not approved yet)
@@ -21,7 +21,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
   requestType: string = null;
   title: string = '';
 
-  constructor(private service: ApiService, private activatedRoute: ActivatedRoute, private formBuilder: FormBuilder) { 
+  constructor(public service: ApiService, private activatedRoute: ActivatedRoute, private formBuilder: FormBuilder) { 
     this.initializeForms();
     const data = this.activatedRoute.snapshot.data;
     this.requestType = data.requestType ? this.service.requestTypes[data.requestType] : null;

@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit, Pipe } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { FilterPipe } from '../../../../pipes/filter.pipe';
-// import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
 @Component({
   selector: 'app-user',
@@ -11,8 +10,9 @@ import * as signalR from '@microsoft/signalr';
 })
 @Pipe({name:'FilterPipe'})
 export class UserComponent implements OnInit, OnDestroy {
+  search: any = "";
   
-  constructor(private service:ApiService, private formBuilder: FormBuilder) {
+  constructor(public service:ApiService, private formBuilder: FormBuilder) {
     this.initializeForm();
     if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
       alert(this.service.messages.noPermissionToAccess);

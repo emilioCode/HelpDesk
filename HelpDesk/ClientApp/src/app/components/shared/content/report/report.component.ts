@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
-// import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
 
 @Component({
@@ -9,8 +8,9 @@ import * as signalR from '@microsoft/signalr';
   styles: []
 })
 export class ReportComponent implements OnInit, OnDestroy {
+  search: any = "";
 
-  constructor(private service: ApiService) {
+  constructor(public service: ApiService) {
     if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
       alert(this.service.messages.noPermissionToAccess);
       this.service.route.navigateByUrl('/');

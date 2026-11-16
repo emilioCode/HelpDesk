@@ -10,7 +10,7 @@ declare var fullCalendar: any;
 })
 export class CalendarComponent implements OnInit {
 
-  constructor(private service: ApiService) {}
+  constructor(public service: ApiService) {}
   events: Event[];
   event: Event = {
     title: '',

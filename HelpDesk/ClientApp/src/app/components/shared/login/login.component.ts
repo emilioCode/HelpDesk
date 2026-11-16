@@ -9,7 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private service: ApiService, private formBuilder: FormBuilder) { }
+  constructor(public service: ApiService, private formBuilder: FormBuilder) { }
 
   title = this.service.aplicationName;
   isLoading = false;

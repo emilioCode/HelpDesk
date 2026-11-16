@@ -6,8 +6,9 @@ import { ApiService } from '../../../services/api.service';
   templateUrl: './menu.component.html'
 })
 export class MenuComponent implements OnInit {
+  menuSearch: any = "";
 
-  constructor(private service: ApiService){}
+  constructor(public service: ApiService){}
 
   ngOnInit() {
   }
