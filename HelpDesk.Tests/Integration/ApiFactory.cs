@@ -45,6 +45,16 @@ namespace HelpDesk.Tests.Integration
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.UseEnvironment("Testing");
+            // The settings the application reads while it starts. With the host of the application (WebApplication) the code that
+            // starts it reads the configuration before ConfigureAppConfiguration is applied, so they go in as settings of the host.
+            builder.UseSetting("Jwt:Key", JwtKey);
+            builder.UseSetting("Secrets:Key", SecretsKey);
+            builder.UseSetting("ConnectionStrings:HelpDesk", "unused");
+            builder.UseSetting("Jwt:ActiveCheckSeconds", _activeCheckSeconds.ToString());
+            if (_enforce.HasValue)
+            {
+                builder.UseSetting("Auth:Enforce", _enforce.Value ? "true" : "false");
+            }
             builder.ConfigureAppConfiguration((context, config) =>
             {
                 // The single page app is not built in tests; a few stand-in files let the static file rules be checked.
@@ -53,17 +63,6 @@ namespace HelpDesk.Tests.Integration
                 File.WriteAllText(Path.Combine(dist, "index.html"), "<html><body>HelpDesk</body></html>");
                 File.WriteAllText(Path.Combine(dist, "runtime.js"), "// unhashed bundle");
                 File.WriteAllText(Path.Combine(dist, "main.0123456789abcdef0123.js"), "// hashed bundle");
-                config.AddInMemoryCollection(new Dictionary<string, string>
-                {
-                    ["Jwt:Key"] = JwtKey,
-                    ["Secrets:Key"] = SecretsKey,
-                    ["ConnectionStrings:HelpDesk"] = "unused",
-                    ["Jwt:ActiveCheckSeconds"] = _activeCheckSeconds.ToString()
-                });
-                if (_enforce.HasValue)
-                {
-                    config.AddInMemoryCollection(new Dictionary<string, string> { ["Auth:Enforce"] = _enforce.Value ? "true" : "false" });
-                }
             });
             builder.ConfigureTestServices(services =>
             {
