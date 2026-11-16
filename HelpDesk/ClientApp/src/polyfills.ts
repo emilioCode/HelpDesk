@@ -42,8 +42,7 @@
 
 
 /** Evergreen browsers require these. **/
-// Used for reflect-metadata in JIT. If you use AOT (and only Angular decorators), you can remove.
-import 'core-js/es7/reflect';
+// The Reflect polyfill (core-js/es7/reflect) is no longer needed: Ivy, the compiler since Angular 9, does not use it.
 
 
 /**
