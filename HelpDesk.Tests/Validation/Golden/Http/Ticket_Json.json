@@ -1,9 +1,9 @@
 [
   {
     "body": "nothing_filled",
-    "status": 200,
-    "type": "application/json",
-    "answer": "[{\"id\":1,\"noSecuencia\":\"1\",\"fechaCreacion\":\"<date>+00:00\",\"atendidoPor\":\"tech1\",\"cliente\":\"Customer A\",\"tipoSolicitud\":\"Servicio Taller\",\"tipoServicio\":\"Garantía\",\"estado\":\"Abierto\",\"idEmpresa\":1},{\"id\":2,\"noSecuencia\":\"2\",\"fechaCreacion\":\"<date>+00:00\",\"atendidoPor\":\"tech2\",\"cliente\":\"Customer A\",\"tipoSolicitud\":\"Servicio Taller\",\"tipoServicio\":\"Garantía\",\"estado\":\"Abierto\",\"idEmpresa\":1},{\"id\":4,\"noSecuencia\":\"3\",\"fechaCreacion\":\"<date>+00:00\",\"atendidoPor\":\"tech1\",\"cliente\":\"Customer A\",\"tipoSolicitud\":\"Servicio Taller\",\"tipoServicio\":\"Garantía\",\"estado\":\"Abierto\",\"idEmpresa\":1},{\"id\":5,\"noSecuencia\":\"4\",\"fechaCreacion\":\"<date>+00:00\",\"atendidoPor\":\"tech1\",\"cliente\":\"Customer A\",\"tipoSolicitud\":\"Servicio Taller\",\"tipoServicio\":\"Garantía\",\"estado\":\"Abierto\",\"idEmpresa\":1},{\"id\":10,\"noSecuencia\":\"10\",\"fechaCreacion\":\"<date>+00:00\",\"atendidoPor\":\"tech1\",\"cliente\":\"Customer A\",\"tipoSolicitud\":\"Servicio Taller\",\"tipoServicio\":\"Garantía\",\"estado\":\"Abierto\",\"idEmpresa\":1},{\"id\":11,\"noSecuencia\":\"11\",\"fechaCreacion\":\"<date>+00:00\",\"atendidoPor\":\"tech1\",\"cliente\":\"Customer A\",\"tipoSolicitud\":\"Servicio Taller\",\"tipoServicio\":\"Garantía\",\"estado\":\"Abierto\",\"idEmpresa\":1},{\"id\":12,\"noSecuencia\":\"12\",\"fechaCreacion\":\"<date>+00:00\",\"atendidoPor\":\"tech1\",\"cliente\":\"Customer A\",\"tipoSolicitud\":\"Servicio Taller\",\"tipoServicio\":\"Garantía\",\"estado\":\"Abierto\",\"idEmpresa\":1},{\"id\":13,\"noSecuencia\":\"13\",\"fechaCreacion\":\"<date>+00:00\",\"atendidoPor\":\"tech1\",\"cliente\":\"Customer A\",\"tipoSolicitud\":\"Servicio Taller\",\"tipoServicio\":\"Garantía\",\"estado\":\"Abierto\",\"idEmpresa\":1}]"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"IdEmpresa\":[\"'Id Empresa' must not be empty.\",\"'Id Empresa' must be greater than '0'.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "everything_filled",
@@ -31,15 +31,15 @@
   },
   {
     "body": "zero_numbers",
-    "status": 200,
-    "type": "application/json",
-    "answer": "[]"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"IdEmpresa\":[\"'Id Empresa' must not be empty.\",\"'Id Empresa' must be greater than '0'.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "negative_numbers",
-    "status": 200,
-    "type": "application/json",
-    "answer": "[]"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"IdEmpresa\":[\"'Id Empresa' must be greater than '0'.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "text_instead_of_a_number",

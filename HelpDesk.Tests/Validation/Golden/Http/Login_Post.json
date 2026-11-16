@@ -1,9 +1,9 @@
 [
   {
     "body": "empty_object",
-    "status": 204,
-    "type": null,
-    "answer": ""
+    "status": 400,
+    "type": "application/json",
+    "answer": "{\"errors\":{\"Contrasena\":[\"'Contrasena' must not be empty.\",\"'Contrasena' must not be empty.\"],\"CuentaUsuario\":[\"'Cuenta Usuario' must not be empty.\",\"'Cuenta Usuario' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "no_body",

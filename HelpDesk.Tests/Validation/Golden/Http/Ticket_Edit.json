@@ -1,9 +1,9 @@
 [
   {
     "body": "nothing_filled",
-    "status": 403,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"IdCliente\":[\"'Id Cliente' must be greater than '0'.\"],\"IdEmpresa\":[\"'Id Empresa' must be greater than '0'.\"],\"TipoServicio\":[\"'Tipo Servicio' must not be empty.\",\"'Tipo Servicio' must not be empty.\"],\"TipoSolicitud\":[\"'Tipo Solicitud' must not be empty.\",\"'Tipo Solicitud' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "everything_filled",
@@ -19,27 +19,27 @@
   },
   {
     "body": "blank_texts",
-    "status": 403,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"TipoServicio\":[\"'Tipo Servicio' must not be empty.\"],\"TipoSolicitud\":[\"'Tipo Solicitud' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "empty_texts",
-    "status": 403,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"TipoServicio\":[\"'Tipo Servicio' must not be empty.\"],\"TipoSolicitud\":[\"'Tipo Solicitud' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "zero_numbers",
-    "status": 403,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"IdCliente\":[\"'Id Cliente' must be greater than '0'.\"],\"IdEmpresa\":[\"'Id Empresa' must be greater than '0'.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "negative_numbers",
-    "status": 403,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"IdCliente\":[\"'Id Cliente' must be greater than '0'.\"],\"IdEmpresa\":[\"'Id Empresa' must be greater than '0'.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "text_instead_of_a_number",

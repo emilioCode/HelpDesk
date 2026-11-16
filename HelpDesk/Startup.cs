@@ -1,6 +1,8 @@
 
 using HelpDesk.Infrastructure.Extensions;
+using FluentValidation;
 using HelpDesk.Infrastructure.Filters;
+using HelpDesk.Infrastructure.Validators;
 using HelpDesk.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -63,7 +65,10 @@ namespace HelpDesk
                 .AddMvc(options =>
                 {
                     options.Filters.Add<ValidationFilter>();
+                    // The rules of the validators (Validators folder) are applied to every body the API receives
+                    options.ModelValidatorProviders.Add(new FluentValidationModelValidatorProvider());
                 });
+            services.AddValidatorsFromAssemblyContaining<CustomerValidator>(ServiceLifetime.Transient);
 
             services.AddServices();
             // In production, the Angular files will be served from this directory
