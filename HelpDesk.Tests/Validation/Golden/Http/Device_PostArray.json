@@ -8,14 +8,14 @@
   {
     "body": "one_empty_item",
     "status": 400,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"Field(s) required!\"}]}"
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"[0].Marca\":[\"'Marca' must not be empty.\"],\"[0].Modelo\":[\"'Modelo' must not be empty.\"],\"[0].NoSerial\":[\"'No Serial' must not be empty.\"],\"[0].IdEmpresa\":[\"'Id Empresa' must not be empty.\"],\"[0].IdSolicitud\":[\"'Id Solicitud' must not be empty.\"],\"[0].FallaReportada\":[\"'Falla Reportada' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "two_items",
     "status": 400,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"Field(s) required!\"}]}"
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"[0].Marca\":[\"The length of 'Marca' must be 50 characters or fewer. You entered 300 characters.\"],\"[0].Modelo\":[\"The length of 'Modelo' must be 50 characters or fewer. You entered 300 characters.\"],\"[0].NoSerial\":[\"The length of 'No Serial' must be 50 characters or fewer. You entered 300 characters.\"],\"[0].FallaReportada\":[\"The length of 'Falla Reportada' must be 80 characters or fewer. You entered 300 characters.\"],\"[1].Marca\":[\"'Marca' must not be empty.\"],\"[1].Modelo\":[\"'Modelo' must not be empty.\"],\"[1].NoSerial\":[\"'No Serial' must not be empty.\"],\"[1].IdEmpresa\":[\"'Id Empresa' must not be empty.\"],\"[1].IdSolicitud\":[\"'Id Solicitud' must not be empty.\"],\"[1].FallaReportada\":[\"'Falla Reportada' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "not_a_list",

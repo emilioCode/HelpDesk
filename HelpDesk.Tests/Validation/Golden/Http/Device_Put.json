@@ -2,8 +2,8 @@
   {
     "body": "nothing_filled",
     "status": 400,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"Field(s) required!\"}]}"
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"Marca\":[\"'Marca' must not be empty.\"],\"Modelo\":[\"'Modelo' must not be empty.\"],\"NoSerial\":[\"'No Serial' must not be empty.\"],\"IdEmpresa\":[\"'Id Empresa' must not be empty.\"],\"IdSolicitud\":[\"'Id Solicitud' must not be empty.\"],\"FallaReportada\":[\"'Falla Reportada' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "everything_filled",
@@ -13,9 +13,9 @@
   },
   {
     "body": "long_texts",
-    "status": 403,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"Marca\":[\"The length of 'Marca' must be 50 characters or fewer. You entered 300 characters.\"],\"Modelo\":[\"The length of 'Modelo' must be 50 characters or fewer. You entered 300 characters.\"],\"NoSerial\":[\"The length of 'No Serial' must be 50 characters or fewer. You entered 300 characters.\"],\"FallaReportada\":[\"The length of 'Falla Reportada' must be 80 characters or fewer. You entered 300 characters.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "blank_texts",
@@ -31,9 +31,9 @@
   },
   {
     "body": "zero_numbers",
-    "status": 403,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"IdEmpresa\":[\"'Id Empresa' must not be empty.\"],\"IdSolicitud\":[\"'Id Solicitud' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "negative_numbers",

@@ -3,49 +3,49 @@
     "body": "nothing_filled",
     "status": 400,
     "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"this account isn't available to create a new business\"}]}"
+    "answer": "{\"errors\":{\"RazonSocial\":[\"'Razon Social' must not be empty.\",\"'Razon Social' must not be empty.\"],\"Secuenciaticket\":[\"'Secuenciaticket' must not be empty.\",\"'Secuenciaticket' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "everything_filled",
     "status": 400,
     "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"this account isn't available to create a new business\"}]}"
+    "answer": "{\"errors\":{\"NoAutorizacion\":[\"The length of 'No Autorizacion' must be 12 characters or fewer. You entered 19 characters.\"],\"Secuenciaticket\":[\"The length of 'Secuenciaticket' must be 12 characters or fewer. You entered 20 characters.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "long_texts",
     "status": 400,
     "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"this account isn't available to create a new business\"}]}"
+    "answer": "{\"errors\":{\"Rnc\":[\"The length of 'Rnc' must be 50 characters or fewer. You entered 300 characters.\"],\"Url\":[\"The length of 'Url' must be 80 characters or fewer. You entered 300 characters.\"],\"Host\":[\"The length of 'Host' must be 30 characters or fewer. You entered 300 characters.\"],\"Correo\":[\"The length of 'Correo' must be 50 characters or fewer. You entered 300 characters.\",\"'Correo' is not a valid email address.\"],\"Telefono\":[\"The length of 'Telefono' must be 50 characters or fewer. You entered 300 characters.\"],\"Direccion\":[\"The length of 'Direccion' must be 150 characters or fewer. You entered 300 characters.\"],\"Contrasena\":[\"The length of 'Contrasena' must be 30 characters or fewer. You entered 300 characters.\"],\"NoAutorizacion\":[\"The length of 'No Autorizacion' must be 12 characters or fewer. You entered 300 characters.\"],\"SectorComercial\":[\"The length of 'Sector Comercial' must be 50 characters or fewer. You entered 300 characters.\"],\"Secuenciaticket\":[\"The length of 'Secuenciaticket' must be 12 characters or fewer. You entered 300 characters.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "blank_texts",
     "status": 400,
     "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"this account isn't available to create a new business\"}]}"
+    "answer": "{\"errors\":{\"Correo\":[\"'Correo' is not a valid email address.\"],\"RazonSocial\":[\"'Razon Social' must not be empty.\"],\"Secuenciaticket\":[\"'Secuenciaticket' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "empty_texts",
     "status": 400,
     "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"this account isn't available to create a new business\"}]}"
+    "answer": "{\"errors\":{\"Correo\":[\"'Correo' is not a valid email address.\"],\"RazonSocial\":[\"'Razon Social' must not be empty.\"],\"Secuenciaticket\":[\"'Secuenciaticket' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "zero_numbers",
     "status": 400,
     "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"this account isn't available to create a new business\"}]}"
+    "answer": "{\"errors\":{\"NoAutorizacion\":[\"The length of 'No Autorizacion' must be 12 characters or fewer. You entered 19 characters.\"],\"Secuenciaticket\":[\"The length of 'Secuenciaticket' must be 12 characters or fewer. You entered 20 characters.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "negative_numbers",
     "status": 400,
     "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"this account isn't available to create a new business\"}]}"
+    "answer": "{\"errors\":{\"NoAutorizacion\":[\"The length of 'No Autorizacion' must be 12 characters or fewer. You entered 19 characters.\"],\"Secuenciaticket\":[\"The length of 'Secuenciaticket' must be 12 characters or fewer. You entered 20 characters.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "bad_email",
     "status": 400,
     "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":400,\"title\":\"Bad Request\",\"detail\":\"this account isn't available to create a new business\"}]}"
+    "answer": "{\"errors\":{\"Correo\":[\"'Correo' is not a valid email address.\"],\"NoAutorizacion\":[\"The length of 'No Autorizacion' must be 12 characters or fewer. You entered 19 characters.\"],\"Secuenciaticket\":[\"The length of 'Secuenciaticket' must be 12 characters or fewer. You entered 20 characters.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "text_instead_of_a_number",

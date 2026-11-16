@@ -1,9 +1,9 @@
 [
   {
     "body": "nothing_filled",
-    "status": 403,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"Cantidad\":[\"'Cantidad' must be greater than '0'.\"],\"NoSerial\":[\"'No Serial' must not be empty.\"],\"Descripcion\":[\"'Descripcion' must not be empty.\",\"'Descripcion' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "everything_filled",
@@ -13,33 +13,33 @@
   },
   {
     "body": "long_texts",
-    "status": 403,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"NoSerial\":[\"The length of 'No Serial' must be 50 characters or fewer. You entered 300 characters.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "blank_texts",
-    "status": 403,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"Descripcion\":[\"'Descripcion' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "empty_texts",
-    "status": 403,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"Descripcion\":[\"'Descripcion' must not be empty.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "zero_numbers",
-    "status": 403,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"Cantidad\":[\"'Cantidad' must be greater than '0'.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "negative_numbers",
-    "status": 403,
-    "type": "application/json",
-    "answer": "{\"errors\":[{\"status\":403,\"title\":\"Forbidden\",\"detail\":\"No tiene permisos para realizar esta operación.\"}]}"
+    "status": 400,
+    "type": "application/problem+json",
+    "answer": "{\"errors\":{\"Cantidad\":[\"'Cantidad' must be greater than '0'.\"]},\"type\":\"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\"title\":\"One or more validation errors occurred.\",\"status\":400,\"traceId\":\"<trace>\"}"
   },
   {
     "body": "text_instead_of_a_number",
