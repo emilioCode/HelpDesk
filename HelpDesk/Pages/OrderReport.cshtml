@@ -114,14 +114,8 @@
                     <table class="table table-borderless">
                         <tbody>
                             <tr>
-                                @if (@Model.solicitud.FechaCreacion == null)
-                                {
-                                    <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Creado:</span></b></td>
-}
-                                @if (@Model.solicitud.FechaCreacion != null)
-                                {
-                                    <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Creado:</span></b>  @Model.solicitud.FechaCreacion.ToString("dd/MM/yyyy")</td>
-}
+                                @* The creation date is never empty (it is a date, not an optional one), so it is always written. *@
+                                <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Creado:</span></b>  @Model.solicitud.FechaCreacion.ToString("dd/MM/yyyy")</td>
                                 @if (@Model.solicitud.FechaInicio == null)
                                 {
                                     <td style="width: 20%;"><b><span class="d-inline" style="font-size: 12px;">Fecha:</span></b> <input name="fechaInicio" class="form-control d-inline" type="date" style="width: 75%;  font-size: 12px;"></td>
