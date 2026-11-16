@@ -75,6 +75,10 @@ export class CostumerComponent implements OnInit, OnDestroy {
             this.costumers = res;
             if(idUsuario >0 && this.costumer.id == idUsuario){
               this.costumer = this.costumers.filter(c=>c.id==idUsuario)[0];
+              // The window that is open shows the form, not the object, so what the other person saved is put in the form too.
+              if(this.costumer){
+                this.form.patchValue(this.costumer);
+              }
             }
             this.service.isLoading = false;
           },error => {
