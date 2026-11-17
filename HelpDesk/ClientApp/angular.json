@@ -36,7 +36,12 @@
               "node_modules/admin-lte/bower_components/moment/moment.js",
               "node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.min.js"
             ],
-            "aot": true
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {

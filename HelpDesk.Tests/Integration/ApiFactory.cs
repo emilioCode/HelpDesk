@@ -63,7 +63,11 @@ namespace HelpDesk.Tests.Integration
                 File.WriteAllText(Path.Combine(dist, "index.html"), "<html><body>HelpDesk</body></html>");
                 File.WriteAllText(Path.Combine(dist, "runtime.js"), "// unhashed bundle");
                 File.WriteAllText(Path.Combine(dist, "main.0123456789abcdef0123.js"), "// hashed bundle");
-                // From Angular 8 the build writes a modern and a legacy copy of each bundle, with the target in the name.
+                // The length of the hash changes with the version of Angular: 16 characters from 13, 8 with the esbuild builder.
+                File.WriteAllText(Path.Combine(dist, "main.0123456789abcdef.js"), "// hashed bundle, 16 characters");
+                File.WriteAllText(Path.Combine(dist, "main.01234567.js"), "// hashed bundle, 8 characters");
+                File.WriteAllText(Path.Combine(dist, "main.js"), "// bundle without a hash");
+                // From Angular 8 to 12 the build writes a modern and a legacy copy of each bundle, with the target in the name.
                 File.WriteAllText(Path.Combine(dist, "main-es2015.0123456789abcdef0123.js"), "// hashed bundle, modern browsers");
                 File.WriteAllText(Path.Combine(dist, "main-es5.0123456789abcdef0123.js"), "// hashed bundle, legacy browsers");
             });
