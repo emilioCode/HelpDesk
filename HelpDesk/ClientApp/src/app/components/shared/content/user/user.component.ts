@@ -1,14 +1,12 @@
-import { Component, OnDestroy, OnInit, Pipe } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { FilterPipe } from '../../../../pipes/filter.pipe';
 import * as signalR from '@microsoft/signalr';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }']
 })
-@Pipe({name:'FilterPipe'})
 export class UserComponent implements OnInit, OnDestroy {
   search: any = "";
   

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Pipe } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import * as signalR from '@microsoft/signalr';
@@ -9,7 +9,6 @@ import * as signalR from '@microsoft/signalr';
   styleUrls: [],
   styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }']
 })
-@Pipe({name:'FilterPipe'})
 export class CostumerComponent implements OnInit, OnDestroy {
   search: any = "";
 
