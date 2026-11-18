@@ -6,6 +6,7 @@ import { MirroredForm, notBlank } from './mirrored-form';
 // The activity of a ticket: what was done and by whom, with the box to add more. It shows what the screen gives it
 // and tells the screen what the person did; the screen keeps the data and the calls to the API.
 @Component({
+  standalone: false,
   selector: 'app-ticket-timeline',
   templateUrl: './ticket-timeline.component.html',
   styles: [':host { display: block; }']

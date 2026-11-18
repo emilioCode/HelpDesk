@@ -3,6 +3,7 @@ import { ApiService } from '../../../../services/api.service';
 import * as signalR from '@microsoft/signalr';
 
 @Component({
+  standalone: false,
   selector: 'app-report',
   templateUrl: './report.component.html',
   styles: []

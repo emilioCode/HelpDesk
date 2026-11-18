@@ -5,6 +5,7 @@ import { ApiService } from '../../../../services/api.service';
 import * as signalR from '@microsoft/signalr';
 
 @Component({
+  standalone: false,
   selector: 'app-waiting',
   templateUrl: './waiting.component.html',
   styles: []

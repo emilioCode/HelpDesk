@@ -5,6 +5,7 @@ import { MirroredForm } from './mirrored-form';
 
 // The parts used in a ticket, with the row to add one and, when the screen allows it, the buttons to edit or remove one.
 @Component({
+  standalone: false,
   selector: 'app-ticket-parts',
   templateUrl: './ticket-parts.component.html',
   styles: [':host { display: block; }']

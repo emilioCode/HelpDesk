@@ -3,6 +3,7 @@ import { ApiService } from './services/api.service';
 import { SessionService } from './services/session.service';
 
 @Component({
+  standalone: false,
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
