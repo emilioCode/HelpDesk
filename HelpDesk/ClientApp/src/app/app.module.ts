@@ -83,7 +83,7 @@ import { CalendarComponent } from './components/shared/content/calendar/calendar
     { path: 'waiting3', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2, requestType: 'onSite', title: 'Ordenes de Servicio a Domicilio pendiente por asignar' } },
     { path: 'finished', component: WaitingComponent, canActivate: [AuthGuard], data: { minLevel: 2, mode: 'finished', title: 'Ordenes Completadas' } },
     { path: 'calendar', component: CalendarComponent, canActivate: [AuthGuard], data: { minLevel: 1 } }
-], { relativeLinkResolution: 'legacy' }),
+    ]),
     ReactiveFormsModule
   ],
   providers: [

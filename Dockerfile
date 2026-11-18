@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
-# 1) Angular SPA. Angular 13 needs Node 12.20, 14.15 or 16.10 (and the Angular CLI refuses to run on a Node it does not support).
-FROM node:14 AS spa
+# 1) Angular SPA. Angular 16 needs Node 16.14 or 18.10 (and the Angular CLI refuses to run on a Node it does not support).
+FROM node:16 AS spa
 WORKDIR /src/HelpDesk/ClientApp
 COPY HelpDesk/ClientApp/package.json HelpDesk/ClientApp/package-lock.json ./
 RUN npm ci

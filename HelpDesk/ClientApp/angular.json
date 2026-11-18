@@ -16,7 +16,7 @@
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
             "progress": true,
-            "polyfills": "src/polyfills.ts",
+            "polyfills": ["zone.js"],
             "assets": [
               "src/assets"
             ],
@@ -89,7 +89,7 @@
           "options": {
             "main": "src/test.ts",
             "karmaConfig": "./karma.conf.js",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
               "node_modules/admin-lte/bower_components/jquery/dist/jquery.min.js",
@@ -115,7 +115,6 @@
       }
     }
   },
-  "defaultProject": "HelpDesk",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
