@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
-# 1) Angular SPA. Angular 20 needs Node 20.19, 22.12 or 24 (and the Angular CLI refuses to run on a Node it does not support).
-FROM node:20 AS spa
+# 1) Angular SPA. Angular 22 needs Node 22.22.3, 24.15 or 26 (and the Angular CLI refuses to run on a Node it does not support).
+FROM node:22 AS spa
 WORKDIR /src/HelpDesk/ClientApp
 COPY HelpDesk/ClientApp/package.json HelpDesk/ClientApp/package-lock.json ./
 RUN npm ci

@@ -1,4 +1,4 @@
-import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
+import { Component, DoCheck, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
@@ -8,6 +8,7 @@ import * as signalR from '@microsoft/signalr';
   standalone: false,
   selector: 'app-waiting',
   templateUrl: './waiting.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: []
 })
 export class WaitingComponent implements OnInit, OnDestroy, DoCheck {

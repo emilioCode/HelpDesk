@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import * as signalR from '@microsoft/signalr';
 @Component({
   standalone: false,
   selector: 'app-home',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit, OnDestroy {

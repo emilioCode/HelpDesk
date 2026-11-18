@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import * as signalR from '@microsoft/signalr';
@@ -6,6 +6,7 @@ import * as signalR from '@microsoft/signalr';
   standalone: false,
   selector: 'app-user',
   templateUrl: './user.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }']
 })
 export class UserComponent implements OnInit, OnDestroy {

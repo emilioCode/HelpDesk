@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 
 @Component({
   standalone: false,
   selector: 'app-menu',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './menu.component.html'
 })
 export class MenuComponent implements OnInit {

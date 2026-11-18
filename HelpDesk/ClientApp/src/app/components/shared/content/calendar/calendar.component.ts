@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Event } from '../../../../interfaces';
 import { ApiService } from '../../../../services/api.service';
 declare var $:any;
@@ -7,6 +7,7 @@ declare var fullCalendar: any;
   standalone: false,
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: []
 })
 export class CalendarComponent implements OnInit {

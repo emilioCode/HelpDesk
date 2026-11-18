@@ -1,4 +1,4 @@
-import { Component, DoCheck, EventEmitter, Input, Output } from '@angular/core';
+import { Component, DoCheck, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { MirroredForm } from './mirrored-form';
@@ -8,6 +8,7 @@ import { MirroredForm } from './mirrored-form';
   standalone: false,
   selector: 'app-ticket-parts',
   templateUrl: './ticket-parts.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [':host { display: block; }']
 })
 export class TicketPartsComponent implements DoCheck {
