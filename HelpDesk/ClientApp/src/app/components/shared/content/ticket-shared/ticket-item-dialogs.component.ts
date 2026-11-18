@@ -6,6 +6,7 @@ import { MirroredForm } from './mirrored-form';
 // The four dialogs of a ticket to edit or remove a part used or a device. They are opened from the buttons of the
 // lists (bootstrap, by id), work on the part or device the screen gives them and tell the screen what was decided.
 @Component({
+  standalone: false,
   selector: 'app-ticket-item-dialogs',
   templateUrl: './ticket-item-dialogs.component.html',
   styles: [':host { display: block; }']

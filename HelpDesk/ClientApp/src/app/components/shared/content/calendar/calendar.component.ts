@@ -4,6 +4,7 @@ import { ApiService } from '../../../../services/api.service';
 declare var $:any;
 declare var fullCalendar: any;
 @Component({
+  standalone: false,
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styles: []

@@ -4,6 +4,7 @@ import { ApiService } from '../../../../services/api.service';
 import * as signalR from '@microsoft/signalr';
 
 @Component({
+  standalone: false,
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }']

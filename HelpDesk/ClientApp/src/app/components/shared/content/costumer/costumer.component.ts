@@ -4,6 +4,7 @@ import { ApiService } from '../../../../services/api.service';
 import * as signalR from '@microsoft/signalr';
 
 @Component({
+  standalone: false,
   selector: 'app-costumer',
   templateUrl: './costumer.component.html',
   styleUrls: [],

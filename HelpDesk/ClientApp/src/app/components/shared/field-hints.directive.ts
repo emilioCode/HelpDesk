@@ -7,6 +7,7 @@ import { AbstractControl, FormControl, NgControl } from '@angular/forms';
 //  - shows, under the control, why its value is not valid, once the person has touched or changed it.
 // A control opts out with the attribute data-no-hints (the sign-in screen has no labels and says nothing until you submit).
 @Directive({
+  standalone: false,
   selector: '[formControlName]:not([data-no-hints])'
 })
 export class FieldHintsDirective implements DoCheck, OnDestroy {
