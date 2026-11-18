@@ -34,6 +34,8 @@ namespace HelpDesk.Tests.Integration
         [TestCase("/main.0123456789abcdef0123.js")]
         [TestCase("/main-es2015.0123456789abcdef0123.js")]
         [TestCase("/main-es5.0123456789abcdef0123.js")]
+        [TestCase("/main.0123456789abcdef.js")]
+        [TestCase("/main.01234567.js")]
         public async Task ABundleNamedAfterItsContent_CanBeKeptForAYear(string url)
         {
             var response = await _api.CreateClient().GetAsync(url);
@@ -46,7 +48,7 @@ namespace HelpDesk.Tests.Integration
         [Test]
         public async Task AFileWithoutAContentHash_IsCheckedWithTheServer()
         {
-            var response = await _api.CreateClient().GetAsync("/runtime.js");
+            var response = await _api.CreateClient().GetAsync("/main.js");
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             Assert.AreEqual("no-cache", response.Headers.CacheControl.ToString());

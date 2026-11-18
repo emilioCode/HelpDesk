@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1
 
-# 1) Angular SPA. Angular 6 needs Node 10.
-FROM node:10 AS spa
+# 1) Angular SPA. Angular 13 needs Node 12.20, 14.15 or 16.10 (and the Angular CLI refuses to run on a Node it does not support).
+FROM node:14 AS spa
 WORKDIR /src/HelpDesk/ClientApp
 COPY HelpDesk/ClientApp/package.json HelpDesk/ClientApp/package-lock.json ./
 RUN npm ci
 COPY HelpDesk/ClientApp/ ./
-# The production build: compiled ahead of time (AOT) and optimized. It used to be built without --prod, which shipped the slower in-browser (JIT) compilation.
-RUN npm run build -- --prod --output-hashing=all
+# The production build: compiled ahead of time (AOT) and optimized. (--prod is deprecated from Angular 12; --configuration=production is the same.)
+RUN npm run build -- --configuration=production --output-hashing=all
 
 # 2) .NET restore and build
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
