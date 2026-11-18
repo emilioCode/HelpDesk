@@ -30,10 +30,10 @@ namespace HelpDesk
 
         // index.html is checked with the server on every load, so a new deployment is picked up at once. The bundles carry a
         // hash of their content in the file name, so they can be kept for a year without ever being out of date.
-        // The length of the hash depends on the version of Angular (20 characters up to 12, 16 from 13, 8 with the esbuild builder).
+        // The length of the hash depends on the version of Angular (20 characters up to 12, 16 from 13) and, with the esbuild builder, the hash comes after a dash: main-4ZCH2Y4H.js (8 upper-case letters and digits).
         private static void SetSpaCacheHeaders(StaticFileResponseContext context)
         {
-            var hashed = Regex.IsMatch(context.File.Name, @"\.[0-9a-f]{8,32}\.(js|css)$");
+            var hashed = Regex.IsMatch(context.File.Name, @"(\.[0-9a-f]{8,32}|-[0-9A-Z]{8})\.(js|css)$");
             context.Context.Response.Headers[HeaderNames.CacheControl] = hashed ? "public,max-age=31536000,immutable" : "no-cache";
         }
 

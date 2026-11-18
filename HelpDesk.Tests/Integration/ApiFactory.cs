@@ -67,6 +67,10 @@ namespace HelpDesk.Tests.Integration
                 File.WriteAllText(Path.Combine(dist, "main.0123456789abcdef.js"), "// hashed bundle, 16 characters");
                 File.WriteAllText(Path.Combine(dist, "main.01234567.js"), "// hashed bundle, 8 characters");
                 File.WriteAllText(Path.Combine(dist, "main.js"), "// bundle without a hash");
+                // The esbuild builder (Angular 17 on) puts the hash after a dash, in capitals.
+                File.WriteAllText(Path.Combine(dist, "main-4ZCH2Y4H.js"), "// hashed bundle, esbuild");
+                File.WriteAllText(Path.Combine(dist, "styles-PMOLJ6K4.css"), "/* hashed styles, esbuild */");
+                File.WriteAllText(Path.Combine(dist, "chunk-main.js"), "// a name with a dash but no hash");
                 // From Angular 8 to 12 the build writes a modern and a legacy copy of each bundle, with the target in the name.
                 File.WriteAllText(Path.Combine(dist, "main-es2015.0123456789abcdef0123.js"), "// hashed bundle, modern browsers");
                 File.WriteAllText(Path.Combine(dist, "main-es5.0123456789abcdef0123.js"), "// hashed bundle, legacy browsers");

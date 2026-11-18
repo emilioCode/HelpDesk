@@ -36,6 +36,8 @@ namespace HelpDesk.Tests.Integration
         [TestCase("/main-es5.0123456789abcdef0123.js")]
         [TestCase("/main.0123456789abcdef.js")]
         [TestCase("/main.01234567.js")]
+        [TestCase("/main-4ZCH2Y4H.js")]
+        [TestCase("/styles-PMOLJ6K4.css")]
         public async Task ABundleNamedAfterItsContent_CanBeKeptForAYear(string url)
         {
             var response = await _api.CreateClient().GetAsync(url);
@@ -45,10 +47,11 @@ namespace HelpDesk.Tests.Integration
             StringAssert.Contains("immutable", response.Headers.CacheControl.ToString());
         }
 
-        [Test]
-        public async Task AFileWithoutAContentHash_IsCheckedWithTheServer()
+        [TestCase("/main.js")]
+        [TestCase("/chunk-main.js")]
+        public async Task AFileWithoutAContentHash_IsCheckedWithTheServer(string url)
         {
-            var response = await _api.CreateClient().GetAsync("/main.js");
+            var response = await _api.CreateClient().GetAsync(url);
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             Assert.AreEqual("no-cache", response.Headers.CacheControl.ToString());
