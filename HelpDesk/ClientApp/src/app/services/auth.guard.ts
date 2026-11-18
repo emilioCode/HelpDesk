@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { ApiService } from './api.service';
 
 // Keeps a user out of the screens their role does not allow. The route says the minimum level in data.minLevel.
 // The server enforces the same rules on the API; this only avoids showing an empty screen.
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AuthGuard {
   constructor(private service: ApiService, private router: Router) { }
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
