@@ -14,7 +14,7 @@
       </thead>
       <tbody>
           <tr [hidden]="!addPart" [formGroup]="form.group">
-            <td ><input type="number" min="1" formControlName="cantidad" placeholder="(Requerido)" class="form-control"/></td>
+            <td ><input type="number" [min]="1" formControlName="cantidad" placeholder="(Requerido)" class="form-control"/></td>
             <td><input type="text" formControlName="noSerial" placeholder="(Requerido)" class="form-control"/></td>
             <td><input type="text" formControlName="descripcion" placeholder="(Requerido)" class="form-control"/></td>
             <td >

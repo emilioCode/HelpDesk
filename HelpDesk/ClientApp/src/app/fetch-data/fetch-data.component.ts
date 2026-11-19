@@ -1,9 +1,10 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
   standalone: false,
   selector: 'app-fetch-data',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './fetch-data.component.html'
 })
 export class FetchDataComponent {

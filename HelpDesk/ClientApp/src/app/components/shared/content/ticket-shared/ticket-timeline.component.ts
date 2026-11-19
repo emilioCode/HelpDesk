@@ -1,4 +1,4 @@
-import { Component, DoCheck, EventEmitter, Input, Output } from '@angular/core';
+import { Component, DoCheck, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { MirroredForm, notBlank } from './mirrored-form';
@@ -9,6 +9,7 @@ import { MirroredForm, notBlank } from './mirrored-form';
   standalone: false,
   selector: 'app-ticket-timeline',
   templateUrl: './ticket-timeline.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [':host { display: block; }']
 })
 export class TicketTimelineComponent implements DoCheck {
