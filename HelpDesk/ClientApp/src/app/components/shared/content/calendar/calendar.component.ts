@@ -107,6 +107,9 @@ export class CalendarComponent implements OnInit {
     this.service.isLoading = true;
     this.service.post('Event', request)
       .subscribe(res=>{
+        // One reading of the clock for all the events: with one new Date() per event the durations differed by a millisecond
+        // and the calendar, which sorts equal starts by duration, showed the same events in a different order on each load.
+        const now = new Date().getTime();
         this.events = res.data.map((e)=>{
           var url = "";
           var color = "";
@@ -139,12 +142,12 @@ export class CalendarComponent implements OnInit {
           }
 
           if(e.start == null && e.end == null){
-            e.start = new Date();
-            e.end = new Date();
+            e.start = new Date(now);
+            e.end = new Date(now);
             e.title = "*(HOLD) " + e.title;
 
           }else if(e.start != null && e.end == null){
-            e.end = new Date();
+            e.end = new Date(now);
           }
 
           return{

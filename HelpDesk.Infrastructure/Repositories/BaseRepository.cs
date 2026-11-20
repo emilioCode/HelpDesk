@@ -20,7 +20,10 @@ namespace HelpDesk.Infrastructure.Repositories
 
         public IEnumerable<T> GetAll()
         {
-            return _entities.AsQueryable().AsNoTracking();
+            // Without an ORDER BY the database may return the rows in any order, and lists of equal items (the events of the
+            // calendar, for one) change places between calls. By Id is the order they have always come in; a service that wants
+            // another order sorts the result.
+            return _entities.AsQueryable().AsNoTracking().OrderBy(x => x.Id);
         }
 
         public async Task<T> GetById(int id)
