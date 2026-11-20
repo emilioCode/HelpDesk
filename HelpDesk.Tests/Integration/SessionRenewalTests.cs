@@ -228,6 +228,24 @@ namespace HelpDesk.Tests.Integration
         }
 
         [Test]
+        public async Task AUserEditedThroughTheApi_IsNotHeldBackByTheRememberedAnswer()
+        {
+            var userToken = await _cached.LoginAsync("rolechg");
+            Assert.AreEqual(HttpStatusCode.OK, (await WithToken(_cached.CreateClient(), userToken).GetAsync("/api/User/17/unique")).StatusCode, "the answer is now remembered");
+            var admin = await _cached.ClientFor("admin");
+            var body = "{\"id\":17,\"nombre\":\"rolechg\",\"numDocumento\":\"000\",\"cuentaUsuario\":\"rolechg\",\"acceso\":\"MODERADOR\",\"idEmpresa\":1,\"habilitado\":true}";
+
+            var edit = await admin.PostAsync("/api/User/Put/2", new StringContent(body, System.Text.Encoding.UTF8, "application/json"));
+            var oldToken = await WithToken(_cached.CreateClient(), userToken).GetAsync("/api/User/17/unique");
+            var newToken = await _cached.LoginAsync("rolechg");
+            var afterSigningIn = await WithToken(_cached.CreateClient(), newToken).GetAsync("/api/User/17/unique");
+
+            Assert.AreEqual(HttpStatusCode.OK, edit.StatusCode);
+            Assert.AreEqual(HttpStatusCode.Unauthorized, oldToken.StatusCode, "the old role must not stay in force inside the window");
+            Assert.AreEqual(HttpStatusCode.OK, afterSigningIn.StatusCode, "signing in again right after the change works");
+        }
+
+        [Test]
         public async Task AUserWhoseRoleChanged_IsRefusedWithTheSameToken_UntilTheySignInAgain()
         {
             var token = await _api.LoginAsync("rolechg");

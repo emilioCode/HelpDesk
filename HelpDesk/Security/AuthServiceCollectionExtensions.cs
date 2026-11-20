@@ -65,7 +65,7 @@ namespace HelpDesk.Security
                                 return;
                             }
                             var cache = context.HttpContext.RequestServices.GetRequiredService<IMemoryCache>();
-                            var key = "active-user:" + userId;
+                            var key = AuthOptions.ActiveUserCacheKey(userId);
                             if (!cache.TryGetValue(key, out UserIdentity current))
                             {
                                 try
