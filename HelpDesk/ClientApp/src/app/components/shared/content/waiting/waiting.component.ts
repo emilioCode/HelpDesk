@@ -1,15 +1,21 @@
 import { Component, DoCheck, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import * as signalR from '@microsoft/signalr';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { FieldHintsDirective } from '../../field-hints.directive';
+import { TicketTimelineComponent } from '../ticket-shared/ticket-timeline.component';
+import { TicketPartsComponent } from '../ticket-shared/ticket-parts.component';
+import { TicketItemDialogsComponent } from '../ticket-shared/ticket-item-dialogs.component';
+import { FilterPipe } from '../../../../pipes/filter.pipe';
 
 @Component({
-  standalone: false,
-  selector: 'app-waiting',
-  templateUrl: './waiting.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  styles: []
+    selector: 'app-waiting',
+    templateUrl: './waiting.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styles: [],
+    imports: [NgIf, FormsModule, NgFor, ReactiveFormsModule, FieldHintsDirective, TicketTimelineComponent, TicketPartsComponent, TicketItemDialogsComponent, DatePipe, FilterPipe]
 })
 export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
   search: any = "";

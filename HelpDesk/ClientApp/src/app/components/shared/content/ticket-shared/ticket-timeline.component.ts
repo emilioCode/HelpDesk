@@ -1,16 +1,18 @@
 import { Component, DoCheck, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { MirroredForm, notBlank } from './mirrored-form';
+import { NgFor, NgIf, DatePipe } from '@angular/common';
+import { FieldHintsDirective } from '../../field-hints.directive';
 
 // The activity of a ticket: what was done and by whom, with the box to add more. It shows what the screen gives it
 // and tells the screen what the person did; the screen keeps the data and the calls to the API.
 @Component({
-  standalone: false,
-  selector: 'app-ticket-timeline',
-  templateUrl: './ticket-timeline.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  styles: [':host { display: block; }']
+    selector: 'app-ticket-timeline',
+    templateUrl: './ticket-timeline.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styles: [':host { display: block; }'],
+    imports: [NgFor, NgIf, FormsModule, ReactiveFormsModule, FieldHintsDirective, DatePipe]
 })
 export class TicketTimelineComponent implements DoCheck {
   @Input() ticket: any = {};

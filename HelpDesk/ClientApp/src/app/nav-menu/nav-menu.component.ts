@@ -1,12 +1,14 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NgClass } from '@angular/common';
 
 
 @Component({
-  standalone: false,
-  selector: 'app-nav-menu',
-  templateUrl: './nav-menu.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./nav-menu.component.css']
+    selector: 'app-nav-menu',
+    templateUrl: './nav-menu.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrls: ['./nav-menu.component.css'],
+    imports: [RouterLink, NgClass, RouterLinkActive]
 })
 export class NavMenuComponent {
   isExpanded = false;

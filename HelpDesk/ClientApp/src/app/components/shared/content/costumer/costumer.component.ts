@@ -1,15 +1,18 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import * as signalR from '@microsoft/signalr';
+import { NgIf, NgFor } from '@angular/common';
+import { FieldHintsDirective } from '../../field-hints.directive';
+import { FilterPipe } from '../../../../pipes/filter.pipe';
 
 @Component({
-  standalone: false,
-  selector: 'app-costumer',
-  templateUrl: './costumer.component.html',
-  styleUrls: [],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }']
+    selector: 'app-costumer',
+    templateUrl: './costumer.component.html',
+    styleUrls: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }'],
+    imports: [NgIf, FormsModule, NgFor, ReactiveFormsModule, FieldHintsDirective, FilterPipe]
 })
 export class CostumerComponent implements OnInit, OnDestroy {
   search: any = "";
