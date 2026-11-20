@@ -1,13 +1,20 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ApiService } from './services/api.service';
 import { SessionService } from './services/session.service';
+import { NgIf } from '@angular/common';
+import { HeaderComponent } from './components/shared/header/header.component';
+import { MenuComponent } from './components/shared/menu/menu.component';
+import { ContentComponent } from './components/shared/content/content.component';
+import { FooterComponent } from './components/shared/footer/footer.component';
+import { SettingComponent } from './components/shared/setting/setting.component';
+import { LoginComponent } from './components/shared/login/login.component';
 
 @Component({
-  standalone: false,
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./app.component.css']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrls: ['./app.component.css'],
+    imports: [NgIf, HeaderComponent, MenuComponent, ContentComponent, FooterComponent, SettingComponent, LoginComponent]
 })
 export class AppComponent implements OnInit {
   constructor(public service: ApiService, private session: SessionService){ }

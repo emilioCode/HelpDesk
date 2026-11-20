@@ -1,15 +1,17 @@
 import { Component, DoCheck, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { MirroredForm } from './mirrored-form';
+import { FieldHintsDirective } from '../../field-hints.directive';
+import { NgFor, NgIf } from '@angular/common';
 
 // The parts used in a ticket, with the row to add one and, when the screen allows it, the buttons to edit or remove one.
 @Component({
-  standalone: false,
-  selector: 'app-ticket-parts',
-  templateUrl: './ticket-parts.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  styles: [':host { display: block; }']
+    selector: 'app-ticket-parts',
+    templateUrl: './ticket-parts.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styles: [':host { display: block; }'],
+    imports: [FormsModule, ReactiveFormsModule, FieldHintsDirective, NgFor, NgIf]
 })
 export class TicketPartsComponent implements DoCheck {
   @Input() ticket: any = {};

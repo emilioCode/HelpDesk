@@ -1,9 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-  standalone: false,
-  name: 'filter'
-})
+@Pipe({ name: 'filter' })
 export class FilterPipe implements PipeTransform {
 
   transform(array: any, args?: any): any {

@@ -1,11 +1,15 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
+import { NgIf, NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { FilterPipe } from '../../../pipes/filter.pipe';
 
 @Component({
-  standalone: false,
-  selector: 'app-menu',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  templateUrl: './menu.component.html'
+    selector: 'app-menu',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    templateUrl: './menu.component.html',
+    imports: [NgIf, FormsModule, RouterLink, NgFor, FilterPipe]
 })
 export class MenuComponent implements OnInit {
   menuSearch: any = "";

@@ -1,16 +1,17 @@
 import { Component, DoCheck, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { MirroredForm } from './mirrored-form';
+import { FieldHintsDirective } from '../../field-hints.directive';
 
 // The four dialogs of a ticket to edit or remove a part used or a device. They are opened from the buttons of the
 // lists (bootstrap, by id), work on the part or device the screen gives them and tell the screen what was decided.
 @Component({
-  standalone: false,
-  selector: 'app-ticket-item-dialogs',
-  templateUrl: './ticket-item-dialogs.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  styles: [':host { display: block; }']
+    selector: 'app-ticket-item-dialogs',
+    templateUrl: './ticket-item-dialogs.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styles: [':host { display: block; }'],
+    imports: [FormsModule, ReactiveFormsModule, FieldHintsDirective]
 })
 export class TicketItemDialogsComponent implements DoCheck {
   @Input() parToEdit: any = {};

@@ -1,11 +1,12 @@
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  standalone: false,
-  selector: 'app-fetch-data',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  templateUrl: './fetch-data.component.html'
+    selector: 'app-fetch-data',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    templateUrl: './fetch-data.component.html',
+    imports: [NgIf, NgFor]
 })
 export class FetchDataComponent {
   public forecasts: WeatherForecast[];

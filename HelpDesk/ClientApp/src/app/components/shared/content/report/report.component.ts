@@ -1,13 +1,16 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 import * as signalR from '@microsoft/signalr';
+import { FormsModule } from '@angular/forms';
+import { NgFor, NgIf, DatePipe } from '@angular/common';
+import { FilterPipe } from '../../../../pipes/filter.pipe';
 
 @Component({
-  standalone: false,
-  selector: 'app-report',
-  templateUrl: './report.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  styles: []
+    selector: 'app-report',
+    templateUrl: './report.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styles: [],
+    imports: [FormsModule, NgFor, NgIf, DatePipe, FilterPipe]
 })
 export class ReportComponent implements OnInit, OnDestroy {
   search: any = "";

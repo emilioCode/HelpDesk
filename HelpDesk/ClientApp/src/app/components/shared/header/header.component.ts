@@ -1,11 +1,13 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
+import { NgIf } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  standalone: false,
-  selector: 'app-header',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  templateUrl: './header.component.html'
+    selector: 'app-header',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    templateUrl: './header.component.html',
+    imports: [NgIf, RouterLink]
 })
 export class HeaderComponent implements OnInit {
 
