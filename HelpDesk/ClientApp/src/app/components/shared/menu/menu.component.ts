@@ -1,38 +1,44 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
-import { NgIf, NgFor } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { FilterPipe } from '../../../pipes/filter.pipe';
+import { HdIconComponent } from '../../../ui/hd-icon.component';
+import { ShellState } from '../../../ui/shell-state.service';
+
+interface NavItem { label: string; route: string; icon: string; see: boolean; }
+interface NavGroup { title: string; items: NavItem[]; }
 
 @Component({
-    selector: 'app-menu',
-    changeDetection: ChangeDetectionStrategy.Eager,
-    templateUrl: './menu.component.html',
-    imports: [NgIf, FormsModule, RouterLink, NgFor, FilterPipe]
+  selector: 'app-menu',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './menu.component.html',
+  styleUrls: ['./menu.component.css'],
+  imports: [RouterLink, RouterLinkActive, HdIconComponent]
 })
-export class MenuComponent implements OnInit {
-  menuSearch: any = "";
+export class MenuComponent {
+  groups: NavGroup[];
 
-  constructor(public service: ApiService){}
-
-  ngOnInit() {
+  constructor(public service: ApiService, public shell: ShellState) {
+    // What each role sees is the same as before: the level of the role against the level each entry asks for.
+    const level = this.service.getLevel(this.service.getUser().acceso);
+    const groups: NavGroup[] = [
+      { title: 'Trabajo', items: [
+        { label: 'Inicio', route: '/', icon: 'layout-dashboard', see: true },
+        { label: 'Órdenes de servicio', route: '/ticket', icon: 'ticket', see: level > 1 },
+        { label: 'Buzón', route: '/inbox', icon: 'inbox', see: level > 0 },
+        { label: 'Sin asignar', route: '/waiting', icon: 'hourglass', see: level > 1 },
+        { label: 'Completadas', route: '/finished', icon: 'circle-check', see: level > 1 },
+        { label: 'Calendario', route: '/calendar', icon: 'calendar', see: true }
+      ] },
+      { title: 'Gestión', items: [
+        { label: 'Clientes', route: '/costumer', icon: 'users', see: level > 0 },
+        { label: 'Informes', route: '/report', icon: 'chart-column', see: level > 2 }
+      ] },
+      { title: 'Configuración', items: [
+        { label: 'Empresa', route: '/business', icon: 'building-2', see: level > 2 },
+        { label: 'Usuarios', route: '/user', icon: 'users', see: level > 2 },
+        { label: 'Mi perfil', route: '/profile', icon: 'user', see: true }
+      ] }
+    ];
+    this.groups = groups.map(g => ({ title: g.title, items: g.items.filter(i => i.see) })).filter(g => g.items.length > 0);
   }
-  
-
-  adminLteConf = [
-    {label: 'Configuracion',iconClasses: 'fa fa-cogs', children:[
-      {label: 'Entidad', route: 'business',iconClasses:'fa fa-building', see: this.service.getLevel(this.service.getUser().acceso) >2},
-      {label:'Usuarios', route:'user', iconClasses: 'fa fa-street-view', see: this.service.getLevel(this.service.getUser().acceso)>2},
-      // {label: 'Comprobantes', route: 'vouchers',iconClasses:'fa fa-ticket'}  
-    ]},
-    {label: 'Marco de trabajo',iconClasses: 'fa fa-level-down', children:[
-      {label:'Clientes', route:'costumer', iconClasses: 'fa fa-users', see: this.service.getLevel(this.service.getUser().acceso)>0},
-      {label:'Ordenes de servicio', route:'ticket', iconClasses: 'fa fa-ticket', see: this.service.getLevel(this.service.getUser().acceso)>1},
-      {label:'Buzón', route:'inbox', iconClasses: 'fa fa-inbox', see: this.service.getLevel(this.service.getUser().acceso)>0},
-      {label:'Reportes', route:'report', iconClasses: 'fa fa-pie-chart', see: this.service.getLevel(this.service.getUser().acceso)>2},
-      {label: 'Calendario', route:'calendar', iconClasses:'fa fa-calendar', see:true}
-    ]}
-  ]
 }
-

@@ -23,6 +23,11 @@
               "src/assets"
             ],
             "styles": [
+              "src/styles/tokens.css",
+              "@fontsource/inter/latin-400.css",
+              "@fontsource/inter/latin-500.css",
+              "@fontsource/inter/latin-600.css",
+              "@fontsource/inter/latin-700.css",
               "src/styles.css",
               "node_modules/admin-lte/bower_components/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/admin-lte/dist/css/AdminLTE.min.css",

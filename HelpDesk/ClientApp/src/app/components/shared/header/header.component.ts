@@ -1,48 +1,62 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
-import { NgIf } from '@angular/common';
+import { Component, ChangeDetectionStrategy, HostListener } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ApiService } from '../../../services/api.service';
+import { HdIconComponent } from '../../../ui/hd-icon.component';
+import { ShellState } from '../../../ui/shell-state.service';
 
 @Component({
-    selector: 'app-header',
-    changeDetection: ChangeDetectionStrategy.Eager,
-    templateUrl: './header.component.html',
-    imports: [NgIf, RouterLink]
+  selector: 'app-header',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.css'],
+  imports: [RouterLink, HdIconComponent]
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
+  menuOpen = false;
 
-  constructor(public service: ApiService) { }
-  seeNotifications =false;
-  ngOnInit() {
+  constructor(public service: ApiService, public shell: ShellState) { }
+
+  get initials(): string {
+    const name: string = this.service.getUser().nombre || '';
+    return name.split(/\s+/).filter(x => x).slice(0, 2).map(x => x[0].toUpperCase()).join('');
   }
 
-  signOut(){
-    // window.location.reload();
-    //this.router.navigateByUrl('/login');
+  get role(): string {
+    const role: string = this.service.getUser().acceso || '';
+    return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
+  }
+
+  @HostListener('document:click')
+  closeMenu() { this.menuOpen = false; }
+
+  @HostListener('document:keydown.escape')
+  closeOnEscape() { this.menuOpen = false; }
+
+  toggleMenu(event: Event) {
+    event.stopPropagation();
+    this.menuOpen = !this.menuOpen;
+  }
+
+  signOut() {
+    this.menuOpen = false;
     this.service.swal({
       title: 'Cerrar Sesión?',
       text: "No se guardarán cambios que no hn sido guardados previamente.",
       type: 'info',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33'//,
-      //confirmButtonText: 'cerrar'
+      cancelButtonColor: '#d33'
     }).then((result) => {
       if (result.value) {
         this.service.swal({
           title: 'Cerrando Sesión',
           html: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> <span class="sr-only">Cargando...</span>',
-          //type: 'info',
           timer: 2000,
           showCancelButton: false,
           showConfirmButton: false
-          //confirmButtonText: 'cerrar'
-        }).then((result)=>{
+        }).then((result) => {
           this.service.closeSession();
         });
-
-        
-        // window.location.reload();
       }
     })
   }
