@@ -3,3 +3,9 @@
 /* Marks of the forms (see FieldHintsDirective): the "*" of a required field and the message of an invalid one. */
 .form-group > label[data-required]::after { content: " *"; color: #dd4b39; }
 .field-error { display: block; margin-top: 3px; color: #dd4b39; }
+
+/* Structure of the application: side menu and a main column. The old screens still render inside it with their own styles. */
+app-root { display: block; }
+.hd-shell { display: flex; min-height: 100vh; background: var(--bg); color: var(--ink); font-family: var(--font-primary); }
+.hd-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.hd-content { flex: 1; padding: 12px 12px 28px; }
