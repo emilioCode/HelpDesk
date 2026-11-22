@@ -9,7 +9,7 @@ This folder holds the design only. Nothing here is wired into the application ye
 1. Install the **pen.dev** extension in VS Code (or Cursor).
 2. Open `design/helpdesk.pen`. The file is edited only through Pencil (it is not meant to be read or merged as text).
 
-## What is inside (34 top-level frames)
+## What is inside (48 top-level frames)
 
 | Group | Frames |
 | --- | --- |
@@ -23,8 +23,9 @@ This folder holds the design only. Nothing here is wired into the application ye
 | Management | Customers (list, add/edit), users (list, add/edit), company, my profile, reports |
 | Cross-cutting | Network error, empty search, disabled record |
 | Dark mode | `Inicio`, orders list, order form, calendar |
+| Mobile (390 px) | `Mobile components`, and 13 phone screens: home, menu open, inbox (and loading), sign in, order form (general, activities, parts, confirm parts sheet), calendar agenda, and the customer tracking page (in progress, approved, invalid link) |
 
-Screens are laid out in a grid below the components. The UI text is Spanish, as in the application.
+Desktop screens are laid out in a grid below the components; the mobile frames sit to the right of that grid. The UI text is Spanish, as in the application.
 
 ## Tokens
 
@@ -44,7 +45,9 @@ Text and background pairs are chosen for WCAG AA contrast (4.5:1) in both modes.
 
 ## Components
 
-Button (primary, secondary, ghost, danger, disabled, in two sizes), status badge, nav item, tab, field (default, focus, error, disabled, with the required mark `*`, helper text and character counter), alert (success, info, warning, error), dialog, KPI card, search box, calendar event, table header and row, progress bar, spinner and loading state.
+Mobile components: top bar, action bar, order card, timeline item and a four-step progress indicator (customer tracking).
+
+Desktop components: button (primary, secondary, ghost, danger, disabled, in two sizes), status badge, nav item, tab, field (default, focus, error, disabled, with the required mark `*`, helper text and character counter), alert (success, info, warning, error), dialog, KPI card, search box, calendar event, table header and row, progress bar, spinner and loading state.
 
 ## Conventions
 
