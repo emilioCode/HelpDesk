@@ -20,7 +20,9 @@
             "progress": true,
             "polyfills": ["zone.js"],
             "assets": [
-              "src/assets"
+              "src/assets",
+              { "glob": "{favicon.svg,favicon-32.png,apple-touch-icon.png,site.webmanifest}", "input": "src", "output": "/" },
+              { "glob": "*.png", "input": "src/icons", "output": "/icons" }
             ],
             "styles": [
               "src/styles/tokens.css",
@@ -112,7 +114,9 @@
               "node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.print.min.css"
             ],
             "assets": [
-              "src/assets"
+              "src/assets",
+              { "glob": "{favicon.svg,favicon-32.png,apple-touch-icon.png,site.webmanifest}", "input": "src", "output": "/" },
+              { "glob": "*.png", "input": "src/icons", "output": "/icons" }
             ]
           }
         }
