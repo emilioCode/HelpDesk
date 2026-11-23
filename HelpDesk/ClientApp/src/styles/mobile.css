@@ -75,3 +75,7 @@
   #modal-default #timeline .box-header { display: none; }
   #modal-default #timeline .box-body, #modal-default #timeline .box-footer { padding: 8px 0; border: 0; }
 }
+
+@media (max-width: 767px) {
+  .hd-create { margin: 8px 0 0; text-align: center; }
+}

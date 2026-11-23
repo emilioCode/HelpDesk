@@ -8,7 +8,7 @@
           <div class="box-header">
               <h3 class="box-title">{{ title }}</h3>
 <ng-container *ngIf="mode == 'all'">
-              &nbsp;<a class="btn-link" style="position:absolute;z-index: 1" *ngIf="service.getLevel(service.getUser().acceso) > 1" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default"> crear orden</a>
+              &nbsp;<a class="btn btn-primary btn-sm hd-create" *ngIf="service.getLevel(service.getUser().acceso) > 1" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default">Crear orden</a>
 </ng-container>
               <br/>
               <div class="box-tools">

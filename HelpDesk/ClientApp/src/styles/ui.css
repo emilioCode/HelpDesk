@@ -50,3 +50,6 @@
 .hd-progress { height: 8px; border-radius: var(--radius-pill); background: var(--line); overflow: hidden; }
 .hd-progress-fill { height: 100%; border-radius: var(--radius-pill); background: var(--accent); transition: width .3s; }
 @media (prefers-reduced-motion: reduce) { .hd-progress-fill { transition: none; } }
+
+/* Create-order action in list headers: a real button */
+.hd-create { display: inline-block; margin-left: 12px; cursor: pointer; }
