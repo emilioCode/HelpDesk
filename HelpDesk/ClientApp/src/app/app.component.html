@@ -1,3 +1,6 @@
+@if (publicPage) {
+    <router-outlet></router-outlet>
+} @else {
 <span *ngIf="service.getUser() != null" class="hd-shell">
     <app-menu></app-menu>
     <div class="hd-main">
@@ -10,3 +13,4 @@
 <span *ngIf="service.getUser() == null">
     <app-login></app-login>
 </span>
+}

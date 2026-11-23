@@ -10,9 +10,12 @@ import { ProfileComponent } from './components/shared/content/profile/profile.co
 import { CostumerComponent } from './components/shared/content/costumer/costumer.component';
 import { WaitingComponent } from './components/shared/content/waiting/waiting.component';
 import { ReportComponent } from './components/shared/content/report/report.component';
+import { TrackingPageComponent } from './tracking/tracking-page.component';
 import { CalendarComponent } from './components/shared/content/calendar/calendar.component';
 
 export const routes: Routes = [
+  // The customer's page: open to whoever has the link, so it carries no guard.
+  { path: 't/:token', component: TrackingPageComponent },
   // minLevel is the lowest role that may open the screen: TECNICO 1, MODERADOR 2, ADMINISTRADOR 3, ROOT 4.
   { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard], data: { minLevel: 1 } },
   { path: 'counter', component: CounterComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
