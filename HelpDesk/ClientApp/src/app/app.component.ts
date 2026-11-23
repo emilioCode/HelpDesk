@@ -7,7 +7,6 @@ import { HeaderComponent } from './components/shared/header/header.component';
 import { MenuComponent } from './components/shared/menu/menu.component';
 import { ContentComponent } from './components/shared/content/content.component';
 import { FooterComponent } from './components/shared/footer/footer.component';
-import { SettingComponent } from './components/shared/setting/setting.component';
 import { LoginComponent } from './components/shared/login/login.component';
 
 @Component({
@@ -15,7 +14,7 @@ import { LoginComponent } from './components/shared/login/login.component';
     templateUrl: './app.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./app.component.css'],
-    imports: [NgIf, RouterOutlet, HeaderComponent, MenuComponent, ContentComponent, FooterComponent, SettingComponent, LoginComponent]
+    imports: [NgIf, RouterOutlet, HeaderComponent, MenuComponent, ContentComponent, FooterComponent, LoginComponent]
 })
 export class AppComponent implements OnInit {
   constructor(public service: ApiService, private session: SessionService){ }

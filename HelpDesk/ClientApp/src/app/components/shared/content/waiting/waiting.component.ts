@@ -536,6 +536,15 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       });
   }
 
+  // The state of an order as the badge of the design shows it.
+  badge(item: any): { cls: string, label: string } {
+    const s = this.service.ticketStatuses;
+    if (item.estado == s.completed && item.aprobadoPor != null) { return { cls: 'hd-badge-appr', label: 'Aprobado' }; }
+    if (item.estado == s.completed) { return { cls: 'hd-badge-done', label: 'Completado' }; }
+    if (item.estado == s.inProgress) { return { cls: 'hd-badge-prog', label: 'En proceso' }; }
+    return { cls: 'hd-badge-open', label: 'Abierto' };
+  }
+
   putTrace(trace,value){
     if(value=="visibleAlCliente"){
       const show = !trace.visibleAlCliente;

@@ -1,0 +1,33 @@
+/* The order screens on a phone: the list becomes cards and the order window takes the whole screen with its buttons at the bottom.
+   The old screens are adapted here until they move to the new components. Design: design/helpdesk.pen, mobile frames. */
+.hd-only-mobile { display: none; }
+
+@media (max-width: 767px) {
+  .hd-only-mobile { display: flex; }
+  .hd-only-desktop { display: none !important; }
+
+  .hd-cards { flex-direction: column; gap: 12px; }
+  .hd-order-card { display: flex; flex-direction: column; gap: 8px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); color: var(--ink); text-decoration: none; }
+  .hd-order-card:hover, .hd-order-card:focus-visible { background: var(--head); color: var(--ink); text-decoration: none; }
+  .hd-order-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 15px; }
+  .hd-order-client { font-size: 16px; font-weight: 600; }
+  .hd-order-meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+  .hd-empty { margin: 24px 0; text-align: center; color: var(--muted); }
+
+  .box-tools .input-group { width: 100% !important; float: none !important; }
+  .box-header { display: flex; flex-direction: column; gap: 8px; }
+  .box-header .box-tools { position: static; }
+  .form-control, .btn { min-height: 44px; }
+  .form-control { font-size: 16px; }
+
+  #modal-default .modal-dialog { margin: 0; width: 100%; max-width: none; }
+  #modal-default .modal-content { min-height: 100vh; border: 0; border-radius: 0; box-shadow: none; display: flex; flex-direction: column; }
+  #modal-default .modal-body { flex: 1; overflow-y: auto; padding: 12px 16px; }
+  #modal-default .modal-footer { position: sticky; bottom: 0; display: flex; gap: 10px; padding: 12px 16px; background: var(--surface); border-top: 1px solid var(--line); }
+  #modal-default .modal-footer .btn { flex: 1; margin: 0; }
+  #modal-default .row { display: flex; flex-wrap: wrap; }
+  #modal-default [class*="col-xs-"], #modal-default [class*="col-sm-"] { width: 100%; float: none; }
+  #modal-default .col-xs-3, #modal-default .col-xs-2 { width: 50%; }
+  #modal-default .nav-tabs { display: flex; overflow-x: auto; white-space: nowrap; }
+  #modal-default table { display: block; overflow-x: auto; }
+}

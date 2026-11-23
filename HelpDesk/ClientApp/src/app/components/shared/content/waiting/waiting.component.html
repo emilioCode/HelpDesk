@@ -23,7 +23,7 @@
             </div>
         <!-- /.box-header -->
         <div class="box-body">
-          <table id="example2" class="table table-bordered table-striped table-hover">
+          <table id="example2" class="table table-bordered table-striped table-hover hd-only-desktop">
             <thead>
             <tr>
               <th>No. Secuencia</th>
@@ -57,6 +57,16 @@
             </tr>
             </tfoot> -->
           </table>
+          <div class="hd-cards hd-only-mobile" role="list">
+            <ng-container *ngFor="let item of tickets | filter: search">
+              <a *ngIf="service.getLevel(service.getUser().acceso) > 0" class="hd-order-card" role="listitem" href="#" data-toggle="modal" data-target="#modal-default" (click)="fillModal('edit',item); $event.preventDefault()">
+                <span class="hd-order-top"><strong>No. {{ item.noSecuencia }}</strong><span [class]="'hd-badge ' + badge(item).cls">{{ badge(item).label }}</span></span>
+                <span class="hd-order-client">{{ item.cliente }}</span>
+                <span class="hd-order-meta"><span>{{ item.tipoSolicitud }}</span><span>{{ item.tipoServicio }}</span></span>
+              </a>
+            </ng-container>
+            <p class="hd-empty" *ngIf="(tickets | filter: search)?.length === 0 && !service.isLoading">No hay órdenes que mostrar.</p>
+          </div>
         </div>
         <!-- /.box-body -->
         <div class="overlay" [hidden]="!service.isLoading">
