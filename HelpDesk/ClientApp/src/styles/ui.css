@@ -38,3 +38,6 @@
 .hd-spin { width: 18px; height: 18px; box-sizing: border-box; border-radius: 50%; border: 2px solid currentColor; border-top-color: transparent; animation: hd-spin 0.8s linear infinite; }
 @keyframes hd-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .hd-spin { animation: none; } }
+
+/* List search box: the old markup sized it as 25% of a shrink-wrapped container, which left it about 20 px wide. */
+.box-tools .input-group { width: 280px !important; max-width: 100%; }

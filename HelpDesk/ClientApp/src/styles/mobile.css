@@ -16,7 +16,7 @@
 
   .box-tools .input-group { width: 100% !important; float: none !important; }
   .box-header { display: flex; flex-direction: column; gap: 8px; }
-  .box-header .box-tools { position: static; }
+  .box-header .box-tools { position: static; display: block; width: 100%; }
   .form-control, .btn { min-height: 44px; }
   .form-control { font-size: 16px; }
 
