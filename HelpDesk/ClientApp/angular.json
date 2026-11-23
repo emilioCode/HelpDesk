@@ -27,7 +27,6 @@
             "styles": [
               "src/styles/tokens.css",
               "src/styles/ui.css",
-              "src/styles/mobile.css",
               "@fontsource/inter/latin-400.css",
               "@fontsource/inter/latin-500.css",
               "@fontsource/inter/latin-600.css",
@@ -38,7 +37,9 @@
               "node_modules/admin-lte/bower_components/Ionicons/css/ionicons.min.css",
               "node_modules/admin-lte/bower_components/font-awesome/css/font-awesome.min.css",
               "node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.min.css",
-              "node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.print.min.css"
+              "node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.print.min.css",
+              "src/styles/compat.css",
+              "src/styles/mobile.css"
             ],
             "scripts": [
               "node_modules/admin-lte/bower_components/jquery/dist/jquery.min.js",

@@ -27,7 +27,11 @@
   #modal-default .modal-footer .btn { flex: 1; margin: 0; }
   #modal-default .row { display: flex; flex-wrap: wrap; }
   #modal-default [class*="col-xs-"], #modal-default [class*="col-sm-"] { width: 100%; float: none; }
-  #modal-default .col-xs-3, #modal-default .col-xs-2 { width: 50%; }
+  #modal-default .form-group.col-xs-12 { display: flex; flex-wrap: wrap; padding: 0; }
+  #modal-default .form-group.col-xs-12 > .form-group { width: 50%; float: none; }
+  #modal-default .form-group.col-xs-12 > .form-group:first-child { width: 100%; }
+  #modal-default .input-group { display: block; width: 100%; }
+  #modal-default .input-group .form-control { width: 100%; float: none; }
   #modal-default .nav-tabs { display: flex; overflow-x: auto; white-space: nowrap; }
   #modal-default table { display: block; overflow-x: auto; }
 }
