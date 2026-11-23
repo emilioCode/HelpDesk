@@ -545,6 +545,15 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
     return { cls: 'hd-badge-open', label: 'Abierto' };
   }
 
+  // Four steps: open, in progress, completed, approved.
+  progress(item: any): number {
+    const s = this.service.ticketStatuses;
+    if (item.estado == s.completed && item.aprobadoPor != null) { return 100; }
+    if (item.estado == s.completed) { return 75; }
+    if (item.estado == s.inProgress) { return 50; }
+    return 25;
+  }
+
   putTrace(trace,value){
     if(value=="visibleAlCliente"){
       const show = !trace.visibleAlCliente;

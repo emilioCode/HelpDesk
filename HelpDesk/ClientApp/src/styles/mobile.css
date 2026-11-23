@@ -52,4 +52,26 @@
   .table.hd-devices > tbody > tr > td:nth-child(5) > span { display: inline-flex; flex: none; }
   .hd-devices tbody td input.form-control { width: 100%; margin-bottom: 8px; }
   .hd-devices tbody td .btn-link { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; }
+
+  .hd-parts, .hd-parts tbody { display: block; border: 0; }
+  .hd-parts thead, .hd-parts thead tr { display: block; }
+  .hd-parts thead th { display: none; }
+  .hd-parts thead th:nth-child(n+4):not([hidden]) { display: block; padding: 0; border: 0; background: transparent; }
+  .hd-parts thead th:nth-child(n+4) a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); font-weight: 600; }
+  .hd-parts thead th:nth-child(n+4) a::after { content: "Agregar parte"; font-size: 14px; }
+  .hd-parts tbody tr { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px; margin: 8px 0; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); }
+  .table.hd-parts > tbody > tr > td { display: block; padding: 0 !important; border: 0 !important; font-size: 13px; color: var(--muted); }
+  .table.hd-parts > tbody > tr > td:nth-child(3) { flex: 1; width: 100%; font-size: 15px; font-weight: 600; color: var(--ink); order: -1; display: flex; align-items: center; justify-content: space-between; }
+  .table.hd-parts > tbody > tr > td:nth-child(1)::before { content: "Cantidad: "; }
+  .table.hd-parts > tbody > tr > td input.form-control { width: 100%; margin-bottom: 8px; }
+  #modal-default .box-comments { max-height: none !important; }
+  #modal-default .box-footer .input-group { display: flex; flex-direction: column; gap: 8px; }
+  #modal-default .box-footer .input-group-btn { display: block; width: 100%; }
+  #modal-default .box-footer .input-group-btn .btn { width: 100%; }
+  #modal-default .form-group.col-xs-12:has(> .hd-section-title) { display: block; }
+  #modal-default .hd-section-title { display: block; width: 100%; }
+  #modal-default #timeline .col-md-12 { padding: 0; }
+  #modal-default #timeline .box { margin: 0; border: 0; }
+  #modal-default #timeline .box-header { display: none; }
+  #modal-default #timeline .box-body, #modal-default #timeline .box-footer { padding: 8px 0; border: 0; }
 }

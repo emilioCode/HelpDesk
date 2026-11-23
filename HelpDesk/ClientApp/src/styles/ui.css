@@ -41,3 +41,12 @@
 
 /* List search box: the old markup sized it as 25% of a shrink-wrapped container, which left it about 20 px wide. */
 .box-tools .input-group { width: 280px !important; max-width: 100%; }
+
+/* Order header: state and progress */
+.hd-order-head { margin: 0 0 12px; padding: 0 0 12px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; }
+.hd-order-head-top { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
+.hd-muted { color: var(--muted); font-size: 13px; }
+.hd-progress-row { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; }
+.hd-progress { height: 8px; border-radius: var(--radius-pill); background: var(--line); overflow: hidden; }
+.hd-progress-fill { height: 100%; border-radius: var(--radius-pill); background: var(--accent); transition: width .3s; }
+@media (prefers-reduced-motion: reduce) { .hd-progress-fill { transition: none; } }

@@ -97,6 +97,14 @@
       </div>
       <div class="modal-body" [formGroup]="ticketForm">
         
+        <div class="hd-order-head" *ngIf="option !== 'add'">
+          <div class="hd-order-head-top">
+            <span [class]="'hd-badge ' + badge(ticket).cls">{{ badge(ticket).label }}</span>
+            <span class="hd-muted">{{ ticket.tipoSolicitud }}<ng-container *ngIf="ticket.fechaCreacion"> · {{ ticket.fechaCreacion | date:'dd/MM/yyyy' }}</ng-container></span>
+          </div>
+          <div class="hd-progress-row"><span>Progreso de la orden</span><span>{{ progress(ticket) }}%</span></div>
+          <div class="hd-progress" role="progressbar" aria-label="Progreso de la orden" aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="progress(ticket)"><div class="hd-progress-fill" [style.width.%]="progress(ticket)"></div></div>
+        </div>
         <!---->
         <div class="col-md-12">
             <div class="nav-tabs-custom">
