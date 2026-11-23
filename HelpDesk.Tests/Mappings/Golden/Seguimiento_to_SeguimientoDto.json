@@ -9,6 +9,7 @@
       "Hora": "01:02:03",
       "Favorito": true,
       "Etiquetado": true,
+      "VisibleAlCliente": true,
       "Id": 16,
       "Habilitado": true
     },
@@ -22,7 +23,8 @@
       "Hora": "01:02:03",
       "Favorito": true,
       "Etiquetado": true,
-      "Habilitado": true
+      "Habilitado": true,
+      "VisibleAlCliente": true
     }
   },
   {
@@ -35,6 +37,7 @@
       "Hora": "00:00:00",
       "Favorito": null,
       "Etiquetado": null,
+      "VisibleAlCliente": null,
       "Id": 0,
       "Habilitado": null
     },
@@ -48,7 +51,8 @@
       "Hora": "00:00:00",
       "Favorito": null,
       "Etiquetado": null,
-      "Habilitado": null
+      "Habilitado": null,
+      "VisibleAlCliente": null
     }
   },
   {

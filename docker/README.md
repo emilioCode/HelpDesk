@@ -47,7 +47,7 @@ The app does not start without `Jwt__Key` and `Secrets__Key`. Never reuse the ex
 
 ### Existing databases
 
-The company mail password is stored encrypted and needs a wider column. Databases created before this change must run `db/migrations/001-widen-company-mail-password.sql` once. Plain-text user passwords are converted to hashes the first time each user signs in; a stored mail password is encrypted the next time its company is saved.
+The company mail password is stored encrypted and needs a wider column. Databases created before this change must run `db/migrations/001-widen-company-mail-password.sql` once. Plain-text user passwords are converted to hashes the first time each user signs in; a stored mail password is encrypted the next time its company is saved. The customer tracking page needs `db/migrations/002-order-tracking.sql` (a new table and a column of the activities); run it once too.
 
 ### Reading the e-mails the application sends
 

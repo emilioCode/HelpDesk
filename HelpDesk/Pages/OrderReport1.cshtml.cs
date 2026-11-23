@@ -1,5 +1,6 @@
 ﻿using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
+using HelpDesk.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
@@ -17,19 +18,26 @@ namespace HelpDesk.Pages
         public Solicitud solicitud { get; set; }
         public List<Equipo> equipos { get; set; }
         public Cliente cliente { get; set; }
+        // The link the customer follows and its QR, printed on the order.
+        public string trackingUrl { get; set; }
+        public string qrSvg { get; set; }
+        private readonly ITrackingService _trackingService;
+        private readonly IQrCodeService _qrCodeService;
 
         private readonly ICurrentUser _currentUser;
         private readonly IDeviceService _deviceService;
         private readonly IBusinessService _businessService;
         private readonly ICustomerService _customerService;
         private readonly ITicketService _ticketService;
-        public OrderReport1Model(ICurrentUser currentUser, IDeviceService deviceService, IBusinessService businessService, ICustomerService customerService, ITicketService ticketService)
+        public OrderReport1Model(ICurrentUser currentUser, IDeviceService deviceService, IBusinessService businessService, ICustomerService customerService, ITicketService ticketService, ITrackingService trackingService, IQrCodeService qrCodeService)
         {
             _currentUser = currentUser;
             _deviceService = deviceService;
             _businessService = businessService;
             _customerService = customerService;
             _ticketService = ticketService;
+            _trackingService = trackingService;
+            _qrCodeService = qrCodeService;
         }
         public async Task<IActionResult> OnGetAsync(string value)
         {
@@ -49,6 +57,9 @@ namespace HelpDesk.Pages
                 equipos.Add(equipoTemp);
             }
             title = Messages.ServiceOrderTitle(noTicket);
+            var link = await _trackingService.EnsureLinkAsync(solicitud.Id);
+            trackingUrl = _trackingService.BuildUrl($"{Request.Scheme}://{Request.Host}", link.Token);
+            qrSvg = _qrCodeService.ToSvg(trackingUrl);
             return Page();
         }
     }

@@ -14,5 +14,6 @@ namespace HelpDesk.Core.DTOs
         public bool? Favorito { get; set; }
         public bool? Etiquetado { get; set; }
         public bool? Habilitado { get; set; }
+        public bool? VisibleAlCliente { get; set; }
     }
 }

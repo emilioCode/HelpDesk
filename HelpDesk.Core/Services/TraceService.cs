@@ -44,7 +44,8 @@ namespace HelpDesk.Core.Services
                                     Hora = seguimiento.Hora,
                                     Habilitado = seguimiento.Habilitado,
                                     Favorito = seguimiento.Favorito,
-                                    Etiquetado = seguimiento.Etiquetado
+                                    Etiquetado = seguimiento.Etiquetado,
+                                    VisibleAlCliente = seguimiento.VisibleAlCliente
                                 };
             return customTraces;
         }
@@ -61,6 +62,7 @@ namespace HelpDesk.Core.Services
             trace.Hora = DateTime.Now.TimeOfDay;
             trace.Favorito = false;
             trace.Etiquetado = false;
+            trace.VisibleAlCliente = false;
             trace.Habilitado = true;
             await _unitOfWork.TraceRepository.Add(trace);
             await _unitOfWork.SaveChangeAsync();
@@ -77,7 +79,26 @@ namespace HelpDesk.Core.Services
                 trace.IdEmpresa = persisted.IdEmpresa;
                 trace.IdSolicitud = persisted.IdSolicitud;
                 trace.IdUsuario = persisted.IdUsuario;
+                // Only SetVisibleToCustomerAsync changes it, so that marking an activity as favourite or solution does not undo it.
+                trace.VisibleAlCliente = persisted.VisibleAlCliente;
             }
+            _unitOfWork.TraceRepository.Update(trace);
+            await _unitOfWork.SaveChangeAsync();
+            return trace;
+        }
+
+        // The technician of the order, or a moderator or above, decides whether the customer sees an activity.
+        public async Task<Seguimiento> SetVisibleToCustomerAsync(int traceId, bool visible)
+        {
+            var trace = _unitOfWork.TraceRepository.Query().FirstOrDefault(x => x.Id == traceId);
+            if (trace == null) throw new AccessDeniedException();
+            if (_currentUser.IsAuthenticated)
+            {
+                _currentUser.RequireCompany(trace.IdEmpresa);
+                var ticket = _unitOfWork.TicketRepository.Query().FirstOrDefault(t => t.Id == trace.IdSolicitud);
+                if (ticket == null || (_currentUser.Level < RoleLevel.Moderator && ticket.IdUsuario != _currentUser.Id)) throw new AccessDeniedException();
+            }
+            trace.VisibleAlCliente = visible;
             _unitOfWork.TraceRepository.Update(trace);
             await _unitOfWork.SaveChangeAsync();
             return trace;

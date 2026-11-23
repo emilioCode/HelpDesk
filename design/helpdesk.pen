@@ -52305,6 +52305,57 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "QmDCW",
+      "x": 7600,
+      "y": -700,
+      "name": "App icon · redondeado",
+      "clip": true,
+      "width": 512,
+      "height": 512,
+      "fill": "#2451D6",
+      "cornerRadius": 112,
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "coCCi",
+          "name": "H",
+          "fill": "#FFFFFF",
+          "content": "H",
+          "fontFamily": "Inter",
+          "fontSize": 330,
+          "fontWeight": "700"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "tVYKd",
+      "x": 8200,
+      "y": -700,
+      "name": "App icon · cuadrado (pantalla de inicio)",
+      "clip": true,
+      "width": 512,
+      "height": 512,
+      "fill": "#2451D6",
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "z3wSZt",
+          "name": "H",
+          "fill": "#FFFFFF",
+          "content": "H",
+          "fontFamily": "Inter",
+          "fontSize": 330,
+          "fontWeight": "700"
+        }
+      ]
     }
   ],
   "themes": {

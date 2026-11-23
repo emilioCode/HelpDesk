@@ -11,6 +11,7 @@ namespace HelpDesk.Core.Interfaces
         IDeviceRepository DeviceRepository { get; }
         IRepository<Piezas> PieceRepository { get; }
         IRepository<Seguimiento> TraceRepository { get; }
+        IRepository<EnlaceSeguimiento> TrackingRepository { get; }
         ITicketRepository TicketRepository { get; }
         IUserRepository UserRepository { get; }
 

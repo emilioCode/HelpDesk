@@ -17,8 +17,10 @@ namespace HelpDesk.Controllers
         private readonly ITicketService _ticketService;
         private readonly IHelpDeskMapper _mapper;
         private readonly IMailService _mailService;
-        public TicketController(ITicketService ticketService, IHelpDeskMapper mapper, IMailService mailService)
+        private readonly ITrackingService _tracking;
+        public TicketController(ITicketService ticketService, IHelpDeskMapper mapper, IMailService mailService, ITrackingService tracking)
         {
+            _tracking = tracking;
             _ticketService = ticketService;
             _mapper = mapper;
             _mailService = mailService;
@@ -54,6 +56,8 @@ namespace HelpDesk.Controllers
         {
             var ticket = _mapper.Map(ticketDto);
             var results = await _ticketService.UpdateTicket(ticket, toDo);
+            // The link the customer follows keeps working for a while after the order is approved.
+            if (string.Equals(toDo, "APROBAR", System.StringComparison.OrdinalIgnoreCase)) await _tracking.OnApprovedAsync(results.Item1.Id);
             var response = ObjectResponse.Saved(Messages.Updated, results.Item1);
             if (results.Item2 != null)
             {

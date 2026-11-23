@@ -22,6 +22,7 @@
     <!-- Writes the conversions between entities and DTOs at build time; nothing of it is needed at run time -->
     <PackageReference Include="Riok.Mapperly" Version="4.3.1" PrivateAssets="all" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="QRCoder" Version="1.6.0" />
     <!-- The rules of the validators (Validators folder). They are applied to every body the API receives (FluentValidationModelValidatorProvider) -->
     <PackageReference Include="FluentValidation" Version="12.2.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />

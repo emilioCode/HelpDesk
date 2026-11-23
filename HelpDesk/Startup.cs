@@ -5,6 +5,7 @@ using HelpDesk.Infrastructure.Filters;
 using HelpDesk.Infrastructure.Validators;
 using HelpDesk.Security;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
@@ -72,6 +73,19 @@ namespace HelpDesk
             services.AddValidatorsFromAssemblyContaining<CustomerValidator>(ServiceLifetime.Transient);
 
             services.AddServices();
+            // The public tracking page: the settings, and a limit of calls per minute from one address.
+            var tracking = new HelpDesk.Core.Services.TrackingOptions();
+            Configuration.GetSection("Tracking").Bind(tracking);
+            if (tracking.DaysAfterApproval < 1) tracking.DaysAfterApproval = 30;
+            if (tracking.RequestsPerMinute < 1) tracking.RequestsPerMinute = 30;
+            services.AddSingleton(tracking);
+            services.AddRateLimiter(limiter =>
+            {
+                limiter.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+                limiter.AddPolicy("tracking", context => System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(
+                    context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    _ => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions { PermitLimit = tracking.RequestsPerMinute, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
+            });
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -120,6 +134,7 @@ namespace HelpDesk
                     options.AllowAnyMethod();
                 });
             }
+            app.UseRateLimiter();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
