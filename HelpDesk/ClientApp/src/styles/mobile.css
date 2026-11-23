@@ -34,4 +34,22 @@
   #modal-default .input-group .form-control { width: 100%; float: none; }
   #modal-default .nav-tabs { display: flex; overflow-x: auto; white-space: nowrap; }
   #modal-default table { display: block; overflow-x: auto; }
+
+  #modal-default [hidden] { display: none !important; }
+  #modal-default .hd-section-title { text-align: left !important; margin: 16px 0 8px; font-size: 16px; font-weight: 600; text-transform: none; }
+  #modal-default .row:has(> .hd-devices) { margin: 0; display: block; }
+  .hd-devices, .hd-devices tbody { display: block; border: 0; }
+  .hd-devices thead, .hd-devices thead tr { display: block; }
+  .hd-devices thead th { display: none; }
+  .hd-devices thead th:nth-child(n+6):not([hidden]) { display: block; padding: 0; border: 0; background: transparent; }
+  .hd-devices thead th:nth-child(n+6) a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); font-weight: 600; }
+  .hd-devices thead th:nth-child(n+6) a::after { content: "Agregar equipo"; font-size: 14px; }
+  .hd-devices tbody tr { display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: center; margin: 8px 0; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); }
+  .table.hd-devices > tbody > tr > td { display: block; padding: 0 !important; border: 0 !important; font-size: 13px; color: var(--muted); }
+  .table.hd-devices > tbody > tr > td:nth-child(1) { width: 100%; font-size: 15px; font-weight: 600; color: var(--ink); }
+  .table.hd-devices > tbody > tr > td:nth-child(2) { width: 100%; font-size: 14px; }
+  .table.hd-devices > tbody > tr > td:nth-child(5) { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .table.hd-devices > tbody > tr > td:nth-child(5) > span { display: inline-flex; flex: none; }
+  .hd-devices tbody td input.form-control { width: 100%; margin-bottom: 8px; }
+  .hd-devices tbody td .btn-link { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; }
 }

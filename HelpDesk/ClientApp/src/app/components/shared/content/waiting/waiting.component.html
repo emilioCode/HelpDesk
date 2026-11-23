@@ -176,9 +176,9 @@
                       </div>
                     </div>
                     <div class="form-group col-xs-12 col-sm-12">
-                      <h6 class="text-center">EQUIPOS</h6>
+                      <h6 class="text-center hd-section-title">Equipos</h6>
                       <div class="row">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered hd-devices">
                           <thead>
                             <tr>
                               <th scope="col" class="text-center">Descripci&oacute;n</th>
@@ -344,8 +344,8 @@
           <button type="button" class="btn btn-primary"  *ngIf="option=='add'" [disabled]="mode == 'inbox' ? addDevice : (addDevice || ticket.tipoSolicitud === '' || (ticket.tipoSolicitud === service.requestTypes.workshop && devices.length == 0))" (click)="add()" ><i class="fa fa-fw fa-file-o"></i> Crear</button>
           <!-- <button type="button" class="btn btn-success"  *ngIf="option=='edit'" (click)="edit()" ><i class="fa fa-fw fa-save"></i> Guardar</button> -->
           <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
-          <button type="button" class="btn btn-default" id="btnClose" data-dismiss="modal" >Close</button><!--(click)='getTickets(service.getUser().id,"*")'-->
-        <!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->
+          <button type="button" class="btn btn-default" id="btnClose" data-dismiss="modal" >Cerrar</button><!--(click)='getTickets(service.getUser().id,"*")'-->
+        <!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button> -->
         <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
       </div>
     </div>
@@ -406,7 +406,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default pull-right" data-dismiss="modal" id="btnCloseClient">Close</button>
+        <button type="button" class="btn btn-default pull-right" data-dismiss="modal" id="btnCloseClient">Cerrar</button>
       </div>
     </div>
     <!-- /.modal-content -->
@@ -483,8 +483,8 @@
             <button type="button" class="btn btn-primary" (click)="addClient()" [disabled]="costumerForm.invalid || !(service.getLevel(service.getUser().acceso) > 1)"><i class="fa fa-fw fa-file-o"></i> Crear</button><!--[disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.tipo) || !(service.getLevel(service.getUser().acceso) >= 1)"-->
             <!-- <button type="button" class="btn btn-success" data-dismiss="modal" *ngIf="option=='edit'" (click)="edit()" [disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.rnc) || !(service.getLevel(service.getUser().acceso) > 1)"><i class="fa fa-fw fa-save"></i> Guardar</button>[disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.tipo) || !(service.getLevel(service.getUser().acceso) >= 1)" -->
             <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
-            <button type="button" class="btn btn-default" data-dismiss="modal" id="btnCloseClient2">Close</button><!--(click)='getCostumers(this.service.getUser().id,"*")'-->
-          <!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->
+            <button type="button" class="btn btn-default" data-dismiss="modal" id="btnCloseClient2">Cerrar</button><!--(click)='getCostumers(this.service.getUser().id,"*")'-->
+          <!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button> -->
           <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
         </div>
       </div>
