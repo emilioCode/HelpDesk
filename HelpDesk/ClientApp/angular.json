@@ -26,6 +26,7 @@
             ],
             "styles": [
               "src/styles/tokens.css",
+              "src/styles/ui.css",
               "@fontsource/inter/latin-400.css",
               "@fontsource/inter/latin-500.css",
               "@fontsource/inter/latin-600.css",
