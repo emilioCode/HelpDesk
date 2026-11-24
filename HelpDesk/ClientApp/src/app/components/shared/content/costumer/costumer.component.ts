@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { HdLoadingComponent } from '../../../../ui/hd-loading.component';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import * as signalR from '@microsoft/signalr';
@@ -12,7 +13,7 @@ import { FilterPipe } from '../../../../pipes/filter.pipe';
     styleUrls: [],
     changeDetection: ChangeDetectionStrategy.Eager,
     styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }'],
-    imports: [NgIf, FormsModule, NgFor, ReactiveFormsModule, FieldHintsDirective, FilterPipe]
+    imports: [HdLoadingComponent, NgIf, FormsModule, NgFor, ReactiveFormsModule, FieldHintsDirective, FilterPipe]
 })
 export class CostumerComponent implements OnInit, OnDestroy {
   search: any = "";

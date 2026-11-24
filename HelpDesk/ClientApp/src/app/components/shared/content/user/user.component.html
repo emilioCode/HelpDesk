@@ -61,9 +61,7 @@
           </table>
         </div>
         <!-- /.box-body -->
-        <div class="overlay" [hidden]="!service.isLoading">
-            <i class="fa fa-refresh fa-spin"></i>
-        </div>
+        <hd-loading [active]="service.isLoading"></hd-loading>
       </div>
       <!-- /.box -->
 
@@ -150,9 +148,7 @@
   
         </div>
         <div class="modal-footer">
-            <div class="overlay" [hidden]="!service.isLoading">
-                <i class="fa fa-refresh fa-spin"></i>
-            </div>
+            <hd-loading [active]="service.isLoading"></hd-loading>
             <button type="button" class="btn btn-primary" *ngIf="option=='add'" (click)="add()" [disabled]="form.invalid"><i class="fa fa-fw fa-file-o"></i> Crear</button>
             <button type="button" class="btn btn-success" *ngIf="option=='edit'" (click)="edit()" [disabled]="form.invalid"><i class="fa fa-fw fa-save"></i> Guardar</button>
             <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->

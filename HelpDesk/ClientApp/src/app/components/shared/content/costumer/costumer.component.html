@@ -58,9 +58,7 @@
 
         </div>
         <!-- /.box-body -->
-        <div class="overlay" [hidden]="!service.isLoading">
-          <i class="fa fa-refresh fa-spin"></i>
-        </div>
+        <hd-loading [active]="service.isLoading"></hd-loading>
       </div>
       <!-- /.box -->
 
@@ -137,9 +135,7 @@
 
       </div>
       <div class="modal-footer">
-          <div class="overlay" [hidden]="!service.isLoading">
-              <i class="fa fa-refresh fa-spin"></i>
-          </div>
+          <hd-loading [active]="service.isLoading"></hd-loading>
           <button type="button" class="btn btn-primary" data-dismiss="modal" *ngIf="option=='add'" (click)="add()" [disabled]="form.invalid || !(service.getLevel(service.getUser().acceso) > 1)"><i class="fa fa-fw fa-file-o"></i> Crear</button><!--[disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.tipo) || !(service.getLevel(service.getUser().acceso) >= 1)"-->
           <button type="button" class="btn btn-success" data-dismiss="modal" *ngIf="option=='edit'" (click)="edit()" [disabled]="form.invalid || !(service.getLevel(service.getUser().acceso) > 1)"><i class="fa fa-fw fa-save"></i> Guardar</button><!--[disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.tipo) || !(service.getLevel(service.getUser().acceso) >= 1)"-->
           <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->

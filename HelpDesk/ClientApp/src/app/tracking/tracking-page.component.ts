@@ -4,6 +4,10 @@ import { HttpClient } from '@angular/common/http';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { HdIconComponent } from '../ui/hd-icon.component';
+import { HdBadgeComponent, HdTone } from '../ui/hd-badge.component';
+import { HdProgressComponent } from '../ui/hd-progress.component';
+import { HdSpinnerComponent } from '../ui/hd-spinner.component';
+import { HdButtonDirective } from '../ui/hd-button.directive';
 
 // What the customer sees from the link of an order: where it stands and what has been done. No sign in; the link is the key.
 @Component({
@@ -11,7 +15,7 @@ import { HdIconComponent } from '../ui/hd-icon.component';
   templateUrl: './tracking-page.component.html',
   styleUrls: ['./tracking-page.component.css'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [DatePipe, HdIconComponent]
+  imports: [DatePipe, HdIconComponent, HdBadgeComponent, HdProgressComponent, HdSpinnerComponent, HdButtonDirective]
 })
 export class TrackingPageComponent implements OnInit {
   state: 'loading' | 'ready' | 'invalid' = 'loading';
@@ -41,7 +45,7 @@ export class TrackingPageComponent implements OnInit {
   }
 
   get statusLabel(): string { return this.labels[this.view.status]; }
-  get tone(): string { return this.tones[this.view.status]; }
+  get tone(): HdTone { return this.tones[this.view.status]; }
   get fillTone(): string { return this.view.status === 'approved' ? 'done' : 'accent'; }
 
   // done: the step is behind; current: where the order is now; pending: still to come.

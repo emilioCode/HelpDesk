@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { HdButtonDirective } from '../../../ui/hd-button.directive';
 import { ApiService } from '../../../services/api.service';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -7,7 +8,7 @@ import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } 
     templateUrl: './login.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./login.component.css'],
-    imports: [FormsModule, ReactiveFormsModule]
+    imports: [FormsModule, ReactiveFormsModule, HdButtonDirective]
 })
 export class LoginComponent implements OnInit {
 

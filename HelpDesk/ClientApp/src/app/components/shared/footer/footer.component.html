@@ -1,14 +1,6 @@
   <!-- The legal text is in the side menu; this component keeps the terms and conditions modal that its link opens. -->
     <!-- Modals -->
-<div class="modal fade" id="modal-copyright" data-backdrop="static">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title text-center">Términos y condiciones</h4>
-      </div>
-      <div class="modal-body">
+<hd-dialog dialogId="modal-copyright" title="Términos y condiciones" [staticBackdrop]="true">
      <!---->
      <div class="card-group">
       <div class="card">
@@ -42,13 +34,4 @@
         </div>
       </div>
     </div>
-      <!---->
-      </div>
-      <div class="modal-footer">
-      </div>
-    </div>
-    <!-- /.modal-content -->
-  </div>
-  <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
+      </hd-dialog>

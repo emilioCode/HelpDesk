@@ -1,4 +1,7 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { HdDialogComponent } from '../../../../ui/hd-dialog.component';
+import { HdButtonDirective } from '../../../../ui/hd-button.directive';
+import { HdLoadingComponent } from '../../../../ui/hd-loading.component';
 import { Calendar } from '@fullcalendar/core';
 import { showModal } from '../../../../ui/page-behaviors';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -7,6 +10,7 @@ import esLocale from '@fullcalendar/core/locales/es';
 import { Event } from '../../../../interfaces';
 import { ApiService } from '../../../../services/api.service';
 @Component({
+    imports: [HdLoadingComponent, HdDialogComponent, HdButtonDirective],
     selector: 'app-calendar',
     templateUrl: './calendar.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
@@ -14,7 +18,8 @@ import { ApiService } from '../../../../services/api.service';
 })
 export class CalendarComponent implements OnInit, OnDestroy {
 
-  constructor(public service: ApiService) {}
+  constructor(public service: ApiService, private cd: ChangeDetectorRef) {}
+  selected: { title: string, role: string, who: string, description: string, path: string } | null = null;
   events: Event[];
   event: Event = {
     title: '',
@@ -64,23 +69,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
       eventClick: (info) => {
         info.jsEvent.preventDefault();
         const p: any = info.event.extendedProps;
-        document.getElementById('modalTitle').textContent = info.event.title;
-        const box = document.getElementById('modalText');
-        box.textContent = '';
-        const line = (label: string, text: string) => {
-          const para = document.createElement('p');
-          const strong = document.createElement('strong');
-          strong.textContent = label + ': ';
-          para.append(strong, text);
-          box.appendChild(para);
-        };
-        line(p.user.acceso, p.user.nombre);
-        line('Descripción', p.ticket.descripcion ? p.ticket.descripcion : '');
-        const para = document.createElement('p');
-        const link = document.createElement('a');
-        link.href = p.path; link.target = '_blank'; link.className = 'btn btn-primary';
-        link.innerHTML = '<i class="fa fa-print"></i> Imprimir';
-        para.appendChild(link); box.appendChild(para);
+        this.selected = { title: info.event.title, role: p.user.acceso, who: p.user.nombre, description: p.ticket.descripcion ? p.ticket.descripcion : '', path: p.path };
+        this.cd.detectChanges();
         showModal(document.getElementById('exampleModal'));
       }
     });

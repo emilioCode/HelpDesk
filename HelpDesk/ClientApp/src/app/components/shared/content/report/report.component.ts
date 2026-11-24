@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { HdLoadingComponent } from '../../../../ui/hd-loading.component';
 import { ApiService } from '../../../../services/api.service';
 import * as signalR from '@microsoft/signalr';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +11,7 @@ import { FilterPipe } from '../../../../pipes/filter.pipe';
     templateUrl: './report.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styles: [],
-    imports: [FormsModule, NgFor, NgIf, DatePipe, FilterPipe]
+    imports: [HdLoadingComponent, FormsModule, NgFor, NgIf, DatePipe, FilterPipe]
 })
 export class ReportComponent implements OnInit, OnDestroy {
   search: any = "";

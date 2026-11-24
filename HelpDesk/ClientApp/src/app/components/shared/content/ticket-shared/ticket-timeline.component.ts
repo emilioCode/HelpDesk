@@ -1,4 +1,5 @@
 import { Component, DoCheck, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { HdAlertComponent } from '../../../../ui/hd-alert.component';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { MirroredForm, notBlank } from './mirrored-form';
@@ -12,7 +13,7 @@ import { FieldHintsDirective } from '../../field-hints.directive';
     templateUrl: './ticket-timeline.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styles: [':host { display: block; }'],
-    imports: [NgFor, NgIf, FormsModule, ReactiveFormsModule, FieldHintsDirective, DatePipe]
+    imports: [HdAlertComponent, NgFor, NgIf, FormsModule, ReactiveFormsModule, FieldHintsDirective, DatePipe]
 })
 export class TicketTimelineComponent implements DoCheck {
   @Input() ticket: any = {};
