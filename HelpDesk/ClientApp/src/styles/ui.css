@@ -91,3 +91,17 @@
 .fc .hd-ev-progress .fc-list-event-dot { border-color: var(--prog-fg); }
 .fc .hd-ev-done .fc-list-event-dot { border-color: var(--done-fg); }
 .fc .hd-ev-approved .fc-list-event-dot { border-color: var(--appr-fg); }
+
+/* Toggles under an activity: icon plus a word so each one says what it does */
+.hd-toggles { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.hd-toggle { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: var(--surface); color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer; user-select: none; }
+.hd-toggle:hover { background: var(--accent-soft); color: var(--ink); }
+.hd-toggle:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--focus); }
+.hd-toggle.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+/* Order dates and times: one row where every field fills its share, no empty gaps */
+@media (min-width: 768px) {
+  .form-group.hd-schedule { display: grid; grid-template-columns: auto repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .form-group.hd-schedule > .form-group { width: auto; float: none; padding: 0; margin: 0; }
+  .form-group.hd-schedule .input-group { display: block; width: 100%; }
+}

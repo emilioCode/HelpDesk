@@ -74,6 +74,8 @@
   #modal-default #timeline .box { margin: 0; border: 0; }
   #modal-default #timeline .box-header { display: none; }
   #modal-default #timeline .box-body, #modal-default #timeline .box-footer { padding: 8px 0; border: 0; }
+  #modal-default #timeline .img-push { width: auto; margin-left: 48px; }
+  #modal-default #timeline .img-push .form-control, #modal-default #timeline .img-push .input-group-btn, #modal-default #timeline .img-push .input-group-btn .btn { display: block; float: none; width: 100%; }
 }
 
 @media (max-width: 767px) {

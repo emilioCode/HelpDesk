@@ -29,10 +29,11 @@
           <img *ngIf="service.hasImage(item.userImage)" class="img-circle img-sm" [src]="'data:image/jpeg;base64,'+ item.userImage" alt="User Image">
           <div class="comment-text">
                 <span class="username">
-                  {{ item.userName }} <i class="fa fa-star-o" *ngIf="item.favorito != true" title="Marcar como favorito" (click)="toggle.emit({ item: item, field: 'favorito' })"></i><i class="fa fa-star" *ngIf="item.favorito == true" style="color:gold" title="Desmarcar como favorito" (click)="toggle.emit({ item: item, field: 'favorito' })"></i> <i class="fa fa-eye-slash" *ngIf="item.visibleAlCliente != true" title="Mostrar al cliente en su seguimiento" style="color:#999" (click)="toggle.emit({ item: item, field: 'visibleAlCliente' })"></i><i class="fa fa-eye" *ngIf="item.visibleAlCliente == true" title="El cliente lo ve. Ocultar" style="color:#2451D6" (click)="toggle.emit({ item: item, field: 'visibleAlCliente' })"></i> <i class="fa fa-bookmark-o" *ngIf="item.etiquetado != true" title="Marcar como solución" (click)="toggle.emit({ item: item, field: 'etiquetado' })"></i><i class="fa fa-bookmark" *ngIf="item.etiquetado == true" title="Desmarcar como solución" style="color:tomato" (click)="toggle.emit({ item: item, field: 'etiquetado' })"></i>
+                  {{ item.userName }}
                   <span class="text-muted pull-right">{{  service.setTime(item.hora)  }} {{ item.fecha | date:"dd/MM/yy" }}</span>
                 </span><!-- /.username -->
             {{ item.texto }}
+            <div class="hd-toggles"><span class="hd-toggle" [class.on]="item.favorito == true" role="button" tabindex="0" [attr.aria-pressed]="item.favorito == true" [title]="item.favorito == true ? 'Desmarcar como favorito' : 'Marcar como favorito'" (click)="toggle.emit({ item: item, field: 'favorito' })" (keyup.enter)="toggle.emit({ item: item, field: 'favorito' })"><i class="fa fa-star-o" *ngIf="item.favorito != true"></i><i class="fa fa-star" *ngIf="item.favorito == true"></i> Favorito</span><span class="hd-toggle" [class.on]="item.visibleAlCliente == true" role="button" tabindex="0" [attr.aria-pressed]="item.visibleAlCliente == true" [title]="item.visibleAlCliente == true ? 'El cliente lo ve. Pulsa para ocultarlo' : 'Mostrar al cliente en su seguimiento'" (click)="toggle.emit({ item: item, field: 'visibleAlCliente' })" (keyup.enter)="toggle.emit({ item: item, field: 'visibleAlCliente' })"><i class="fa fa-eye-slash" *ngIf="item.visibleAlCliente != true"></i><i class="fa fa-eye" *ngIf="item.visibleAlCliente == true"></i> Visible al cliente</span><span class="hd-toggle" [class.on]="item.etiquetado == true" role="button" tabindex="0" [attr.aria-pressed]="item.etiquetado == true" [title]="item.etiquetado == true ? 'Desmarcar como solución' : 'Marcar como solución'" (click)="toggle.emit({ item: item, field: 'etiquetado' })" (keyup.enter)="toggle.emit({ item: item, field: 'etiquetado' })"><i class="fa fa-bookmark-o" *ngIf="item.etiquetado != true"></i><i class="fa fa-bookmark" *ngIf="item.etiquetado == true"></i> Solución</span></div>
           </div>
           <!-- /.comment-text -->
         </div>
@@ -45,7 +46,7 @@
           <img *ngIf="service.getUser() !=null && service.hasImage(service.getUser().image)" [src]="'data:image/jpeg;base64,'+ service.getUser().image" class="img-responsive img-circle img-sm" alt="Alt Text">
           <!-- .img-push is used to add margin to elements next to floating images -->
           <div class="img-push input-group">
-            <input type="text" class="form-control " formControlName="texto" (keyup.enter)="add.emit()" placeholder="Press enter to post comment">
+            <input type="text" class="form-control " formControlName="texto" (keyup.enter)="add.emit()" placeholder="Escribe una actividad y pulsa Enter">
             <span class="input-group-btn">
               <button class="btn btn-primary btn-flat" (click)="add.emit()"  [disabled]="service.validateTrim( trace.texto )"><i class="fa fa-paper-plane" aria-hidden="true"></i> Colocar actividad</button>
             </span>
