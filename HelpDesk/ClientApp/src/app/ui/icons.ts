@@ -1,4 +1,4 @@
-import { Building2, Calendar, ChartColumn, CircleCheck, Hourglass, Inbox, LayoutDashboard, LogOut, Mail, Menu, Phone, Ticket, Unlink, User, Users, X, Check } from 'lucide';
+import { Building2, Calendar, ChartColumn, CircleCheck, Hourglass, Inbox, LayoutDashboard, LogOut, Mail, Menu, Phone, Ticket, Unlink, User, Sun, Moon, Monitor, Users, X, Check } from 'lucide';
 
 type IconNode = [string, Record<string, string | number>][];
 
@@ -20,5 +20,8 @@ export const ICONS: Record<string, IconNode> = {
   'check': Check as IconNode,
   'phone': Phone as IconNode,
   'mail': Mail as IconNode,
-  'unlink': Unlink as IconNode
+  'unlink': Unlink as IconNode,
+  'sun': Sun as IconNode,
+  'moon': Moon as IconNode,
+  'monitor': Monitor as IconNode
 };

@@ -1,6 +1,7 @@
 /* Design tokens of HelpDesk. The names are the variables of design/helpdesk.pen: change a value there and here together.
-   Light is the default; a dark theme is applied with <html data-theme="dark"> (not switched on yet). */
+   Light is the default; the dark theme is applied with <html data-theme="dark">, set by index.html and ThemeService. */
 :root {
+  color-scheme: light;
   --font-primary: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   --bg: #F5F6F8;
@@ -29,6 +30,7 @@
 }
 
 :root[data-theme="dark"] {
+  color-scheme: dark;
   --bg: #0E1218;
   --surface: #161B24;
   --head: #1B2230;

@@ -12,6 +12,15 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
   <meta name="theme-color" content="#2451D6">
+  <script>
+    // Apply the saved look before the first paint so a dark page never flashes white.
+    (function () {
+      var v = null;
+      try { v = localStorage.getItem('hd-theme'); } catch (e) {}
+      var dark = v === 'dark' || (v !== 'light' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    })();
+  </script>
   
 </head>
 <body>

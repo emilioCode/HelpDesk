@@ -17,6 +17,14 @@
     </button>
     @if (menuOpen) {
       <div class="hd-user-menu" role="menu" (click)="$event.stopPropagation()">
+        <div class="hd-theme" role="group" aria-label="Apariencia">
+          <span class="hd-theme-label">Apariencia</span>
+          <div class="hd-theme-options">
+            <button type="button" [class.on]="theme.choice === 'system'" [attr.aria-pressed]="theme.choice === 'system'" title="Igual que el dispositivo" (click)="theme.set('system')"><hd-icon name="monitor" [size]="16"></hd-icon>Sistema</button>
+            <button type="button" [class.on]="theme.choice === 'light'" [attr.aria-pressed]="theme.choice === 'light'" title="Tema claro" (click)="theme.set('light')"><hd-icon name="sun" [size]="16"></hd-icon>Claro</button>
+            <button type="button" [class.on]="theme.choice === 'dark'" [attr.aria-pressed]="theme.choice === 'dark'" title="Tema oscuro" (click)="theme.set('dark')"><hd-icon name="moon" [size]="16"></hd-icon>Oscuro</button>
+          </div>
+        </div>
         <a role="menuitem" [routerLink]="['/profile']" (click)="menuOpen = false"><hd-icon name="user"></hd-icon>Mi perfil</a>
         <button type="button" role="menuitem" (click)="signOut()"><hd-icon name="log-out"></hd-icon>Cerrar sesión</button>
       </div>

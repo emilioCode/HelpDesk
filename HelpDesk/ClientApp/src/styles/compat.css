@@ -77,3 +77,23 @@ select.form-control, input[type=date].form-control, input[type=time].form-contro
 /* A box header that only holds an empty title takes no space */
 .box-header:has(> .box-title:empty:only-child) { display: none; }
 .hd-export { padding-top: 4px; padding-bottom: 16px; }
+
+/* Dark theme: the blocks the old Bootstrap/AdminLTE rules still paint with fixed light colors */
+:root[data-theme="dark"] .box-footer { background: var(--surface); border-color: var(--line); }
+:root[data-theme="dark"] .box-header.with-border { border-bottom-color: var(--line); }
+:root[data-theme="dark"] .box-comments { background: var(--head); }
+:root[data-theme="dark"] .box-comments .box-comment { border-bottom-color: var(--line); }
+:root[data-theme="dark"] .box-comments .username, :root[data-theme="dark"] .username { color: var(--ink); }
+:root[data-theme="dark"] .box-comments .text-muted, :root[data-theme="dark"] .text-muted { color: var(--muted); }
+:root[data-theme="dark"] .list-group-item { background: var(--surface); border-color: var(--line); color: var(--ink); }
+:root[data-theme="dark"] .profile-username, :root[data-theme="dark"] .box-profile b { color: var(--ink); }
+/* The home cards: deeper shades so the white text keeps its contrast */
+:root[data-theme="dark"] .bg-aqua { background-color: #0a7f9a !important; }
+:root[data-theme="dark"] .bg-yellow { background-color: #9a6307 !important; }
+:root[data-theme="dark"] .bg-orange { background-color: #b0560c !important; }
+/* SweetAlert2 dialogs */
+:root[data-theme="dark"] .swal2-modal, :root[data-theme="dark"] .swal2-popup { background: var(--surface); color: var(--ink); }
+:root[data-theme="dark"] .swal2-title, :root[data-theme="dark"] .swal2-content, :root[data-theme="dark"] .swal2-html-container { color: var(--ink); }
+:root[data-theme="dark"] .swal2-input, :root[data-theme="dark"] .swal2-textarea, :root[data-theme="dark"] .swal2-select { background: var(--surface); color: var(--ink); border-color: var(--line-strong); }
+:root[data-theme="dark"] .swal2-footer { border-top-color: var(--line); }
+:root[data-theme="dark"] .comment-text, :root[data-theme="dark"] .box-comment .comment-text { color: var(--ink); }
