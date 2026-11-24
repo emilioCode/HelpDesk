@@ -4,10 +4,13 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { appConfig } from './app/app.config';
 import { environment } from './environments/environment';
+import { installPageBehaviors } from './app/ui/page-behaviors';
 
 if (environment.production) {
   enableProdMode();
 }
+
+installPageBehaviors();
 
 bootstrapApplication(AppComponent, appConfig)
   .catch(err => console.log(err));

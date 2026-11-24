@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Calendar } from '@fullcalendar/core';
+import { showModal } from '../../../../ui/page-behaviors';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list';
 import esLocale from '@fullcalendar/core/locales/es';
 import { Event } from '../../../../interfaces';
 import { ApiService } from '../../../../services/api.service';
-declare var $:any;
 @Component({
     selector: 'app-calendar',
     templateUrl: './calendar.component.html',
@@ -81,7 +81,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
         link.href = p.path; link.target = '_blank'; link.className = 'btn btn-primary';
         link.innerHTML = '<i class="fa fa-print"></i> Imprimir';
         para.appendChild(link); box.appendChild(para);
-        $('#exampleModal').modal('show');
+        showModal(document.getElementById('exampleModal'));
       }
     });
     this.calendar.render();
