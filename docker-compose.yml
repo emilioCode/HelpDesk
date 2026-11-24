@@ -41,6 +41,10 @@ services:
       Jwt__ExpiresMinutes: "${JWT_EXPIRES_MINUTES:-60}"
       # The time zone of the business. The API dates new orders and checks their dates with the clock of the container.
       TZ: "${TZ:-UTC}"
+      # The address customers open to follow an order (used in the e-mail link and the QR). Empty: the address of the request.
+      Tracking__PublicBaseUrl: "${TRACKING_PUBLIC_BASE_URL:-}"
+      # Trust X-Forwarded-For and X-Forwarded-Proto from a reverse proxy. Only with the app reachable from the proxy alone (docs/DEPLOYMENT.md).
+      ForwardedHeaders__Enabled: "${FORWARDED_HEADERS_ENABLED:-false}"
     ports:
       - "${HELPDESK_PORT:-8080}:8080"
 

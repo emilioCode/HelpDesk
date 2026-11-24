@@ -261,3 +261,4 @@ __pycache__/
 *.pyc
 # Local docker settings
 .env
+backups/

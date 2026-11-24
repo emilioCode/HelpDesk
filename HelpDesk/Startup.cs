@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Net.Http.Headers;
 using System.Text.RegularExpressions;
@@ -72,6 +73,20 @@ namespace HelpDesk
                 });
             services.AddValidatorsFromAssemblyContaining<CustomerValidator>(ServiceLifetime.Transient);
 
+            // Behind a reverse proxy (see docs/DEPLOYMENT.md) the address and the scheme of the visitor arrive in X-Forwarded-For and
+            // X-Forwarded-Proto. They are only trusted when ForwardedHeaders:Enabled is true, because anyone who can reach the app
+            // directly could otherwise write them. Turn it on only when the app can be reached from the proxy alone.
+            if (Configuration.GetValue<bool>("ForwardedHeaders:Enabled"))
+            {
+                services.Configure<ForwardedHeadersOptions>(options =>
+                {
+                    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                    // The proxy is another container, not the loopback address the defaults trust.
+                    options.KnownNetworks.Clear();
+                    options.KnownProxies.Clear();
+                });
+            }
+
             services.AddServices();
             // The public tracking page: the settings, and a limit of calls per minute from one address.
             var tracking = new HelpDesk.Core.Services.TrackingOptions();
@@ -96,6 +111,8 @@ namespace HelpDesk
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, /*IHostingEnvironment*/IWebHostEnvironment env)
         {
+            if (Configuration.GetValue<bool>("ForwardedHeaders:Enabled")) app.UseForwardedHeaders();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

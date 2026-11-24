@@ -41,6 +41,8 @@ For another environment (cloud, managed SQL), override that variable; no code ch
 | `JWT_EXPIRES_MINUTES` (`Jwt__ExpiresMinutes`) | Token lifetime, 60 minutes by default. The front end asks for a new token while the user is active. |
 | `Jwt__ActiveCheckSeconds` | A valid token is also checked against the database so a disabled or deleted user stops working before it expires. The answer is remembered this many seconds per user, 30 by default (0 checks on every request). |
 | `Auth__MaxFailedAttempts`, `Auth__LockoutMinutes` | Sign-in lockout, 5 attempts and 15 minutes by default. |
+| `ForwardedHeaders__Enabled` (`FORWARDED_HEADERS_ENABLED`) | `false` by default. Set it to `true` only behind a reverse proxy that is the only way to reach the app: the app then trusts `X-Forwarded-For` and `X-Forwarded-Proto`, so the visitor limit of the tracking page counts real addresses. |
+| `Tracking__PublicBaseUrl` (`TRACKING_PUBLIC_BASE_URL`) | The address customers open, used in the e-mail link and the QR. Empty uses the address of the request. |
 | `Cors__AllowedOrigins` | Comma separated origins allowed to call the API from another site. Empty by default because the front end is served by the API itself. |
 
 The app does not start without `Jwt__Key` and `Secrets__Key`. Never reuse the example values.
@@ -62,6 +64,10 @@ Then point the company at it (Entidad screen, or in the database): mail server `
 - This is for development only. The catcher uses a self-signed certificate generated on first start, so the web container runs with `Mail__AllowUntrustedCertificates=true`. Never set that in production.
 - If an e-mail cannot be sent, the ticket change is still saved and the reason is written to the web container log (`docker compose logs web`), for example a wrong server, port or password.
 - The application always asks the mail server for an encrypted connection (STARTTLS), so a real server must offer it, as Gmail and Microsoft 365 do on port 587.
+
+## Running on a server
+
+For a VPS with a domain, HTTPS, backups and updates, see [`docs/DEPLOYMENT.md`](../docs/DEPLOYMENT.md). It uses `docker-compose.prod.yml` (adds Caddy and keeps the app and the database off the host's ports) and `scripts/backup-db.sh`.
 
 ## Notes
 
