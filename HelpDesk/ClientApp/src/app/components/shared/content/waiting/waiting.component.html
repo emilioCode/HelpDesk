@@ -117,22 +117,23 @@
               <div class="tab-content">
                 <div class="active tab-pane" id="activity">
                   <!-- activity -->
-                  <div class="row">
-                    <div class="form-group col-xs-6 col-sm-6">
+                  <div class="hd-form-grid">
+                    <h6 class="hd-form-section">Solicitud</h6>
+                    <div class="form-group hd-col-6">
                       <label>Solicitante:</label> <a class="btn-link" *ngIf="mode == 'all' && option=='add'" data-toggle="modal" data-target="#modalclient" (click)="this.getCostumers(this.service.getUser().id,'*');search2 = ''"><i class="fa fa-search"></i> Desea validar/crear cliente...</a>
                       <select class="form-control" formControlName="idCliente" (change)="editAsAdministrator()">
                         <option value="" selected [hidden]="ticket.idCliente!=''">Seleccione</option>
                         <option value="{{costumer.id}}" *ngFor="let costumer of costumers">{{ costumer.nombre }} | "{{ costumer.rnc }}"</option>
                       </select>                    
                     </div>
-                    <div class="form-group col-xs-3 col-sm-3">
+                    <div class="form-group hd-col-3">
                       <label>Tipo de Solicitud{{ mode == 'inbox' ? ':' : '' }}</label>
                       <select class="form-control" formControlName="tipoSolicitud" (change)="clearDevicesIf()">
                         <option value="" selected [hidden]="ticket.tipoSolicitud!=''">Tipo Solicitud</option>
                         <option value="{{type.value}}" *ngFor="let type of service.getTypeOfRequests()">{{ type.value }}</option>
                       </select>
                     </div>
-                    <div class="form-group col-xs-3 col-sm-3">
+                    <div class="form-group hd-col-3">
                       <label>Tipo de Servicio:</label>
 <ng-container *ngIf="mode != 'finished'">
                       <select class="form-control" formControlName="tipoServicio" (change)="editAsAdministrator()">
@@ -147,15 +148,16 @@
                       </select>
 </ng-container>
                     </div>
-                    <div class="form-group col-xs-12 col-sm-12 hd-schedule">
-                      <div class="form-group col-xs-2 col-sm-2">
+                    <h6 class="hd-form-section">Fechas y horas</h6>
+                    <div class="form-group hd-col-12 hd-schedule">
+                      <div class="form-group">
                         <label>Creado:</label>
                         <div class="input-group">
                           <span *ngIf="ticket.fechaCreacion==null">dd/mm/aaaaa</span>
                           <span *ngIf="ticket.fechaCreacion!=null">{{ ticket.fechaCreacion | date:'dd/MM/yyyy' }}</span>
                         </div>
                       </div>
-                      <div class="form-group col-xs-3 col-sm-3">
+                      <div class="form-group">
                         <label>Fecha inicio:</label>
                         <div class="input-group">
                           <!-- <input type="date" class="form-control" [(ngModel)]="ticket.fechaInicio" disabled> -->
@@ -164,29 +166,29 @@
                           
                         </div>
                       </div>
-                      <div class="form-group col-xs-2 col-sm-2">
+                      <div class="form-group">
                         <label>Hora inicio:</label>
                         <div class="input-group">
                           <input type="time" class="form-control timepicker" formControlName="horaInicio" (change)="edit()">
                         </div>
                       </div>
-                      <div class="form-group col-xs-3 col-sm-3">
+                      <div class="form-group">
                         <label>Fecha fin:</label>
                         <div class="input-group">
                           <input type="date" class="form-control" formControlName="fechaTermino" [attr.min]="ticket.fechaInicio" (change)="edit()">
                           <small class="text-muted" *ngIf="option!='add' && ticket.fechaInicio">Desde el {{ ticket.fechaInicio | date:'dd/MM/yyyy' }}</small>
                         </div>
                       </div>
-                      <div class="form-group col-xs-2 col-sm-2">
+                      <div class="form-group">
                         <label>Hora fin:</label>
                         <div class="input-group">
                           <input type="time" class="form-control timepicker" formControlName="horaTermino" (change)="edit()">
                         </div>
                       </div>
                     </div>
-                    <div class="form-group col-xs-12 col-sm-12">
-                      <h6 class="text-center hd-section-title">Equipos</h6>
-                      <div class="row">
+                    <h6 class="hd-form-section">Equipos</h6>
+                    <div class="form-group hd-col-12">
+                      <div class="hd-table-wrap">
                         <table class="table table-bordered hd-devices">
                           <thead>
                             <tr>
@@ -273,7 +275,9 @@
                         </table>
                       </div>
                     </div>
-                    <div class="form-group col-xs-12 col-sm-12">
+                    <h6 class="hd-form-section">Detalle</h6>
+                    <div class="form-group hd-col-12">
+                      <label *ngIf="ticket.tipoSolicitud ==service.requestTypes.workshop">Observaciones:</label>
 <ng-container *ngIf="mode != 'finished'">
                       <textarea *ngIf="ticket.tipoSolicitud ==service.requestTypes.workshop" placeholder="Observaciones" class="form-control" rows="5" formControlName="descripcion" (change)="editAsAdministrator()"></textarea>
 </ng-container>
@@ -288,15 +292,15 @@
                       <input *ngIf="ticket.tipoSolicitud !=service.requestTypes.workshop" class="form-control" placeholder="Falla Reportada" formControlName="descripcion"/>
 </ng-container>
                     </div>
-                    <div class="form-group col-xs-4 col-sm-4">
+                    <h6 class="hd-form-section">Asignación y estado</h6>
+                    <div class="form-group hd-col-4">
                       <label>Estado: </label>
-                      <br *ngIf="option=='add'" />
-                      <span *ngIf="option=='add'">{{ ticket.estado }}</span>
+                      <span class="hd-static" *ngIf="option=='add'">{{ ticket.estado }}</span>
                       <select class="form-control" formControlName="estado" *ngIf="option=='edit' && (ticket.idUsuario == service.getUser().id || service.getLevel(service.getUser().acceso)>1)" (change)="setEstatus()">
                         <option value="{{status.name}}" *ngFor="let status of service.getStatuses()">{{ status.name }}</option>
                       </select>
                     </div>
-                    <div class="form-group col-xs-4 col-sm-4">
+                    <div class="form-group hd-col-4">
                       <label>Técnico asignado:</label>
 <ng-container *ngIf="mode != 'inbox'">
                       <select class="form-control" formControlName="idUsuario" (change)="putTicket('USUARIO')">
@@ -305,19 +309,17 @@
                       </select>
 </ng-container>
 <ng-container *ngIf="mode == 'inbox'">
-                      <br *ngIf="!(service.getLevel(service.getUser().acceso)>1)"/>
-                      <span *ngIf="!(service.getLevel(service.getUser().acceso)>1)">{{service.getUser().nombre}}</span>
+                      <span class="hd-static" *ngIf="!(service.getLevel(service.getUser().acceso)>1)">{{service.getUser().nombre}}</span>
                       <select class="form-control" formControlName="idUsuario" *ngIf="service.getLevel(service.getUser().acceso)>1" (change)="putTicket('USUARIO')">
                         <option value="" selected [hidden]="ticket.idUsuario!=''">Seleccione</option>
                         <option value="{{user.id}}" *ngFor="let user of users">{{ user.nombre }} | "{{ user.cuentaUsuario }}"</option>
                       </select>
 </ng-container>
                     </div>
-                    <div class="form-group col-xs-4 col-sm-4">
+                    <div class="form-group hd-col-4">
                       <label>Aprobador por:</label>
-                      <br *ngIf="ticket.aprobadoPor==null"/>
-                      <span *ngIf="mode == 'inbox' && ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)==0 && ticket.estado ==service.ticketStatuses.completed">Pendiente de aprobación</span>
-                      <span *ngIf="ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)>1 && ticket.estado ==service.ticketStatuses.completed"><a class="btn-link" (click)="aprobar()">Aprobar</a></span>
+                      <span class="hd-static" *ngIf="mode == 'inbox' && ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)==0 && ticket.estado ==service.ticketStatuses.completed">Pendiente de aprobación</span>
+                      <span class="hd-static" *ngIf="ticket.aprobadoPor==null && service.getLevel(service.getUser().acceso)>1 && ticket.estado ==service.ticketStatuses.completed"><a class="btn-link" (click)="aprobar()">Aprobar</a></span>
                       <select class="form-control" formControlName="aprobadoPor" *ngIf="ticket.aprobadoPor!=null">
                         <option value="{{costumer.id}}" *ngFor="let costumer of costumerAPs">{{ costumer.nombre }}</option>
                       </select>

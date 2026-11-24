@@ -1,4 +1,5 @@
 import { Component, DoCheck, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { showFirstTab } from '../../../../ui/page-behaviors';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
@@ -247,6 +248,8 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
   savedDates: any;
 
   fillModal(option='add',object,doProcess=true){
+    // Opening the window starts on the General tab; a refresh of the open window (doProcess false) keeps the tab the person is on.
+    if (doProcess) showFirstTab('#modal-default');
     this.addDevice=false;
     this.option = option;
     this.ticket = object;

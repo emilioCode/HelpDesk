@@ -105,3 +105,23 @@
   .form-group.hd-schedule > .form-group { width: auto; float: none; padding: 0; margin: 0; }
   .form-group.hd-schedule .input-group { display: block; width: 100%; }
 }
+
+/* The order form: a 12 column grid of fields, with titled sections. Fields keep their .form-group wrapper (the marks and messages find their label there). */
+.hd-form-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.hd-form-grid > .form-group { margin: 0; min-width: 0; }
+.hd-form-grid .hd-col-12 { grid-column: span 12; }
+.hd-form-grid .hd-col-6 { grid-column: span 6; }
+.hd-form-grid .hd-col-4 { grid-column: span 4; }
+.hd-form-grid .hd-col-3 { grid-column: span 3; }
+.hd-form-section { grid-column: 1 / -1; margin: 10px 0 -4px; padding-bottom: 6px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.hd-form-grid > .hd-form-section:first-child { margin-top: 0; }
+.hd-static { display: flex; align-items: center; min-height: 40px; }
+.hd-table-wrap { width: 100%; overflow-x: auto; }
+.hd-form-grid .form-control { width: 100%; }
+@media (max-width: 767px) {
+  .hd-form-grid { gap: 14px; }
+  .hd-form-grid .hd-col-12, .hd-form-grid .hd-col-6, .hd-form-grid .hd-col-4, .hd-form-grid .hd-col-3 { grid-column: 1 / -1; }
+  .form-group.hd-schedule { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-group.hd-schedule > .form-group { margin: 0; padding: 0; }
+  .form-group.hd-schedule > .form-group:first-child { grid-column: 1 / -1; }
+}

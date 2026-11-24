@@ -63,6 +63,12 @@ function toggleTab(link: HTMLElement): void {
   pane.classList.add('active', 'in');
 }
 
+// Back to the first tab of a window that is about to open, so it never shows the tab the last one was left on.
+export function showFirstTab(container: string): void {
+  const first = document.querySelector(container + ' .nav-tabs > li:first-child > a[data-toggle="tab"]') as HTMLElement | null;
+  if (first) toggleTab(first);
+}
+
 function toggleCollapse(button: HTMLElement): void {
   const panel = targetOf(button);
   if (!panel) return;
