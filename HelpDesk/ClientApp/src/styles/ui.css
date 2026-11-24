@@ -61,7 +61,7 @@
   --fc-more-link-bg-color: var(--head); --fc-neutral-text-color: var(--muted);
   font-family: var(--font-primary); color: var(--ink); padding: 8px 12px 12px;
 }
-.fc .fc-toolbar.fc-header-toolbar { margin: 4px 0 12px; gap: 8px; flex-wrap: wrap; }
+.fc .fc-toolbar.fc-header-toolbar { margin: 19px 10px 22px; gap: 8px; flex-wrap: wrap; }
 .fc .fc-toolbar-title { font-size: 18px; font-weight: 600; }
 .fc .fc-toolbar-title::first-letter { text-transform: uppercase; }
 .fc .fc-button { font: 600 13px/1.2 var(--font-primary); border-radius: var(--radius-sm); padding: 8px 12px; min-height: 36px; text-transform: none; }

@@ -271,7 +271,7 @@ export class UserComponent implements OnInit, OnDestroy {
       .subscribe(res=>{
         
         this.renderHTML1= res ? "has-success has-feedback": "has-warning has-feedback";
-        this.renderHTML2= res ? "glyphicon glyphicon-ok form-control-feedback": "glyphicon glyphicon-warning-sign form-control-feedback";
+        this.renderHTML2= res ? "fa fa-check form-control-feedback": "fa fa-exclamation-triangle form-control-feedback";
         this.renderHTML3= res ? "text-success": "text-warning";
         this.message = res ? "It's ok.": "There exists another account with this name";
         

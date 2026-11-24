@@ -32,10 +32,8 @@
               "@fontsource/inter/latin-600.css",
               "@fontsource/inter/latin-700.css",
               "src/styles.css",
-              "node_modules/admin-lte/bower_components/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/admin-lte/dist/css/AdminLTE.min.css",
-              "node_modules/admin-lte/bower_components/Ionicons/css/ionicons.min.css",
-              "node_modules/admin-lte/bower_components/font-awesome/css/font-awesome.min.css",
+              "src/styles/legacy-base.css",
+              "node_modules/font-awesome/css/font-awesome.min.css",
               "src/styles/compat.css",
               "src/styles/mobile.css"
             ],
@@ -95,10 +93,8 @@
             "scripts": [],
             "styles": [
               "src/styles.css",
-              "node_modules/admin-lte/bower_components/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/admin-lte/dist/css/AdminLTE.min.css",
-              "node_modules/admin-lte/bower_components/Ionicons/css/ionicons.min.css",
-              "node_modules/admin-lte/bower_components/font-awesome/css/font-awesome.min.css"
+              "src/styles/legacy-base.css",
+              "node_modules/font-awesome/css/font-awesome.min.css"
             ],
             "assets": [
               "src/assets",
