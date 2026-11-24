@@ -62,7 +62,7 @@ body { font-family: var(--font-primary); color: var(--ink); }
 @media (min-width: 768px) { .modal-body .nav-tabs-custom > .nav-tabs { margin: 0 -39px; padding: 0 39px; } }
 
 /* Same height for selects and date inputs so a filter row reads as one family */
-select.form-control, input[type=date].form-control { height: 40px; padding: 0 12px; line-height: normal; }
+select.form-control, input[type=date].form-control, input[type=time].form-control { height: 40px; padding: 0 12px; line-height: normal; }
 .hd-filter-actions { margin-top: 25px; }
 .hd-modal-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .modal-header .modal-title { display: block; }
@@ -70,3 +70,10 @@ select.form-control, input[type=date].form-control { height: 40px; padding: 0 12
 .hd-filter-actions .btn-group { display: flex; flex-wrap: nowrap; width: max-content; }
 .hd-filter-actions .btn { white-space: nowrap; }
 .hd-filter-actions .btn { padding: 8px 10px; }
+
+/* A time field inside an input-group keeps the same rounded box as the date fields */
+.input-group > input[type=time].form-control, .input-group > input[type=date].form-control { display: block; float: none; width: 100%; border-radius: var(--radius-sm); }
+
+/* A box header that only holds an empty title takes no space */
+.box-header:has(> .box-title:empty:only-child) { display: none; }
+.hd-export { padding-top: 4px; padding-bottom: 16px; }

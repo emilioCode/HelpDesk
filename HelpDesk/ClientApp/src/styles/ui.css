@@ -53,3 +53,41 @@
 
 /* Create-order action in list headers: a real button */
 .hd-create { display: inline-block; margin-left: 12px; cursor: pointer; }
+
+/* Calendar (FullCalendar 6): its own variables mapped to the tokens, one tint per order status */
+.fc {
+  --fc-border-color: var(--line); --fc-page-bg-color: var(--surface); --fc-neutral-bg-color: var(--head);
+  --fc-today-bg-color: var(--accent-soft); --fc-list-event-hover-bg-color: var(--accent-soft);
+  --fc-more-link-bg-color: var(--head); --fc-neutral-text-color: var(--muted);
+  font-family: var(--font-primary); color: var(--ink); padding: 8px 12px 12px;
+}
+.fc .fc-toolbar.fc-header-toolbar { margin: 4px 0 12px; gap: 8px; flex-wrap: wrap; }
+.fc .fc-toolbar-title { font-size: 18px; font-weight: 600; }
+.fc .fc-toolbar-title::first-letter { text-transform: uppercase; }
+.fc .fc-button { font: 600 13px/1.2 var(--font-primary); border-radius: var(--radius-sm); padding: 8px 12px; min-height: 36px; text-transform: none; }
+.fc .fc-button-primary { background: var(--surface); border: 1px solid var(--line-strong); color: var(--ink); box-shadow: none; }
+.fc .fc-button-primary:hover { background: var(--accent-soft); border-color: var(--line-strong); color: var(--ink); }
+.fc .fc-button-primary:not(:disabled).fc-button-active, .fc .fc-button-primary:disabled { background: var(--head); border-color: var(--line); color: var(--muted); }
+.fc .fc-button:focus-visible { box-shadow: 0 0 0 3px var(--focus); outline: none; }
+.fc .fc-col-header-cell-cushion { color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; padding: 8px 4px; }
+.fc .fc-daygrid-day-number { color: var(--ink); font-size: 13px; padding: 6px 8px; }
+.fc .fc-day-other .fc-daygrid-day-number { color: var(--muted); opacity: .6; }
+.fc .fc-day-today .fc-daygrid-day-number { color: var(--accent); font-weight: 700; }
+.fc .fc-event { border-radius: 6px; font-size: 12px; cursor: pointer; border-width: 1px; margin: 1px 4px; }
+.fc .fc-daygrid-event { padding: 1px 4px; }
+.fc .fc-more-link { color: var(--accent); font-size: 12px; font-weight: 600; }
+.fc .fc-list { border-color: var(--line); border-radius: var(--radius-sm); }
+.fc .fc-list-day-cushion { background: var(--head); }
+.fc .fc-list-day-text, .fc .fc-list-day-side-text { color: var(--ink); font-size: 13px; font-weight: 600; }
+.fc .fc-list-day-text::first-letter, .fc .fc-list-day-side-text::first-letter { text-transform: uppercase; }
+.fc .fc-list-event td { color: var(--ink); font-size: 13px; }
+.fc .fc-list-event-dot { border-color: var(--accent); }
+.fc .fc-list-empty { color: var(--muted); background: var(--surface); }
+.fc .hd-ev-open { --fc-event-bg-color: var(--open-bg); --fc-event-border-color: var(--open-fg); --fc-event-text-color: var(--open-fg); }
+.fc .hd-ev-progress { --fc-event-bg-color: var(--prog-bg); --fc-event-border-color: var(--prog-fg); --fc-event-text-color: var(--prog-fg); }
+.fc .hd-ev-done { --fc-event-bg-color: var(--done-bg); --fc-event-border-color: var(--done-fg); --fc-event-text-color: var(--done-fg); }
+.fc .hd-ev-approved { --fc-event-bg-color: var(--appr-bg); --fc-event-border-color: var(--appr-fg); --fc-event-text-color: var(--appr-fg); }
+.fc .hd-ev-open .fc-list-event-dot { border-color: var(--open-fg); }
+.fc .hd-ev-progress .fc-list-event-dot { border-color: var(--prog-fg); }
+.fc .hd-ev-done .fc-list-event-dot { border-color: var(--done-fg); }
+.fc .hd-ev-approved .fc-list-event-dot { border-color: var(--appr-fg); }
