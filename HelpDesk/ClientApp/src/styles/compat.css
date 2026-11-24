@@ -53,3 +53,17 @@ body { font-family: var(--font-primary); color: var(--ink); }
 .table > tbody > tr > td, .table-bordered, .table-bordered > thead > tr > th, .table-bordered > tbody > tr > td { border-color: var(--line); }
 .table-striped > tbody > tr:nth-of-type(odd) { background: var(--bg); }
 .table-hover > tbody > tr:hover { background: var(--accent-soft); }
+
+/* Tabs right under the title: one separator line, not two */
+.modal-body .nav-tabs-custom > .nav-tabs { border-bottom: 0; }
+.modal-body .nav-tabs-custom { margin-top: -8px; }
+
+/* Same height for selects and date inputs so a filter row reads as one family */
+select.form-control, input[type=date].form-control { height: 40px; padding: 0 12px; line-height: normal; }
+.hd-filter-actions { margin-top: 25px; }
+.hd-modal-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.modal-header .modal-title { display: block; }
+.hd-modal-actions:not(:has(a)) { display: none; }
+.hd-filter-actions .btn-group { display: flex; flex-wrap: nowrap; width: max-content; }
+.hd-filter-actions .btn { white-space: nowrap; }
+.hd-filter-actions .btn { padding: 8px 10px; }

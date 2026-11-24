@@ -79,3 +79,8 @@
 @media (max-width: 767px) {
   .hd-create { margin: 8px 0 0; text-align: center; }
 }
+
+@media (max-width: 767px) {
+  .box-body.no-padding .col-xs-3 { width: 100%; }
+  .hd-filter-actions { margin-top: 0; }
+}
