@@ -54,9 +54,12 @@ body { font-family: var(--font-primary); color: var(--ink); }
 .table-striped > tbody > tr:nth-of-type(odd) { background: var(--bg); }
 .table-hover > tbody > tr:hover { background: var(--accent-soft); }
 
-/* Tabs right under the title: one separator line, not two */
-.modal-body .nav-tabs-custom > .nav-tabs { border-bottom: 0; }
-.modal-body .nav-tabs-custom { margin-top: -8px; }
+/* Floated columns inside the modal must not collapse the body onto the footer border */
+.modal-body::after { content: ""; display: table; clear: both; }
+
+/* Tabs: one line under the whole tab bar, edge to edge */
+.modal-body .nav-tabs-custom > .nav-tabs { border-bottom: 1px solid var(--line); }
+@media (min-width: 768px) { .modal-body .nav-tabs-custom > .nav-tabs { margin: 0 -39px; padding: 0 39px; } }
 
 /* Same height for selects and date inputs so a filter row reads as one family */
 select.form-control, input[type=date].form-control { height: 40px; padding: 0 12px; line-height: normal; }
