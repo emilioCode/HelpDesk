@@ -86,3 +86,8 @@
   .box-body.no-padding .col-xs-3 { width: 100%; }
   .hd-filter-actions { margin-top: 0; }
 }
+
+@media (max-width: 767px) {
+  /* A wide table scrolls inside its card instead of widening the page */
+  .box-body { overflow-x: auto; }
+}

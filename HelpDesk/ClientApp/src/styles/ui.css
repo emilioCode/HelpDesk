@@ -125,3 +125,19 @@
   .form-group.hd-schedule > .form-group { margin: 0; padding: 0; }
   .form-group.hd-schedule > .form-group:first-child { grid-column: 1 / -1; }
 }
+
+/* Forms of customers, users, company and profile on the same grid */
+.hd-form-grid .hd-col-2 { grid-column: span 2; }
+.hd-form-grid .hd-col-5 { grid-column: span 5; }
+.hd-form-grid .hd-col-8 { grid-column: span 8; }
+.hd-form-grid .hd-col-10 { grid-column: span 10; }
+.hd-form-grid > .hd-form-grid { align-content: start; }
+.hd-photo { display: flex; flex-direction: column; gap: 12px; align-self: start; }
+.hd-photo > .form-group { margin: 0; }
+.hd-photo img { display: block; width: 100% !important; max-width: 250px; height: auto !important; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-sm); }
+.hd-photo-actions { display: flex; flex-direction: column; gap: 8px; }
+.hd-photo-actions .btn-block { width: 100%; }
+@media (max-width: 767px) {
+  .hd-form-grid .hd-col-2, .hd-form-grid .hd-col-5, .hd-form-grid .hd-col-8, .hd-form-grid .hd-col-10 { grid-column: 1 / -1; }
+  .hd-photo img { max-width: 160px; }
+}

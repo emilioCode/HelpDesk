@@ -97,3 +97,16 @@ select.form-control, input[type=date].form-control, input[type=time].form-contro
 :root[data-theme="dark"] .swal2-input, :root[data-theme="dark"] .swal2-textarea, :root[data-theme="dark"] .swal2-select { background: var(--surface); color: var(--ink); border-color: var(--line-strong); }
 :root[data-theme="dark"] .swal2-footer { border-top-color: var(--line); }
 :root[data-theme="dark"] .comment-text, :root[data-theme="dark"] .box-comment .comment-text { color: var(--ink); }
+
+/* Profile: label and control side by side */
+.form-horizontal .form-group { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 6px 16px; align-items: start; margin: 0 0 16px; }
+.form-horizontal .control-label { text-align: right; padding-top: 11px; margin: 0; }
+.form-horizontal .hd-control-offset { grid-column: 2; }
+.form-horizontal .hd-control { min-width: 0; }
+@media (max-width: 767px) {
+  .form-horizontal .form-group { grid-template-columns: 1fr; }
+  .form-horizontal .control-label { text-align: left; padding-top: 0; }
+  .form-horizontal .hd-control-offset { grid-column: 1; }
+}
+.hd-form-grid > * { min-width: 0; }
+.form-horizontal .form-group::before, .form-horizontal .form-group::after { display: none; }
