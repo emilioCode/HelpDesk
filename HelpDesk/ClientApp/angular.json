@@ -84,23 +84,11 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "src/test.ts",
-            "karmaConfig": "./karma.conf.js",
-            "polyfills": ["zone.js", "zone.js/testing"],
+            "buildTarget": "HelpDesk:build",
             "tsConfig": "src/tsconfig.spec.json",
-            "scripts": [],
-            "styles": [
-              "src/styles.css",
-              "src/styles/legacy-base.css",
-              "node_modules/font-awesome/css/font-awesome.min.css"
-            ],
-            "assets": [
-              "src/assets",
-              { "glob": "{favicon.svg,favicon-32.png,apple-touch-icon.png,site.webmanifest}", "input": "src", "output": "/" },
-              { "glob": "*.png", "input": "src/icons", "output": "/icons" }
-            ]
+            "runner": "vitest"
           }
         }
       }

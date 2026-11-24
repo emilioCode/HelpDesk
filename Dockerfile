@@ -1,12 +1,18 @@
 # syntax=docker/dockerfile:1
 
 # 1) Angular SPA. Angular 22 needs Node 22.22.3, 24.15 or 26 (and the Angular CLI refuses to run on a Node it does not support).
-FROM node:22 AS spa
+FROM node:22 AS spa-src
 WORKDIR /src/HelpDesk/ClientApp
 COPY HelpDesk/ClientApp/package.json HelpDesk/ClientApp/package-lock.json ./
 RUN npm ci
 COPY HelpDesk/ClientApp/ ./
+
+# 1b) Front end unit tests (Vitest): docker build --target spa-tests .
+FROM spa-src AS spa-tests
+RUN npm test -- --no-watch
+
 # The production build: compiled ahead of time (AOT) and optimized. (--prod is deprecated from Angular 12; --configuration=production is the same.)
+FROM spa-src AS spa
 RUN npm run build -- --configuration=production --output-hashing=all
 
 # 2) .NET restore and build

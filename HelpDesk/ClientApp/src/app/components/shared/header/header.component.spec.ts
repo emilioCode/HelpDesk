@@ -1,25 +1,86 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { HeaderComponent } from './header.component';
+import { ApiService } from '../../../services/api.service';
+import { ShellState } from '../../../ui/shell-state.service';
+import { ThemeService } from '../../../ui/theme.service';
 
 describe('HeaderComponent', () => {
-  let component: HeaderComponent;
-  let fixture: ComponentFixture<HeaderComponent>;
+  let user: any;
+  let theme: { choice: string, set: ReturnType<typeof vi.fn> };
+  let shell: ShellState;
 
-  beforeEach(waitForAsync(() => {
+  function build() {
+    const service: any = { getUser: () => user, hasImage: (i: any) => !!i, swal: vi.fn(() => Promise.resolve({ value: false })), closeSession: vi.fn() };
+    theme = { choice: 'system', set: vi.fn((c: string) => { theme.choice = c; }) };
+    shell = new ShellState();
     TestBed.configureTestingModule({
-    imports: [HeaderComponent]
-})
-    .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HeaderComponent);
-    component = fixture.componentInstance;
+      providers: [provideRouter([]), { provide: ApiService, useValue: service }, { provide: ThemeService, useValue: theme }, { provide: ShellState, useValue: shell }]
+    });
+    const fixture = TestBed.createComponent(HeaderComponent);
     fixture.detectChanges();
+    return fixture;
+  }
+
+  beforeEach(() => { user = { nombre: 'Ana Pérez', acceso: 'ADMINISTRADOR', empresa: 'Demo Company', image: null }; });
+
+  it('shows the name, the role and the company of the person', () => {
+    const el = build().nativeElement as HTMLElement;
+    expect(el.querySelector('.hd-user-name')!.textContent).toBe('Ana Pérez');
+    expect(el.querySelector('.hd-user-role')!.textContent).toBe('Administrador · Demo Company');
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('draws the initials when there is no photo', () => {
+    const el = build().nativeElement as HTMLElement;
+    expect(el.querySelector('.hd-avatar')!.textContent!.trim()).toBe('AP');
+  });
+
+  it('draws the photo when there is one', () => {
+    user.image = 'abc';
+    const el = build().nativeElement as HTMLElement;
+    expect(el.querySelector('.hd-avatar img')!.getAttribute('src')).toBe('data:image/jpeg;base64,abc');
+  });
+
+  it('opens the menu from the avatar and tells screen readers', () => {
+    const f = build(); const el = f.nativeElement as HTMLElement;
+    expect(el.querySelector('.hd-user-menu')).toBeNull();
+    (el.querySelector('.hd-avatar') as HTMLElement).click(); f.detectChanges();
+    expect(el.querySelector('.hd-user-menu')).not.toBeNull();
+    expect(el.querySelector('.hd-avatar')!.getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('closes the menu with Escape and with a click anywhere else', () => {
+    const f = build(); const el = f.nativeElement as HTMLElement;
+    (el.querySelector('.hd-avatar') as HTMLElement).click(); f.detectChanges();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); f.detectChanges();
+    expect(el.querySelector('.hd-user-menu')).toBeNull();
+    (el.querySelector('.hd-avatar') as HTMLElement).click(); f.detectChanges();
+    document.dispatchEvent(new MouseEvent('click')); f.detectChanges();
+    expect(el.querySelector('.hd-user-menu')).toBeNull();
+  });
+
+  it('offers the three looks and marks the one in use', () => {
+    const f = build(); const el = f.nativeElement as HTMLElement;
+    (el.querySelector('.hd-avatar') as HTMLElement).click(); f.detectChanges();
+    const buttons = [...el.querySelectorAll('.hd-theme-options button')] as HTMLElement[];
+    expect(buttons.map(b => b.textContent!.trim())).toEqual(['Sistema', 'Claro', 'Oscuro']);
+    expect(buttons.map(b => b.classList.contains('on'))).toEqual([true, false, false]);
+    expect(buttons.map(b => b.getAttribute('aria-pressed'))).toEqual(['true', 'false', 'false']);
+  });
+
+  it('changes the look from the menu and keeps the menu open', () => {
+    const f = build(); const el = f.nativeElement as HTMLElement;
+    (el.querySelector('.hd-avatar') as HTMLElement).click(); f.detectChanges();
+    ([...el.querySelectorAll('.hd-theme-options button')] as HTMLElement[])[2].click(); f.detectChanges();
+    expect(theme.set).toHaveBeenCalledWith('dark');
+    expect(el.querySelector('.hd-user-menu')).not.toBeNull();
+    expect(([...el.querySelectorAll('.hd-theme-options button')] as HTMLElement[])[2].classList.contains('on')).toBe(true);
+  });
+
+  it('opens the side menu from the button of the narrow screens', () => {
+    const f = build();
+    (f.nativeElement.querySelector('.hd-menu-button') as HTMLElement).click();
+    expect(shell.menuOpen).toBe(true);
   });
 });
