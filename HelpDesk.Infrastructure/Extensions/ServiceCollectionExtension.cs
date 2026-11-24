@@ -57,6 +57,8 @@ namespace HelpDesk.Infrastructure.Extensions
             services.AddTransient<ITraceService, TraceService>();
             services.AddTransient<IPieceService, PieceService>();
             services.AddTransient<IEventService, EventService>();
+            services.AddTransient<ITrackingService, TrackingService>();
+            services.AddSingleton<IQrCodeService, QrCodeService>();
 
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();

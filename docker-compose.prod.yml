@@ -1,0 +1,41 @@
+# Production layer. Use it together with docker-compose.yml (needs Docker Compose 2.24 or newer):
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# Caddy is the only service open to the internet (ports 80 and 443) and gets its HTTPS certificate by itself.
+# The web and database containers are not published on the host at all.
+services:
+  db:
+    restart: unless-stopped
+    logging: &logs
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  web:
+    restart: unless-stopped
+    logging: *logs
+    ports: !override []
+    environment:
+      ForwardedHeaders__Enabled: "true"
+      Tracking__PublicBaseUrl: "https://${DOMAIN:?Set DOMAIN in .env (the public name of the server)}"
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    logging: *logs
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: "${DOMAIN}"
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -39,6 +39,15 @@ namespace HelpDesk.Controllers
             return Ok(response);
         }
 
+        // POST: api/Trace/Visible/5/true — whether the customer sees the activity on the tracking page.
+        [HttpPost("[action]/{id}/{visible}")]
+        public async Task<IActionResult> Visible(int id, bool visible)
+        {
+            var trace = await _traceService.SetVisibleToCustomerAsync(id, visible);
+            var response = ObjectResponse.Saved(Messages.Updated, _mapper.Map(trace));
+            return Ok(response);
+        }
+
         // PUT: api/Trace/Put
         [HttpPost("[action]")]
         public async Task<IActionResult> Put([FromBody] SeguimientoDto traceDto)

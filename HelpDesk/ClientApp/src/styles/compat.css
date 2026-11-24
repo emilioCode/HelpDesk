@@ -1,0 +1,112 @@
+/* The look of the design on the markup that still uses Bootstrap 3 / AdminLTE classes. It loads after them and is written on the tokens,
+   so the screens take the new look without changing their markup. When a screen moves to the hd-* pieces, its rules here can go. */
+
+body { font-family: var(--font-primary); color: var(--ink); }
+
+/* Fields */
+.form-control { height: auto; min-height: 40px; padding: 8px 12px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background-color: var(--surface); color: var(--ink); font: 400 14px/1.4 var(--font-primary); box-shadow: none; }
+.form-control::placeholder { color: var(--muted); opacity: 1; }
+.form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--focus); outline: none; }
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control { background-color: var(--head); color: var(--muted); opacity: 1; }
+.form-control.ng-invalid.ng-touched { border-color: var(--danger); }
+.input-group-sm > .form-control, .input-group-sm > .input-group-btn > .btn { min-height: 36px; height: auto; padding: 6px 12px; font-size: 14px; border-radius: var(--radius-sm); }
+.form-group label, label { font-size: 13px; font-weight: 600; color: var(--ink); }
+.text-muted, small.text-muted { color: var(--muted); }
+
+/* Buttons */
+.btn { min-height: 40px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: var(--radius-sm); font: 600 14px/1 var(--font-primary); box-shadow: none; }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn-sm, .btn-group-sm > .btn { min-height: 32px; padding: 0 12px; font-size: 13px; }
+.btn-primary, .btn-success { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover, .btn-primary:focus, .btn-success:hover, .btn-success:focus { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); filter: brightness(0.92); }
+.btn-default { background: var(--surface); border-color: var(--line-strong); color: var(--ink); }
+.btn-default:hover, .btn-default:focus { background: var(--head); border-color: var(--line-strong); color: var(--ink); }
+.btn-danger { background: var(--danger); border-color: var(--danger); color: var(--accent-ink); }
+.btn[disabled], .btn.disabled { background: var(--line); border-color: var(--line); color: var(--muted); opacity: 1; cursor: not-allowed; }
+.btn-link { color: var(--accent); }
+
+/* Windows */
+.modal-content { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: 0 24px 64px #0A101C40; }
+.modal-header { padding: 16px 24px; border-bottom: 1px solid var(--line); }
+.modal-title { font-size: 18px; font-weight: 600; color: var(--ink); }
+.modal-body { padding: 16px 24px; }
+.modal-footer { padding: 12px 24px; border-top: 1px solid var(--line); }
+.modal-backdrop.in { opacity: 1; background: var(--scrim); }
+.close { color: var(--muted); opacity: 1; text-shadow: none; }
+
+/* Tabs */
+.nav-tabs-custom { margin-bottom: 0; background: transparent; box-shadow: none; border-radius: 0; }
+.nav-tabs-custom > .nav-tabs, .nav-tabs { border-bottom: 1px solid var(--line); }
+.nav-tabs-custom > .nav-tabs > li, .nav-tabs > li { margin-bottom: -1px; margin-right: 4px; border-top: 0; }
+.nav-tabs-custom > .nav-tabs > li > a, .nav-tabs > li > a { padding: 10px 14px; border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; color: var(--muted); font-weight: 600; margin-right: 0; }
+.nav-tabs-custom > .nav-tabs > li.active, .nav-tabs > li.active { border-top: 0; }
+.nav-tabs-custom > .nav-tabs > li.active > a, .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus { border: 0; border-bottom: 2px solid var(--accent); background: transparent; color: var(--accent); }
+.nav-tabs-custom > .nav-tabs > li > a:hover { color: var(--ink); }
+.nav-tabs-custom > .tab-content { padding: 16px 0 0; background: transparent; }
+
+/* Tables and panels */
+.box { border: 1px solid var(--line); border-top: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: none; }
+.box-header { padding: 16px 20px; }
+.box-header .box-title, .box-title { font-size: 16px; font-weight: 600; color: var(--ink); }
+.table { color: var(--ink); }
+.table > thead > tr > th { background: var(--head); border-color: var(--line); color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .04em; }
+.table > tbody > tr > td, .table-bordered, .table-bordered > thead > tr > th, .table-bordered > tbody > tr > td { border-color: var(--line); }
+.table-striped > tbody > tr:nth-of-type(odd) { background: var(--bg); }
+.table-hover > tbody > tr:hover { background: var(--accent-soft); }
+
+/* Floated columns inside the modal must not collapse the body onto the footer border */
+.modal-body::after { content: ""; display: table; clear: both; }
+
+/* Tabs: one line under the whole tab bar, edge to edge */
+.modal-body .nav-tabs-custom > .nav-tabs { border-bottom: 1px solid var(--line); }
+@media (min-width: 768px) { .modal-body .nav-tabs-custom > .nav-tabs { margin: 0 -39px; padding: 0 39px; } }
+
+/* Same height for selects and date inputs so a filter row reads as one family */
+select.form-control, input[type=date].form-control, input[type=time].form-control { height: 40px; padding: 0 12px; line-height: normal; }
+.hd-filter-actions { margin-top: 25px; }
+.hd-modal-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.modal-header .modal-title { display: block; }
+.hd-modal-actions:not(:has(a)) { display: none; }
+.hd-filter-actions .btn-group { display: flex; flex-wrap: nowrap; width: max-content; }
+.hd-filter-actions .btn { white-space: nowrap; }
+.hd-filter-actions .btn { padding: 8px 10px; }
+
+/* A time field inside an input-group keeps the same rounded box as the date fields */
+.input-group > input[type=time].form-control, .input-group > input[type=date].form-control { display: block; float: none; width: 100%; border-radius: var(--radius-sm); }
+
+/* A box header that only holds an empty title takes no space */
+.box-header:has(> .box-title:empty:only-child) { display: none; }
+.hd-export { padding-top: 4px; padding-bottom: 16px; }
+
+/* Dark theme: the blocks the old Bootstrap/AdminLTE rules still paint with fixed light colors */
+:root[data-theme="dark"] .box-footer { background: var(--surface); border-color: var(--line); }
+:root[data-theme="dark"] .box-header.with-border { border-bottom-color: var(--line); }
+:root[data-theme="dark"] .box-comments { background: var(--head); }
+:root[data-theme="dark"] .box-comments .box-comment { border-bottom-color: var(--line); }
+:root[data-theme="dark"] .box-comments .username, :root[data-theme="dark"] .username { color: var(--ink); }
+:root[data-theme="dark"] .box-comments .text-muted, :root[data-theme="dark"] .text-muted { color: var(--muted); }
+:root[data-theme="dark"] .list-group-item { background: var(--surface); border-color: var(--line); color: var(--ink); }
+:root[data-theme="dark"] .profile-username, :root[data-theme="dark"] .box-profile b { color: var(--ink); }
+/* The home cards: deeper shades so the white text keeps its contrast */
+:root[data-theme="dark"] .bg-aqua { background-color: #0a7f9a !important; }
+:root[data-theme="dark"] .bg-yellow { background-color: #9a6307 !important; }
+:root[data-theme="dark"] .bg-orange { background-color: #b0560c !important; }
+/* SweetAlert2 dialogs */
+:root[data-theme="dark"] .swal2-modal, :root[data-theme="dark"] .swal2-popup { background: var(--surface); color: var(--ink); }
+:root[data-theme="dark"] .swal2-title, :root[data-theme="dark"] .swal2-content, :root[data-theme="dark"] .swal2-html-container { color: var(--ink); }
+:root[data-theme="dark"] .swal2-input, :root[data-theme="dark"] .swal2-textarea, :root[data-theme="dark"] .swal2-select { background: var(--surface); color: var(--ink); border-color: var(--line-strong); }
+:root[data-theme="dark"] .swal2-footer { border-top-color: var(--line); }
+:root[data-theme="dark"] .comment-text, :root[data-theme="dark"] .box-comment .comment-text { color: var(--ink); }
+
+/* Profile: label and control side by side */
+.form-horizontal .form-group { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 6px 16px; align-items: start; margin: 0 0 16px; }
+.form-horizontal .control-label { text-align: right; padding-top: 11px; margin: 0; }
+.form-horizontal .hd-control-offset { grid-column: 2; }
+.form-horizontal .hd-control { min-width: 0; }
+@media (max-width: 767px) {
+  .form-horizontal .form-group { grid-template-columns: 1fr; }
+  .form-horizontal .control-label { text-align: left; padding-top: 0; }
+  .form-horizontal .hd-control-offset { grid-column: 1; }
+}
+.hd-form-grid > * { min-width: 0; }
+.form-horizontal .form-group::before, .form-horizontal .form-group::after { display: none; }

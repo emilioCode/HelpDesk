@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 import { HdIconComponent } from '../../../ui/hd-icon.component';
 import { ShellState } from '../../../ui/shell-state.service';
+import { ThemeService } from '../../../ui/theme.service';
 
 @Component({
   selector: 'app-header',
@@ -14,7 +15,7 @@ import { ShellState } from '../../../ui/shell-state.service';
 export class HeaderComponent {
   menuOpen = false;
 
-  constructor(public service: ApiService, public shell: ShellState) { }
+  constructor(public service: ApiService, public shell: ShellState, public theme: ThemeService) { }
 
   get initials(): string {
     const name: string = this.service.getUser().nombre || '';

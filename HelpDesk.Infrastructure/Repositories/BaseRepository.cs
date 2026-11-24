@@ -26,6 +26,11 @@ namespace HelpDesk.Infrastructure.Repositories
             return _entities.AsQueryable().AsNoTracking().OrderBy(x => x.Id);
         }
 
+        public IQueryable<T> Query()
+        {
+            return _entities.AsNoTracking();
+        }
+
         public async Task<T> GetById(int id)
         {
             return await _entities.FindAsync(id);

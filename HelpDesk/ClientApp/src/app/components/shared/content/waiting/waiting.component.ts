@@ -1,4 +1,5 @@
 import { Component, DoCheck, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { showFirstTab } from '../../../../ui/page-behaviors';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
@@ -247,6 +248,8 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
   savedDates: any;
 
   fillModal(option='add',object,doProcess=true){
+    // Opening the window starts on the General tab; a refresh of the open window (doProcess false) keeps the tab the person is on.
+    if (doProcess) showFirstTab('#modal-default');
     this.addDevice=false;
     this.option = option;
     this.ticket = object;
@@ -536,7 +539,38 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       });
   }
 
+  // The state of an order as the badge of the design shows it.
+  badge(item: any): { cls: string, label: string } {
+    const s = this.service.ticketStatuses;
+    if (item.estado == s.completed && item.aprobadoPor != null) { return { cls: 'hd-badge-appr', label: 'Aprobado' }; }
+    if (item.estado == s.completed) { return { cls: 'hd-badge-done', label: 'Completado' }; }
+    if (item.estado == s.inProgress) { return { cls: 'hd-badge-prog', label: 'En proceso' }; }
+    return { cls: 'hd-badge-open', label: 'Abierto' };
+  }
+
+  // Four steps: open, in progress, completed, approved.
+  progress(item: any): number {
+    const s = this.service.ticketStatuses;
+    if (item.estado == s.completed && item.aprobadoPor != null) { return 100; }
+    if (item.estado == s.completed) { return 75; }
+    if (item.estado == s.inProgress) { return 50; }
+    return 25;
+  }
+
   putTrace(trace,value){
+    if(value=="visibleAlCliente"){
+      const show = !trace.visibleAlCliente;
+      this.service.isLoading = true;
+      this.service.post('Trace/Visible/'+trace.id+'/'+show)
+        .subscribe(res=>{
+          trace.visibleAlCliente = show;
+          this.service.isLoading = false;
+        },error => {
+          this.service.handleHttpError(error);
+          this.service.isLoading = false;
+        });
+      return;
+    }
     switch (value) {
       case "favorito":
         trace.favorito = !trace.favorito;
@@ -554,6 +588,41 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
         this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
 
         this.service.isLoading = false;
+      },error => {
+        this.service.handleHttpError(error);
+        this.service.isLoading = false;
+      });
+  }
+
+  // The customer follows the order from a link; it can be sent by e-mail or copied to give it another way.
+  sendTracking(){
+    this.service.isLoading = true;
+    this.service.post('Tracking/Email/'+this.ticket.id)
+      .subscribe(res=>{
+        this.service.isLoading = false;
+        if(res.code=='5'){
+          this.service.swal(res.title,res.message,res.icon);
+        }else{
+          this.service.swal('Enviado','Se envió el enlace de seguimiento al correo del cliente.','success');
+        }
+      },error => {
+        this.service.handleHttpError(error);
+        this.service.isLoading = false;
+      });
+  }
+
+  copyTrackingLink(){
+    this.service.isLoading = true;
+    this.service.post('Tracking/Link/'+this.ticket.id)
+      .subscribe(res=>{
+        this.service.isLoading = false;
+        const url = res.data.url;
+        const done = () => this.service.swal('Enlace copiado','Compártalo con el cliente: '+url,'success');
+        if(navigator.clipboard){
+          navigator.clipboard.writeText(url).then(done,()=>this.service.swal('Enlace de seguimiento',url,'info'));
+        }else{
+          this.service.swal('Enlace de seguimiento',url,'info');
+        }
       },error => {
         this.service.handleHttpError(error);
         this.service.isLoading = false;

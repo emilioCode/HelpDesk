@@ -14,6 +14,7 @@ namespace HelpDesk.Infrastructure.Repositories
         private readonly IDeviceRepository _deviceRepository;
         private readonly IRepository<Piezas> _pieceRepository;
         private readonly IRepository<Seguimiento> _traceRepository;
+        private readonly IRepository<EnlaceSeguimiento> _trackingRepository;
         private readonly ITicketRepository _ticketRepository;
         private readonly IUserRepository _userRepository;
 
@@ -31,6 +32,8 @@ namespace HelpDesk.Infrastructure.Repositories
         public IRepository<Piezas> PieceRepository => _pieceRepository ?? new BaseRepository<Piezas>(_context);
 
         public IRepository<Seguimiento> TraceRepository => _traceRepository ?? new BaseRepository<Seguimiento>(_context);
+
+        public IRepository<EnlaceSeguimiento> TrackingRepository => _trackingRepository ?? new BaseRepository<EnlaceSeguimiento>(_context);
 
         public ITicketRepository TicketRepository => _ticketRepository ?? new TicketRepository(_context);
 

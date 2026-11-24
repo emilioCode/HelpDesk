@@ -1,0 +1,93 @@
+/* The order screens on a phone: the list becomes cards and the order window takes the whole screen with its buttons at the bottom.
+   The old screens are adapted here until they move to the new components. Design: design/helpdesk.pen, mobile frames. */
+.hd-only-mobile { display: none; }
+
+@media (max-width: 767px) {
+  .hd-only-mobile { display: flex; }
+  .hd-only-desktop { display: none !important; }
+
+  .hd-cards { flex-direction: column; gap: 12px; }
+  .hd-order-card { display: flex; flex-direction: column; gap: 8px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); color: var(--ink); text-decoration: none; }
+  .hd-order-card:hover, .hd-order-card:focus-visible { background: var(--head); color: var(--ink); text-decoration: none; }
+  .hd-order-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 15px; }
+  .hd-order-client { font-size: 16px; font-weight: 600; }
+  .hd-order-meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+  .hd-empty { margin: 24px 0; text-align: center; color: var(--muted); }
+
+  .box-tools .input-group { width: 100% !important; float: none !important; }
+  .box-header { display: flex; flex-direction: column; gap: 8px; }
+  .box-header .box-tools { position: static; display: block; width: 100%; }
+  .form-control, .btn { min-height: 44px; }
+  .form-control { font-size: 16px; }
+
+  #modal-default .modal-dialog { margin: 0; width: 100%; max-width: none; }
+  #modal-default .modal-content { min-height: 100vh; border: 0; border-radius: 0; box-shadow: none; display: flex; flex-direction: column; }
+  #modal-default .modal-body { flex: 1; overflow-y: auto; padding: 12px 16px; }
+  #modal-default .modal-footer { position: sticky; z-index: 5; bottom: 0; display: flex; gap: 10px; padding: 12px 16px; background: var(--surface); border-top: 1px solid var(--line); }
+  #modal-default .modal-footer .btn { flex: 1; margin: 0; }
+  #modal-default .row { display: flex; flex-wrap: wrap; }
+  #modal-default [class*="col-xs-"], #modal-default [class*="col-sm-"] { width: 100%; float: none; }
+  #modal-default .form-group.col-xs-12 { display: flex; flex-wrap: wrap; padding: 0; }
+  #modal-default .form-group.col-xs-12 > .form-group { width: 50%; float: none; }
+  #modal-default .form-group.col-xs-12 > .form-group:first-child { width: 100%; }
+  #modal-default .input-group { display: block; width: 100%; }
+  #modal-default .input-group .form-control { width: 100%; float: none; }
+  #modal-default .nav-tabs { display: flex; overflow-x: auto; white-space: nowrap; }
+  #modal-default table { display: block; overflow-x: auto; }
+
+  #modal-default [hidden] { display: none !important; }
+  #modal-default .hd-section-title { text-align: left !important; margin: 16px 0 8px; font-size: 16px; font-weight: 600; text-transform: none; }
+  #modal-default .row:has(> .hd-devices) { margin: 0; display: block; }
+  .hd-devices, .hd-devices tbody { display: block; border: 0; }
+  .hd-devices thead, .hd-devices thead tr { display: block; }
+  .hd-devices thead th { display: none; }
+  .hd-devices thead th:nth-child(n+6):not([hidden]) { display: block; padding: 0; border: 0; background: transparent; }
+  .hd-devices thead th:nth-child(n+6) a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); font-weight: 600; }
+  .hd-devices thead th:nth-child(n+6) a::after { content: "Agregar equipo"; font-size: 14px; }
+  .hd-devices tbody tr { display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: center; margin: 8px 0; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); }
+  .table.hd-devices > tbody > tr > td { display: block; padding: 0 !important; border: 0 !important; font-size: 13px; color: var(--muted); }
+  .table.hd-devices > tbody > tr > td:nth-child(1) { width: 100%; font-size: 15px; font-weight: 600; color: var(--ink); }
+  .table.hd-devices > tbody > tr > td:nth-child(2) { width: 100%; font-size: 14px; }
+  .table.hd-devices > tbody > tr > td:nth-child(5) { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .table.hd-devices > tbody > tr > td:nth-child(5) > span { display: inline-flex; flex: none; }
+  .hd-devices tbody td input.form-control { width: 100%; margin-bottom: 8px; }
+  .hd-devices tbody td .btn-link { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; }
+
+  .hd-parts, .hd-parts tbody { display: block; border: 0; }
+  .hd-parts thead, .hd-parts thead tr { display: block; }
+  .hd-parts thead th { display: none; }
+  .hd-parts thead th:nth-child(n+4):not([hidden]) { display: block; padding: 0; border: 0; background: transparent; }
+  .hd-parts thead th:nth-child(n+4) a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); font-weight: 600; }
+  .hd-parts thead th:nth-child(n+4) a::after { content: "Agregar parte"; font-size: 14px; }
+  .hd-parts tbody tr { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px; margin: 8px 0; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); }
+  .table.hd-parts > tbody > tr > td { display: block; padding: 0 !important; border: 0 !important; font-size: 13px; color: var(--muted); }
+  .table.hd-parts > tbody > tr > td:nth-child(3) { flex: 1; width: 100%; font-size: 15px; font-weight: 600; color: var(--ink); order: -1; display: flex; align-items: center; justify-content: space-between; }
+  .table.hd-parts > tbody > tr > td:nth-child(1)::before { content: "Cantidad: "; }
+  .table.hd-parts > tbody > tr > td input.form-control { width: 100%; margin-bottom: 8px; }
+  #modal-default .box-comments { max-height: none !important; }
+  #modal-default .box-footer .input-group { display: flex; flex-direction: column; gap: 8px; }
+  #modal-default .box-footer .input-group-btn { display: block; width: 100%; }
+  #modal-default .box-footer .input-group-btn .btn { width: 100%; }
+  #modal-default .form-group.col-xs-12:has(> .hd-section-title) { display: block; }
+  #modal-default .hd-section-title { display: block; width: 100%; }
+  #modal-default #timeline .col-md-12 { padding: 0; }
+  #modal-default #timeline .box { margin: 0; border: 0; }
+  #modal-default #timeline .box-header { display: none; }
+  #modal-default #timeline .box-body, #modal-default #timeline .box-footer { padding: 8px 0; border: 0; }
+  #modal-default #timeline .img-push { width: auto; margin-left: 48px; }
+  #modal-default #timeline .img-push .form-control, #modal-default #timeline .img-push .input-group-btn, #modal-default #timeline .img-push .input-group-btn .btn { display: block; float: none; width: 100%; }
+}
+
+@media (max-width: 767px) {
+  .hd-create { margin: 8px 0 0; text-align: center; }
+}
+
+@media (max-width: 767px) {
+  .box-body.no-padding .col-xs-3 { width: 100%; }
+  .hd-filter-actions { margin-top: 0; }
+}
+
+@media (max-width: 767px) {
+  /* A wide table scrolls inside its card instead of widening the page */
+  .box-body { overflow-x: auto; }
+}

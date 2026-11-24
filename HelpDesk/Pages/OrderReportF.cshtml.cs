@@ -1,5 +1,6 @@
 ﻿using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
+using HelpDesk.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -21,6 +22,11 @@ namespace HelpDesk.Pages
         public List<Seguimiento> seguimiento { get; set; }
         public string soluciones { get; set; }
         public List<Piezas> piezas { get; set; }
+        // The link the customer follows and its QR, printed on the order.
+        public string trackingUrl { get; set; }
+        public string qrSvg { get; set; }
+        private readonly ITrackingService _trackingService;
+        private readonly IQrCodeService _qrCodeService;
 
         private readonly ICurrentUser _currentUser;
         private readonly IDeviceService _deviceService;
@@ -30,7 +36,7 @@ namespace HelpDesk.Pages
         private readonly IPieceService _pieceService;
         private readonly ITraceService _traceService;
 
-        public OrderReportFModel(ICurrentUser currentUser, IDeviceService deviceService, IBusinessService businessService, ICustomerService customerService, ITicketService ticketService, IPieceService pieceService, ITraceService traceService)
+        public OrderReportFModel(ICurrentUser currentUser, IDeviceService deviceService, IBusinessService businessService, ICustomerService customerService, ITicketService ticketService, IPieceService pieceService, ITraceService traceService, ITrackingService trackingService, IQrCodeService qrCodeService)
         {
             _currentUser = currentUser;
             _deviceService = deviceService;
@@ -39,6 +45,8 @@ namespace HelpDesk.Pages
             _ticketService = ticketService;
             _pieceService = pieceService;
             _traceService = traceService;
+            _trackingService = trackingService;
+            _qrCodeService = qrCodeService;
         }
 
         public async Task<IActionResult> OnGetAsync(string value)
@@ -67,6 +75,9 @@ namespace HelpDesk.Pages
                 piezas.Add(piezaTemp);
             }
             title = Messages.ServiceOrderTitle(noTicket);
+            var link = await _trackingService.EnsureLinkAsync(solicitud.Id);
+            trackingUrl = _trackingService.BuildUrl($"{Request.Scheme}://{Request.Host}", link.Token);
+            qrSvg = _qrCodeService.ToSvg(trackingUrl);
             return Page();
         }
     }

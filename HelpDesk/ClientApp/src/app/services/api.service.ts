@@ -297,8 +297,9 @@ export class ApiService {
   setTime(value1):String{
     var value = this.ftmHour(value1);
     var dateStr = value.split(':');
-    var hora = Number(dateStr[0]) >12? Number(dateStr[0])-12 : Number(dateStr[0]);
-    var tanda = Number(dateStr[0]) >12? " PM" : " AM";
+    var h24 = Number(dateStr[0]);
+    var hora = h24 % 12 || 12;
+    var tanda = h24 >= 12 ? " PM" : " AM";
     return ""+ hora +":"+ dateStr[1]+ tanda;
 
   }
@@ -324,6 +325,11 @@ export class ApiService {
   }
 
   ftmHour(timeSpan){
+    // The API sends a time as text ("08:50:00"); a time built in the browser is an object with hours, minutes and seconds.
+    if (typeof timeSpan === 'string') {
+      const p = timeSpan.split(':');
+      return this.fillZeroWithNumber(Number(p[0]) || 0) + ":" + this.fillZeroWithNumber(Number(p[1]) || 0) + ":" + this.fillZeroWithNumber(Number(p[2]) || 0);
+    }
     return this.fillZeroWithNumber(timeSpan.hours) + ":" + this.fillZeroWithNumber(timeSpan.minutes) + ":" + this.fillZeroWithNumber(timeSpan.seconds);
   }
 }

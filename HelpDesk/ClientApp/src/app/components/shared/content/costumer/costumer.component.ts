@@ -173,16 +173,16 @@ export class CostumerComponent implements OnInit, OnDestroy {
       }
       this.service.isLoading =false;
       },error => {
-        var errors = error.error.errors;
-        var title = error.error.title ? error.error.title : 'Warning';
+        var errors = error?.error?.errors;
+        var title = error?.error?.title ? error.error.title : 'Warning';
         var list = [];
         if(title !== "Warning"){
-          var objectKeys =  Object.keys(errors);
+          var objectKeys =  Object.keys(errors ?? {});
           objectKeys.forEach(x => {
             list.push(errors[x]);
           });
         }
-        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        var message = title !== "Warning" ? list.join(','): (errors?.[0]?.detail ?? 'The request could not be completed. Check the connection and try again.');
         this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;
@@ -201,16 +201,16 @@ export class CostumerComponent implements OnInit, OnDestroy {
       }
       this.service.isLoading =false;
       },error => {
-        var errors = error.error.errors;
-        var title = error.error.title ? error.error.title : 'Warning';
+        var errors = error?.error?.errors;
+        var title = error?.error?.title ? error.error.title : 'Warning';
         var list = [];
         if(title !== "Warning"){
-          var objectKeys =  Object.keys(errors);
+          var objectKeys =  Object.keys(errors ?? {});
           objectKeys.forEach(x => {
             list.push(errors[x]);
           });
         }
-        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        var message = title !== "Warning" ? list.join(','): (errors?.[0]?.detail ?? 'The request could not be completed. Check the connection and try again.');
         this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;

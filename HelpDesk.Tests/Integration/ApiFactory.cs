@@ -30,14 +30,16 @@ namespace HelpDesk.Tests.Integration
 
         private readonly bool? _enforce;
         private readonly int _activeCheckSeconds;
+        private readonly int _trackingRequestsPerMinute;
 
         // Every e-mail the application tried to send.
         public FakeMailService Mail { get; } = new FakeMailService();
         private readonly string _databaseName = Guid.NewGuid().ToString();
 
         // enforce = null leaves Auth:Enforce unset, to check the default.
-        public ApiFactory(bool? enforce = true, int activeCheckSeconds = 0)
+        public ApiFactory(bool? enforce = true, int activeCheckSeconds = 0, int trackingRequestsPerMinute = 0)
         {
+            _trackingRequestsPerMinute = trackingRequestsPerMinute;
             _enforce = enforce;
             _activeCheckSeconds = activeCheckSeconds;
         }
@@ -51,6 +53,7 @@ namespace HelpDesk.Tests.Integration
             builder.UseSetting("Secrets:Key", SecretsKey);
             builder.UseSetting("ConnectionStrings:HelpDesk", "unused");
             builder.UseSetting("Jwt:ActiveCheckSeconds", _activeCheckSeconds.ToString());
+            if (_trackingRequestsPerMinute > 0) builder.UseSetting("Tracking:RequestsPerMinute", _trackingRequestsPerMinute.ToString());
             if (_enforce.HasValue)
             {
                 builder.UseSetting("Auth:Enforce", _enforce.Value ? "true" : "false");

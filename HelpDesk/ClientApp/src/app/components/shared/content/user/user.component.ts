@@ -190,16 +190,16 @@ export class UserComponent implements OnInit, OnDestroy {
       document.getElementById('closeModalBtn').click();
       this.service.isLoading =false;
       },error => {
-        var errors = error.error.errors;
-        var title = error.error.title ? error.error.title : 'Warning';
+        var errors = error?.error?.errors;
+        var title = error?.error?.title ? error.error.title : 'Warning';
         var list = [];
         if(title !== "Warning"){
-          var objectKeys =  Object.keys(errors);
+          var objectKeys =  Object.keys(errors ?? {});
           objectKeys.forEach(x => {
             list.push(errors[x]);
           });
         }
-        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        var message = title !== "Warning" ? list.join(','): (errors?.[0]?.detail ?? 'The request could not be completed. Check the connection and try again.');
         this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;
@@ -221,16 +221,16 @@ export class UserComponent implements OnInit, OnDestroy {
       document.getElementById('closeModalBtn').click();
       this.service.isLoading =false;
       },error => {
-        var errors = error.error.errors;
-        var title = error.error.title ? error.error.title : 'Warning';
+        var errors = error?.error?.errors;
+        var title = error?.error?.title ? error.error.title : 'Warning';
         var list = [];
         if(title !== "Warning"){
-          var objectKeys =  Object.keys(errors);
+          var objectKeys =  Object.keys(errors ?? {});
           objectKeys.forEach(x => {
             list.push(errors[x]);
           });
         }
-        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        var message = title !== "Warning" ? list.join(','): (errors?.[0]?.detail ?? 'The request could not be completed. Check the connection and try again.');
         this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;
@@ -271,23 +271,23 @@ export class UserComponent implements OnInit, OnDestroy {
       .subscribe(res=>{
         
         this.renderHTML1= res ? "has-success has-feedback": "has-warning has-feedback";
-        this.renderHTML2= res ? "glyphicon glyphicon-ok form-control-feedback": "glyphicon glyphicon-warning-sign form-control-feedback";
+        this.renderHTML2= res ? "fa fa-check form-control-feedback": "fa fa-exclamation-triangle form-control-feedback";
         this.renderHTML3= res ? "text-success": "text-warning";
         this.message = res ? "It's ok.": "There exists another account with this name";
         
 
         this.service.isLoading = false;
       },error => {
-        var errors = error.error.errors;
-        var title = error.error.title ? error.error.title : 'Warning';
+        var errors = error?.error?.errors;
+        var title = error?.error?.title ? error.error.title : 'Warning';
         var list = [];
         if(title !== "Warning"){
-          var objectKeys =  Object.keys(errors);
+          var objectKeys =  Object.keys(errors ?? {});
           objectKeys.forEach(x => {
             list.push(errors[x]);
           });
         }
-        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        var message = title !== "Warning" ? list.join(','): (errors?.[0]?.detail ?? 'The request could not be completed. Check the connection and try again.');
         this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;
