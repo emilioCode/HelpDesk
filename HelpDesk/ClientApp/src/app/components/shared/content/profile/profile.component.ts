@@ -144,7 +144,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.service.isLoading = true;
      this.service.post('User/Put/'+this.service.getUser().id, body)
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         if(body.idEmpresa != this.userT.idEmpresa){
           // Root moved itself to another company: the token still carries the old one, so it signs in again.

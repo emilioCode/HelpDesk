@@ -3,6 +3,7 @@ import { SessionStore } from './session-store.service';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { ToastService } from '../ui/toast.service';
 
 @Injectable()
 export class ApiService {
@@ -11,6 +12,15 @@ export class ApiService {
   headers = new HttpHeaders().set("content-type", "application/json");
   http;
   swal = Swal;
+
+  // What the server answered or what was just done: a success is a toast that fades; anything else is a window the person must read.
+  notify(title: string, message: string, icon: string): void {
+    if (icon === 'success' && this.toast) {
+      this.toast.show(title, message);
+    } else {
+      this.swal(title, message, icon as any);
+    }
+  }
 
   // Fixed values shared by the screens. Use these instead of writing the text in components or templates.
   readonly roles = {
@@ -139,7 +149,8 @@ export class ApiService {
     private sessionSt: SessionStore,
     private _route: Router,
     @Inject('BASE_URL') _baseUrl: string,
-    private _http:HttpClient
+    private _http:HttpClient,
+    private toast?: ToastService
     ) {
       this.route =_route;
       this.baseUrl = _baseUrl; 

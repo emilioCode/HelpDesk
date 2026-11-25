@@ -432,7 +432,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
      this.service.post('Ticket', this.ticket)
       .subscribe(res=>{
       // console.log( res )
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         this.option = 'edit';
         var idSolicitud = res.data.id;
@@ -444,7 +444,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
         this.ticket.fechaInicio = res.data.fechaInicio;
         this.ticket.fechaTermino = res.data.fechaTermino;
         this.ticket.horaTermino = res.data.horaTermino;
-        this.service.swal('No:'+ this.ticket.noSecuencia,'','success')
+        this.service.notify('No:'+ this.ticket.noSecuencia,'','success')
       }
       this.service.isLoading =false;
       },error => {
@@ -476,7 +476,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
         // The devices of a new order are already in the list; nothing to ask for.
       }else{
         this.devices = temp;
-        this.service.swal(res.title,res.message,res.icon);
+        this.service.notify(res.title,res.message,res.icon);
       }
       this.service.isLoading =false;
       },error => {
@@ -606,9 +606,9 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       .subscribe(res=>{
         this.service.isLoading = false;
         if(res.code=='5'){
-          this.service.swal(res.title,res.message,res.icon);
+          this.service.notify(res.title,res.message,res.icon);
         }else{
-          this.service.swal('Enviado','Se envió el enlace de seguimiento al correo del cliente.','success');
+          this.service.notify('Enviado','Se envió el enlace de seguimiento al correo del cliente.','success');
         }
       },error => {
         this.service.handleHttpError(error);
@@ -622,7 +622,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       .subscribe(res=>{
         this.service.isLoading = false;
         const url = res.data.url;
-        const done = () => this.service.swal('Enlace copiado','Compártalo con el cliente: '+url,'success');
+        const done = () => this.service.notify('Enlace copiado','Compártalo con el cliente: '+url,'success');
         if(navigator.clipboard){
           navigator.clipboard.writeText(url).then(done,()=>this.service.swal('Enlace de seguimiento',url,'info'));
         }else{
@@ -718,7 +718,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
 
         if(res.code == '5'){
           this.ticket.estado  = temp;
-          this.service.swal(res.title,res.message,res.icon);
+          this.service.notify(res.title,res.message,res.icon);
         }
          
         // this.getTickets(this.service.getUser().id,"*")
@@ -878,7 +878,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
      Object.keys(body).forEach(k => { if(body[k] === '' || body[k] === null) delete body[k]; });
      this.service.post('Costumer', body)
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         this.hubConnection.invoke('refresh', 'costumer',this.costumer.idEmpresa,0,0);
         document.getElementById('btnCloseClient2').click();
@@ -930,7 +930,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
         this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
       }else{
         this.parts = [];
-        this.service.swal(res.title,res.message,res.icon);
+        this.service.notify(res.title,res.message,res.icon);
       }
       this.service.isLoading =false;
       },error => {
@@ -953,7 +953,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
         this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
       }else{
         this.devices = [];
-        this.service.swal(res.title,res.message,res.icon);
+        this.service.notify(res.title,res.message,res.icon);
       }
       this.service.isLoading =false;
       },error => {
@@ -1003,10 +1003,10 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       this.addPart = false;
       this.part = {};
       this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }else{
       this.getParts(this.ticket.id,this.service.getUser().idEmpresa);
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }
     this.service.isLoading =false;
     },error => {
@@ -1027,10 +1027,10 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       this.part = {};
       // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
       this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }else{
       this.getParts(this.ticket.id,this.service.getUser().idEmpresa);
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }
     this.service.isLoading =false;
     },error => {
@@ -1057,10 +1057,10 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       this.part = {};
       // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
       this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }else{
       this.getDevices(this.ticket.id);
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }
     this.service.isLoading =false;
     },error => {
@@ -1086,10 +1086,10 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       this.addPart = false;
       this.part = {};
       this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }else{
       this.getParts(this.ticket.id,this.service.getUser().idEmpresa);
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }
     this.service.isLoading =false;
     },error => {

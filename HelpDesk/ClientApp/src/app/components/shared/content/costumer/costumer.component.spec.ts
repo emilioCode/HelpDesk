@@ -104,7 +104,7 @@ describe('CostumerComponent', () => {
       const req = s.http.expectOne(r => r.url.endsWith('api/Costumer') && r.method === 'POST');
       expect(req.request.body).toMatchObject({ nombre: 'Cliente de prueba', rnc: '999', idEmpresa: 1 });
       req.flush({ code: '1', title: 'Listo', message: 'Guardado', icon: 'success' });
-      expect(s.swal).toHaveBeenCalledWith('Listo', 'Guardado', 'success');
+      expect(s.toasts()).toContain('Listo: Guardado');
       expect(s.hub.invoke).toHaveBeenCalledWith('refresh', 'costumer', 1, 0, 0);
       expect(s.service.isLoading).toBe(false);
     });

@@ -184,7 +184,7 @@ export class UserComponent implements OnInit, OnDestroy {
     this.service.isLoading = true;
      this.service.post('User', this.payload())
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         this.hubConnection.invoke('refresh', 'users',this.user.idEmpresa,this.user.id,0)
       }
@@ -213,7 +213,7 @@ export class UserComponent implements OnInit, OnDestroy {
     const body = this.payload();
      this.service.post('User/Put/'+this.service.getUser().id, body)
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         // this.getUsers(this.service.getUser().id,"*");
         this.hubConnection.invoke('refresh', 'users',this.user.idEmpresa,this.user.id,0)
@@ -242,7 +242,7 @@ export class UserComponent implements OnInit, OnDestroy {
     this.user.habilitado = !this.user.habilitado;
      this.service.post('User/Put/'+this.user.id, this.user)
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         // this.getUsers(this.service.getUser().id,"*");
         this.hubConnection.invoke('refresh', 'users',this.user.idEmpresa,this.user.id,0)
