@@ -21,7 +21,9 @@ Open http://localhost:8080 and sign in with account `root`, password `root`. Thi
 ## Common tasks
 
 ```sh
-docker build --target tests .   # run the unit tests
+docker build --target tests .       # run the back end tests
+docker build --target spa-tests .   # run the front end tests (Vitest)
+# without Docker, in HelpDesk/ClientApp: npm test
 docker compose down             # stop, keep data
 docker compose down -v          # stop and delete the database
 ```
