@@ -2,8 +2,6 @@ import { Routes } from '@angular/router';
 
 import { AuthGuard } from './services/auth.guard';
 import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { EmpresaComponent } from './components/shared/content/empresa/empresa.component';
 import { UserComponent } from './components/shared/content/user/user.component';
 import { ProfileComponent } from './components/shared/content/profile/profile.component';
@@ -18,8 +16,6 @@ export const routes: Routes = [
   { path: 't/:token', component: TrackingPageComponent },
   // minLevel is the lowest role that may open the screen: TECNICO 1, MODERADOR 2, ADMINISTRADOR 3, ROOT 4.
   { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard], data: { minLevel: 1 } },
-  { path: 'counter', component: CounterComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
-  { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
   { path: 'business', component: EmpresaComponent, canActivate: [AuthGuard], data: { minLevel: 3 } },
   { path: 'user', component: UserComponent, canActivate: [AuthGuard], data: { minLevel: 3 } },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], data: { minLevel: 1 } },
