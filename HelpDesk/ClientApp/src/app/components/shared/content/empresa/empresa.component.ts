@@ -20,8 +20,9 @@ export class EmpresaComponent implements OnInit, OnDestroy {
     if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
       alert(this.service.messages.noPermissionToAccess);
       this.service.route.navigateByUrl('/');
+    } else {
+      this.getBusiness(this.service.getUser().id);
     }
-    this.getBusiness(this.service.getUser().id);
   }
 
   isLoading = false;

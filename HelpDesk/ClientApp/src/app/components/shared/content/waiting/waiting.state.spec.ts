@@ -72,6 +72,14 @@ describe('WaitingComponent, the state of an order', () => {
       s.settle({ 'Trace/1/1': { data: traces } });
     });
 
+    it('keeps a state when the call fails, whatever the change was', () => {
+      const s = withOrder({ estado: 'en Proceso' });
+      s.component.ticket.estado = 'Completado';
+      s.component.putTicket('ESTADO');
+      posted(s, 'ESTADO').flush({ errors: [{ detail: 'Caído' }] }, { status: 400, statusText: 'Bad Request' });
+      expect(s.component.ticket.estado).toBe('Completado');
+    });
+
     it('puts the dates back when the call fails', () => {
       const s = withOrder({ estado: 'en Proceso', fechaInicio: '2026-10-05T00:00:00' });
       s.component.ticket.estado = 'Completado';

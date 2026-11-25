@@ -130,6 +130,14 @@ describe('WaitingComponent, the order', () => {
       expect(s.swal).toHaveBeenCalledWith('No:13', '', 'success');
     });
 
+    it('does not create a workshop order without a device', () => {
+      const s = adding(); complete(s, { tipoSolicitud: 'Servicio Taller' });
+      s.component.devices = [];
+      expect(s.component.add()).toBe(false);
+      expect(s.swal).toHaveBeenCalledWith(s.service.messages.mustHaveDevice, '', 'warning');
+      s.http.expectNone(r => r.url.endsWith('api/Ticket') && r.method === 'POST');
+    });
+
     it('sends the devices of a workshop order after the order', () => {
       const s = adding(); complete(s, { tipoSolicitud: 'Servicio Taller' });
       s.component.devices = [{ descripcion: 'Laptop', fallaReportada: 'x', marca: 'M', modelo: 'Y', noSerial: '1' }];
