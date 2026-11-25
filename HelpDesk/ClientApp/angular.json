@@ -9,49 +9,58 @@
       "projectType": "application",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist",
+            "outputPath": {
+              "base": "dist",
+              "browser": ""
+            },
             "index": "src/index.html",
-            "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
             "progress": true,
-            "polyfills": "src/polyfills.ts",
+            "polyfills": ["zone.js"],
             "assets": [
-              "src/assets"
+              "src/assets",
+              { "glob": "{favicon.svg,favicon-32.png,apple-touch-icon.png,site.webmanifest}", "input": "src", "output": "/" },
+              { "glob": "*.png", "input": "src/icons", "output": "/icons" }
             ],
             "styles": [
+              "src/styles/tokens.css",
+              "src/styles/ui.css",
+              "@fontsource/inter/latin-400.css",
+              "@fontsource/inter/latin-500.css",
+              "@fontsource/inter/latin-600.css",
+              "@fontsource/inter/latin-700.css",
               "src/styles.css",
-              "node_modules/admin-lte/bower_components/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/admin-lte/dist/css/AdminLTE.min.css",
-              "node_modules/admin-lte/bower_components/Ionicons/css/ionicons.min.css",
-              "node_modules/admin-lte/bower_components/font-awesome/css/font-awesome.min.css",
-              "node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.min.css",
-              "node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.print.min.css"
+              "src/styles/legacy-base.css",
+              "node_modules/font-awesome/css/font-awesome.min.css",
+              "src/styles/compat.css",
+              "src/styles/mobile.css"
             ],
-            "scripts": [
-              "node_modules/admin-lte/bower_components/jquery/dist/jquery.min.js",
-              "node_modules/admin-lte/bower_components/bootstrap/dist/js/bootstrap.min.js",
-              "node_modules/admin-lte/dist/js/adminlte.min.js",
-              "node_modules/admin-lte/bower_components/moment/moment.js",
-              "node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.min.js"
-            ]
+            "scripts": [],
+            "extractLicenses": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true,
+            "browser": "src/main.ts"
           },
           "configurations": {
             "production": {
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             }
@@ -75,81 +84,43 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "src/test.ts",
-            "karmaConfig": "./karma.conf.js",
-            "polyfills": "src/polyfills.ts",
+            "buildTarget": "HelpDesk:build",
             "tsConfig": "src/tsconfig.spec.json",
-            "scripts": [
-              "node_modules/admin-lte/bower_components/jquery/dist/jquery.min.js",
-              "node_modules/admin-lte/bower_components/bootstrap/dist/js/bootstrap.min.js",
-              "node_modules/admin-lte/dist/js/adminlte.min.js",
-              "node_modules/admin-lte/bower_components/moment/moment.js",
-              "node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.min.js"
-            ],
-            "styles": [
-              "src/styles.css",
-              "node_modules/admin-lte/bower_components/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/admin-lte/dist/css/AdminLTE.min.css",
-              "node_modules/admin-lte/bower_components/Ionicons/css/ionicons.min.css",
-              "node_modules/admin-lte/bower_components/font-awesome/css/font-awesome.min.css",
-              "node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.min.css",
-              "node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.print.min.css"
-            ],
-            "assets": [
-              "src/assets"
-            ]
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    },
-    "HelpDesk-e2e": {
-      "root": "e2e",
-      "sourceRoot": "e2e",
-      "projectType": "application",
-      "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "HelpDesk:serve"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "e2e/tsconfig.e2e.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "runner": "vitest"
           }
         }
       }
     }
   },
-  "defaultProject": "HelpDesk",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
-      "styleext": "css"
+      "style": "css",
+      "type": "component"
     },
     "@schematics/angular:directive": {
-      "prefix": "app"
+      "prefix": "app",
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
     }
   }
 }

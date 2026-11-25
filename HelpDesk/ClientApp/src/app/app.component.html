@@ -1,23 +1,16 @@
-<!-- <div class='container-fluid'>
-  <div class='row'>
-    <div class='col-sm-3'>
-      <app-nav-menu></app-nav-menu>
-    </div>
-    <div class='col-sm-9 body-content'>
-      <router-outlet></router-outlet>
-    </div>
-  </div>
-</div> -->
-
-
-<span *ngIf="service.getUser() !=null">
-    <app-header></app-header>
+<hd-toasts></hd-toasts>
+@if (publicPage) {
+    <router-outlet></router-outlet>
+} @else {
+<span *ngIf="service.getUser() != null" class="hd-shell">
     <app-menu></app-menu>
-    <app-content></app-content>
-    <app-footer></app-footer>
-    <app-setting></app-setting>
+    <div class="hd-main">
+        <app-header></app-header>
+        <app-content></app-content>
+        <app-footer></app-footer>
+    </div>
 </span>
-<span *ngIf="service.getUser() ==null">
+<span *ngIf="service.getUser() == null">
     <app-login></app-login>
 </span>
-
+}

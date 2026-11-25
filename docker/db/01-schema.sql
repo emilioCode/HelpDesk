@@ -145,6 +145,7 @@ CREATE TABLE [dbo].[SEGUIMIENTO](
 	[hora] [time](0) NOT NULL,
 	[favorito] [bit] NULL,
 	[etiquetado] [bit] NULL,
+	[visibleAlCliente] [bit] NULL,
 	[habilitado] [bit] NULL,
 PRIMARY KEY CLUSTERED 
 (
@@ -276,11 +277,20 @@ ALTER TABLE EMPRESA
 	
 ALTER TABLE EMPRESA
 	ADD condicionesDomicilio VARCHAR(MAX) NULL;
-	
-	
-
-
-
-
-
-
+GO
+CREATE TABLE [dbo].[ENLACE_SEGUIMIENTO](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[idEmpresa] [int] NOT NULL,
+	[idSolicitud] [int] NOT NULL,
+	[token] [varchar](64) NOT NULL,
+	[creadoEn] [datetime2](7) NOT NULL,
+	[venceEn] [datetime2](7) NULL,
+	[revocadoEn] [datetime2](7) NULL,
+	[habilitado] [bit] NULL,
+ PRIMARY KEY CLUSTERED ([id] ASC)
+)
+GO
+CREATE UNIQUE INDEX [UX_ENLACE_SEGUIMIENTO_token] ON [dbo].[ENLACE_SEGUIMIENTO]([token])
+GO
+CREATE INDEX [IX_ENLACE_SEGUIMIENTO_idSolicitud] ON [dbo].[ENLACE_SEGUIMIENTO]([idSolicitud])
+GO

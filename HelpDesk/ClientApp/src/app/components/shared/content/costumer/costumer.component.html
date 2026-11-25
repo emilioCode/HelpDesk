@@ -7,7 +7,7 @@
       <div class="box">
           <div class="box-header">
               <h3 class="box-title">Tabla de Clientes</h3>
-              &nbsp;<a class="btn-link" style="position:absolute;z-index: 1" *ngIf="service.getLevel(service.getUser().acceso) > 1" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default"> agregar cliente</a>
+              &nbsp;<a hdButton variant="primary" size="sm" class="hd-create" *ngIf="service.getLevel(service.getUser().acceso) > 1" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default">Crear cliente</a>
               <br/>
               <div class="box-tools">
                 <div class="input-group input-group-sm" style="width: 25%; float:right; z-index: 2">
@@ -58,9 +58,7 @@
 
         </div>
         <!-- /.box-body -->
-        <div class="overlay" [hidden]="!service.isLoading">
-          <i class="fa fa-refresh fa-spin"></i>
-        </div>
+        <hd-loading [active]="service.isLoading"></hd-loading>
       </div>
       <!-- /.box -->
 
@@ -88,43 +86,45 @@
         
         <!---->
         <form [formGroup]="form" novalidate>
-        <div class="row">
-
-        <div class="form-group col-xs-8 col-sm-8">
+        <div class="hd-form-grid">
+        <h6 class="hd-form-section">Datos del cliente</h6>
+        <div class="form-group hd-col-8">
           <label for="razonSocial">Nombre completo:</label>
           <input type="text" class="form-control" placeholder="Nombre" formControlName="nombre">
         </div>
-        <div class="form-group col-xs-4 col-sm-4">
+        <div class="form-group hd-col-4">
           <label for="razonSocial">Rnc:</label>
           <input type="text" class="form-control" placeholder="Rnc" formControlName="rnc">
         </div>
-        <div class="form-group col-xs-5 col-sm-5">
+        <h6 class="hd-form-section">Contacto</h6>
+        <div class="form-group hd-col-5">
           <label for="correo">Contacto</label>
           <input type="text" class="form-control" placeholder="Contacto" formControlName="contacto">
         </div>
-        <div class="form-group col-xs-4 col-sm-4">
+        <div class="form-group hd-col-4">
           <label for="correo">Telefono</label>
           <input type="text" class="form-control" placeholder="Telefono" formControlName="telefono">
         </div>
-        <div class="form-group col-xs-3 col-sm-3">
+        <div class="form-group hd-col-3">
           <label for="correo">Extension</label>
           <input type="text" class="form-control" placeholder="Extension" formControlName="extension">
         </div>
-        <div class="form-group col-xs-6 col-sm-6">
+        <div class="form-group hd-col-6">
           <label for="correo">Correo Electronico</label>
           <input type="text" class="form-control" placeholder="Correo Electrónico" formControlName="correo">
         </div>
-        <div class="form-group col-xs-6 col-sm-6">
+        <div class="form-group hd-col-6">
           <label for="dpt">Departamento:</label>
           <input type="text" class="form-control" placeholder="Departamento" formControlName="departamento">
         </div>
-        <div class="form-group col-xs-12 col-sm-12" *ngIf="service.getLevel(service.getUser().acceso) == 4">
+        <h6 class="hd-form-section">Dirección</h6>
+        <div class="form-group hd-col-12" *ngIf="service.getLevel(service.getUser().acceso) == 4">
           <label for="rnc">Empresa:</label>
           <select class="form-control" formControlName="idEmpresa">
             <option value="{{empresa.id}}" *ngFor="let empresa of empresas">{{ empresa.razonSocial }}</option>
           </select>
         </div>
-        <div class="form-group col-xs-12 col-sm-12">
+        <div class="form-group hd-col-12">
           <label for="Direccion">Dirección</label>
           <!-- <input type="text" class="form-control" placeholder="Dirección" formControlName="direccion"> -->
           <textarea id="Direccion" placeholder="Dirección" formControlName="direccion" class="form-control" rows="5"></textarea>
@@ -135,13 +135,11 @@
 
       </div>
       <div class="modal-footer">
-          <div class="overlay" [hidden]="!service.isLoading">
-              <i class="fa fa-refresh fa-spin"></i>
-          </div>
+          <hd-loading [active]="service.isLoading"></hd-loading>
           <button type="button" class="btn btn-primary" data-dismiss="modal" *ngIf="option=='add'" (click)="add()" [disabled]="form.invalid || !(service.getLevel(service.getUser().acceso) > 1)"><i class="fa fa-fw fa-file-o"></i> Crear</button><!--[disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.tipo) || !(service.getLevel(service.getUser().acceso) >= 1)"-->
           <button type="button" class="btn btn-success" data-dismiss="modal" *ngIf="option=='edit'" (click)="edit()" [disabled]="form.invalid || !(service.getLevel(service.getUser().acceso) > 1)"><i class="fa fa-fw fa-save"></i> Guardar</button><!--[disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.tipo) || !(service.getLevel(service.getUser().acceso) >= 1)"-->
           <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
-          <button type="button" class="btn btn-default" data-dismiss="modal" (click)='getCostumers(service.getUser().id,"*")'>Close</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" (click)='getCostumers(service.getUser().id,"*")'>Cerrar</button>
         <!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->
         <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
       </div>

@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router';
 import { ApiService } from './api.service';
 
 // Keeps a user out of the screens their role does not allow. The route says the minimum level in data.minLevel.
 // The server enforces the same rules on the API; this only avoids showing an empty screen.
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AuthGuard {
   constructor(private service: ApiService, private router: Router) { }
 
-  canActivate(route: ActivatedRouteSnapshot): boolean {
+  canActivate(route: ActivatedRouteSnapshot): boolean | UrlTree {
     const user = this.service.getUser();
     if (!user) {
       return false;   // the login screen is shown instead of the application
@@ -20,8 +20,8 @@ export class AuthGuard implements CanActivate {
 
     if (level < minLevel) {
       this.service.swal(this.service.messages.titleAccessDenied, this.service.messages.noPermissionToAccess, 'warning');
-      this.router.navigateByUrl('/');
-      return false;
+      // Sending the user home is the answer of the guard (a navigation started inside a guard is cancelled by the router).
+      return this.router.parseUrl('/');
     }
     return true;
   }

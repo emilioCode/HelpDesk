@@ -25,7 +25,7 @@ namespace HelpDesk.Tests.Controllers
             _userServiceMock = new Mock<IUserService>();
             _mapperMock = new Mock<IHelpDeskMapper>();
 
-            _userController = new UserController(_userServiceMock.Object, _mapperMock.Object, new Mock<IHubContext<HelpDeskHub>>().Object);
+            _userController = new UserController(_userServiceMock.Object, _mapperMock.Object, new Mock<IHubContext<HelpDeskHub>>().Object, new Microsoft.Extensions.Caching.Memory.MemoryCache(new Microsoft.Extensions.Caching.Memory.MemoryCacheOptions()));
         }
 
         [Test]

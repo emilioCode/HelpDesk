@@ -27,7 +27,7 @@ namespace HelpDesk.Tests.Controllers
             _mapperMock = new Mock<IHelpDeskMapper>();
             _mailServiceMock = new Mock<IMailService>();
 
-            _ticketController = new TicketController(_ticketServiceMock.Object, _mapperMock.Object, _mailServiceMock.Object);
+            _ticketController = new TicketController(_ticketServiceMock.Object, _mapperMock.Object, _mailServiceMock.Object, new Moq.Mock<HelpDesk.Core.Interfaces.ITrackingService>().Object);
         }
 
         [Test]

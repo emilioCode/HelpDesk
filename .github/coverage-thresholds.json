@@ -1,0 +1,4 @@
+{
+  "front": { "minimum": 80, "target": 80 },
+  "backend": { "minimum": 80, "target": 80 }
+}

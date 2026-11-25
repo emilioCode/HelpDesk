@@ -25,9 +25,7 @@
             <!-- <b>Friends</b> <a class="pull-right">13,287</a> -->
             <b>Cerrados</b> <a class="pull-right">{{ numbers.completados | number }}</a>
           </li>
-          <div class="overlay" [hidden]="!service.isLoading">
-            <i class="fa fa-refresh fa-spin"></i>
-          </div>
+          <hd-loading [active]="service.isLoading"></hd-loading>
         </ul>
 
         <!-- <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a> -->
@@ -305,9 +303,9 @@
         
             </div>
             <div class="form-group" *ngIf="service.getLevel(service.getUser().acceso) ==4">
-              <label for="inputName3" class="col-sm-2 control-label">Empresa</label>
+              <label for="inputName3" class="control-label">Empresa</label>
 
-              <div class="col-sm-10">
+              <div class="hd-control">
                 <select class="form-control" formControlName="idEmpresa" id="inputName3" >
                   <option value="{{empresa.id}}" *ngFor="let empresa of empresas">{{ empresa.razonSocial }}</option>
                 </select>
@@ -322,32 +320,32 @@
                 </div> -->
               </div>
             <div class="form-group">
-              <label for="inputName" class="col-sm-2 control-label">Usuario</label>
+              <label for="inputName" class="control-label">Usuario</label>
 
-              <div class="col-sm-10">
+              <div class="hd-control">
                 <input type="text" class="form-control" id="inputName" placeholder="Name" formControlName="cuentaUsuario" readonly>
               </div>
             </div>
             <div class="form-group">
-              <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+              <label for="inputEmail" class="control-label">Email</label>
 
-              <div class="col-sm-10">
+              <div class="hd-control">
                 <input type="email" class="form-control" id="inputEmail" placeholder="Email" formControlName="correo" readonly>
               </div>
             </div>
 
             <div class="form-group">
-              <label for="inputExperience" class="col-sm-2 control-label">Nueva contraseña</label>
+              <label for="inputExperience" class="control-label">Nueva contraseña</label>
 
-              <div class="col-sm-10">
+              <div class="hd-control">
                 <input type="password" class="form-control" id="inputExperience" placeholder="Nueva contraseña" formControlName="contrasena" autocomplete="new-password">
                 <small class="text-warning" *ngIf="form.get('contrasena').touched && form.get('contrasena').hasError('minlength')">Mínimo 6 caracteres.</small>
               </div>
             </div>
             <div class="form-group">
-              <label for="inputSkills" class="col-sm-2 control-label">Confirmar contraseña</label>
+              <label for="inputSkills" class="control-label">Confirmar contraseña</label>
 
-              <div class="col-sm-10">
+              <div class="hd-control">
                 <input type="password" class="form-control" id="inputSkills" placeholder="Confirmar contraseña" formControlName="confirmacion" autocomplete="new-password">
                 <small class="text-warning" *ngIf="form.get('confirmacion').touched && form.hasError('mismatch')">Las contraseñas no coinciden.</small>
               </div>
@@ -362,7 +360,7 @@
               </div>
             </div> -->
             <div class="form-group">
-              <div class="col-sm-offset-2 col-sm-10">
+              <div class="hd-control hd-control-offset">
                 <button type="button" class="btn btn-primary" (click)="edit()" [disabled]="form.invalid"><i class="fa fa-fw fa-save" ></i> Guardar cambios</button>
               </div>
             </div>

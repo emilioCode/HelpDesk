@@ -366,6 +366,11 @@
             </div>
         </footer>
         </div>
+        <div class="qr-follow" style="display:flex;align-items:center;gap:12px;margin:12px 24px;font-size:12px;">
+            <div style="width:96px;height:96px;">@Html.Raw(Model.qrSvg)</div>
+            <div>Siga el estado de su orden con este c&oacute;digo o en:<br />@Model.trackingUrl</div>
+        </div>
+        <style>.qr-follow svg { width: 96px; height: 96px; }</style>
         <script type="text/javascript">
 
             window.print();

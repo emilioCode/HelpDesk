@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { HdButtonDirective } from '../../../ui/hd-button.directive';
 import { ApiService } from '../../../services/api.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrls: ['./login.component.css'],
+    imports: [FormsModule, ReactiveFormsModule, HdButtonDirective]
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private service: ApiService, private formBuilder: FormBuilder) { }
+  constructor(public service: ApiService, private formBuilder: FormBuilder) { }
 
   title = this.service.aplicationName;
   isLoading = false;

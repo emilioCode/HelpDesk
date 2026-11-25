@@ -1,19 +1,25 @@
-import { Component, OnDestroy, OnInit, Pipe } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { HdLoadingComponent } from '../../../../ui/hd-loading.component';
+import { HdButtonDirective } from '../../../../ui/hd-button.directive';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-// import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
+import { NgIf, NgFor } from '@angular/common';
+import { FieldHintsDirective } from '../../field-hints.directive';
+import { FilterPipe } from '../../../../pipes/filter.pipe';
 
 @Component({
-  selector: 'app-costumer',
-  templateUrl: './costumer.component.html',
-  styleUrls: [],
-  styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }']
+    selector: 'app-costumer',
+    templateUrl: './costumer.component.html',
+    styleUrls: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }'],
+    imports: [HdButtonDirective, HdLoadingComponent, NgIf, FormsModule, NgFor, ReactiveFormsModule, FieldHintsDirective, FilterPipe]
 })
-@Pipe({name:'FilterPipe'})
 export class CostumerComponent implements OnInit, OnDestroy {
+  search: any = "";
 
-  constructor(private service: ApiService, private formBuilder: FormBuilder) { 
+  constructor(public service: ApiService, private formBuilder: FormBuilder) { 
     this.initializeForm();
     this.getCostumers(this.service.getUser().id,"*")
   }
@@ -141,7 +147,7 @@ export class CostumerComponent implements OnInit, OnDestroy {
      this.service.post('Costumer', this.payload())
       .subscribe(res=>{
       console.log( res )
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         // this.getCostumers(this.service.getUser().id,"*")
         this.hubConnection.invoke('refresh', 'costumer',this.costumer.idEmpresa,0,0)
@@ -162,23 +168,23 @@ export class CostumerComponent implements OnInit, OnDestroy {
     this.costumer.habilitado = true;
      this.service.post('Costumer/Put/'+ this.service.getUser().id, this.payload())
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         // this.getCostumers(this.service.getUser().id,"*")
         this.hubConnection.invoke('refresh', 'costumer',this.costumer.idEmpresa,this.costumer.id,0)
       }
       this.service.isLoading =false;
       },error => {
-        var errors = error.error.errors;
-        var title = error.error.title ? error.error.title : 'Warning';
+        var errors = error?.error?.errors;
+        var title = error?.error?.title ? error.error.title : 'Warning';
         var list = [];
         if(title !== "Warning"){
-          var objectKeys =  Object.keys(errors);
+          var objectKeys =  Object.keys(errors ?? {});
           objectKeys.forEach(x => {
             list.push(errors[x]);
           });
         }
-        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        var message = title !== "Warning" ? list.join(','): (errors?.[0]?.detail ?? 'The request could not be completed. Check the connection and try again.');
         this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;
@@ -190,23 +196,23 @@ export class CostumerComponent implements OnInit, OnDestroy {
     this.costumer.habilitado = !this.costumer.habilitado;
      this.service.post('Costumer/Put/'+this.service.getUser().id, this.costumer)
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         // this.getCostumers(this.service.getUser().id,"*")
         this.hubConnection.invoke('refresh', 'costumer',this.costumer.idEmpresa,0,0)
       }
       this.service.isLoading =false;
       },error => {
-        var errors = error.error.errors;
-        var title = error.error.title ? error.error.title : 'Warning';
+        var errors = error?.error?.errors;
+        var title = error?.error?.title ? error.error.title : 'Warning';
         var list = [];
         if(title !== "Warning"){
-          var objectKeys =  Object.keys(errors);
+          var objectKeys =  Object.keys(errors ?? {});
           objectKeys.forEach(x => {
             list.push(errors[x]);
           });
         }
-        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        var message = title !== "Warning" ? list.join(','): (errors?.[0]?.detail ?? 'The request could not be completed. Check the connection and try again.');
         this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;

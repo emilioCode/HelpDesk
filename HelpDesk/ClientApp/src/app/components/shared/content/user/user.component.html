@@ -7,7 +7,7 @@
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">Tabla de Usuarios</h3>
-          &nbsp;<a class="btn-link" style="position:absolute;z-index: 1" *ngIf="service.getLevel(service.getUser().acceso) > 2" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default"> agregar usuario</a>
+          &nbsp;<a hdButton variant="primary" size="sm" class="hd-create" *ngIf="service.getLevel(service.getUser().acceso) > 2" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default">Crear usuario</a>
           <br/>
           <div class="box-tools">
             <div class="input-group input-group-sm" style="width: 25%; float:right; z-index: 2">
@@ -61,9 +61,7 @@
           </table>
         </div>
         <!-- /.box-body -->
-        <div class="overlay" [hidden]="!service.isLoading">
-            <i class="fa fa-refresh fa-spin"></i>
-        </div>
+        <hd-loading [active]="service.isLoading"></hd-loading>
       </div>
       <!-- /.box -->
 
@@ -91,38 +89,40 @@
           
           <!---->
           <form [formGroup]="form" novalidate>
-          <div class="row">
-          <div class="col-xs-8 col-sm-8">
-            <div class="form-group col-xs-8 col-sm-8">
+          <div class="hd-form-grid">
+          <div class="hd-col-8 hd-form-grid">
+            <h6 class="hd-form-section">Datos personales</h6>
+            <div class="form-group hd-col-8">
               <label for="razonSocial">Nombre completo:</label>
               <input type="text" class="form-control" placeholder="Nombre" formControlName="nombre">
             </div>
-            <div class="form-group col-xs-4 col-sm-4">
+            <div class="form-group hd-col-4">
               <label for="sectorComercial">Cédula:</label>
               <input type="text" class="form-control" placeholder="No. documento" formControlName="numDocumento">
             </div>
   
-            <div class="form-group col-xs-6 col-sm-6 {{ renderHTML1 }}">
+            <h6 class="hd-form-section">Cuenta y acceso</h6>
+            <div class="form-group hd-col-6 {{ renderHTML1 }}">
                 <label for="rnc">Cuenta de usuario:</label>
                 <input type="text" class="form-control" placeholder="Cuenta de usuario" (change)="validateUserAccount(form.get('cuentaUsuario').value)" formControlName="cuentaUsuario">
                 <span class="{{ renderHTML2 }}"></span>
                 <small class="{{ renderHTML3 }}">{{ message }}</small>
             </div>
-            <div class="form-group col-xs-6 col-sm-6">
+            <div class="form-group hd-col-6">
               <label for="telefono">Contraseña:</label>
               <input type="password" class="form-control" placeholder="Contraseña" formControlName="contrasena">
             </div>
-            <div class="form-group col-xs-12 col-sm-12">
+            <div class="form-group hd-col-12">
                 <label for="correo">Correo Electrónico</label>
                 <input type="text" class="form-control" placeholder="Correo Electrónico" formControlName="correo">
             </div>
-            <div class="form-group col-xs-6 col-sm-6">
+            <div class="form-group hd-col-6">
                 <label for="rnc">Empresa:</label>
                 <select class="form-control" formControlName="idEmpresa">
                   <option value="{{empresa.id}}" *ngFor="let empresa of empresas">{{ empresa.razonSocial }}</option>
                 </select>
             </div>
-            <div class="form-group col-xs-6 col-sm-6">
+            <div class="form-group hd-col-6">
               <label for="telefono">Rol(Acceso):</label>
               <select class="form-control" formControlName="acceso">
                 <option value="{{level.name}}" *ngFor="let level of levels">{{ level.name }}</option>
@@ -130,13 +130,13 @@
             </div>
               
           </div>
-          <div class="col-xs-4 col-sm-4">
-            <div class="form-group col-xs-12 col-ms-12"  >
+          <div class="hd-col-4 hd-photo">
+            <div class="form-group">
               <img [hidden]="service.hasImage(user.image)" src="../../../../assets/dist/img/photo_default.png" style="width:250px;height:250px;" >
               <img *ngIf="service.hasImage(user.image)" [src]="'data:image/jpeg;base64,'+ user.image" style="width:250px;height:250px;" >
               <!-- <img src="{{imageUrl}}" style="width:250px;height:250px;" *ngIf="imageUrl!==''"> -->
             </div>
-            <div class=" col-xs-12 col-sm-12">
+            <div class="hd-photo-actions">
               <input type="file" class="form-control"  (change)="handleFileInput($event.target.files)" accept="image/*" [disabled]="option=='delete'"/>
               <button type="button" class="btn btn-danger btn-block" (click)="imageUrl='';user.image=null;" *ngIf="service.hasImage(user.image);">Eliminar</button>
             </div>
@@ -148,13 +148,11 @@
   
         </div>
         <div class="modal-footer">
-            <div class="overlay" [hidden]="!service.isLoading">
-                <i class="fa fa-refresh fa-spin"></i>
-            </div>
+            <hd-loading [active]="service.isLoading"></hd-loading>
             <button type="button" class="btn btn-primary" *ngIf="option=='add'" (click)="add()" [disabled]="form.invalid"><i class="fa fa-fw fa-file-o"></i> Crear</button>
             <button type="button" class="btn btn-success" *ngIf="option=='edit'" (click)="edit()" [disabled]="form.invalid"><i class="fa fa-fw fa-save"></i> Guardar</button>
             <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
-            <button type="button" class="btn btn-default" data-dismiss="modal" id="closeModalBtn" (click)='getUsers(service.getUser().id,"*")'>Close</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" id="closeModalBtn" (click)='getUsers(service.getUser().id,"*")'>Cerrar</button>
           <!-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> -->
           <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
         </div>

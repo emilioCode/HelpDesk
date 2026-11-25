@@ -16,6 +16,8 @@ namespace HelpDesk.Infrastructure.Data.Configurations
 
             entity.Property(e => e.Favorito).HasColumnName("favorito");
 
+            entity.Property(e => e.VisibleAlCliente).HasColumnName("visibleAlCliente");
+
             entity.Property(e => e.Fecha)
                 .HasColumnName("fecha")
                 .HasColumnType("date");

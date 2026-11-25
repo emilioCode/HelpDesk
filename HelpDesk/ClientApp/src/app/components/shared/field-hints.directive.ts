@@ -6,9 +6,7 @@ import { AbstractControl, FormControl, NgControl } from '@angular/forms';
 //    so the label gets its "*" from the stylesheet (styles.css), which is the only place that says how it looks;
 //  - shows, under the control, why its value is not valid, once the person has touched or changed it.
 // A control opts out with the attribute data-no-hints (the sign-in screen has no labels and says nothing until you submit).
-@Directive({
-  selector: '[formControlName]:not([data-no-hints])'
-})
+@Directive({ selector: '[formControlName]:not([data-no-hints])' })
 export class FieldHintsDirective implements DoCheck, OnDestroy {
   private message: HTMLElement = null;
   private shown = '';

@@ -1,16 +1,30 @@
-import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, DoCheck, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { HdBadgeComponent, HdTone } from '../../../../ui/hd-badge.component';
+import { HdProgressComponent } from '../../../../ui/hd-progress.component';
+import { HdEmptyComponent } from '../../../../ui/hd-empty.component';
+import { HdLoadingComponent } from '../../../../ui/hd-loading.component';
+import { HdButtonDirective } from '../../../../ui/hd-button.directive';
+import { showFirstTab } from '../../../../ui/page-behaviors';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
-// import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { FieldHintsDirective } from '../../field-hints.directive';
+import { TicketTimelineComponent } from '../ticket-shared/ticket-timeline.component';
+import { TicketPartsComponent } from '../ticket-shared/ticket-parts.component';
+import { TicketItemDialogsComponent } from '../ticket-shared/ticket-item-dialogs.component';
+import { FilterPipe } from '../../../../pipes/filter.pipe';
 
 @Component({
-  selector: 'app-waiting',
-  templateUrl: './waiting.component.html',
-  styles: []
+    selector: 'app-waiting',
+    templateUrl: './waiting.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styles: [],
+    imports: [HdBadgeComponent, HdProgressComponent, HdEmptyComponent, HdLoadingComponent, HdButtonDirective, NgIf, FormsModule, NgFor, ReactiveFormsModule, FieldHintsDirective, TicketTimelineComponent, TicketPartsComponent, TicketItemDialogsComponent, DatePipe, FilterPipe]
 })
 export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
+  search: any = "";
 
   // One screen for the lists of tickets. The route says which one it is:
   //  - mode: 'pending' (not assigned yet), 'inbox' (the tickets of the person, not approved yet), 'finished' (completed, not approved yet)
@@ -21,7 +35,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
   requestType: string = null;
   title: string = '';
 
-  constructor(private service: ApiService, private activatedRoute: ActivatedRoute, private formBuilder: FormBuilder) { 
+  constructor(public service: ApiService, private activatedRoute: ActivatedRoute, private formBuilder: FormBuilder) { 
     this.initializeForms();
     const data = this.activatedRoute.snapshot.data;
     this.requestType = data.requestType ? this.service.requestTypes[data.requestType] : null;
@@ -239,6 +253,8 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
   savedDates: any;
 
   fillModal(option='add',object,doProcess=true){
+    // Opening the window starts on the General tab; a refresh of the open window (doProcess false) keeps the tab the person is on.
+    if (doProcess) showFirstTab('#modal-default');
     this.addDevice=false;
     this.option = option;
     this.ticket = object;
@@ -405,7 +421,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       return false;
     }
 
-    if(this.devices.lentgh == 0 && this.ticket.tipoSolicitud ==this.service.requestTypes.workshop){
+    if(this.devices.length == 0 && this.ticket.tipoSolicitud ==this.service.requestTypes.workshop){
       this.service.swal(this.service.messages.mustHaveDevice,'','warning');
       return false;
     }
@@ -416,7 +432,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
      this.service.post('Ticket', this.ticket)
       .subscribe(res=>{
       // console.log( res )
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         this.option = 'edit';
         var idSolicitud = res.data.id;
@@ -428,7 +444,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
         this.ticket.fechaInicio = res.data.fechaInicio;
         this.ticket.fechaTermino = res.data.fechaTermino;
         this.ticket.horaTermino = res.data.horaTermino;
-        this.service.swal('No:'+ this.ticket.noSecuencia,'','success')
+        this.service.notify('No:'+ this.ticket.noSecuencia,'','success')
       }
       this.service.isLoading =false;
       },error => {
@@ -438,7 +454,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
   }
 
   addDevices(idSolicitud){
-    if(this.devices.lentgh == 0){
+    if(this.devices.length == 0){
       this.service.swal(this.service.messages.mustHaveDevice,'','warning');
       return false;
     }
@@ -460,7 +476,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
         // The devices of a new order are already in the list; nothing to ask for.
       }else{
         this.devices = temp;
-        this.service.swal(res.title,res.message,res.icon);
+        this.service.notify(res.title,res.message,res.icon);
       }
       this.service.isLoading =false;
       },error => {
@@ -528,7 +544,38 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       });
   }
 
+  // The state of an order as the badge of the design shows it.
+  badge(item: any): { tone: HdTone, label: string } {
+    const s = this.service.ticketStatuses;
+    if (item.estado == s.completed && item.aprobadoPor != null) { return { tone: 'appr', label: 'Aprobado' }; }
+    if (item.estado == s.completed) { return { tone: 'done', label: 'Completado' }; }
+    if (item.estado == s.inProgress) { return { tone: 'prog', label: 'En proceso' }; }
+    return { tone: 'open', label: 'Abierto' };
+  }
+
+  // Four steps: open, in progress, completed, approved.
+  progress(item: any): number {
+    const s = this.service.ticketStatuses;
+    if (item.estado == s.completed && item.aprobadoPor != null) { return 100; }
+    if (item.estado == s.completed) { return 75; }
+    if (item.estado == s.inProgress) { return 50; }
+    return 25;
+  }
+
   putTrace(trace,value){
+    if(value=="visibleAlCliente"){
+      const show = !trace.visibleAlCliente;
+      this.service.isLoading = true;
+      this.service.post('Trace/Visible/'+trace.id+'/'+show)
+        .subscribe(res=>{
+          trace.visibleAlCliente = show;
+          this.service.isLoading = false;
+        },error => {
+          this.service.handleHttpError(error);
+          this.service.isLoading = false;
+        });
+      return;
+    }
     switch (value) {
       case "favorito":
         trace.favorito = !trace.favorito;
@@ -552,8 +599,45 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       });
   }
 
+  // The customer follows the order from a link; it can be sent by e-mail or copied to give it another way.
+  sendTracking(){
+    this.service.isLoading = true;
+    this.service.post('Tracking/Email/'+this.ticket.id)
+      .subscribe(res=>{
+        this.service.isLoading = false;
+        if(res.code=='5'){
+          this.service.notify(res.title,res.message,res.icon);
+        }else{
+          this.service.notify('Enviado','Se envió el enlace de seguimiento al correo del cliente.','success');
+        }
+      },error => {
+        this.service.handleHttpError(error);
+        this.service.isLoading = false;
+      });
+  }
+
+  copyTrackingLink(){
+    this.service.isLoading = true;
+    this.service.post('Tracking/Link/'+this.ticket.id)
+      .subscribe(res=>{
+        this.service.isLoading = false;
+        const url = res.data.url;
+        const done = () => this.service.notify('Enlace copiado','Compártalo con el cliente: '+url,'success');
+        if(navigator.clipboard){
+          navigator.clipboard.writeText(url).then(done,()=>this.service.swal('Enlace de seguimiento',url,'info'));
+        }else{
+          this.service.swal('Enlace de seguimiento',url,'info');
+        }
+      },error => {
+        this.service.handleHttpError(error);
+        this.service.isLoading = false;
+      });
+  }
+
   putTicket(value){
     var option =value.toUpperCase();
+    // The status the order has when the change starts; an error puts it back (it used to be kept only when reopening).
+    var temp = this.ticket.estado;
     var idSolicitud = this.ticket.id;
     
     if(option =='ESTADO'){
@@ -565,7 +649,6 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       switch (variable) {
 
         case this.service.ticketStatuses.open.toUpperCase():
-        var temp = this.ticket.estado;
         var response = confirm(this.service.messages.confirmReopenTicket);
         if(!response){
     
@@ -635,7 +718,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
 
         if(res.code == '5'){
           this.ticket.estado  = temp;
-          this.service.swal(res.title,res.message,res.icon);
+          this.service.notify(res.title,res.message,res.icon);
         }
          
         // this.getTickets(this.service.getUser().id,"*")
@@ -795,7 +878,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
      Object.keys(body).forEach(k => { if(body[k] === '' || body[k] === null) delete body[k]; });
      this.service.post('Costumer', body)
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         this.hubConnection.invoke('refresh', 'costumer',this.costumer.idEmpresa,0,0);
         document.getElementById('btnCloseClient2').click();
@@ -847,7 +930,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
         this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
       }else{
         this.parts = [];
-        this.service.swal(res.title,res.message,res.icon);
+        this.service.notify(res.title,res.message,res.icon);
       }
       this.service.isLoading =false;
       },error => {
@@ -870,7 +953,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
         this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
       }else{
         this.devices = [];
-        this.service.swal(res.title,res.message,res.icon);
+        this.service.notify(res.title,res.message,res.icon);
       }
       this.service.isLoading =false;
       },error => {
@@ -920,10 +1003,10 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       this.addPart = false;
       this.part = {};
       this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }else{
       this.getParts(this.ticket.id,this.service.getUser().idEmpresa);
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }
     this.service.isLoading =false;
     },error => {
@@ -944,10 +1027,10 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       this.part = {};
       // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
       this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }else{
       this.getParts(this.ticket.id,this.service.getUser().idEmpresa);
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }
     this.service.isLoading =false;
     },error => {
@@ -974,10 +1057,10 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       this.part = {};
       // this.getDevices(this.ticket.id,this.service.getUser().idEmpresa);
       this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }else{
       this.getDevices(this.ticket.id);
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }
     this.service.isLoading =false;
     },error => {
@@ -1003,10 +1086,10 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       this.addPart = false;
       this.part = {};
       this.hubConnection.invoke('refresh', 'ticket',this.ticket.idEmpresa,this.ticket.idUsuario,this.ticket.id===undefined?0:this.ticket.id)
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }else{
       this.getParts(this.ticket.id,this.service.getUser().idEmpresa);
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
     }
     this.service.isLoading =false;
     },error => {

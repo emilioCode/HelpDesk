@@ -21,6 +21,7 @@ namespace HelpDesk.Infrastructure.Data
         public virtual DbSet<Piezas> Piezas { get; set; }
         public virtual DbSet<Seguimiento> Seguimientos { get; set; }
         public virtual DbSet<Solicitud> Solicitudes { get; set; }
+        public virtual DbSet<EnlaceSeguimiento> EnlacesSeguimiento { get; set; }
         public virtual DbSet<Usuario> Usuarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

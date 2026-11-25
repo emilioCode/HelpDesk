@@ -1,13 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { HdDialogComponent } from '../../../ui/hd-dialog.component';
 import { ApiService } from '../../../services/api.service';
 
 @Component({
-  selector: 'app-footer',
-  templateUrl: './footer.component.html'
+    selector: 'app-footer',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [HdDialogComponent],
+    templateUrl: './footer.component.html'
 })
 export class FooterComponent implements OnInit {
 
-  constructor(private service: ApiService){}
+  constructor(public service: ApiService){}
 
   ngOnInit() {
   }

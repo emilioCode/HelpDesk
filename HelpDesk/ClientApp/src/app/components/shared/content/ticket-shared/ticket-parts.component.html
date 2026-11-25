@@ -1,9 +1,9 @@
 <!-- Partes Utilizadas -->
 <div class="form-group col-xs-12 col-sm-12">
   <br/>
-  <h6 class="text-center">PARTES UTILIZADAS</h6>
+  <h6 class="text-center hd-section-title">Partes utilizadas</h6>
   <div class="row">
-    <table class="table table-bordered">
+    <table class="table table-bordered hd-parts">
       <thead>
         <tr>
           <th scope="col" class="text-center">Cantidad</th>
@@ -14,7 +14,7 @@
       </thead>
       <tbody>
           <tr [hidden]="!addPart" [formGroup]="form.group">
-            <td ><input type="number" min="1" formControlName="cantidad" placeholder="(Requerido)" class="form-control"/></td>
+            <td ><input type="number" [min]="1" formControlName="cantidad" placeholder="(Requerido)" class="form-control"/></td>
             <td><input type="text" formControlName="noSerial" placeholder="(Requerido)" class="form-control"/></td>
             <td><input type="text" formControlName="descripcion" placeholder="(Requerido)" class="form-control"/></td>
             <td >

@@ -1,18 +1,23 @@
-import { Component, OnDestroy, OnInit, Pipe } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { HdLoadingComponent } from '../../../../ui/hd-loading.component';
+import { HdButtonDirective } from '../../../../ui/hd-button.directive';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-import { FilterPipe } from '../../../../pipes/filter.pipe';
-// import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
+import { NgIf, NgFor } from '@angular/common';
+import { FieldHintsDirective } from '../../field-hints.directive';
+import { FilterPipe } from '../../../../pipes/filter.pipe';
 @Component({
-  selector: 'app-user',
-  templateUrl: './user.component.html',
-  styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }']
+    selector: 'app-user',
+    templateUrl: './user.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }'],
+    imports: [HdButtonDirective, HdLoadingComponent, NgIf, FormsModule, NgFor, ReactiveFormsModule, FieldHintsDirective, FilterPipe]
 })
-@Pipe({name:'FilterPipe'})
 export class UserComponent implements OnInit, OnDestroy {
+  search: any = "";
   
-  constructor(private service:ApiService, private formBuilder: FormBuilder) {
+  constructor(public service:ApiService, private formBuilder: FormBuilder) {
     this.initializeForm();
     if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
       alert(this.service.messages.noPermissionToAccess);
@@ -180,23 +185,23 @@ export class UserComponent implements OnInit, OnDestroy {
     this.service.isLoading = true;
      this.service.post('User', this.payload())
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         this.hubConnection.invoke('refresh', 'users',this.user.idEmpresa,this.user.id,0)
       }
       document.getElementById('closeModalBtn').click();
       this.service.isLoading =false;
       },error => {
-        var errors = error.error.errors;
-        var title = error.error.title ? error.error.title : 'Warning';
+        var errors = error?.error?.errors;
+        var title = error?.error?.title ? error.error.title : 'Warning';
         var list = [];
         if(title !== "Warning"){
-          var objectKeys =  Object.keys(errors);
+          var objectKeys =  Object.keys(errors ?? {});
           objectKeys.forEach(x => {
             list.push(errors[x]);
           });
         }
-        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        var message = title !== "Warning" ? list.join(','): (errors?.[0]?.detail ?? 'The request could not be completed. Check the connection and try again.');
         this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;
@@ -209,7 +214,7 @@ export class UserComponent implements OnInit, OnDestroy {
     const body = this.payload();
      this.service.post('User/Put/'+this.service.getUser().id, body)
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         // this.getUsers(this.service.getUser().id,"*");
         this.hubConnection.invoke('refresh', 'users',this.user.idEmpresa,this.user.id,0)
@@ -218,16 +223,16 @@ export class UserComponent implements OnInit, OnDestroy {
       document.getElementById('closeModalBtn').click();
       this.service.isLoading =false;
       },error => {
-        var errors = error.error.errors;
-        var title = error.error.title ? error.error.title : 'Warning';
+        var errors = error?.error?.errors;
+        var title = error?.error?.title ? error.error.title : 'Warning';
         var list = [];
         if(title !== "Warning"){
-          var objectKeys =  Object.keys(errors);
+          var objectKeys =  Object.keys(errors ?? {});
           objectKeys.forEach(x => {
             list.push(errors[x]);
           });
         }
-        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        var message = title !== "Warning" ? list.join(','): (errors?.[0]?.detail ?? 'The request could not be completed. Check the connection and try again.');
         this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;
@@ -238,7 +243,7 @@ export class UserComponent implements OnInit, OnDestroy {
     this.user.habilitado = !this.user.habilitado;
      this.service.post('User/Put/'+this.user.id, this.user)
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         // this.getUsers(this.service.getUser().id,"*");
         this.hubConnection.invoke('refresh', 'users',this.user.idEmpresa,this.user.id,0)
@@ -268,23 +273,23 @@ export class UserComponent implements OnInit, OnDestroy {
       .subscribe(res=>{
         
         this.renderHTML1= res ? "has-success has-feedback": "has-warning has-feedback";
-        this.renderHTML2= res ? "glyphicon glyphicon-ok form-control-feedback": "glyphicon glyphicon-warning-sign form-control-feedback";
+        this.renderHTML2= res ? "fa fa-check form-control-feedback": "fa fa-exclamation-triangle form-control-feedback";
         this.renderHTML3= res ? "text-success": "text-warning";
         this.message = res ? "It's ok.": "There exists another account with this name";
         
 
         this.service.isLoading = false;
       },error => {
-        var errors = error.error.errors;
-        var title = error.error.title ? error.error.title : 'Warning';
+        var errors = error?.error?.errors;
+        var title = error?.error?.title ? error.error.title : 'Warning';
         var list = [];
         if(title !== "Warning"){
-          var objectKeys =  Object.keys(errors);
+          var objectKeys =  Object.keys(errors ?? {});
           objectKeys.forEach(x => {
             list.push(errors[x]);
           });
         }
-        var message = title !== "Warning" ? list.join(','): errors[0].detail;
+        var message = title !== "Warning" ? list.join(','): (errors?.[0]?.detail ?? 'The request could not be completed. Check the connection and try again.');
         this.service.swal(title, message, 'warning');
         console.error(error);
         this.service.isLoading =false;

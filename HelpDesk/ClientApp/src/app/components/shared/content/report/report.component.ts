@@ -1,16 +1,27 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DoCheck, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { HdLoadingComponent } from '../../../../ui/hd-loading.component';
 import { ApiService } from '../../../../services/api.service';
-// import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
+import { FormBuilder, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MirroredForm } from '../ticket-shared/mirrored-form';
+import { NgFor, NgIf, DatePipe } from '@angular/common';
+import { FilterPipe } from '../../../../pipes/filter.pipe';
 
 @Component({
-  selector: 'app-report',
-  templateUrl: './report.component.html',
-  styles: []
+    selector: 'app-report',
+    templateUrl: './report.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styles: [],
+    imports: [HdLoadingComponent, FormsModule, ReactiveFormsModule, NgFor, NgIf, DatePipe, FilterPipe]
 })
-export class ReportComponent implements OnInit, OnDestroy {
+export class ReportComponent implements OnInit, OnDestroy, DoCheck {
+  search: any = "";
 
-  constructor(private service: ApiService) {
+  // The filters are a reactive form that reads and writes the request that is sent to the server.
+  filters: MirroredForm;
+
+  constructor(public service: ApiService, formBuilder: FormBuilder) {
+    this.filters = new MirroredForm(formBuilder.group({ tipoSolicitud: [''], fechaInicio: [''], fechaTermino: [''] }), () => this.request);
     if(this.service.getLevel(this.service.getUser().acceso) < 3 ){
       alert(this.service.messages.noPermissionToAccess);
       this.service.route.navigateByUrl('/');
@@ -29,6 +40,8 @@ export class ReportComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.hubConnection.stop().catch(() => {});
   }
+
+  ngDoCheck() { this.filters.sync(); }
 
   ngOnInit() {
     this.hubConnection = new signalR.HubConnectionBuilder()

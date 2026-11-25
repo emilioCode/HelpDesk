@@ -31,20 +31,27 @@ namespace HelpDesk.Tests.Integration
             Assert.AreEqual("no-cache", response.Headers.CacheControl.ToString(), url);
         }
 
-        [Test]
-        public async Task ABundleNamedAfterItsContent_CanBeKeptForAYear()
+        [TestCase("/main.0123456789abcdef0123.js")]
+        [TestCase("/main-es2015.0123456789abcdef0123.js")]
+        [TestCase("/main-es5.0123456789abcdef0123.js")]
+        [TestCase("/main.0123456789abcdef.js")]
+        [TestCase("/main.01234567.js")]
+        [TestCase("/main-4ZCH2Y4H.js")]
+        [TestCase("/styles-PMOLJ6K4.css")]
+        public async Task ABundleNamedAfterItsContent_CanBeKeptForAYear(string url)
         {
-            var response = await _api.CreateClient().GetAsync("/main.0123456789abcdef0123.js");
+            var response = await _api.CreateClient().GetAsync(url);
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             StringAssert.Contains("max-age=31536000", response.Headers.CacheControl.ToString());
             StringAssert.Contains("immutable", response.Headers.CacheControl.ToString());
         }
 
-        [Test]
-        public async Task AFileWithoutAContentHash_IsCheckedWithTheServer()
+        [TestCase("/main.js")]
+        [TestCase("/chunk-main.js")]
+        public async Task AFileWithoutAContentHash_IsCheckedWithTheServer(string url)
         {
-            var response = await _api.CreateClient().GetAsync("/runtime.js");
+            var response = await _api.CreateClient().GetAsync(url);
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             Assert.AreEqual("no-cache", response.Headers.CacheControl.ToString());

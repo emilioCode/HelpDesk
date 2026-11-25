@@ -1,16 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { HdDialogComponent } from '../../../../ui/hd-dialog.component';
+import { HdButtonDirective } from '../../../../ui/hd-button.directive';
+import { HdLoadingComponent } from '../../../../ui/hd-loading.component';
+import { Calendar } from '@fullcalendar/core';
+import { showModal } from '../../../../ui/page-behaviors';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import listPlugin from '@fullcalendar/list';
+import esLocale from '@fullcalendar/core/locales/es';
 import { Event } from '../../../../interfaces';
 import { ApiService } from '../../../../services/api.service';
-declare var $:any;
-declare var fullCalendar: any;
 @Component({
-  selector: 'app-calendar',
-  templateUrl: './calendar.component.html',
-  styles: []
+    imports: [HdLoadingComponent, HdDialogComponent, HdButtonDirective],
+    selector: 'app-calendar',
+    templateUrl: './calendar.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styles: []
 })
-export class CalendarComponent implements OnInit {
+export class CalendarComponent implements OnInit, OnDestroy {
 
-  constructor(private service: ApiService) {}
+  constructor(public service: ApiService, private cd: ChangeDetectorRef) {}
+  selected: { title: string, role: string, who: string, description: string, path: string } | null = null;
   events: Event[];
   event: Event = {
     title: '',
@@ -26,73 +35,46 @@ export class CalendarComponent implements OnInit {
   }
 
 
-  calendarInit(){
-        /* initialize the calendar
-     -----------------------------------------------------------------*/
-    //Date for the calendar events (dummy data)
-    var date = new Date()
-    var d    = date.getDate(),
-        m    = date.getMonth(),
-        y    = date.getFullYear()
-    $('#calendar').fullCalendar({
-      header: {
-        left  : '',//'prev,next today', 
-        center: 'title',
-        right : ''//'month,agendaWeek,agendaDay'
-      },      
-      buttonText: {
-        today: 'today',
-        month: 'month',
-        week : 'week',
-        day  : 'day'
-      },
-      //Random default events
-      events    : this.events,
-      editable  : false,
-      droppable : false, // this allows things to be dropped onto the calendar !!!
-      drop      : function (date, allDay) {
-        // this function is called when something is dropped
-      },
-      eventClick: function(info){
-        // console.log('Event: ');
-        console.log(info);
-        // this.event = info;
-        document.getElementById('modalTitle').innerText = info.title;
-        var html = `<p><strong>${info.user.acceso}:</strong> ${info.user.nombre}</p>`;
-        let descripcion = info.ticket.descripcion? info.ticket.descripcion: '';
-        html = html + `<p><strong>Descripción:</strong> ${descripcion}</p>`;
-        html = html + `<p><a href="${info.path}" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i></a></p>`;
-        document.getElementById('modalText').innerHTML = html;
-        $('#exampleModal').modal('show');
-      }
-    })
-  
-    this.focusCalendarToday(date);
-    
-    $('#prev').on('click', function() {
-      $('#calendar').fullCalendar('prev'); // call method
-      const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-      var element = document.getElementsByClassName('fc-center')[0].innerHTML.split(' ');
-      const currentMonthOnCalendar = element[0].split('>')[1];
-      const currentYearOnCalendar = Number(element[1].split('<')[0]);
-      if(currentMonthOnCalendar == month[m] && currentYearOnCalendar == y) document.getElementsByClassName('fc-today')[1].innerHTML = `<span class="fc-day-number">(${d})</span>`;
-    });
+  calendar: Calendar | null = null;
 
-    $('#next').on('click', function() {
-      $('#calendar').fullCalendar('next'); // call method
-      const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-      var element = document.getElementsByClassName('fc-center')[0].innerHTML.split(' ');
-      const currentMonthOnCalendar = element[0].split('>')[1];
-      const currentYearOnCalendar = Number(element[1].split('<')[0]);
-      if(currentMonthOnCalendar == month[m] && currentYearOnCalendar == y) document.getElementsByClassName('fc-today')[1].innerHTML = `<span class="fc-day-number">(${d})</span>`;
-    });
-
+  ngOnDestroy() {
+    if (this.calendar) { this.calendar.destroy(); this.calendar = null; }
   }
 
+  // Month grid on tablets and desktops, a plain list of the month on phones
+  private isPhone() { return window.innerWidth < 768; }
+  private phone = false;
 
-  focusCalendarToday (date: Date) {
-    const d = date.getDate();
-    document.getElementsByClassName('fc-today')[1].innerHTML = `<span class="fc-day-number">(${d})</span>`; 
+  calendarInit(){
+    const el = document.getElementById('calendar');
+    if (!el) return;
+    if (this.calendar) this.calendar.destroy();
+    this.phone = this.isPhone();
+    // An order lasts from its start until it ends (or today). The grid draws that span; the phone list shows each order once, on its start day.
+    const events = this.phone ? this.events.map(e => ({ ...e, end: null })) : this.events;
+    this.calendar = new Calendar(el, {
+      plugins: [dayGridPlugin, listPlugin],
+      locale: esLocale,
+      initialView: this.phone ? 'listMonth' : 'dayGridMonth',
+      windowResize: () => { if (this.isPhone() !== this.phone) this.calendarInit(); },
+      displayEventTime: false,
+      headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
+      buttonText: { today: 'Hoy' },
+      height: 'auto',
+      dayMaxEvents: 3,
+      moreLinkText: n => '+' + n + ' más',
+      noEventsText: 'No hay órdenes este mes',
+      events: events as any,
+      editable: false,
+      eventClick: (info) => {
+        info.jsEvent.preventDefault();
+        const p: any = info.event.extendedProps;
+        this.selected = { title: info.event.title, role: p.user.acceso, who: p.user.nombre, description: p.ticket.descripcion ? p.ticket.descripcion : '', path: p.path };
+        this.cd.detectChanges();
+        showModal(document.getElementById('exampleModal'));
+      }
+    });
+    this.calendar.render();
   }
 
 
@@ -106,22 +88,25 @@ export class CalendarComponent implements OnInit {
     this.service.isLoading = true;
     this.service.post('Event', request)
       .subscribe(res=>{
+        // One reading of the clock for all the events: with one new Date() per event the durations differed by a millisecond
+        // and the calendar, which sorts equal starts by duration, showed the same events in a different order on each load.
+        const now = new Date().getTime();
         this.events = res.data.map((e)=>{
           var url = "";
-          var color = "";
+          var cls = "hd-ev-open";
           
           switch (e.ticket.estado) {
             case this.service.ticketStatuses.open:
-              color = "#f56954"; // blue
+              cls = "hd-ev-open";
               break;
             case this.service.ticketStatuses.inProgress:
-              color = "#f39c12"; // yellow
+              cls = "hd-ev-progress";
               break;
             case this.service.ticketStatuses.completed:
               if(e.ticket.aprobadoPor){
-                color = "#00a65a"; // green
+                cls = "hd-ev-approved";
               }else{
-                color = "##f56954"; // red orange
+                cls = "hd-ev-done";
               }
               break;              
             default:
@@ -138,12 +123,12 @@ export class CalendarComponent implements OnInit {
           }
 
           if(e.start == null && e.end == null){
-            e.start = new Date();
-            e.end = new Date();
+            e.start = new Date(now);
+            e.end = new Date(now);
             e.title = "*(HOLD) " + e.title;
 
           }else if(e.start != null && e.end == null){
-            e.end = new Date();
+            e.end = new Date(now);
           }
 
           return{
@@ -151,8 +136,7 @@ export class CalendarComponent implements OnInit {
             start: e.start,
             end: e.end,
             url: null,
-            backgroundColor: color,
-            borderColor: color,
+            classNames: [cls],
             status: e.ticket.estado,
             user: e.user,
             ticket: e.ticket ,

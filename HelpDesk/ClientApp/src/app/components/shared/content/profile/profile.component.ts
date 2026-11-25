@@ -1,13 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { HdLoadingComponent } from '../../../../ui/hd-loading.component';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
-// import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
+import { NgIf, NgFor, DecimalPipe } from '@angular/common';
+import { FieldHintsDirective } from '../../field-hints.directive';
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }']
+    selector: 'app-profile',
+    templateUrl: './profile.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }'],
+    imports: [HdLoadingComponent, NgIf, FormsModule, ReactiveFormsModule, FieldHintsDirective, NgFor, DecimalPipe]
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 
@@ -75,7 +79,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
 
-  constructor(private service: ApiService, private formBuilder: FormBuilder) {
+  constructor(public service: ApiService, private formBuilder: FormBuilder) {
     this.initializeForm();
     this.getUsers(this.service.getUser().id,'UNIQUE');
     this.numbersOfTickets(this.service.getUser().id);
@@ -140,7 +144,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.service.isLoading = true;
      this.service.post('User/Put/'+this.service.getUser().id, body)
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         if(body.idEmpresa != this.userT.idEmpresa){
           // Root moved itself to another company: the token still carries the old one, so it signs in again.

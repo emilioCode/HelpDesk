@@ -22,5 +22,8 @@ namespace HelpDesk.Security
         public int ActiveCheckSeconds { get; set; } = DefaultActiveCheckSeconds;
 
         public const string ReportCookie = "hd_token";
+
+        // Where the answer about a user is remembered. A change to that user has to drop it, or the old role stays in force for the window.
+        public static string ActiveUserCacheKey(int userId) => "active-user:" + userId;
     }
 }

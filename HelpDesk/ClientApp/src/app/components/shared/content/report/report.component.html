@@ -8,24 +8,24 @@
       </div>
       <!-- /.box-header -->
       <div class="box-body  no-padding">
-        <div class="col-xs-12 col-md-12">
+        <div class="col-xs-12 col-md-12" [formGroup]="filters.group">
           <div class="col-xs-3 col-md-3 form-group">
             <label>Tipo de Servicio:</label>
             
-            <select class="form-control" id="tipoComprobante" [(ngModel)]="request.tipoSolicitud">
+            <select class="form-control" id="tipoComprobante" formControlName="tipoSolicitud">
               <option value="" [hidden]="request.tipoSolicitud!=''">Seleccione</option>
               <option *ngFor="let item of service.getTypeOfRequests()" value="{{ item.name }}">{{ item.name }}</option>
             </select>
           </div>
           <div class="col-xs-3 col-md-3 form-group">
             <label>Desde:</label>
-            <input type="date" class="form-control" placeholder="" [(ngModel)]="request.fechaInicio"/>
+            <input type="date" class="form-control" placeholder="" formControlName="fechaInicio"/>
           </div>
           <div class="col-xs-3 col-md-3 form-group">
             <label>Hasta:</label>
-            <input type="date" class="form-control" placeholder="" [(ngModel)]="request.fechaTermino"/>
+            <input type="date" class="form-control" placeholder="" formControlName="fechaTermino"/>
           </div>
-          <div class="col-xs-3 col-md-3 form-group" style="margin-top:2.5%">
+          <div class="col-xs-3 col-md-3 form-group hd-filter-actions">
             <div class="btn-group" role="group">
                 <button class="btn btn-primary" (click)='toSearch();search=""'><i class="fa fa-search" aria-hidden="true"></i> Buscar</button>
                 <button class="btn btn-default" (click)="clear()"><i class="fa fa-eraser" aria-hidden="true"></i> Limpiar</button>
@@ -33,7 +33,7 @@
 
           </div>
         </div>
-        <div class="col-xs-12 col-md-12" [hidden]="requests.length == 0">
+        <div class="col-xs-12 col-md-12 hd-export" [hidden]="requests.length == 0">
           <a class="btn-link" (click)="exportCSV()"><i class="fa fa-download" aria-hidden="true"></i> Exportar a Excel</a>
         </div>
       </div> 
@@ -108,9 +108,7 @@
           </table>
         </div>
         <!-- /.box-body -->
-        <div class="overlay" [hidden]="!service.isLoading">
-          <i class="fa fa-refresh fa-spin"></i>
-        </div>
+        <hd-loading [active]="service.isLoading"></hd-loading>
       </div>
       <!-- /.box -->
 

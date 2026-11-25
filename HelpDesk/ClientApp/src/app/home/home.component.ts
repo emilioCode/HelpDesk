@@ -1,14 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ApiService } from '../services/api.service';
-// import * as signalR from '@aspnet/signalr';
 import * as signalR from '@microsoft/signalr';
+import { RouterLink } from '@angular/router';
+import { NgIf } from '@angular/common';
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
+    selector: 'app-home',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    templateUrl: './home.component.html',
+    imports: [RouterLink, NgIf],
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  constructor(private service: ApiService){
+  constructor(public service: ApiService){
     if(this.service.getUser() !=null)this.numbersOfTickets(this.service.getUser().id)
   }
 

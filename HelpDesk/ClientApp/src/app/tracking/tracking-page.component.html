@@ -1,0 +1,88 @@
+<div class="tp">
+  <header class="tp-head">
+    <span class="tp-logo" aria-hidden="true">H</span>
+    <div class="tp-head-text">
+      <div class="tp-company">{{ view?.company || 'HelpDesk' }}</div>
+      <div class="tp-sub">Seguimiento de su orden</div>
+    </div>
+  </header>
+
+  <main class="tp-main">
+    @switch (state) {
+      @case ('loading') {
+        <div class="tp-center" role="status"><hd-spinner size="lg" label="Cargando su orden"></hd-spinner>Cargando su orden…</div>
+      }
+      @case ('invalid') {
+        <div class="tp-center tp-invalid">
+          <span class="tp-invalid-icon"><hd-icon name="unlink" [size]="28"></hd-icon></span>
+          <h1>Este enlace no es válido o ya venció</h1>
+          <p>Pida a su técnico un enlace nuevo o comuníquese con la empresa que le atendió.</p>
+        </div>
+      }
+      @case ('ready') {
+        <section class="tp-card">
+          <h1>Orden No. {{ view.orderNumber }}</h1>
+          <div class="tp-muted">{{ view.customer }} · {{ view.serviceType }}</div>
+          <div class="tp-status">
+            <hd-badge [tone]="tone">{{ statusLabel }}</hd-badge>
+            <span class="tp-muted tp-small">Actualizada {{ view.updatedAt | date:'dd/MM/yyyy · HH:mm' }}</span>
+          </div>
+
+          <ol class="tp-steps" aria-label="Pasos de la orden">
+            @for (label of steps; track label; let i = $index) {
+              <li [class]="'tp-step tp-' + stepState(i)" [attr.aria-current]="stepState(i) === 'current' ? 'step' : null">
+                <div class="tp-track">
+                  <span class="tp-line" [class.on]="i > 0 && i + 1 <= view.step" [class.hide]="i === 0"></span>
+                  <span class="tp-circle">
+                    @if (stepState(i) === 'done') { <hd-icon name="check" [size]="15"></hd-icon> }
+                    @if (stepState(i) === 'current') { <span class="tp-now"></span> }
+                  </span>
+                  <span class="tp-line" [class.on]="i + 1 < view.step" [class.hide]="i === steps.length - 1"></span>
+                </div>
+                <span class="tp-step-label">{{ label }}</span>
+              </li>
+            }
+          </ol>
+
+          <hd-progress [value]="view.progress" label="Avance de su orden" [tone]="fillTone"></hd-progress>
+        </section>
+
+        <section class="tp-card">
+          <h2>Lo que hemos hecho</h2>
+          @if (view.activities.length === 0) {
+            <p class="tp-muted">Todavía no hay actividades para mostrar. Su técnico las irá agregando.</p>
+          }
+          <ul class="tp-timeline">
+            @for (item of view.activities; track $index) {
+              <li>
+                <span class="tp-rail"><span class="tp-rail-dot"></span><span class="tp-rail-line"></span></span>
+                <div class="tp-activity">
+                  <div class="tp-activity-meta">
+                    <strong>{{ item.who }}</strong>
+                    <span class="tp-muted tp-small">{{ item.when | date:'dd/MM/yyyy · HH:mm' }}</span>
+                    @if (item.isSolution) { <hd-badge tone="done" [small]="true">Solución</hd-badge> }
+                  </div>
+                  <p>{{ item.text }}</p>
+                </div>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <section class="tp-card">
+          <h2>¿Tiene dudas?</h2>
+          <p class="tp-muted">Comuníquese con {{ view.company }}.</p>
+          <div class="tp-actions">
+            @if (view.companyPhone) {
+              <a hdButton variant="secondary" size="lg" [href]="'tel:' + view.companyPhone"><hd-icon name="phone"></hd-icon>Llamar</a>
+            }
+            @if (view.companyEmail) {
+              <a hdButton variant="secondary" size="lg" [href]="'mailto:' + view.companyEmail"><hd-icon name="mail"></hd-icon>Escribir</a>
+            }
+          </div>
+        </section>
+        <p class="tp-note">Este enlace es personal: no lo comparta.</p>
+      }
+    }
+  </main>
+</div>

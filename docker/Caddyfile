@@ -1,0 +1,6 @@
+# The public name comes from DOMAIN in .env. Caddy gets and renews the certificate and redirects http to https.
+# It adds X-Forwarded-For and X-Forwarded-Proto and passes the WebSocket of the live updates (/hub) through on its own.
+{$DOMAIN} {
+	encode zstd gzip
+	reverse_proxy web:8080
+}

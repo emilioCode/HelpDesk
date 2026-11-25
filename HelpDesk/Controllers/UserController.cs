@@ -4,6 +4,8 @@ using HelpDesk.Core.Entities;
 using HelpDesk.Core.Interfaces;
 using HelpDesk.Hubs;
 using HelpDesk.Responses;
+using HelpDesk.Security;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
@@ -19,8 +21,10 @@ namespace HelpDesk.Controllers
         public readonly IUserService _userService;
         private readonly IHelpDeskMapper _mapper;
         private readonly IHubContext<HelpDeskHub> _hub;
-        public UserController(IUserService userService, IHelpDeskMapper mapper, IHubContext<HelpDeskHub> hub)
+        private readonly IMemoryCache _cache;
+        public UserController(IUserService userService, IHelpDeskMapper mapper, IHubContext<HelpDeskHub> hub, IMemoryCache cache)
         {
+            _cache = cache;
             _userService = userService;
             _hub = hub;
             _mapper = mapper;   
@@ -56,6 +60,8 @@ namespace HelpDesk.Controllers
             var user = _mapper.Map(usuarioDto);
             var before = await _userService.GetActiveIdentityAsync(user.Id);
             var result = await _userService.UpdateUSer(user, idUserReq);
+            // What the API remembers about this user (their role and company) is no longer true.
+            _cache.Remove(AuthOptions.ActiveUserCacheKey(user.Id));
             await NotifyIfAccessChanged(before, user.Id);
             var response = ObjectResponse.Saved(Messages.Saved, result);
             return Ok(response);

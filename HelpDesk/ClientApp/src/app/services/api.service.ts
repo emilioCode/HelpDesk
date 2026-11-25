@@ -1,8 +1,9 @@
 import { Injectable,Inject } from '@angular/core';
-import { SessionStorageService } from 'ngx-webstorage';
+import { SessionStore } from './session-store.service';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { ToastService } from '../ui/toast.service';
 
 @Injectable()
 export class ApiService {
@@ -11,6 +12,15 @@ export class ApiService {
   headers = new HttpHeaders().set("content-type", "application/json");
   http;
   swal = Swal;
+
+  // What the server answered or what was just done: a success is a toast that fades; anything else is a window the person must read.
+  notify(title: string, message: string, icon: string): void {
+    if (icon === 'success' && this.toast) {
+      this.toast.show(title, message);
+    } else {
+      this.swal(title, message, icon as any);
+    }
+  }
 
   // Fixed values shared by the screens. Use these instead of writing the text in components or templates.
   readonly roles = {
@@ -136,10 +146,11 @@ export class ApiService {
   defaultPhoto = '../../../../assets/dist/img/photo_default.png';
 
   constructor(
-    private sessionSt: SessionStorageService,
+    private sessionSt: SessionStore,
     private _route: Router,
     @Inject('BASE_URL') _baseUrl: string,
-    private _http:HttpClient
+    private _http:HttpClient,
+    private toast?: ToastService
     ) {
       this.route =_route;
       this.baseUrl = _baseUrl; 
@@ -297,8 +308,9 @@ export class ApiService {
   setTime(value1):String{
     var value = this.ftmHour(value1);
     var dateStr = value.split(':');
-    var hora = Number(dateStr[0]) >12? Number(dateStr[0])-12 : Number(dateStr[0]);
-    var tanda = Number(dateStr[0]) >12? " PM" : " AM";
+    var h24 = Number(dateStr[0]);
+    var hora = h24 % 12 || 12;
+    var tanda = h24 >= 12 ? " PM" : " AM";
     return ""+ hora +":"+ dateStr[1]+ tanda;
 
   }
@@ -324,6 +336,11 @@ export class ApiService {
   }
 
   ftmHour(timeSpan){
+    // The API sends a time as text ("08:50:00"); a time built in the browser is an object with hours, minutes and seconds.
+    if (typeof timeSpan === 'string') {
+      const p = timeSpan.split(':');
+      return this.fillZeroWithNumber(Number(p[0]) || 0) + ":" + this.fillZeroWithNumber(Number(p[1]) || 0) + ":" + this.fillZeroWithNumber(Number(p[2]) || 0);
+    }
     return this.fillZeroWithNumber(timeSpan.hours) + ":" + this.fillZeroWithNumber(timeSpan.minutes) + ":" + this.fillZeroWithNumber(timeSpan.seconds);
   }
 }
