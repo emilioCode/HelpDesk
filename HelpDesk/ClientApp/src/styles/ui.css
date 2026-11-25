@@ -52,7 +52,7 @@
 @media (prefers-reduced-motion: reduce) { .hd-progress-fill { transition: none; } }
 
 /* Create-order action in list headers: a real button */
-.hd-create { display: inline-block; margin-left: 12px; cursor: pointer; }
+.hd-create { display: inline-flex; vertical-align: middle; margin-left: 12px; cursor: pointer; }
 
 /* Calendar (FullCalendar 6): its own variables mapped to the tokens, one tint per order status */
 .fc {
@@ -141,3 +141,16 @@
   .hd-form-grid .hd-col-2, .hd-form-grid .hd-col-5, .hd-form-grid .hd-col-8, .hd-form-grid .hd-col-10 { grid-column: 1 / -1; }
   .hd-photo img { max-width: 160px; }
 }
+
+/* Pieces behind the components in app/ui: badge size, big spinner, loading veil, alert, empty list, finished progress bar */
+.hd-badge-sm { padding: 2px 8px; font-size: 12px; }
+.hd-spin-lg { width: 28px; height: 28px; border-width: 3px; color: var(--accent); }
+.hd-loading { position: absolute; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; border-radius: inherit; background: color-mix(in srgb, var(--surface) 70%, transparent); }
+.hd-loading[hidden] { display: none; }
+.hd-alert { padding: 12px 14px; border: 1px solid transparent; border-radius: var(--radius-sm); font-size: 14px; line-height: 1.45; }
+.hd-alert-info { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); }
+.hd-alert-warn { background: var(--prog-bg); border-color: var(--prog-fg); color: var(--ink); }
+.hd-alert-error { background: var(--open-bg); border-color: var(--open-fg); color: var(--ink); }
+.hd-alert-success { background: var(--done-bg); border-color: var(--done-fg); color: var(--ink); }
+.hd-empty { margin: 24px 0; text-align: center; color: var(--muted); }
+.hd-progress-done { background: var(--done-fg); }

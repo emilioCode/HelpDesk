@@ -31,9 +31,7 @@
   
         </div>
         <div class="modal-footer">
-            <div class="overlay" [hidden]="!service.isLoading">
-                <i class="fa fa-refresh fa-spin"></i>
-            </div>
+            <hd-loading [active]="service.isLoading"></hd-loading>
             <button type="button" class="btn btn-success" data-dismiss="modal" (click)="editPart.emit(parToEdit)" [disabled]="partEdit.group.invalid"><i class="fa fa-edit"></i> Editar</button>
             <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeParts.emit()">Close</button>
         </div>
@@ -81,9 +79,7 @@
       
             </div>
             <div class="modal-footer">
-                <div class="overlay" [hidden]="!service.isLoading">
-                    <i class="fa fa-refresh fa-spin"></i>
-                </div>
+                <hd-loading [active]="service.isLoading"></hd-loading>
                 <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deletePart.emit(parToEdit)"><i class="fa fa-remove"></i> Eliminar</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
             </div>
@@ -141,9 +137,7 @@
     
           </div>
           <div class="modal-footer">
-              <div class="overlay" [hidden]="!service.isLoading">
-                  <i class="fa fa-refresh fa-spin"></i>
-              </div>
+              <hd-loading [active]="service.isLoading"></hd-loading>
               <button type="button" class="btn btn-success" data-dismiss="modal" (click)="editDevice.emit(deviceToEdit)" [disabled]="deviceEdit.group.invalid"><i class="fa fa-edit"></i> Editar</button>
               <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeDevices.emit()">Close</button>
           </div>
@@ -199,9 +193,7 @@
         
               </div>
               <div class="modal-footer">
-                  <div class="overlay" [hidden]="!service.isLoading">
-                      <i class="fa fa-refresh fa-spin"></i>
-                  </div>
+                  <hd-loading [active]="service.isLoading"></hd-loading>
                   <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deleteDevice.emit(deviceToEdit)"><i class="fa fa-remove"></i> Eliminar</button>
                   <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
               </div>

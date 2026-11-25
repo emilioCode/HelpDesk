@@ -1,4 +1,5 @@
 import { Component, DoCheck, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { HdLoadingComponent } from '../../../../ui/hd-loading.component';
 import { FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { MirroredForm } from './mirrored-form';
@@ -11,7 +12,7 @@ import { FieldHintsDirective } from '../../field-hints.directive';
     templateUrl: './ticket-item-dialogs.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styles: [':host { display: block; }'],
-    imports: [FormsModule, ReactiveFormsModule, FieldHintsDirective]
+    imports: [HdLoadingComponent, FormsModule, ReactiveFormsModule, FieldHintsDirective]
 })
 export class TicketItemDialogsComponent implements DoCheck {
   @Input() parToEdit: any = {};

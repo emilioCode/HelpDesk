@@ -1,4 +1,9 @@
 import { Component, DoCheck, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { HdBadgeComponent, HdTone } from '../../../../ui/hd-badge.component';
+import { HdProgressComponent } from '../../../../ui/hd-progress.component';
+import { HdEmptyComponent } from '../../../../ui/hd-empty.component';
+import { HdLoadingComponent } from '../../../../ui/hd-loading.component';
+import { HdButtonDirective } from '../../../../ui/hd-button.directive';
 import { showFirstTab } from '../../../../ui/page-behaviors';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -16,7 +21,7 @@ import { FilterPipe } from '../../../../pipes/filter.pipe';
     templateUrl: './waiting.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styles: [],
-    imports: [NgIf, FormsModule, NgFor, ReactiveFormsModule, FieldHintsDirective, TicketTimelineComponent, TicketPartsComponent, TicketItemDialogsComponent, DatePipe, FilterPipe]
+    imports: [HdBadgeComponent, HdProgressComponent, HdEmptyComponent, HdLoadingComponent, HdButtonDirective, NgIf, FormsModule, NgFor, ReactiveFormsModule, FieldHintsDirective, TicketTimelineComponent, TicketPartsComponent, TicketItemDialogsComponent, DatePipe, FilterPipe]
 })
 export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
   search: any = "";
@@ -540,12 +545,12 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
   }
 
   // The state of an order as the badge of the design shows it.
-  badge(item: any): { cls: string, label: string } {
+  badge(item: any): { tone: HdTone, label: string } {
     const s = this.service.ticketStatuses;
-    if (item.estado == s.completed && item.aprobadoPor != null) { return { cls: 'hd-badge-appr', label: 'Aprobado' }; }
-    if (item.estado == s.completed) { return { cls: 'hd-badge-done', label: 'Completado' }; }
-    if (item.estado == s.inProgress) { return { cls: 'hd-badge-prog', label: 'En proceso' }; }
-    return { cls: 'hd-badge-open', label: 'Abierto' };
+    if (item.estado == s.completed && item.aprobadoPor != null) { return { tone: 'appr', label: 'Aprobado' }; }
+    if (item.estado == s.completed) { return { tone: 'done', label: 'Completado' }; }
+    if (item.estado == s.inProgress) { return { tone: 'prog', label: 'En proceso' }; }
+    return { tone: 'open', label: 'Abierto' };
   }
 
   // Four steps: open, in progress, completed, approved.

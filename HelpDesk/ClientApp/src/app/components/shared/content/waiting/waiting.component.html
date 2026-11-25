@@ -8,7 +8,7 @@
           <div class="box-header">
               <h3 class="box-title">{{ title }}</h3>
 <ng-container *ngIf="mode == 'all'">
-              &nbsp;<a class="btn btn-primary btn-sm hd-create" *ngIf="service.getLevel(service.getUser().acceso) > 1" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default">Crear orden</a>
+              &nbsp;<a hdButton variant="primary" size="sm" class="hd-create" *ngIf="service.getLevel(service.getUser().acceso) > 1" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default">Crear orden</a>
 </ng-container>
               <br/>
               <div class="box-tools">
@@ -60,18 +60,16 @@
           <div class="hd-cards hd-only-mobile" role="list">
             <ng-container *ngFor="let item of tickets | filter: search">
               <a *ngIf="service.getLevel(service.getUser().acceso) > 0" class="hd-order-card" role="listitem" href="#" data-toggle="modal" data-target="#modal-default" (click)="fillModal('edit',item); $event.preventDefault()">
-                <span class="hd-order-top"><strong>No. {{ item.noSecuencia }}</strong><span [class]="'hd-badge ' + badge(item).cls">{{ badge(item).label }}</span></span>
+                <span class="hd-order-top"><strong>No. {{ item.noSecuencia }}</strong><hd-badge [tone]="badge(item).tone">{{ badge(item).label }}</hd-badge></span>
                 <span class="hd-order-client">{{ item.cliente }}</span>
                 <span class="hd-order-meta"><span>{{ item.tipoSolicitud }}</span><span>{{ item.tipoServicio }}</span></span>
               </a>
             </ng-container>
-            <p class="hd-empty" *ngIf="(tickets | filter: search)?.length === 0 && !service.isLoading">No hay órdenes que mostrar.</p>
+            <hd-empty *ngIf="(tickets | filter: search)?.length === 0 && !service.isLoading">No hay órdenes que mostrar.</hd-empty>
           </div>
         </div>
         <!-- /.box-body -->
-        <div class="overlay" [hidden]="!service.isLoading">
-          <i class="fa fa-refresh fa-spin"></i>
-        </div>
+        <hd-loading [active]="service.isLoading"></hd-loading>
       </div>
       <!-- /.box -->
 
@@ -91,7 +89,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" ><!--(click)='getTickets(service.getUser().id,"*")'-->
           <span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title">Orden No.<u>{{ ticket.noSecuencia }}</u></h4>
-        <div class="hd-modal-actions"><a class="btn btn-default btn-sm" *ngIf="option=='edit'" href="#" title="Enviar el seguimiento al correo del cliente" (click)="sendTracking(); $event.preventDefault()"><i class="fa fa-paper-plane"></i> Enviar al cliente</a> <a class="btn btn-default btn-sm" *ngIf="option=='edit'" href="#" title="Copiar el enlace de seguimiento" (click)="copyTrackingLink(); $event.preventDefault()"><i class="fa fa-link"></i> Copiar enlace</a> <a class="btn btn-default btn-sm" *ngIf="ticket.tipoSolicitud ==service.requestTypes.onSite && option=='edit'" href="/OrderReport?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i> Imprimir</a>  <a class="btn btn-default btn-sm" *ngIf="ticket.tipoSolicitud ==service.requestTypes.workshop && ticket.aprobadoPor != null  && option=='edit'" href="/OrderReportF?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i> Imprimir</a> <a class="btn btn-default btn-sm" *ngIf="ticket.tipoSolicitud ==service.requestTypes.workshop && ticket.aprobadoPor == null  && option=='edit'" href="/OrderReport1?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i> Imprimir</a></div>
+        <div class="hd-modal-actions"><a hdButton variant="secondary" size="sm" *ngIf="option=='edit'" href="#" title="Enviar el seguimiento al correo del cliente" (click)="sendTracking(); $event.preventDefault()"><i class="fa fa-paper-plane"></i> Enviar al cliente</a> <a hdButton variant="secondary" size="sm" *ngIf="option=='edit'" href="#" title="Copiar el enlace de seguimiento" (click)="copyTrackingLink(); $event.preventDefault()"><i class="fa fa-link"></i> Copiar enlace</a> <a hdButton variant="secondary" size="sm" *ngIf="ticket.tipoSolicitud ==service.requestTypes.onSite && option=='edit'" href="/OrderReport?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i> Imprimir</a>  <a hdButton variant="secondary" size="sm" *ngIf="ticket.tipoSolicitud ==service.requestTypes.workshop && ticket.aprobadoPor != null  && option=='edit'" href="/OrderReportF?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i> Imprimir</a> <a hdButton variant="secondary" size="sm" *ngIf="ticket.tipoSolicitud ==service.requestTypes.workshop && ticket.aprobadoPor == null  && option=='edit'" href="/OrderReport1?value={{ticket.noSecuencia}}-{{ticket.idEmpresa}}" target="_blank"><i class="fa fa-print"></i> Imprimir</a></div>
         <!-- <h4 class="modal-title" *ngIf="option=='add'"><b>Nuevo Cliente</b></h4>
         <h4 class="modal-title" *ngIf="option=='edit'"><b>Cliente</b></h4>
         <h4 class="modal-title" *ngIf="option=='delete'"><b>Seguro que desea deshabilitar este Cliente?</b></h4> -->
@@ -100,11 +98,10 @@
         
         <div class="hd-order-head" *ngIf="option !== 'add'">
           <div class="hd-order-head-top">
-            <span [class]="'hd-badge ' + badge(ticket).cls">{{ badge(ticket).label }}</span>
+            <hd-badge [tone]="badge(ticket).tone">{{ badge(ticket).label }}</hd-badge>
             <span class="hd-muted">{{ ticket.tipoSolicitud }}<ng-container *ngIf="ticket.fechaCreacion"> · {{ ticket.fechaCreacion | date:'dd/MM/yyyy' }}</ng-container></span>
           </div>
-          <div class="hd-progress-row"><span>Progreso de la orden</span><span>{{ progress(ticket) }}%</span></div>
-          <div class="hd-progress" role="progressbar" aria-label="Progreso de la orden" aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="progress(ticket)"><div class="hd-progress-fill" [style.width.%]="progress(ticket)"></div></div>
+          <hd-progress [value]="progress(ticket)" label="Progreso de la orden"></hd-progress>
         </div>
         <!---->
         <div class="col-md-12">
@@ -349,9 +346,7 @@
 
       </div>
       <div class="modal-footer">
-          <div class="overlay" [hidden]="!service.isLoading">
-              <i class="fa fa-refresh fa-spin"></i>
-          </div>
+          <hd-loading [active]="service.isLoading"></hd-loading>
           <button type="button" class="btn btn-primary"  *ngIf="option=='add'" [disabled]="mode == 'inbox' ? addDevice : (addDevice || ticket.tipoSolicitud === '' || (ticket.tipoSolicitud === service.requestTypes.workshop && devices.length == 0))" (click)="add()" ><i class="fa fa-fw fa-file-o"></i> Crear</button>
           <!-- <button type="button" class="btn btn-success"  *ngIf="option=='edit'" (click)="edit()" ><i class="fa fa-fw fa-save"></i> Guardar</button> -->
           <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->
@@ -490,9 +485,7 @@
   
         </div>
         <div class="modal-footer">
-            <div class="overlay" [hidden]="!service.isLoading">
-                <i class="fa fa-refresh fa-spin"></i>
-            </div>
+            <hd-loading [active]="service.isLoading"></hd-loading>
             <button type="button" class="btn btn-primary" (click)="addClient()" [disabled]="costumerForm.invalid || !(service.getLevel(service.getUser().acceso) > 1)"><i class="fa fa-fw fa-file-o"></i> Crear</button><!--[disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.tipo) || !(service.getLevel(service.getUser().acceso) >= 1)"-->
             <!-- <button type="button" class="btn btn-success" data-dismiss="modal" *ngIf="option=='edit'" (click)="edit()" [disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.rnc) || !(service.getLevel(service.getUser().acceso) > 1)"><i class="fa fa-fw fa-save"></i> Guardar</button>[disabled]="service.isNullorEmpty(costumer.nombre) || service.isNullorEmpty(costumer.tipo) || !(service.getLevel(service.getUser().acceso) >= 1)" -->
             <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="option=='delete'" (click)="changeStatusEntidades(id)">Deshabilitar</button> -->

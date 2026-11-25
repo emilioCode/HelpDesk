@@ -14,7 +14,7 @@
         <label class="hd-label hd-required" for="login-pwd">Contraseña</label>
         <input id="login-pwd" type="password" class="hd-input" formControlName="pwd" autocomplete="current-password" data-no-hints />
       </div>
-      <button type="submit" class="hd-btn hd-btn-primary hd-btn-lg hd-btn-block" [disabled]="form.invalid || isLoading">
+      <button type="submit" hdButton variant="primary" size="lg" [block]="true" [disabled]="form.invalid || isLoading">
         <span [hidden]="isLoading">Ingresar</span><span [hidden]="!isLoading" class="hd-spin" role="status" aria-label="Ingresando"></span>
       </button>
     </form>

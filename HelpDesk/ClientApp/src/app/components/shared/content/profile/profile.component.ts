@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { HdLoadingComponent } from '../../../../ui/hd-loading.component';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import * as signalR from '@microsoft/signalr';
@@ -10,7 +11,7 @@ import { FieldHintsDirective } from '../../field-hints.directive';
     templateUrl: './profile.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }'],
-    imports: [NgIf, FormsModule, ReactiveFormsModule, FieldHintsDirective, NgFor, DecimalPipe]
+    imports: [HdLoadingComponent, NgIf, FormsModule, ReactiveFormsModule, FieldHintsDirective, NgFor, DecimalPipe]
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 

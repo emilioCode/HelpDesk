@@ -10,7 +10,7 @@
   <main class="tp-main">
     @switch (state) {
       @case ('loading') {
-        <div class="tp-center" role="status"><span class="tp-spinner" aria-hidden="true"></span>Cargando su orden…</div>
+        <div class="tp-center" role="status"><hd-spinner size="lg" label="Cargando su orden"></hd-spinner>Cargando su orden…</div>
       }
       @case ('invalid') {
         <div class="tp-center tp-invalid">
@@ -24,7 +24,7 @@
           <h1>Orden No. {{ view.orderNumber }}</h1>
           <div class="tp-muted">{{ view.customer }} · {{ view.serviceType }}</div>
           <div class="tp-status">
-            <span class="tp-badge" [class]="'tp-badge tp-' + tone"><span class="tp-dot"></span>{{ statusLabel }}</span>
+            <hd-badge [tone]="tone">{{ statusLabel }}</hd-badge>
             <span class="tp-muted tp-small">Actualizada {{ view.updatedAt | date:'dd/MM/yyyy · HH:mm' }}</span>
           </div>
 
@@ -44,10 +44,7 @@
             }
           </ol>
 
-          <div class="tp-progress-head"><span>Avance de su orden</span><span>{{ view.progress }}%</span></div>
-          <div class="tp-bar" role="progressbar" [attr.aria-valuenow]="view.progress" aria-valuemin="0" aria-valuemax="100">
-            <span [class]="'tp-fill tp-fill-' + fillTone" [style.width.%]="view.progress"></span>
-          </div>
+          <hd-progress [value]="view.progress" label="Avance de su orden" [tone]="fillTone"></hd-progress>
         </section>
 
         <section class="tp-card">
@@ -63,7 +60,7 @@
                   <div class="tp-activity-meta">
                     <strong>{{ item.who }}</strong>
                     <span class="tp-muted tp-small">{{ item.when | date:'dd/MM/yyyy · HH:mm' }}</span>
-                    @if (item.isSolution) { <span class="tp-badge tp-done tp-small-badge"><span class="tp-dot"></span>Solución</span> }
+                    @if (item.isSolution) { <hd-badge tone="done" [small]="true">Solución</hd-badge> }
                   </div>
                   <p>{{ item.text }}</p>
                 </div>
@@ -77,10 +74,10 @@
           <p class="tp-muted">Comuníquese con {{ view.company }}.</p>
           <div class="tp-actions">
             @if (view.companyPhone) {
-              <a class="tp-button" [href]="'tel:' + view.companyPhone"><hd-icon name="phone"></hd-icon>Llamar</a>
+              <a hdButton variant="secondary" size="lg" [href]="'tel:' + view.companyPhone"><hd-icon name="phone"></hd-icon>Llamar</a>
             }
             @if (view.companyEmail) {
-              <a class="tp-button" [href]="'mailto:' + view.companyEmail"><hd-icon name="mail"></hd-icon>Escribir</a>
+              <a hdButton variant="secondary" size="lg" [href]="'mailto:' + view.companyEmail"><hd-icon name="mail"></hd-icon>Escribir</a>
             }
           </div>
         </section>
