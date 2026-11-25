@@ -7,7 +7,7 @@
       <div class="box">
           <div class="box-header">
               <h3 class="box-title">Tabla de Clientes</h3>
-              &nbsp;<a class="btn-link" style="position:absolute;z-index: 1" *ngIf="service.getLevel(service.getUser().acceso) > 1" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default"> agregar cliente</a>
+              &nbsp;<a hdButton variant="primary" size="sm" class="hd-create" *ngIf="service.getLevel(service.getUser().acceso) > 1" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default">Crear cliente</a>
               <br/>
               <div class="box-tools">
                 <div class="input-group input-group-sm" style="width: 25%; float:right; z-index: 2">

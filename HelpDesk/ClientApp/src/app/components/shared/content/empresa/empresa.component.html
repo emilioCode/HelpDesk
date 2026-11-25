@@ -7,7 +7,7 @@
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">Tabla de Entidades</h3>
-          &nbsp;<a class="btn-link" *ngIf="service.getLevel(service.getUser().acceso) == 4" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default"> agregar entidad</a>
+          &nbsp;<a hdButton variant="primary" size="sm" class="hd-create" *ngIf="service.getLevel(service.getUser().acceso) == 4" (click)="fillModal('add',{})" data-toggle="modal" data-target="#modal-default">Crear entidad</a>
         </div>
         <!-- /.box-header -->
         <div class="box-body">

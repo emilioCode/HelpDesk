@@ -110,3 +110,7 @@ select.form-control, input[type=date].form-control, input[type=time].form-contro
 }
 .hd-form-grid > * { min-width: 0; }
 .form-horizontal .form-group::before, .form-horizontal .form-group::after { display: none; }
+
+/* Round pictures stay round whatever the shape of the photo: a fixed ratio and a crop, never a stretch. */
+.img-circle { aspect-ratio: 1 / 1; object-fit: cover; }
+.profile-user-img { display: block; height: 100px; }
