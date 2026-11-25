@@ -99,3 +99,27 @@ export function openScreen<T>(type: Type<T>, user: any = USERS.admin, extra: Pro
   };
   return screen;
 }
+
+/** Presses a button or a link of the screen, found by its text (a string or a pattern) or by a selector, as a person would. Returns it. */
+export function press(s: { element: HTMLElement; detect: () => void }, what: string | RegExp, within?: string): HTMLElement {
+  const scope: ParentNode = within ? s.element.querySelector(within)! : s.element;
+  const candidates = Array.from(scope.querySelectorAll<HTMLElement>('button, a, [role="button"], li[role="option"]'));
+  const found = typeof what === 'string' && !/^[a-z]*[.#\[]/i.test(what) && !what.startsWith('.') && !what.startsWith('#') && !what.startsWith('[')
+    ? candidates.find(e => e.textContent!.trim() === what || e.textContent!.trim().includes(what))
+    : typeof what === 'string' ? scope.querySelector<HTMLElement>(what) : candidates.find(e => what.test(e.textContent!));
+  if (!found) { throw new Error('No button or link for ' + what); }
+  found.click();
+  s.detect();
+  return found;
+}
+
+/** Types in a field of the screen the way a person does (the form hears it) and returns the field. */
+export function typeIn(s: { element: HTMLElement; detect: () => void }, selector: string, value: string): HTMLInputElement {
+  const field = s.element.querySelector<HTMLInputElement>(selector);
+  if (!field) { throw new Error('No field for ' + selector); }
+  field.value = value;
+  if (field.tagName !== 'SELECT') { field.dispatchEvent(new Event('input', { bubbles: true })); }
+  field.dispatchEvent(new Event('change', { bubbles: true }));
+  s.detect();
+  return field;
+}
