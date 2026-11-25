@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { HdLoadingComponent } from '../../../../ui/hd-loading.component';
+import { HdButtonDirective } from '../../../../ui/hd-button.directive';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import * as signalR from '@microsoft/signalr';
@@ -11,7 +12,7 @@ import { FieldHintsDirective } from '../../field-hints.directive';
     templateUrl: './empresa.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styles: ['.form-control.ng-invalid.ng-touched { border-color: #dd4b39; }'],
-    imports: [HdLoadingComponent, NgIf, NgFor, FormsModule, ReactiveFormsModule, FieldHintsDirective]
+    imports: [HdButtonDirective, HdLoadingComponent, NgIf, NgFor, FormsModule, ReactiveFormsModule, FieldHintsDirective]
 })
 export class EmpresaComponent implements OnInit, OnDestroy {
 

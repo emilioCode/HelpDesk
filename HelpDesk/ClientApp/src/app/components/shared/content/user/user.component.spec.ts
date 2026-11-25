@@ -19,6 +19,13 @@ describe('UserComponent', () => {
   beforeEach(() => { alertSpy.mockClear(); vi.stubGlobal('alert', alertSpy); });
   afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
+  it('offers the create action as a button, like the orders screen', () => {
+    const s = open();
+    const create = s.element.querySelector('a.hd-create');
+    expect(create?.classList.contains('hd-btn-primary')).toBe(true);
+    expect(create?.textContent?.trim()).toBe('Crear usuario');
+  });
+
   it('lists the users of the company', () => {
     const s = open();
     expect(s.element.querySelectorAll('tbody tr').length).toBe(2);
