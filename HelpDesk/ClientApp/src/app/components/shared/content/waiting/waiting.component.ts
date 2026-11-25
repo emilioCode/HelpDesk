@@ -421,7 +421,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       return false;
     }
 
-    if(this.devices.lentgh == 0 && this.ticket.tipoSolicitud ==this.service.requestTypes.workshop){
+    if(this.devices.length == 0 && this.ticket.tipoSolicitud ==this.service.requestTypes.workshop){
       this.service.swal(this.service.messages.mustHaveDevice,'','warning');
       return false;
     }
@@ -454,7 +454,7 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
   }
 
   addDevices(idSolicitud){
-    if(this.devices.lentgh == 0){
+    if(this.devices.length == 0){
       this.service.swal(this.service.messages.mustHaveDevice,'','warning');
       return false;
     }
@@ -636,6 +636,8 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
 
   putTicket(value){
     var option =value.toUpperCase();
+    // The status the order has when the change starts; an error puts it back (it used to be kept only when reopening).
+    var temp = this.ticket.estado;
     var idSolicitud = this.ticket.id;
     
     if(option =='ESTADO'){
@@ -647,7 +649,6 @@ export class WaitingComponent implements OnInit, OnDestroy, DoCheck {
       switch (variable) {
 
         case this.service.ticketStatuses.open.toUpperCase():
-        var temp = this.ticket.estado;
         var response = confirm(this.service.messages.confirmReopenTicket);
         if(!response){
     

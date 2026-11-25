@@ -28,7 +28,7 @@ describe('EmpresaComponent', () => {
     const s = openScreen(EmpresaComponent, USERS.moderator);
     s.detect();
     expect(alertSpy).toHaveBeenCalledWith(s.service.messages.noPermissionToAccess);
-    s.settle();
+    s.http.expectNone(r => r.url.includes('/Business/'));
   });
 
   it('shows the error when the list cannot be loaded', () => {
