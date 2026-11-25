@@ -26,7 +26,7 @@
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/list": "^6.1.15",
-    "@microsoft/signalr": "^5.0.7",
+    "@microsoft/signalr": "^10.0.11",
     "font-awesome": "^4.7.0",
     "lucide": "^1.77.0",
     "rxjs": "^7.8.2",
