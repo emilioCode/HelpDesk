@@ -70,7 +70,7 @@ export function openScreen<T>(type: Type<T>, user: any = USERS.admin, extra: Pro
       ...extra
     ]
   });
-  new SessionStore().store('user', user);
+  if (user) new SessionStore().store('user', user);
   const swal = vi.fn(() => Promise.resolve({ value: true }));
   const service = TestBed.inject(ApiService);
   service.swal = swal as any;
