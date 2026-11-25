@@ -76,3 +76,53 @@ jobs:
       - name: Stop the stack
         if: always()
         run: docker compose down -v
+
+  # Coverage of the lines of code. The rule (.github/coverage-thresholds.json): 80% is what a change needs to be merged;
+  # while a part is below it, its floor is the coverage it has, so it can only go up (scripts/coverage-gate.mjs).
+  backend-coverage:
+    name: Backend coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Run the tests with coverage
+        run: dotnet test HelpDesk.Tests/HelpDesk.Tests.csproj --collect:"XPlat Code Coverage" --results-directory coverage/backend
+      - name: Check the coverage against the rule
+        run: node scripts/coverage-gate.mjs backend coverage/backend
+      - name: Keep the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: coverage/backend
+          retention-days: 14
+
+  front-coverage:
+    name: Front end coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: HelpDesk/ClientApp/package-lock.json
+      - name: Install the packages
+        working-directory: HelpDesk/ClientApp
+        run: npm ci
+      - name: Run the tests with coverage
+        working-directory: HelpDesk/ClientApp
+        run: npm run coverage
+      - name: Check the coverage against the rule
+        run: node scripts/coverage-gate.mjs front HelpDesk/ClientApp/coverage/HelpDesk/coverage-summary.json
+      - name: Keep the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: front-coverage
+          path: HelpDesk/ClientApp/coverage
+          retention-days: 14
