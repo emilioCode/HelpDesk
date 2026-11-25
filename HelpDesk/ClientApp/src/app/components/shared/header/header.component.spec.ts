@@ -84,3 +84,39 @@ describe('HeaderComponent', () => {
     expect(shell.menuOpen).toBe(true);
   });
 });
+
+describe('HeaderComponent, pressing the buttons', () => {
+  function open() {
+    const service: any = { getUser: () => ({ nombre: 'Ana Pérez', acceso: 'ADMINISTRADOR', empresa: 'Demo', image: null }), hasImage: () => false, swal: vi.fn(() => Promise.resolve({ value: false })), closeSession: vi.fn() };
+    const theme = { choice: 'system', set: vi.fn() };
+    const shell = new ShellState();
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({ providers: [provideRouter([]), { provide: ApiService, useValue: service }, { provide: ThemeService, useValue: theme }, { provide: ShellState, useValue: shell }] });
+    const fixture = TestBed.createComponent(HeaderComponent);
+    fixture.detectChanges();
+    return { fixture, el: fixture.nativeElement as HTMLElement, theme, shell };
+  }
+
+  it('the menu button opens and closes the side menu', () => {
+    const { fixture, el, shell } = open();
+    (el.querySelector('.hd-menu-button') as HTMLElement).click(); fixture.detectChanges();
+    expect(shell.menuOpen).toBe(true);
+    (el.querySelector('.hd-menu-button') as HTMLElement).click();
+    expect(shell.menuOpen).toBe(false);
+  });
+
+  it('the three appearance buttons choose the theme', () => {
+    const { fixture, el, theme } = open();
+    (el.querySelector('.hd-avatar') as HTMLElement).click(); fixture.detectChanges();
+    const buttons = Array.from(el.querySelectorAll<HTMLElement>('.hd-theme-options button'));
+    buttons.forEach(b => b.click());
+    expect(theme.set.mock.calls.map(c => c[0])).toEqual(['system', 'light', 'dark']);
+  });
+
+  it('"Mi perfil" closes the menu', () => {
+    const { fixture, el } = open();
+    (el.querySelector('.hd-avatar') as HTMLElement).click(); fixture.detectChanges();
+    (el.querySelector('a[role="menuitem"]') as HTMLElement).click(); fixture.detectChanges();
+    expect(el.querySelector('.hd-user-menu')).toBeNull();
+  });
+});

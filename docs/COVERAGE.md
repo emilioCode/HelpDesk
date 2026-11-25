@@ -15,7 +15,7 @@ Each part has a `minimum` and a `target` (80):
 | Part | Today | Minimum | Target |
 |---|---|---|---|
 | Back end (`HelpDesk`, `Core`, `Infrastructure`) | 87.9% | 80% | 80% |
-| Front end (`HelpDesk/ClientApp/src/app`) | 95.7% | 80% | 80% |
+| Front end (`HelpDesk/ClientApp/src/app`) | 97.0% | 80% | 80% |
 
 Both parts reached the target, so both minimums are the target. A change that lowers either under 80% fails its job.
 
@@ -40,8 +40,8 @@ code, so untested code cannot hide. Once every file has a test that adds nothing
 
 ## What the front end figure says
 
-The 95.7% counts the lines of the code and of the templates of every file of `src/app` (1,170 lines of templates, 1,750 of code). A template is covered when a test renders it, so
-the figure rises with a screen that is drawn; the figure of the code alone is 96.4%, and the branches are at 88%.
+The 97.0% counts the lines of the code and of the templates of every file of `src/app`. A template is covered when a test renders it, so
+the figure rises with a screen that is drawn. The functions of the whole front end are at 89.0% and the branches at 89.4%.
 
 The tests are in two kinds: the pieces that do not need the server (`ui/`, `services/`, `pipes/`) and the screens, which run on a fake of the server and of the real-time connection
 (`src/app/testing/screen-testing.ts`: `openScreen`, `answer`, `settle`, `fakeHub`). Write a new screen test with those.
@@ -50,9 +50,9 @@ The tests are in two kinds: the pieces that do not need the server (`ui/`, `serv
 
 The browser battery (`e2e-scripts`) exercises the whole application on a real browser; the unit tests do not replace it.
 
-- **The handlers written in the templates.** The screen tests call the methods of a screen directly (`component.add()`), they do not press its buttons. So the line figure
-  counts a template as covered when it is drawn, but the functions of the templates (the `(click)="..."` of each button) are at about 0% for the big screens (functions of the whole front end: 74.5%).
-  A test that presses the button would catch a wrong binding, such as a button wired to the wrong method.
-- **Files under 90% of lines:** `header.component.ts` (69%), `ticket-parts.component.html` (69%), `calendar.component.html` (75%), `ticket-parts.component.ts` (82%),
-  `mirrored-form.ts` (84%), `waiting.component.html` (86%), `tracking-page.component.html` (86%), `calendar.component.ts` (87%).
+- **Some handlers written in the templates.** Besides the tests that call the methods of a screen (`component.add()`), the `*.clicks.spec.ts` files press the buttons and type in the
+  fields the way a person does (`press` and `typeIn` of `screen-testing.ts`), so a button wired to the wrong method is caught. They cover the lists, the forms, the order window, its
+  devices, parts and activities. What is left are the variants of the same buttons on the other modes of the orders screen (inbox, finished) and
+  a few handlers of the calendar and the header.
+- **Files under 90% of lines:** `header.component.ts` (69%), `calendar.component.html` (75%), `calendar.component.ts` (87%), `tracking-page.component.html` (86%).
 - **The calendar itself.** FullCalendar needs a real layout, so its `render` is replaced in the tests; what is checked is what the screen gives it (events, colors, addresses).
