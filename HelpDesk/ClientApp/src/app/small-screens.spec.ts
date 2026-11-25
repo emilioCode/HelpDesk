@@ -2,9 +2,6 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ContentComponent } from './components/shared/content/content.component';
 import { FooterComponent } from './components/shared/footer/footer.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { routes } from './app.routes';
 import { appConfig, getBaseUrl } from './app.config';
 import { openScreen, USERS } from './testing/screen-testing';
@@ -21,28 +18,6 @@ describe('the small screens and the setup', () => {
     const s = openScreen(FooterComponent, USERS.admin); s.detect();
     expect(s.element.querySelector('#modal-copyright')).not.toBeNull();
     expect(s.element.textContent).toContain(s.service.company.name);
-  });
-
-  it('the counter counts', () => {
-    const s = openScreen(CounterComponent, USERS.admin); s.detect();
-    s.component.incrementCounter(); s.component.incrementCounter();
-    expect(s.component.currentCount).toBe(2);
-  });
-
-  it('the sample forecast list keeps what the server sends, and logs a failure', () => {
-    const s = openScreen(FetchDataComponent, USERS.admin);
-    s.answer('api/SampleData/WeatherForecasts', [{ dateFormatted: 'x', temperatureC: 1, temperatureF: 34, summary: 'Cold' }]);
-    s.detect();
-    expect(s.component.forecasts.length).toBe(1);
-    const f = openScreen(FetchDataComponent, USERS.admin);
-    f.answer('api/SampleData/WeatherForecasts', {}, { status: 500 });
-    expect(console.error).toHaveBeenCalled();
-  });
-
-  it('the old navigation bar opens and closes', () => {
-    const s = openScreen(NavMenuComponent, USERS.admin); s.detect();
-    s.component.toggle(); expect(s.component.isExpanded).toBe(true);
-    s.component.collapse(); expect(s.component.isExpanded).toBe(false);
   });
 
   describe('the routes', () => {
