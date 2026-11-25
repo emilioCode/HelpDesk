@@ -8,22 +8,22 @@
       </div>
       <!-- /.box-header -->
       <div class="box-body  no-padding">
-        <div class="col-xs-12 col-md-12">
+        <div class="col-xs-12 col-md-12" [formGroup]="filters.group">
           <div class="col-xs-3 col-md-3 form-group">
             <label>Tipo de Servicio:</label>
             
-            <select class="form-control" id="tipoComprobante" [(ngModel)]="request.tipoSolicitud">
+            <select class="form-control" id="tipoComprobante" formControlName="tipoSolicitud">
               <option value="" [hidden]="request.tipoSolicitud!=''">Seleccione</option>
               <option *ngFor="let item of service.getTypeOfRequests()" value="{{ item.name }}">{{ item.name }}</option>
             </select>
           </div>
           <div class="col-xs-3 col-md-3 form-group">
             <label>Desde:</label>
-            <input type="date" class="form-control" placeholder="" [(ngModel)]="request.fechaInicio"/>
+            <input type="date" class="form-control" placeholder="" formControlName="fechaInicio"/>
           </div>
           <div class="col-xs-3 col-md-3 form-group">
             <label>Hasta:</label>
-            <input type="date" class="form-control" placeholder="" [(ngModel)]="request.fechaTermino"/>
+            <input type="date" class="form-control" placeholder="" formControlName="fechaTermino"/>
           </div>
           <div class="col-xs-3 col-md-3 form-group hd-filter-actions">
             <div class="btn-group" role="group">

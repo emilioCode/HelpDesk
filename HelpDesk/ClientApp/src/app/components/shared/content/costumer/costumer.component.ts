@@ -147,7 +147,7 @@ export class CostumerComponent implements OnInit, OnDestroy {
      this.service.post('Costumer', this.payload())
       .subscribe(res=>{
       console.log( res )
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         // this.getCostumers(this.service.getUser().id,"*")
         this.hubConnection.invoke('refresh', 'costumer',this.costumer.idEmpresa,0,0)
@@ -168,7 +168,7 @@ export class CostumerComponent implements OnInit, OnDestroy {
     this.costumer.habilitado = true;
      this.service.post('Costumer/Put/'+ this.service.getUser().id, this.payload())
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         // this.getCostumers(this.service.getUser().id,"*")
         this.hubConnection.invoke('refresh', 'costumer',this.costumer.idEmpresa,this.costumer.id,0)
@@ -196,7 +196,7 @@ export class CostumerComponent implements OnInit, OnDestroy {
     this.costumer.habilitado = !this.costumer.habilitado;
      this.service.post('Costumer/Put/'+this.service.getUser().id, this.costumer)
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         // this.getCostumers(this.service.getUser().id,"*")
         this.hubConnection.invoke('refresh', 'costumer',this.costumer.idEmpresa,0,0)

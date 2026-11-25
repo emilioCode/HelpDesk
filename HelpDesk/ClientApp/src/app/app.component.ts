@@ -8,13 +8,14 @@ import { MenuComponent } from './components/shared/menu/menu.component';
 import { ContentComponent } from './components/shared/content/content.component';
 import { FooterComponent } from './components/shared/footer/footer.component';
 import { LoginComponent } from './components/shared/login/login.component';
+import { HdToastsComponent } from './ui/hd-toasts.component';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./app.component.css'],
-    imports: [NgIf, RouterOutlet, HeaderComponent, MenuComponent, ContentComponent, FooterComponent, LoginComponent]
+    imports: [NgIf, RouterOutlet, HeaderComponent, MenuComponent, ContentComponent, FooterComponent, LoginComponent, HdToastsComponent]
 })
 export class AppComponent implements OnInit {
   constructor(public service: ApiService, private session: SessionService){ }

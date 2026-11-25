@@ -127,7 +127,7 @@ describe('WaitingComponent, the order', () => {
       expect(s.component.option).toBe('edit');
       expect(s.component.ticket).toMatchObject({ id: 50, noSecuencia: 13 });
       expect(s.hub.invoke).toHaveBeenCalledWith('refresh', 'ticket', 1, 0, 0);
-      expect(s.swal).toHaveBeenCalledWith('No:13', '', 'success');
+      expect(s.toasts()).toContain('No:13');
     });
 
     it('does not create a workshop order without a device', () => {
@@ -278,7 +278,7 @@ describe('WaitingComponent, the order', () => {
       s.component.editPartUsed(s.component.parToEdit);
       s.http.expectOne(r => r.url.endsWith('Part/Put')).flush(done);
       expect(s.hub.invoke).toHaveBeenCalledWith('refresh', 'ticket', 1, 4, 1);
-      expect(s.swal).toHaveBeenCalledWith('Listo', 'ok', 'success');
+      expect(s.toasts()).toContain('Listo: ok');
     });
 
     it('reloads the parts when editing one was refused or failed', () => {
@@ -402,7 +402,7 @@ describe('WaitingComponent, the order', () => {
       const s = withOrder();
       s.component.sendTracking();
       s.http.expectOne(r => r.url.endsWith('Tracking/Email/1')).flush({ code: '1' });
-      expect(s.swal).toHaveBeenCalledWith('Enviado', expect.any(String), 'success');
+      expect(s.toasts().some(t => t.startsWith('Enviado'))).toBe(true);
     });
 
     it('says why the e-mail was not sent', () => {
@@ -426,7 +426,7 @@ describe('WaitingComponent, the order', () => {
       s.component.copyTrackingLink();
       s.http.expectOne(r => r.url.endsWith('Tracking/Link/1')).flush({ data: { url: 'https://x/t/abc' } });
       await vi.waitFor(() => expect(write).toHaveBeenCalledWith('https://x/t/abc'));
-      await vi.waitFor(() => expect(s.swal).toHaveBeenCalledWith('Enlace copiado', expect.stringContaining('https://x/t/abc'), 'success'));
+      await vi.waitFor(() => expect(s.toasts().some(t => t.startsWith('Enlace copiado') && t.includes('https://x/t/abc'))).toBe(true));
       Object.defineProperty(navigator, 'clipboard', { value: undefined, configurable: true });
       s.component.copyTrackingLink();
       s.http.expectOne(r => r.url.endsWith('Tracking/Link/1')).flush({ data: { url: 'https://x/t/def' } });

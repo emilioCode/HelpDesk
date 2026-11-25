@@ -1,3 +1,4 @@
+import { ToastService } from '../ui/toast.service';
 import { Provider, Type } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
@@ -50,6 +51,8 @@ export interface Screen<T> {
   hub: FakeHub;
   http: HttpTestingController;
   swal: ReturnType<typeof vi.fn>;
+  /** The toasts on show, as "title" or "title: message". */
+  toasts: () => string[];
   /** Answers the next call whose URL ends with the path (after "api/"). */
   answer: (path: string | RegExp, body: unknown, options?: { status?: number }) => TestRequest;
   /** Answers every pending call with an empty list, so a screen that loads several things settles. */
@@ -91,6 +94,7 @@ export function openScreen<T>(type: Type<T>, user: any = USERS.admin, extra: Pro
         r.flush(key ? bodies[key] as any : []);
       });
     },
+    toasts: () => TestBed.inject(ToastService).toasts().map(t => t.message ? t.title + ': ' + t.message : t.title),
     detect: () => fixture.detectChanges()
   };
   return screen;

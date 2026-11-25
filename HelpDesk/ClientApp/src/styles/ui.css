@@ -154,3 +154,15 @@
 .hd-alert-success { background: var(--done-bg); border-color: var(--done-fg); color: var(--ink); }
 .hd-empty { margin: 24px 0; text-align: center; color: var(--muted); }
 .hd-progress-done { background: var(--done-fg); }
+
+/* Toasts: confirmations that do not stop the work */
+.hd-toasts { position: fixed; top: 16px; right: 16px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; width: min(360px, calc(100vw - 32px)); pointer-events: none; }
+.hd-toast { pointer-events: auto; display: flex; align-items: flex-start; gap: 10px; padding: 12px 12px 12px 14px; background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); border-left: 4px solid var(--done-fg); border-radius: var(--radius-md); box-shadow: 0 8px 28px #0A101C33; animation: hd-toast-in .18s ease-out; }
+.hd-toast hd-icon { color: var(--done-fg); margin-top: 1px; }
+.hd-toast-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px; overflow-wrap: anywhere; }
+.hd-toast-text span { color: var(--muted); }
+.hd-toast-close { border: 0; background: transparent; color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer; padding: 0 4px; }
+.hd-toast-close:hover, .hd-toast-close:focus-visible { color: var(--ink); }
+@keyframes hd-toast-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .hd-toast { animation: none; } }
+@media (max-width: 600px) { .hd-toasts { top: auto; bottom: 16px; right: 16px; left: 16px; width: auto; } }

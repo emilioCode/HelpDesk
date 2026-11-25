@@ -40,6 +40,28 @@ describe('ReportComponent', () => {
       expect(s.swal).toHaveBeenCalledWith(s.service.messages.titleRequiredFields, expect.stringContaining('fechas'), 'warning');
     });
 
+    it('sends what was typed in the filters', () => {
+      const s = open();
+      const type = s.element.querySelector('select') as HTMLSelectElement;
+      type.value = 'Servicio a Domicilio'; type.dispatchEvent(new Event('change'));
+      const [from, to] = Array.from(s.element.querySelectorAll('input[type="date"]')) as HTMLInputElement[];
+      from.value = '2026-10-01'; from.dispatchEvent(new Event('input'));
+      to.value = '2026-10-31'; to.dispatchEvent(new Event('input'));
+      s.component.toSearch();
+      const req = s.http.expectOne(r => r.url.endsWith('Ticket/GetJsonTicket'));
+      expect(req.request.body).toMatchObject({ tipoSolicitud: 'Servicio a Domicilio', fechaInicio: '2026-10-01', fechaTermino: '2026-10-31', idEmpresa: 1 });
+      req.flush(rows);
+    });
+
+    it('empties the fields of the filters when they are cleared', () => {
+      const s = open();
+      s.component.request.fechaInicio = '2026-10-01'; s.detect();
+      const from = s.element.querySelectorAll('input[type="date"]')[0] as HTMLInputElement;
+      expect(from.value).toBe('2026-10-01');
+      s.component.clear(); s.detect();
+      expect(from.value).toBe('');
+    });
+
     it('searches by type alone', () => {
       const s = open();
       s.component.request.tipoSolicitud = 'Servicio Taller';

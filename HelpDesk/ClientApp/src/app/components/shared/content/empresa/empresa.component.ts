@@ -155,7 +155,7 @@ export class EmpresaComponent implements OnInit, OnDestroy {
     this.service.isLoading = true;
      this.service.post('Business/' + this.service.getUser().id, this.payload())
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         this.getBusiness(this.service.getUser().id);
       }
@@ -183,7 +183,7 @@ export class EmpresaComponent implements OnInit, OnDestroy {
     this.empresa.habilitado = true;
      this.service.post('Business/Put/'+this.service.getUser().id, this.payload())
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {
         this.hubConnection.invoke('refresh', 'empresa', this.empresa.id, 0,0)
       }
@@ -210,7 +210,7 @@ export class EmpresaComponent implements OnInit, OnDestroy {
     this.empresa.habilitado = !this.empresa.habilitado;
      this.service.post('Business/Put/'+this.service.getUser().id, this.empresa)
       .subscribe(res=>{
-      this.service.swal(res.title,res.message,res.icon);
+      this.service.notify(res.title,res.message,res.icon);
       if(res.code=="1") {      
         this.hubConnection.invoke('refresh', 'empresa', this.empresa.id, 0,0)
       }

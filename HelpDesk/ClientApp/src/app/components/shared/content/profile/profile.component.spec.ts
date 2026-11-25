@@ -66,7 +66,7 @@ describe('ProfileComponent', () => {
       expect(req.request.body).toMatchObject({ id: 2, contrasena: '123456' });
       req.flush({ code: '1', title: 'Listo', message: 'ok', icon: 'success' });
       s.settle({ 'User/2/UNIQUE': [me()], 'Business/2': [{ id: 1, image: null }] });
-      expect(s.swal).toHaveBeenCalledWith('Listo', 'ok', 'success');
+      expect(s.toasts()).toContain('Listo: ok');
     });
 
     it('ends the session when root changed the company of the person', () => {
