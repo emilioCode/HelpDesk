@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { openOrders, order, orders } from './waiting.screen.spec';
+import { openOrders, order, orders } from '../../../../testing/orders-testing';
 import { USERS } from '../../../../testing/screen-testing';
 
 type Orders = ReturnType<typeof openOrders>;
